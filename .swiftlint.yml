@@ -1,0 +1,11 @@
+# If the swiftlint gives you problems, you can change its configuration as shown here:
+# https://github.com/realm/SwiftLint#configuration
+
+excluded:
+  - Pods
+
+disabled_rules:
+  - vertical_whitespace
+  - trailing_whitespace
+
+line_length: 300
