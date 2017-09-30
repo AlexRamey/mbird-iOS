@@ -7,6 +7,9 @@ This project is using the [ReSwift](https://github.com/ReSwift/ReSwift) framewor
 # Setup
 We are tentatively going with [SwiftLint](https://github.com/realm/SwiftLint) to enforce a consistent coding style. The setup is outlined in the readme on the swiftlint website. Once you install the SwiftLint pod locally, you will need to add `$PODS_ROOT` environment variable to your `.base_profile` so that the build phases script `"${PODS_ROOT}/SwiftLint/swiftlint"` actually works.
 
+# Github Usage
+To make changes to master, you must create a new branch and submit a pull request with your proposed changes. Once a reviewer signs off on the changes, then you will be allowed to merge them in. This policy is enforced on everyone.
+
 # Helpful Links
 1. [ReSwift Getting Started](http://reswift.github.io/ReSwift/master/getting-started-guide.html)
 1. [ReSwift Repo](https://github.com/ReSwift/ReSwift)
