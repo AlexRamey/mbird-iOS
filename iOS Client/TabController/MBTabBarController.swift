@@ -10,13 +10,14 @@ import ReSwift
 import UIKit
 
 class MBTabBarController: UITabBarController, StoreSubscriber {
-    let strongDelegate = MBTabBarControllerDelegate()
+    static func instantiateFromStoryboard() -> MBTabBarController {
+        // swiftlint:disable force_cast
+        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BaseTabController") as! MBTabBarController
+        // swiftlint:enable force_cast
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Do any additional setup after loading the view.
-        self.delegate = strongDelegate
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -31,6 +32,8 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    // MARK: - StoreSubscriber
     
     func newState(state: MBAppState) {
         if self.selectedIndex != state.navigationState.tabIndex {
