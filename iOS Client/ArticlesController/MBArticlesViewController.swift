@@ -17,7 +17,18 @@ class MBArticlesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view, typically from a nib.
+//        MBStore().fetchAuthors { (err: Error?) in
+//            guard let getAuthorsErr = err else {
+//                print("No error")
+//                return
+//            }
+//
+//            print(getAuthorsErr)
+//        }
+        
+        print(MBStore().getAuthors())
     }
 
     override func didReceiveMemoryWarning() {
