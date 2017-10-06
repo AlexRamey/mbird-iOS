@@ -19,9 +19,10 @@ extension MBArticle {
 
     @NSManaged public var content: String?
     @NSManaged public var date: NSDate?
-    @NSManaged public var id: Int32
+    @NSManaged public var articleID: Int32
     @NSManaged public var title: String?
     @NSManaged public var author: MBAuthor?
+    @NSManaged public var authorID: Int32
     @NSManaged public var categories: MBCategory?
 
 }

@@ -17,7 +17,7 @@ extension MBCategory {
         return NSFetchRequest<MBCategory>(entityName: "Category")
     }
 
-    @NSManaged public var id: Int32
+    @NSManaged public var categoryID: Int32
     @NSManaged public var name: String?
     @NSManaged public var parent: Int32
 

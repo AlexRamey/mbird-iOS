@@ -17,18 +17,40 @@ class MBArticlesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        /******** START EXAMPLE ***********/
         
-        // Do any additional setup after loading the view, typically from a nib.
-//        MBStore().fetchAuthors { (err: Error?) in
-//            guard let getAuthorsErr = err else {
-//                print("No error")
-//                return
-//            }
-//
-//            print(getAuthorsErr)
-//        }
+        // 1. the managed context has to be passed in (UIApplication should only be accessed from main thread)
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("Unable to get the app delegate!")
+            return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
         
-        print(MBStore().getAuthors())
+        // 2. Sync all the Data
+        MBStore().syncAllData(context: managedContext) { (err: Error?) in
+            if let syncErr = err {
+                print(syncErr)
+                return
+            }
+            
+            print("Sync Success!")
+            
+            print("\nAUTHOR NAMES")
+            print(MBStore().getAuthors(managedContext: managedContext).map { $0.name })
+            print("\nAUTHOR IDS")
+            print(MBStore().getAuthors(managedContext: managedContext).map { $0.authorID })
+            
+            print("\nCATEGORIES")
+            print(MBStore().getCategories(managedContext: managedContext).map { $0.name })
+            
+            print("\nARTICLE TITLES")
+            print(MBStore().getArticles(managedContext: managedContext).map { $0.title })
+            print("\nARTICLE AUTHOR IDS")
+            print(MBStore().getArticles(managedContext: managedContext).map { $0.authorID })
+            print("\nARTICLE AUTHOR NAMES")
+            print(MBStore().getArticles(managedContext: managedContext).map { $0.author?.name })
+        }
+        /********* END EXAMPLE ************/
     }
 
     override func didReceiveMemoryWarning() {

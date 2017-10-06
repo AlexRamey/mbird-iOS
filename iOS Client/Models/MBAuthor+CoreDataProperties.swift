@@ -16,8 +16,8 @@ extension MBAuthor {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<MBAuthor> {
         return NSFetchRequest<MBAuthor>(entityName: "Author")
     }
-
-    @NSManaged public var id: Int32
+    
+    @NSManaged public var authorID: Int32
     @NSManaged public var info: String?
     @NSManaged public var name: String?
 

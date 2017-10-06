@@ -8,7 +8,7 @@
 
 import Foundation
 
-class MBClient : NSObject {
+class MBClient: NSObject {
     private let session: URLSession
     
     // Endpoints
@@ -17,7 +17,7 @@ class MBClient : NSObject {
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     
-    override init(){
+    override init() {
         let config = URLSessionConfiguration.ephemeral
         config.allowsCellularAccess = true
         config.httpAdditionalHeaders = ["Accept": "application/json"]
