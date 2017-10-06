@@ -13,6 +13,12 @@
 		D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */; };
 		D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D36411F7FE8FA00D4E674 /* BookmarksCoordinator.swift */; };
 		D032F1641F81695500E78333 /* MBClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F1631F81695500E78333 /* MBClient.swift */; };
+		D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */; };
+		D032F1A11F8728B700E78333 /* MBCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */; };
+		D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */; };
+		D032F1A31F8728B700E78333 /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19D1F8728B700E78333 /* MBArticle+CoreDataProperties.swift */; };
+		D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */; };
+		D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */; };
 		D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */; };
 		D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55861F786DCD0071ED86 /* AppDelegate.swift */; };
 		D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */; };
@@ -37,6 +43,12 @@
 		D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ArticlesCoordinator.swift; path = "iOS Client/ArticlesController/ArticlesCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D36411F7FE8FA00D4E674 /* BookmarksCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BookmarksCoordinator.swift; path = "iOS Client/BookmarksController/BookmarksCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D032F1631F81695500E78333 /* MBClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MBClient.swift; path = "iOS Client/MBClient.swift"; sourceTree = SOURCE_ROOT; };
+		D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D032F19D1F8728B700E78333 /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTabBarController.swift; sourceTree = "<group>"; };
 		D08F55831F786DCD0071ED86 /* iOS Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D08F55861F786DCD0071ED86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -100,6 +112,19 @@
 			path = Coordinator;
 			sourceTree = "<group>";
 		};
+		D032F1991F87289D00E78333 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */,
+				D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */,
+				D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */,
+				D032F19D1F8728B700E78333 /* MBArticle+CoreDataProperties.swift */,
+				D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */,
+				D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		D08F557A1F786DCD0071ED86 = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +146,7 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
+				D032F1991F87289D00E78333 /* Models */,
 				D032F1631F81695500E78333 /* MBClient.swift */,
 				D0DDEC301F7C7B1F007822CB /* Actions */,
 				D0DDEC371F7C7F52007822CB /* AppDelegate */,
@@ -354,18 +380,24 @@
 				D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */,
 				D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */,
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
+				D032F1A11F8728B700E78333 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
 				D08F558F1F786DCD0071ED86 /* iOS_Client.xcdatamodeld in Sources */,
 				D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */,
+				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
 				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,
+				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
+				D032F1A31F8728B700E78333 /* MBArticle+CoreDataProperties.swift in Sources */,
+				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
 				D0CD7BB61F7875F7000E26B0 /* MBState.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
+				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
