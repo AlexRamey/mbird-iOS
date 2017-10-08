@@ -49,6 +49,16 @@ class MBArticlesViewController: UIViewController {
             print(MBStore().getArticles(managedContext: managedContext).map { $0.authorID })
             print("\nARTICLE AUTHOR NAMES")
             print(MBStore().getArticles(managedContext: managedContext).map { $0.author?.name })
+            
+            print("\nARTICLE CATEGORY NAMES")
+            let lists = MBStore().getArticles(managedContext: managedContext).map { $0.categories?.allObjects }
+            for list in lists {
+                if let cats = list as? [MBCategory] {
+                    print(cats.map {$0.name})
+                } else {
+                    print("💩")
+                }
+            }
         }
         /********* END EXAMPLE ************/
     }

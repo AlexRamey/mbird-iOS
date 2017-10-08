@@ -71,10 +71,26 @@ extension MBArticle {
             }
         }
         
-        // TODO -- Link Categories --
-        // . . .
+        if let categoryIDs = json.object(forKey: "categories") as? [Int32] {
+            for categoryID in categoryIDs {
+                let predicate = NSPredicate(format: "categoryID == %d", categoryID)
+                let fetchRequest = NSFetchRequest<MBCategory>(entityName: MBCategory.entityName)
+                fetchRequest.predicate = predicate
+                
+                do {
+                    let fetchedEntities = try managedContext.fetch(fetchRequest)
+                    if let cat = fetchedEntities.first {
+                        article.addToCategories(cat)
+                    }
+                } catch let error as NSError {
+                    print("An error: '\(error)' occurred while linking a category to an article")
+                }
+            }
+        }
         
         return nil
     }
+    
+    
     
 }

@@ -46,6 +46,7 @@ class MBClient: NSObject {
             return
         }
         
+        print("firing getArticles request")
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             if let httpResponse = resp as? HTTPURLResponse {
                 if httpResponse.statusCode != 200 {
@@ -80,6 +81,7 @@ class MBClient: NSObject {
             return
         }
         
+        print("firing initial getCategories request")
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: completion)
         }.resume()
@@ -98,6 +100,7 @@ class MBClient: NSObject {
             return
         }
         
+        print("firing initial getAuthors request")
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: completion)
         }.resume()
