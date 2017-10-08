@@ -94,7 +94,4 @@ extension MBArticle {
         
         return nil
     }
-    
-    
-    
 }

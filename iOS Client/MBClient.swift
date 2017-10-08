@@ -16,7 +16,7 @@ class MBClient: NSObject {
     private let articlesEndpoint = "/posts"
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
-    private let numResultsPerPage = 100
+    private let numResultsPerPage = 20
     private let urlArgs: String
     
     override init() {
@@ -126,6 +126,17 @@ class MBClient: NSObject {
         guard let wpTotalPages = httpResponse.allHeaderFields["x-wp-totalpages"] as? String, let numPages = Int(wpTotalPages) else {
             completion([], NetworkRequestError.missingResponseHeaders(msg: "x-wp-totalpages header was missing"))
             return
+        }
+        
+        if numPages == 1 {
+            // we are done
+            if let d = data {
+                completion([d], nil)
+                return
+            } else {
+                completion([], NetworkRequestError.networkError(msg: "an unknown error occurred"))
+                return
+            }
         }
         
         var dataTasks: [URLSessionDataTask] = []
