@@ -22,7 +22,6 @@ class MBStore: NSObject {
         super.init()
     }
     
-    
     /***** Read Data from Core Data *****/
     func getAuthors(managedContext: NSManagedObjectContext) -> [MBAuthor] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
@@ -87,17 +86,22 @@ class MBStore: NSObject {
     }
     
     // An internal helper function to perform a download
-    private func performDownload(clientFunction: (@escaping (Data?, URLResponse?, Error?) -> Void) -> (),
+    private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> (),
                                  managedContext: NSManagedObjectContext,
                                  deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) -> Error?,
                                  completion: @escaping (Error?) -> Void) {
         
-        clientFunction { (data: Data?, _: URLResponse?, err: Error?) in
-            if let jsonData = data {
+        clientFunction { (data: [Data], err: Error?) in
+            if let clientErr = err {
+                completion(clientErr)
+                return
+            }
+            
+            for jsonData in data {
                 self.downloadModelsHandler(managedContext: managedContext, data: jsonData, deserializeFunc: deserializeFunc)
             }
             
-            completion(err)
+            completion(nil)
         }
         
     }
