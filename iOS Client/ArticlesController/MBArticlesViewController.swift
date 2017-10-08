@@ -45,11 +45,12 @@ class MBArticlesViewController: UIViewController {
             
             print("\nARTICLE TITLES")
             print(MBStore().getArticles(managedContext: managedContext).map { $0.title })
+            print("\nARTICLE DATES")
+            print(MBStore().getArticles(managedContext: managedContext).map { $0.date })
             print("\nARTICLE AUTHOR IDS")
             print(MBStore().getArticles(managedContext: managedContext).map { $0.authorID })
             print("\nARTICLE AUTHOR NAMES")
             print(MBStore().getArticles(managedContext: managedContext).map { $0.author?.name })
-            
             print("\nARTICLE CATEGORY NAMES")
             let lists = MBStore().getArticles(managedContext: managedContext).map { $0.categories?.allObjects }
             for list in lists {

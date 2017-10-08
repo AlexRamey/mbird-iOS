@@ -53,10 +53,14 @@ extension MBArticle {
         article.setValue(json.value(forKeyPath: "title.rendered") as? String, forKey: "title")
         article.setValue(json.value(forKeyPath: "content.rendered") as? String, forKey: "content")
         
-        // TODO -- Parse Date --
-        // json.value(forKeyPath: "date") as? String
-        // date = parsed string
-        // article.setValue(date, forKey: "date")
+        if let dateStr = json.value(forKeyPath: "date") as? String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            if let timeZone = TimeZone(identifier: "America/New_York") {
+                dateFormatter.timeZone = timeZone
+            }
+            article.setValue(dateFormatter.date(from: dateStr), forKey: "date")
+        }
         
         if let authorID = json.object(forKey: "author") as? Int32 {
             let predicate = NSPredicate(format: "authorID == %d", authorID)
