@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 
-extension MBArticle: MBDeserializable {
+extension MBArticle {
     static let entityName: String = "Article"
     
     // deserialize accepts an NSDictionary and deserializes the object into the provided
