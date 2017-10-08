@@ -78,12 +78,3 @@ extension MBArticle: MBDeserializable {
     }
     
 }
-
-//@NSManaged public var content: String?
-//@NSManaged public var date: NSDate?
-//@NSManaged public var articleID: Int32
-//@NSManaged public var title: String?
-
-//@NSManaged public var author: MBAuthor?
-//@NSManaged public var categories: MBCategory?
-
