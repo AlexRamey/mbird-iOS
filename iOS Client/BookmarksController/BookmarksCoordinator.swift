@@ -8,9 +8,11 @@
 
 import Foundation
 import UIKit
+import ReSwift
 
-class BookmarksCoordinator: NSObject, Coordinator {
+class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber {
     var childCoordinators: [Coordinator] = []
+    var route: [Route] = [.base]
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -24,5 +26,16 @@ class BookmarksCoordinator: NSObject, Coordinator {
     func start() {
         let bookmarksController = MBBookmarksViewController.instantiateFromStoryboard()
         self.navigationController.pushViewController(bookmarksController, animated: true)
+        MBStore.sharedStore.subscribe(self)
+    }
+    
+    // MARK: - StoreSubscriber
+    
+    func newState(state: MBAppState) {
+        guard state.navigationState.selectedTab == .bookmarks, let newRoute = state.navigationState.routes[.bookmarks] else{
+            return
+        }
+        build(newRoute: newRoute)
+        route = newRoute
     }
 }

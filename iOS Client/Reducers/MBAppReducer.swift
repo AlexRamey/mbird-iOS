@@ -22,7 +22,7 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
     case _ as ReSwiftInit:
         break
     case let action as NavigationActionSwitchTab:
-        nextState.tabIndex = action.newIndex
+        nextState.selectedTab = action.tab
     default:
         break
     }

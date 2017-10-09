@@ -9,9 +9,11 @@
 import ReSwift
 
 struct NavigationActionSwitchTab: Action {
-    var newIndex: Int = 0
-    
-    init(newIndex: Int) {
-        self.newIndex = newIndex
-    }
+    var tab: Tab
 }
+
+struct PushRoute: Action{
+    var route: Route
+}
+
+
