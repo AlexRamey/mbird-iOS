@@ -47,7 +47,7 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
     
     // MARK: - StoreSubscriber
     
-    func newState(state: MBAppState){
+    func newState(state: MBAppState) {
         if state.navigationState.selectedTab != selectedTab, let rootVC = rootViewController as? MBTabBarController {
             rootVC.select(tab: state.navigationState.selectedTab)
             selectedTab = state.navigationState.selectedTab

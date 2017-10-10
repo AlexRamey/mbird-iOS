@@ -17,7 +17,7 @@ enum Route: Equatable {
     static func == (lhs: Route, rhs: Route) -> Bool {
         if case .base = lhs, case .base = rhs {
             return true
-        } else if case .detail(let _) = lhs, case .detail(let _) = rhs {
+        } else if case .detail = lhs, case .detail = rhs {
             return true
         } else {
             return false
@@ -79,5 +79,4 @@ enum Tab: String {
 }
 
 protocol Detailable {
-    var id: Int { get set }
 }

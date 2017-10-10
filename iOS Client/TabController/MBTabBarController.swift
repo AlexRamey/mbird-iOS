@@ -32,7 +32,7 @@ class MBTabBarController: UITabBarController {
         // Dispose of any resources that can be recreated.
     }
     
-    func select(tab: Tab){
+    func select(tab: Tab) {
         self.selectedIndex = tab.index
     }
 

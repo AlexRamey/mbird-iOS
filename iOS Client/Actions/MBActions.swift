@@ -12,8 +12,6 @@ struct NavigationActionSwitchTab: Action {
     var tab: Tab
 }
 
-struct PushRoute: Action{
+struct PushRoute: Action {
     var route: Route
 }
-
-
