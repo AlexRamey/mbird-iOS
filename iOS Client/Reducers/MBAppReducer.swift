@@ -31,11 +31,13 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
 }
 
 func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
-    let nextState = state ?? MBArticleState()
+    var nextState = state ?? MBArticleState()
     
     switch action {
     case _ as ReSwiftInit:
         break
+    case let action as LoadedArticles:
+        nextState.articles = action.articles
     default:
         break
     }

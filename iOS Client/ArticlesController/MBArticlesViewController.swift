@@ -7,16 +7,34 @@
 //
 
 import UIKit
+import ReSwift
 
-class MBArticlesViewController: UIViewController {
+class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
+    @IBOutlet weak var tableView: UITableView!
+    var articles: [MBArticle] = []
+    
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
         // swiftlint:enable force_cast
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        MBStore.sharedStore.subscribe(self)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        MBStore.sharedStore.unsubscribe(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        
         /******** START EXAMPLE ***********/
         
         // 1. the managed context has to be passed in (UIApplication should only be accessed from main thread)
@@ -25,7 +43,7 @@ class MBArticlesViewController: UIViewController {
             return
         }
         let managedContext = appDelegate.persistentContainer.viewContext
-        
+        /*
         // 2. Sync all the Data
         MBStore().syncAllData(context: managedContext) { (err: Error?) in
             if let syncErr = err {
@@ -62,10 +80,61 @@ class MBArticlesViewController: UIViewController {
             }
         }
         /********* END EXAMPLE ************/
+        */
+        MBStore().syncAllData(context: managedContext) { (err: Error?) in
+            if let syncErr = err {
+                print(syncErr)
+                MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
+                return
+            }
+            
+            let loadedArticles = MBStore().getArticles(managedContext: managedContext)
+            DispatchQueue.main.async {
+                MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
+            }
+        }
     }
 
+    func newState(state: MBAppState) {
+        switch state.articleState.articles {
+        case .initial:
+            break //Do nothing if articles haven't tried to load
+        case .loading:
+            break //Do something here to indicate loading
+        case .error:
+            print("Error: Loading articles")
+        case .loaded(let data):
+            if data.count != articles.count {
+                print("New Data for table view")
+                articles = data
+                tableView.reloadData()
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+}
+
+// MARK - UITableViewDataSource
+extension MBArticlesViewController {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return articles.count
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let article = articles[indexPath.row]
+        // swiftlint:disable force_cast
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") as! UITableViewCell
+        // swiftlint:enable force_cast
+        cell.textLabel?.text = article.title
+        return cell
     }
 }
