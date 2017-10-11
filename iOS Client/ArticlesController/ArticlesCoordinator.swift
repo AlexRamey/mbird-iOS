@@ -32,7 +32,7 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber {
     
     // MARK: - StoreSubscriber
     func newState(state: MBAppState) {
-        guard state.navigationState.selectedTab != .articles, let newRoute = state.navigationState.routes[.articles] else {
+        guard state.navigationState.selectedTab == .articles, let newRoute = state.navigationState.routes[.articles] else {
             return
         }
         build(newRoute: newRoute)
