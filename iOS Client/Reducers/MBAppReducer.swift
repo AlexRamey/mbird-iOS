@@ -23,6 +23,10 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         break
     case let action as NavigationActionSwitchTab:
         nextState.selectedTab = action.tab
+    case let action as SelectedArticle:
+        nextState.routes[.articles]?.append(.detail(item: action.article))
+    case _ as PopCurrentNavigation:
+        nextState.routes[nextState.selectedTab]?.removeLast()
     default:
         break
     }
@@ -38,6 +42,8 @@ func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
         break
     case let action as LoadedArticles:
         nextState.articles = action.articles
+    case let action as SelectedArticle:
+        nextState.selectedArticle = action.article
     default:
         break
     }

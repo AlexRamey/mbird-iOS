@@ -45,9 +45,12 @@ protocol ArticleState: ArticleLoadState, ArticleReadState {}
 
 protocol ArticleState {
     var articles: Loaded<[MBArticle]> { get set }
+    var selectedArticle: MBArticle? { get set }
 }
 struct MBArticleState: ArticleState {
     var articles: Loaded<[MBArticle]> = .initial
+    var selectedArticle: MBArticle? = nil
+    
 }
 /**************************************/
 

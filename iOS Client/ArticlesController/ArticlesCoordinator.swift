@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import ReSwift
 
-class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber {
+class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationControllerDelegate {
     var route: [Route] = [.base]
     
     var childCoordinators: [Coordinator] = []

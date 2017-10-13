@@ -137,4 +137,11 @@ extension MBArticlesViewController {
         cell.textLabel?.text = article.title
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedArticle = articles[indexPath.row]
+        let action = SelectedArticle(article: selectedArticle)
+        MBStore.sharedStore.dispatch(action)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }

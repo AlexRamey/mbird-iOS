@@ -19,3 +19,10 @@ struct PushRoute: Action {
 struct LoadedArticles: Action {
     var articles: Loaded<[MBArticle]>
 }
+
+struct SelectedArticle: Action {
+    var article: MBArticle
+}
+
+struct PopCurrentNavigation: Action {
+}
