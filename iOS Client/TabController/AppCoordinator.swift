@@ -8,9 +8,13 @@
 
 import Foundation
 import UIKit
+import ReSwift
 
-class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate {
+class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSubscriber {
+    var route: [Route] = [Route]()
+    
     var childCoordinators: [Coordinator] = []
+    var selectedTab: Tab?
     
     var rootViewController: UIViewController {
         return self.tabBarController
@@ -33,6 +37,7 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate {
     
     // MARK: - Coordinator
     func start() {
+        MBStore.sharedStore.subscribe(self)
         self.tabBarController.viewControllers = [ArticlesCoordinator(), BookmarksCoordinator()].map({(coord: Coordinator) -> UIViewController in
             coord.start()
             self.addChildCoordinator(childCoordinator: coord)
@@ -40,25 +45,23 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate {
         })
     }
     
+    // MARK: - StoreSubscriber
+    
+    func newState(state: MBAppState) {
+        if state.navigationState.selectedTab != selectedTab, let rootVC = rootViewController as? MBTabBarController {
+            selectedTab = state.navigationState.selectedTab
+            rootVC.select(tab: state.navigationState.selectedTab)
+        }
+    }
+    
     // MARK: - UITabBarControllerDelegate
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        var selectedIndex = 0
         
-        if let navController = viewController as? UINavigationController {
-            if let title = navController.viewControllers[0].title {
-                switch title {
-                case "Articles":
-                    selectedIndex = 0
-                case "Bookmarks":
-                    selectedIndex = 1
-                default:
-                    break
-                }
-            }
+        if let navController = viewController as? UINavigationController, let newTab = Tab.tab(forViewController: navController.viewControllers[0]) {
+            // Send off the Action
+            MBStore.sharedStore.dispatch(NavigationActionSwitchTab(tab: newTab))
         }
         
-        // Send off the Action
-        MBStore.sharedStore.dispatch(NavigationActionSwitchTab(newIndex: selectedIndex))
         return false
     }
 }

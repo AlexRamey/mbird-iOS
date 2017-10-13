@@ -17,11 +17,14 @@ protocol TabOneNavControllerState {
     var topControllerID: String { get set }
 }
 
-protocol NavigationState: TabBarState, TabOneNavControllerState {}
+protocol NavigationState {
+    var routes: [Tab: [Route]] { get set }
+    var selectedTab: Tab { get set }
+}
 
 struct MBNavigationState: NavigationState {
-    var tabIndex: Int = 0
-    var topControllerID: String = "articles-controller"
+    var routes: [Tab: [Route]] = [.articles: [.base], .bookmarks: [.base]]
+    var selectedTab: Tab = .articles
 }
 /**************************************/
 

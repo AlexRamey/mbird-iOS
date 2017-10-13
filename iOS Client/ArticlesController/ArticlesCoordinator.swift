@@ -8,8 +8,11 @@
 
 import Foundation
 import UIKit
+import ReSwift
 
-class ArticlesCoordinator: NSObject, Coordinator {
+class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber {
+    var route: [Route] = [.base]
+    
     var childCoordinators: [Coordinator] = []
     
     var rootViewController: UIViewController {
@@ -24,5 +27,15 @@ class ArticlesCoordinator: NSObject, Coordinator {
     func start() {
         let articlesController = MBArticlesViewController.instantiateFromStoryboard()
         self.navigationController.pushViewController(articlesController, animated: true)
+        MBStore.sharedStore.subscribe(self)
+    }
+    
+    // MARK: - StoreSubscriber
+    func newState(state: MBAppState) {
+        guard state.navigationState.selectedTab == .articles, let newRoute = state.navigationState.routes[.articles] else {
+            return
+        }
+        build(newRoute: newRoute)
+        route = newRoute
     }
 }

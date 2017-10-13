@@ -9,7 +9,7 @@
 import ReSwift
 import UIKit
 
-class MBTabBarController: UITabBarController, StoreSubscriber {
+class MBTabBarController: UITabBarController {
     static func instantiateFromStoryboard() -> MBTabBarController {
         // swiftlint:disable force_cast
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BaseTabController") as! MBTabBarController
@@ -21,11 +21,10 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        MBStore.sharedStore.subscribe(self) {subscription in subscription.select {state in state}}
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        MBStore.sharedStore.unsubscribe(self)
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,12 +32,8 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK: - StoreSubscriber
-    
-    func newState(state: MBAppState) {
-        if self.selectedIndex != state.navigationState.tabIndex {
-            self.selectedIndex = state.navigationState.tabIndex
-        }
+    func select(tab: Tab) {
+        self.selectedIndex = tab.rawValue
     }
 
     /*
