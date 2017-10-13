@@ -33,7 +33,7 @@ class MBTabBarController: UITabBarController {
     }
     
     func select(tab: Tab) {
-        self.selectedIndex = tab.index
+        self.selectedIndex = tab.rawValue
     }
 
     /*

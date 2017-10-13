@@ -44,16 +44,9 @@ enum Route: Equatable {
     }
 }
 
-enum Tab: String {
-    case articles
-    case bookmarks
-    
-    var index: Int {
-        switch self {
-        case .articles: return 0
-        case .bookmarks: return 1
-        }
-    }
+enum Tab: Int {
+    case articles = 0
+    case bookmarks = 1
     
     static func tab(forViewController viewController: UIViewController) -> Tab? {
         if viewController is MBArticlesViewController {
