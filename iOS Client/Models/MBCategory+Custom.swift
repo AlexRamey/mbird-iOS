@@ -17,11 +17,11 @@ extension MBCategory {
     // If the category already existed, then it updates its fields from the new json
     // values. If no category with the json's id value already existed, a new one is
     // created and inserted into the managedContext.
-    public class func deserialize(json: NSDictionary, intoContext managedContext: NSManagedObjectContext) -> Error? {
+    public class func deserialize(json: NSDictionary, intoContext managedContext: NSManagedObjectContext) throws -> Bool {
+        var isNewData: Bool = false
         
         guard let idArg = json.object(forKey: "id") as? Int32 else {
-            print("unable to cast json 'id' into an Int32")
-            return NSError()
+            throw(MBDeserializationError.contractMismatch(msg: "unable to cast json 'id' into an Int32"))
         }
         
         let predicate = NSPredicate(format: "categoryID == %d", idArg)
@@ -32,26 +32,25 @@ extension MBCategory {
         do {
             let fetchedEntities = try managedContext.fetch(fetchRequest)
             resolvedCategory = fetchedEntities.first
-        } catch let error as NSError {
-            print("An error: '\(error)' occurred during the fetch request for a single category")
-            return error
+        } catch {
+            throw(MBDeserializationError.fetchError(msg: "error while fetching category with id: \(idArg)"))
         }
         
         if resolvedCategory == nil {
             print("new category!")
+            isNewData = true
             let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
             resolvedCategory = NSManagedObject(entity: entity, insertInto: managedContext) as? MBCategory
         }
         
         guard let category = resolvedCategory else {
-            print("ERROR: Unable to resolve category!")
-            return NSError()
+            throw(MBDeserializationError.contextInsertionError(msg: "unable to resolve category with id: \(idArg) into managed context"))
         }
         
         category.setValue(json.object(forKey: "id") as? Int32, forKey: "categoryID")
         category.setValue(json.object(forKey: "parent") as? Int32, forKey: "parent")
         category.setValue(json.object(forKey: "name") as? String, forKey: "name")
-        return nil
+        return isNewData
     }
     
 }

@@ -11,7 +11,6 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
     var appCoordinator: AppCoordinator!
 
@@ -44,6 +43,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
+    }
+    
+    // MARK: - Background App Refresh
+    
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        let managedContext = self.persistentContainer.viewContext
+        MBStore().syncAllData(context: managedContext) { (isNewData: Bool, syncErr: Error?) in
+            if syncErr != nil {
+                completionHandler(.failed)
+            } else {
+                let timestamp: Double = Date().timeIntervalSinceReferenceDate
+                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
+                if isNewData == true {
+                    // TODO: Run Data Cleanup Task
+                    completionHandler(.newData)
+                } else {
+                    completionHandler(.noData)
+                }
+            }
+        }
     }
 
     // MARK: - Core Data stack
