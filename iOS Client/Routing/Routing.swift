@@ -32,6 +32,10 @@ enum Route: Equatable {
                 if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as? MBArticlesViewController {
                     return vc
                 }
+            } else if case .detail = route {
+                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleDetailController") as? MBArticleDetailViewController {
+                    return vc
+                }
             }
         case .bookmarks:
             if case .base = route {

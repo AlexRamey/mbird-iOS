@@ -39,6 +39,7 @@ extension Coordinator {
             } else if newRoute[newRouteIndex] != route[newRouteIndex] { //case: differing routes so replace top of stack with new route
                 let newTopOfStack = newRoute[newRouteIndex...].flatMap { Route.viewController(forRoute: $0, inTab: Tab.tab(forCoordinator: self)!)}
                 rootViewControllers.removeLast(route.count - newRouteIndex)
+                root.setViewControllers(rootViewControllers, animated: true)
                 newTopOfStack.forEach {
                     root.pushViewController($0, animated: true)
                 }
@@ -47,6 +48,7 @@ extension Coordinator {
         }
         if newRoute.count < route.count { //case: less controllers in new route so pop off existing routes
             rootViewControllers.removeLast(route.count - newRoute.count)
+            root.setViewControllers(rootViewControllers, animated: true)
         }
     }
     

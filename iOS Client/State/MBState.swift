@@ -29,6 +29,7 @@ struct MBNavigationState: NavigationState {
 /**************************************/
 
 /********** Article State *************/
+/*
 protocol ArticleLoadState {
     var isCachedDataOnDisk: Bool { get set }
     var isLoading: Bool { get set }
@@ -40,12 +41,16 @@ protocol ArticleReadState {
 }
 
 protocol ArticleState: ArticleLoadState, ArticleReadState {}
+ */
 
+protocol ArticleState {
+    var articles: Loaded<[MBArticle]> { get set }
+    var selectedArticle: MBArticle? { get set }
+}
 struct MBArticleState: ArticleState {
-    var isCachedDataOnDisk: Bool = false
-    var isLoading: Bool = false
-    var selectedArticle: String = ""
-    var selectedIndex: Int = -1
+    var articles: Loaded<[MBArticle]> = .initial
+    var selectedArticle: MBArticle? = nil
+    
 }
 /**************************************/
 
@@ -67,3 +72,12 @@ struct MBAppState: AppState {
     }
 }
 /**************************************/
+
+/********* Loaded *************/
+enum Loaded<T>{
+    case initial
+    case loading
+    case loaded(data: T)
+    case error
+}
+

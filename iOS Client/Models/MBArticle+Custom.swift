@@ -95,3 +95,7 @@ extension MBArticle {
         return nil
     }
 }
+
+extension MBArticle: Detailable {
+    
+}
