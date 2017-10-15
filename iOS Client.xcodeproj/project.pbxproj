@@ -192,27 +192,35 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
-				D00F8F591F93F122006CCD80 /* Constants */,
-				23FFB0221F85CBC4006A0AC8 /* Routing */,
-				D032F1991F87289D00E78333 /* Models */,
-				D00F8F5A1F93F132006CCD80 /* HTTPClient */,
 				D0DDEC301F7C7B1F007822CB /* Actions */,
 				D0DDEC371F7C7F52007822CB /* AppDelegate */,
 				D0DDEC391F7C7F8B007822CB /* ArticlesController */,
 				D0DDEC3C1F7C812F007822CB /* BookmarksController */,
+				D00F8F591F93F122006CCD80 /* Constants */,
 				D02D363E1F7FE58600D4E674 /* Coordinator */,
+				D00F8F5A1F93F132006CCD80 /* HTTPClient */,
+				D09F67111F93FAA3001D910E /* Main Storyboard */,
 				D0DDEC351F7C7BC6007822CB /* Middleware */,
+				D032F1991F87289D00E78333 /* Models */,
 				D0DDEC311F7C7B37007822CB /* Reducers */,
+				23FFB0221F85CBC4006A0AC8 /* Routing */,
 				D0DDEC321F7C7B55007822CB /* State */,
 				D0DDEC361F7C7F3C007822CB /* Store */,
 				D02D36391F7C9FBF00D4E674 /* TabController */,
-				D08F558A1F786DCD0071ED86 /* Main.storyboard */,
 				D08F55901F786DCD0071ED86 /* Assets.xcassets */,
 				D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */,
 				D08F55951F786DCD0071ED86 /* Info.plist */,
 				D08F558D1F786DCD0071ED86 /* iOS_Client.xcdatamodeld */,
 			);
 			path = "iOS Client";
+			sourceTree = "<group>";
+		};
+		D09F67111F93FAA3001D910E /* Main Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				D08F558A1F786DCD0071ED86 /* Main.storyboard */,
+			);
+			path = "Main Storyboard";
 			sourceTree = "<group>";
 		};
 		D0DDEC301F7C7B1F007822CB /* Actions */ = {
