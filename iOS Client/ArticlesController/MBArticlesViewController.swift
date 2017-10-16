@@ -35,6 +35,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
+        // Set up a bar button item to toggle debug info on background app refresh
+        let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(MBArticlesViewController.showTimestamps))
+        self.navigationItem.setRightBarButton(item, animated: false)
+        
         // 1. the managed context has to be passed in (UIApplication should only be accessed from main thread)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             print("Unable to get the app delegate!")
@@ -99,6 +103,28 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: - showTimestamps() is used for debug purposes
+    @objc func showTimestamps() {
+        let lastOverallUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+        let lastBackgroundUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
+        
+        let lastOverallUpdateDate = Date(timeIntervalSinceReferenceDate: lastOverallUpdate)
+        let lastBackgroundUpdateDate = Date(timeIntervalSinceReferenceDate: lastBackgroundUpdate)
+        
+        let dateFormatter = DateFormatter()
+        if let timeZone = TimeZone(identifier: "America/New_York") {
+            dateFormatter.timeZone = timeZone
+        }
+        dateFormatter.locale = NSLocale.current
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        
+        let msg = "Last Update: \(dateFormatter.string(from: lastOverallUpdateDate))\nLast Background Refresh: \(dateFormatter.string(from: lastBackgroundUpdateDate))"
+        
+        let ac = UIAlertController(title: "DEBUG", message: msg, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title: "👍", style: .default, handler: nil))
+        self.present(ac, animated: true, completion: nil)
     }
 }
 
