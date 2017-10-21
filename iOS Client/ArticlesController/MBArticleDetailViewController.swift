@@ -10,30 +10,35 @@ import UIKit
 import ReSwift
 import WebKit
 
-class MBArticleDetailViewController: UIViewController, StoreSubscriber, WKUIDelegate {
-
+class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
-    var article: MBArticle?
+    var selectedArticle: MBArticle?
+    
+    static func instantiateFromStoryboard(article: MBArticle?) -> MBArticleDetailViewController {
+        // swiftlint:disable force_cast
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleDetailController") as! MBArticleDetailViewController
+        // swiftlint:enable force_cast
+        
+        vc.selectedArticle = article
+        return vc
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureWebView()
         configureBackButton()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        MBStore.sharedStore.subscribe(self)
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
-    }
-    
     func configureWebView() {
         let webConfiguration = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
-        webView.uiDelegate = self
+        webView.navigationDelegate = self
+        
         view = webView
+        
+        if let content = self.selectedArticle?.content {
+            webView.loadHTMLString(content, baseURL: nil)
+        }
     }
     
     func configureBackButton() {
@@ -44,29 +49,15 @@ class MBArticleDetailViewController: UIViewController, StoreSubscriber, WKUIDele
         MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
     
-    func newState(state: MBAppState) {
-        if state.articleState.selectedArticle != article {
-            article = state.articleState.selectedArticle
-            if article?.content != nil{
-                let contentString = article?.content
-                webView.loadHTMLString(contentString!, baseURL: nil)
-            }
-        }
-    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // MARK: WKNavigationDelegate
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        let cssString = "body { font-size: xx-large; color: #000 }"
+        let jsString = "var style = document.createElement('style'); style.innerHTML = '\(cssString)'; document.head.appendChild(style);"
+        webView.evaluateJavaScript(jsString, completionHandler: nil)
     }
-    */
-
 }

@@ -11,10 +11,10 @@ import UIKit
 import ReSwift
 
 class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSubscriber {
-    var route: [Route] = [Route]()
+    var route: [RouteComponent] = [RouteComponent]()
     
     var childCoordinators: [Coordinator] = []
-    var selectedTab: Tab?
+    var tab: Tab = .articles
     
     var rootViewController: UIViewController {
         return self.tabBarController
@@ -46,20 +46,18 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
     }
     
     // MARK: - StoreSubscriber
-    
     func newState(state: MBAppState) {
-        if state.navigationState.selectedTab != selectedTab, let rootVC = rootViewController as? MBTabBarController {
-            selectedTab = state.navigationState.selectedTab
-            rootVC.select(tab: state.navigationState.selectedTab)
+        if self.tab != state.navigationState.selectedTab, let rootVC = rootViewController as? MBTabBarController {
+            self.tab = state.navigationState.selectedTab
+            rootVC.select(tab: self.tab)
         }
     }
     
     // MARK: - UITabBarControllerDelegate
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        
-        if let navController = viewController as? UINavigationController, let newTab = Tab.tab(forViewController: navController.viewControllers[0]) {
-            // Send off the Action
-            MBStore.sharedStore.dispatch(NavigationActionSwitchTab(tab: newTab))
+        if let tabViewControllers = tabBarController.viewControllers,
+           let newTab = Tab(rawValue: tabViewControllers.index(of: viewController) ?? -1) {
+                MBStore.sharedStore.dispatch(NavigationActionSwitchTab(tab: newTab))
         }
         
         return false

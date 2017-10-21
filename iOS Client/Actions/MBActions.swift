@@ -13,7 +13,7 @@ struct NavigationActionSwitchTab: Action {
 }
 
 struct PushRoute: Action {
-    var route: Route
+    var route: RouteComponent
 }
 
 struct LoadedArticles: Action {

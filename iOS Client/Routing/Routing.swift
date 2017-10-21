@@ -9,12 +9,11 @@
 import Foundation
 import ReSwift
 
-enum Route: Equatable {
-    
+enum RouteComponent: Equatable {
     case base
     case detail(item: Detailable)
     
-    static func == (lhs: Route, rhs: Route) -> Bool {
+    static func == (lhs: RouteComponent, rhs: RouteComponent) -> Bool {
         if case .base = lhs, case .base = rhs {
             return true
         } else if case .detail = lhs, case .detail = rhs {
@@ -25,54 +24,28 @@ enum Route: Equatable {
     }
  
     
-    static func viewController(forRoute route: Route, inTab tab: Tab) -> UIViewController? {
+    func viewController(forTab tab: Tab) -> UIViewController? {
+        var retVal: UIViewController?
+        
         switch tab {
         case .articles:
-            if case .base = route {
-                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as? MBArticlesViewController {
-                    return vc
-                }
-            } else if case .detail = route {
-                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleDetailController") as? MBArticleDetailViewController {
-                    return vc
-                }
+            if case .base = self {
+                retVal = MBArticlesViewController.instantiateFromStoryboard()
+            } else if case let .detail(detailItem) = self {
+                retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? MBArticle)
             }
         case .bookmarks:
-            if case .base = route {
-                if let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BookmarksController") as? MBBookmarksViewController {
-                    return vc
-                }
+            if case .base = self {
+                retVal = MBBookmarksViewController.instantiateFromStoryboard()
             }
         }
-        return nil
+        
+        return retVal
     }
 }
 
 enum Tab: Int {
-    case articles = 0
-    case bookmarks = 1
-    
-    static func tab(forViewController viewController: UIViewController) -> Tab? {
-        if viewController is MBArticlesViewController {
-            return .articles
-        } else if viewController is MBBookmarksViewController {
-            return .bookmarks
-        } else {
-            return nil
-        }
-    }
-    
-    static func tab(forCoordinator coordinator: Coordinator) -> Tab? {
-        if coordinator is ArticlesCoordinator {
-            return .articles
-        } else if coordinator is BookmarksCoordinator {
-            return .bookmarks
-        } else {
-            return nil
-        }
-    }
-    
-    
+    case articles, bookmarks
 }
 
 protocol Detailable {

@@ -11,9 +11,9 @@ import UIKit
 import ReSwift
 
 class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationControllerDelegate {
-    var route: [Route] = [.base]
-    
     var childCoordinators: [Coordinator] = []
+    var route: [RouteComponent] = [.base]
+    var tab: Tab = .articles
     
     var rootViewController: UIViewController {
         return self.navigationController

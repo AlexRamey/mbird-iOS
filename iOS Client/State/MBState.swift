@@ -18,31 +18,17 @@ protocol TabOneNavControllerState {
 }
 
 protocol NavigationState {
-    var routes: [Tab: [Route]] { get set }
+    var routes: [Tab: [RouteComponent]] { get set }
     var selectedTab: Tab { get set }
 }
 
 struct MBNavigationState: NavigationState {
-    var routes: [Tab: [Route]] = [.articles: [.base], .bookmarks: [.base]]
+    var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base]]
     var selectedTab: Tab = .articles
 }
 /**************************************/
 
 /********** Article State *************/
-/*
-protocol ArticleLoadState {
-    var isCachedDataOnDisk: Bool { get set }
-    var isLoading: Bool { get set }
-}
-
-protocol ArticleReadState {
-    var selectedArticle: String { get set }
-    var selectedIndex: Int { get set }
-}
-
-protocol ArticleState: ArticleLoadState, ArticleReadState {}
- */
-
 protocol ArticleState {
     var articles: Loaded<[MBArticle]> { get set }
     var selectedArticle: MBArticle? { get set }
@@ -74,7 +60,7 @@ struct MBAppState: AppState {
 /**************************************/
 
 /********* Loaded *************/
-enum Loaded<T>{
+enum Loaded<T> {
     case initial
     case loading
     case loaded(data: T)
