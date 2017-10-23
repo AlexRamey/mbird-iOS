@@ -38,6 +38,7 @@
 		D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC2D1F7B1B49007822CB /* MBActions.swift */; };
 		D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */; };
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
+		D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */ = {isa = PBXBuildFile; fileRef = D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,9 @@
 		D0DDEC2D1F7B1B49007822CB /* MBActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBActions.swift; sourceTree = "<group>"; };
 		D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBMiddleware.swift; sourceTree = "<group>"; };
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
+		D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = MB.css; path = "iOS Client/Style/MB.css"; sourceTree = SOURCE_ROOT; };
+		D0ED48E01F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff"; sourceTree = "<group>"; };
+		D0ED48E11F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff2"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +175,7 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
+				D0ED48E21F9D752600FEDCC9 /* Style */,
 				23FFB0221F85CBC4006A0AC8 /* Routing */,
 				D032F1991F87289D00E78333 /* Models */,
 				D032F1631F81695500E78333 /* MBClient.swift */,
@@ -260,6 +265,16 @@
 			path = BookmarksController;
 			sourceTree = "<group>";
 		};
+		D0ED48E21F9D752600FEDCC9 /* Style */ = {
+			isa = PBXGroup;
+			children = (
+				D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */,
+				D0ED48E11F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff2 */,
+				D0ED48E01F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff */,
+			);
+			path = Style;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -324,6 +339,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
 				D08F558C1F786DCD0071ED86 /* Main.storyboard in Resources */,

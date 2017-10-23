@@ -10,7 +10,7 @@ import UIKit
 import ReSwift
 import WebKit
 
-class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
+class MBArticleDetailViewController: UIViewController {
     var webView: WKWebView!
     var selectedArticle: MBArticle?
     
@@ -32,12 +32,23 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     func configureWebView() {
         let webConfiguration = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
-        webView.navigationDelegate = self
-        
         view = webView
         
         if let content = self.selectedArticle?.content {
-            webView.loadHTMLString(content, baseURL: nil)
+            print(content)
+            let cssHead: String = "<head>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"MB.css\">\n</head>\n"
+            
+            let title: String = self.selectedArticle?.title ?? "Untitled 👀"
+            let author: String = self.selectedArticle?.author?.name ?? "Mockingbird Staff"
+            let articleHeader = "<p class=\"title\">\(title)</p><p class=\"author\">By \(author)</p>"
+            let fullContent = cssHead + "<body>" + articleHeader + content + "</body>"
+            
+            // baseURL is used by the wkWebView to resolve relative links
+            // Here, we point it straight to our css file referred to in the css header
+            let baseURL = NSURL.fileURL(withPath: Bundle.main.path(forResource: "MB", ofType: "css")!)
+            
+            webView.loadHTMLString(fullContent, baseURL: baseURL)
+            
         }
     }
     
@@ -52,12 +63,5 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    // MARK: WKNavigationDelegate
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        let cssString = "body { font-size: xx-large; color: #000 }"
-        let jsString = "var style = document.createElement('style'); style.innerHTML = '\(cssString)'; document.head.appendChild(style);"
-        webView.evaluateJavaScript(jsString, completionHandler: nil)
     }
 }
