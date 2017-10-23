@@ -44,7 +44,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             print("Unable to get the app delegate!")
             return
         }
-        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        guard let managedContext = appDelegate.persistentContainer?.viewContext else {
+            print("Unable to get the managed object context!")
+            return
+        }
   
         
         let oneWeekAgoTimestamp = Date().timeIntervalSinceReferenceDate - MBConstants.SECONDS_IN_A_WEEK
@@ -109,9 +113,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     @objc func showTimestamps() {
         let lastOverallUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
         let lastBackgroundUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
+        let lastBackgroundAttempt = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
         
         let lastOverallUpdateDate = Date(timeIntervalSinceReferenceDate: lastOverallUpdate)
         let lastBackgroundUpdateDate = Date(timeIntervalSinceReferenceDate: lastBackgroundUpdate)
+        let lastBackgroundAttemptDate = Date(timeIntervalSinceReferenceDate: lastBackgroundAttempt)
         
         let dateFormatter = DateFormatter()
         if let timeZone = TimeZone(identifier: "America/New_York") {
@@ -120,7 +126,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         dateFormatter.locale = NSLocale.current
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         
-        let msg = "Last Update: \(dateFormatter.string(from: lastOverallUpdateDate))\nLast Background Refresh: \(dateFormatter.string(from: lastBackgroundUpdateDate))"
+        let msg = "Last Update: \(dateFormatter.string(from: lastOverallUpdateDate))\nLast Background Refresh: \(dateFormatter.string(from: lastBackgroundUpdateDate))\nLast Background Attempt: \(dateFormatter.string(from: lastBackgroundAttemptDate))"
         
         let ac = UIAlertController(title: "DEBUG", message: msg, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "👍", style: .default, handler: nil))
