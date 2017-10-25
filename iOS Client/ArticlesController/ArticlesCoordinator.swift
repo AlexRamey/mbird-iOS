@@ -20,7 +20,7 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     }
     
     private lazy var navigationController: UINavigationController = {
-       return UINavigationController()
+        return UINavigationController()
     }()
     
     // MARK: - Coordinator

@@ -17,11 +17,11 @@ extension MBArticle {
     // If the article already existed, then it updates its fields from the new json
     // values. If no article with the json's id value already existed, a new one is
     // created and inserted into the managedContext.
-    public class func deserialize(json: NSDictionary, intoContext managedContext: NSManagedObjectContext) -> Error? {
+    public class func deserialize(json: NSDictionary, intoContext managedContext: NSManagedObjectContext) throws -> Bool {
+        var isNewData: Bool = false
         
         guard let idArg = json.object(forKey: "id") as? Int32 else {
-            print("unable to cast json 'id' into an Int32")
-            return NSError()
+            throw(MBDeserializationError.contractMismatch(msg: "unable to cast json 'id' into an Int32"))
         }
         
         let predicate = NSPredicate(format: "articleID == %d", idArg)
@@ -32,20 +32,19 @@ extension MBArticle {
         do {
             let fetchedEntities = try managedContext.fetch(fetchRequest)
             resolvedArticle = fetchedEntities.first
-        } catch let error as NSError {
-            print("An error: '\(error)' occurred during the fetch request for a single article")
-            return error
+        } catch {
+            throw(MBDeserializationError.fetchError(msg: "error while fetching article with id: \(idArg)"))
         }
         
         if resolvedArticle == nil {
             print("new article!")
+            isNewData = true
             let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
             resolvedArticle = NSManagedObject(entity: entity, insertInto: managedContext) as? MBArticle
         }
         
         guard let article = resolvedArticle else {
-            print("ERROR: Unable to resolve article!")
-            return NSError()
+            throw(MBDeserializationError.contextInsertionError(msg: "unable to resolve article with id: \(idArg) into managed context"))
         }
         
         article.setValue(json.object(forKey: "id") as? Int32, forKey: "articleID")
@@ -70,8 +69,8 @@ extension MBArticle {
             do {
                 let fetchedEntities = try managedContext.fetch(fetchRequest)
                 article.author = fetchedEntities.first
-            } catch let error as NSError {
-                print("An error: '\(error)' occurred while linking an author to an article")
+            } catch {
+                throw(MBDeserializationError.fetchError(msg: "error while fetching article author with id: \(authorID)"))
             }
         }
         
@@ -86,13 +85,13 @@ extension MBArticle {
                     if let cat = fetchedEntities.first {
                         article.addToCategories(cat)
                     }
-                } catch let error as NSError {
-                    print("An error: '\(error)' occurred while linking a category to an article")
+                } catch {
+                    throw(MBDeserializationError.fetchError(msg: "error while fetching article category with id: \(categoryID)"))
                 }
             }
         }
         
-        return nil
+        return isNewData
     }
 }
 

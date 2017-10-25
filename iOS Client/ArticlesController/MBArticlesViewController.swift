@@ -8,6 +8,7 @@
 
 import UIKit
 import ReSwift
+import CoreData
 
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
     @IBOutlet weak var tableView: UITableView!
@@ -34,60 +35,51 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
-        
-        /******** START EXAMPLE ***********/
+        // Set up a bar button item to toggle debug info on background app refresh
+        let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(MBArticlesViewController.showTimestamps))
+        self.navigationItem.setRightBarButton(item, animated: false)
         
         // 1. the managed context has to be passed in (UIApplication should only be accessed from main thread)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             print("Unable to get the app delegate!")
             return
         }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        /*
-        // 2. Sync all the Data
-        MBStore().syncAllData(context: managedContext) { (err: Error?) in
-            if let syncErr = err {
-                print(syncErr)
+        
+        guard let managedContext = appDelegate.persistentContainer?.viewContext else {
+            print("Unable to get the managed object context!")
+            return
+        }
+  
+        
+        let oneWeekAgoTimestamp = Date().timeIntervalSinceReferenceDate - MBConstants.SECONDS_IN_A_WEEK
+        let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+        
+        if lastUpdateTimestamp > oneWeekAgoTimestamp {
+            let articles = MBStore().getArticles(managedContext: managedContext)
+            
+            if articles.count > 0 {
+                MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
                 return
             }
-            
-            print("Sync Success!")
-            
-            print("\nAUTHOR NAMES")
-            print(MBStore().getAuthors(managedContext: managedContext).map { $0.name })
-            print("\nAUTHOR IDS")
-            print(MBStore().getAuthors(managedContext: managedContext).map { $0.authorID })
-            
-            print("\nCATEGORIES")
-            print(MBStore().getCategories(managedContext: managedContext).map { $0.name })
-            
-            print("\nARTICLE TITLES")
-            print(MBStore().getArticles(managedContext: managedContext).map { $0.title })
-            print("\nARTICLE DATES")
-            print(MBStore().getArticles(managedContext: managedContext).map { $0.date })
-            print("\nARTICLE AUTHOR IDS")
-            print(MBStore().getArticles(managedContext: managedContext).map { $0.authorID })
-            print("\nARTICLE AUTHOR NAMES")
-            print(MBStore().getArticles(managedContext: managedContext).map { $0.author?.name })
-            print("\nARTICLE CATEGORY NAMES")
-            let lists = MBStore().getArticles(managedContext: managedContext).map { $0.categories?.allObjects }
-            for list in lists {
-                if let cats = list as? [MBCategory] {
-                    print(cats.map {$0.name})
-                } else {
-                    print("💩")
-                }
-            }
         }
-        /********* END EXAMPLE ************/
-        */
-        MBStore().syncAllData(context: managedContext) { (err: Error?) in
+        
+        downloadArticleData(managedContext: managedContext)
+    }
+    
+    private func downloadArticleData(managedContext: NSManagedObjectContext) {
+        MBStore().syncAllData(context: managedContext) { (isNewData: Bool, err: Error?) in
             if let syncErr = err {
                 print(syncErr)
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
                 return
             }
             
+            // TODO: Run Data Cleanup Task
+            // Update timestamp
+            let timestamp: Double = Date().timeIntervalSinceReferenceDate
+            UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+            
+            print("IS NEW DATA? \(isNewData)")
             let loadedArticles = MBStore().getArticles(managedContext: managedContext)
             DispatchQueue.main.async {
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
@@ -116,11 +108,34 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    // MARK: - showTimestamps() is used for debug purposes
+    @objc func showTimestamps() {
+        let lastOverallUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+        let lastBackgroundUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
+        let lastBackgroundAttempt = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
+        
+        let lastOverallUpdateDate = Date(timeIntervalSinceReferenceDate: lastOverallUpdate)
+        let lastBackgroundUpdateDate = Date(timeIntervalSinceReferenceDate: lastBackgroundUpdate)
+        let lastBackgroundAttemptDate = Date(timeIntervalSinceReferenceDate: lastBackgroundAttempt)
+        
+        let dateFormatter = DateFormatter()
+        if let timeZone = TimeZone(identifier: "America/New_York") {
+            dateFormatter.timeZone = timeZone
+        }
+        dateFormatter.locale = NSLocale.current
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        
+        let msg = "Last Update: \(dateFormatter.string(from: lastOverallUpdateDate))\nLast Background Refresh: \(dateFormatter.string(from: lastBackgroundUpdateDate))\nLast Background Attempt: \(dateFormatter.string(from: lastBackgroundAttemptDate))"
+        
+        let ac = UIAlertController(title: "DEBUG", message: msg, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title: "👍", style: .default, handler: nil))
+        self.present(ac, animated: true, completion: nil)
+    }
 }
 
 // MARK - UITableViewDataSource
 extension MBArticlesViewController {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
