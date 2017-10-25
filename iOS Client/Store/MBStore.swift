@@ -48,23 +48,28 @@ class MBStore: NSObject {
     }
     
     /***** Download Data from Network *****/
-    func syncAllData(context: NSManagedObjectContext, completion: @escaping (Error?) -> Void) {
-        downloadAuthors(context: context) { (authorsErr) in
+    func syncAllData(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
+        var isNewData: Bool = false
+        
+        downloadAuthors(context: context) { (isNewAuthorData, authorsErr) in
+            isNewData = isNewAuthorData
             if authorsErr != nil {
                 print("There was an error downloading author data!")
-                completion(authorsErr)
+                completion(isNewData, authorsErr)
             } else {
-                self.downloadCategories(context: context, completion: { (catErr) in
+                self.downloadCategories(context: context, completion: { (isNewCategoryData, catErr) in
+                    isNewData = isNewAuthorData || isNewCategoryData
                     if catErr != nil {
                         print("There was an error downloading category data!")
-                        completion(catErr)
+                        completion(isNewData, catErr)
                     } else {
-                        self.downloadArticles(context: context, completion: { (articleErr) in
+                        self.downloadArticles(context: context, completion: { (isNewArticleData, articleErr) in
+                            isNewData = isNewAuthorData || isNewCategoryData || isNewArticleData
                             if articleErr != nil {
                                 print("There was an error downloading article data!")
-                                completion(articleErr)
+                                completion(isNewData, articleErr)
                             } else {
-                                completion(nil)
+                                completion(isNewData, nil)
                             }
                         })
                     }
@@ -73,52 +78,65 @@ class MBStore: NSObject {
         }
     }
     
-    private func downloadAuthors(context: NSManagedObjectContext, completion: @escaping (Error?) -> Void) {
+    private func downloadAuthors(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
         performDownload(clientFunction: client.getAuthorsWithCompletion, managedContext: context, deserializeFunc: MBAuthor.deserialize, completion: completion)
     }
     
-    private func downloadCategories(context: NSManagedObjectContext, completion: @escaping (Error?) -> Void) {
+    private func downloadCategories(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
         performDownload(clientFunction: client.getCategoriesWithCompletion, managedContext: context, deserializeFunc: MBCategory.deserialize, completion: completion)
     }
     
-    private func downloadArticles(context: NSManagedObjectContext, completion: @escaping (Error?) -> Void) {
+    private func downloadArticles(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
         performDownload(clientFunction: client.getArticlesWithCompletion, managedContext: context, deserializeFunc: MBArticle.deserialize, completion: completion)
     }
     
     // An internal helper function to perform a download
     private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> (),
                                  managedContext: NSManagedObjectContext,
-                                 deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) -> Error?,
-                                 completion: @escaping (Error?) -> Void) {
+                                 deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool,
+                                 completion: @escaping (Bool, Error?) -> Void) {
         
+        var isNewData: Bool = false
         clientFunction { (data: [Data], err: Error?) in
             if let clientErr = err {
-                completion(clientErr)
+                completion(false, clientErr)
                 return
             }
             
             for jsonData in data {
-                self.downloadModelsHandler(managedContext: managedContext, data: jsonData, deserializeFunc: deserializeFunc)
+                do {
+                    if try self.downloadModelsHandler(managedContext: managedContext, data: jsonData, deserializeFunc: deserializeFunc) {
+                        isNewData = true
+                    }
+                } catch {
+                    completion(isNewData, error)
+                }
             }
             
-            completion(nil)
+            completion(isNewData, nil)
         }
         
     }
     
     // An internal helper that returns a handler which saves the json array as a group of core data objects
-    private func downloadModelsHandler(managedContext: NSManagedObjectContext, data: Data, deserializeFunc: (NSDictionary, NSManagedObjectContext) -> Error? ) {
+    private func downloadModelsHandler(managedContext: NSManagedObjectContext, data: Data, deserializeFunc: (NSDictionary, NSManagedObjectContext) throws -> Bool) throws -> Bool {
+        
         var json : Any
-        do {
-            json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-            if let arr = json as? [NSDictionary] {
-                _ = arr.map({(json: NSDictionary) -> Error? in
-                    return deserializeFunc(json, managedContext)
-                })
-                try managedContext.save()
-            }
-        } catch {
-            print(error)
+        var isNewData: Bool = false
+
+        // deserialize data into the managed context and save it
+        json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        if let arr = json as? [NSDictionary] {
+            
+            try arr.forEach({ (json: NSDictionary) in
+                if try deserializeFunc(json, managedContext) {
+                    isNewData = true
+                }
+            })
+            
+            try managedContext.save()
         }
+        
+        return isNewData
     }
 }
