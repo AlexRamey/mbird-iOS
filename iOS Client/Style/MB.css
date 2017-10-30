@@ -1,0 +1,42 @@
+body
+{
+    font-family: 'SinaNovaReg';
+    font-size: 60px;
+    font-weight: normal;
+    color: #474747;
+    background-color: #F7F7F7;
+}
+
+@font-face {
+    font-family: 'SinaNovaReg';
+    src: url('SinaNovaReg-webfont.woff2') format('woff2'),
+    url('SinaNovaReg-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+p.title {
+    margin: 0px;
+    font-weight: 200;
+}
+
+p.author {
+    margin: 0px;
+    font-style: italic;
+}
+
+img.alignleft {
+    float: left;
+    margin: 12px;
+}
+
+img.alignright {
+    float: right;
+    margin: 12px;
+}
+
+img.aligncenter {
+    display: block;
+    margin: auto;
+    width: 80%;
+}

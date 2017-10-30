@@ -10,30 +10,46 @@ import UIKit
 import ReSwift
 import WebKit
 
-class MBArticleDetailViewController: UIViewController, StoreSubscriber, WKUIDelegate {
-
+class MBArticleDetailViewController: UIViewController {
     var webView: WKWebView!
-    var article: MBArticle?
+    var selectedArticle: MBArticle?
+    
+    static func instantiateFromStoryboard(article: MBArticle?) -> MBArticleDetailViewController {
+        // swiftlint:disable force_cast
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleDetailController") as! MBArticleDetailViewController
+        // swiftlint:enable force_cast
+        
+        vc.selectedArticle = article
+        return vc
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureWebView()
         configureBackButton()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        MBStore.sharedStore.subscribe(self)
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
-    }
-    
     func configureWebView() {
         let webConfiguration = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
-        webView.uiDelegate = self
         view = webView
+        
+        if let content = self.selectedArticle?.content {
+            print(content)
+            let cssHead: String = "<head>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"MB.css\">\n</head>\n"
+            
+            let title: String = self.selectedArticle?.title ?? "Untitled 👀"
+            let author: String = self.selectedArticle?.author?.name ?? "Mockingbird Staff"
+            let articleHeader = "<p class=\"title\">\(title)</p><p class=\"author\">By \(author)</p>"
+            let fullContent = cssHead + "<body>" + articleHeader + content + "</body>"
+            
+            // baseURL is used by the wkWebView to resolve relative links
+            // Here, we point it straight to our css file referred to in the css header
+            let baseURL = NSURL.fileURL(withPath: Bundle.main.path(forResource: "MB", ofType: "css")!)
+            
+            webView.loadHTMLString(fullContent, baseURL: baseURL)
+            
+        }
     }
     
     func configureBackButton() {
@@ -44,29 +60,8 @@ class MBArticleDetailViewController: UIViewController, StoreSubscriber, WKUIDele
         MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
     
-    func newState(state: MBAppState) {
-        if state.articleState.selectedArticle != article {
-            article = state.articleState.selectedArticle
-            if article?.content != nil{
-                let contentString = article?.content
-                webView.loadHTMLString(contentString!, baseURL: nil)
-            }
-        }
-    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

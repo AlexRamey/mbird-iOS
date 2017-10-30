@@ -134,7 +134,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 }
 
-// MARK - UITableViewDataSource
+// MARK: - UITableViewDataSource
 extension MBArticlesViewController {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
@@ -146,9 +146,7 @@ extension MBArticlesViewController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let article = articles[indexPath.row]
-        // swiftlint:disable force_cast
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") as! UITableViewCell
-        // swiftlint:enable force_cast
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") ?? UITableViewCell()
         cell.textLabel?.text = article.title
         return cell
     }

@@ -12,7 +12,8 @@ import ReSwift
 
 class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber {
     var childCoordinators: [Coordinator] = []
-    var route: [Route] = [.base]
+    var route: [RouteComponent] = [.base]
+    var tab: Tab = .bookmarks
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -31,7 +32,7 @@ class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber {
     
     // MARK: - StoreSubscriber
     
-    func newState(state: MBAppState) {
+    func newState(state: MBAppState){
         guard state.navigationState.selectedTab == .bookmarks, let newRoute = state.navigationState.routes[.bookmarks] else{
             return
         }
