@@ -35,6 +35,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
+        tableView.register(UINib(nibName: "ArticleTableViewCell", bundle: nil), forCellReuseIdentifier: "ArticleTableViewCell")
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 140
+        
+        
         // Set up a bar button item to toggle debug info on background app refresh
         let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(MBArticlesViewController.showTimestamps))
         self.navigationItem.setRightBarButton(item, animated: false)
@@ -146,9 +151,13 @@ extension MBArticlesViewController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let article = articles[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") ?? UITableViewCell()
-        cell.textLabel?.text = article.title
-        return cell
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") as? ArticleTableViewCell {
+            cell.delegate = self
+            cell.configure(title: article.title, author: article.author?.name, indexPath: indexPath)
+            return cell
+        } else {
+            return UITableViewCell()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -156,5 +165,17 @@ extension MBArticlesViewController {
         let action = SelectedArticle(article: selectedArticle)
         MBStore.sharedStore.dispatch(action)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+protocol HTMLCellDelegate {
+    func cellDoneRenderingHTML(cell: ArticleTableViewCell)
+}
+
+extension MBArticlesViewController: HTMLCellDelegate {
+    func cellDoneRenderingHTML(cell: ArticleTableViewCell) {
+        if let ip = cell.indexPath {
+            self.tableView.reloadRows(at: [ip], with: .automatic)
+        }
     }
 }

@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		2359296D1F904E8D00FE4839 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2359296C1F904E8D00FE4839 /* WebKit.framework */; };
 		2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */; };
+		23864DE21FA690D00061F212 /* ArticleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE01FA690D00061F212 /* ArticleTableViewCell.swift */; };
+		23864DE31FA690D00061F212 /* ArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */; };
+		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
 		23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FFB0231F85CC0E006A0AC8 /* Routing.swift */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
 		D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */; };
@@ -49,6 +52,9 @@
 		2251FCAEBD05DD222F6C84FD /* Pods-iOS Client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client.debug.xcconfig"; sourceTree = "<group>"; };
 		2359296C1F904E8D00FE4839 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticleDetailViewController.swift; sourceTree = "<group>"; };
+		23864DE01FA690D00061F212 /* ArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTableViewCell.swift; sourceTree = "<group>"; };
+		23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleTableViewCell.xib; sourceTree = "<group>"; };
+		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		23FFB0231F85CC0E006A0AC8 /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
 		D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppCoordinator.swift; path = "iOS Client/TabController/AppCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
@@ -99,6 +105,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		23864DE41FA6A0930061F212 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				23864DE51FA6A1C10061F212 /* String.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		23FFB0221F85CBC4006A0AC8 /* Routing */ = {
 			isa = PBXGroup;
 			children = (
@@ -196,6 +210,7 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
+				23864DE41FA6A0930061F212 /* Utilities */,
 				D0DDEC301F7C7B1F007822CB /* Actions */,
 				D0DDEC371F7C7F52007822CB /* AppDelegate */,
 				D0DDEC391F7C7F8B007822CB /* ArticlesController */,
@@ -210,7 +225,7 @@
 				23FFB0221F85CBC4006A0AC8 /* Routing */,
 				D0DDEC321F7C7B55007822CB /* State */,
 				D0DDEC361F7C7F3C007822CB /* Store */,
-        D0ED48E21F9D752600FEDCC9 /* Style */,
+				D0ED48E21F9D752600FEDCC9 /* Style */,
 				D02D36391F7C9FBF00D4E674 /* TabController */,
 				D08F55901F786DCD0071ED86 /* Assets.xcassets */,
 				D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */,
@@ -282,6 +297,8 @@
 				D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */,
 				D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */,
 				2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */,
+				23864DE01FA690D00061F212 /* ArticleTableViewCell.swift */,
+				23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */,
 			);
 			path = ArticlesController;
 			sourceTree = "<group>";
@@ -375,6 +392,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23864DE31FA690D00061F212 /* ArticleTableViewCell.xib in Resources */,
 				D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
@@ -468,11 +486,13 @@
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
+				23864DE61FA6A1C10061F212 /* String.swift in Sources */,
 				D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
 				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
+				23864DE21FA690D00061F212 /* ArticleTableViewCell.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
 				D032F1A71F872B8300E78333 /* MBAuthor+Custom.swift in Sources */,
