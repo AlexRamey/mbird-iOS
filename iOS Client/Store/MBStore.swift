@@ -81,7 +81,7 @@ class MBStore: NSObject {
     
     //New function for devotions until we figure out if this will have to go over network or can be stored locally
     func syncDevotions(completion: @escaping ([MBDevotion]?, Error?) -> Void) {
-        loadDevotions() { (devotions, devotionError) in
+        loadDevotions { (devotions, devotionError) in
             completion(devotions, devotionError)
         }
     }
@@ -115,22 +115,22 @@ class MBStore: NSObject {
                             print("Could not save devotions data to disk")
                         }
                     }
-                    self.parse(data, MBDevotion.self, completion)
+                    self.parse(data, [MBDevotion].self, completion)
                 } else {
                     completion(nil, error)
                 }
             }
         } else if let data = FileManager.default.contents(atPath: path) {
-            parse(data, MBDevotion.self, completion)
+            parse(data, [MBDevotion].self, completion)
         } else {
             completion(nil, MBDeserializationError.fetchError(msg: "Could not fetch devotions"))
         }
     }
     
-    private func parse<T: Codable>(_ data: Data, _ resource: T.Type, _ completion: @escaping ([T]?, Error?) -> Void) {
+    private func parse<T: Codable>(_ data: Data, _ resource: T.Type, _ completion: @escaping (T?, Error?) -> Void) {
         let decoder = JSONDecoder()
         do {
-            let models = try decoder.decode([T].self, from: data)
+            let models = try decoder.decode(T.self, from: data)
             return completion(models, nil)
         } catch {
             completion(nil, MBDeserializationError.fetchError(msg: "Could not read devotions from documents"))
