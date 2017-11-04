@@ -22,20 +22,20 @@ class MBStore: NSObject {
         super.init()
     }
     
-    /***** Read Data from Core Data *****/
-    func getAuthors(managedContext: NSManagedObjectContext) -> [MBAuthor] {
+    /***** Read Data from Core Data (Only Invoke These From The Main Thread) *****/
+    func getAuthors(persistentContainer: NSPersistentContainer) -> [MBAuthor] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
-        return performFetch(managedContext: managedContext, fetchRequest: fetchRequest) as? [MBAuthor] ?? []
+        return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBAuthor] ?? []
     }
     
-    func getCategories(managedContext: NSManagedObjectContext) -> [MBCategory] {
+    func getCategories(persistentContainer: NSPersistentContainer) -> [MBCategory] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
-        return performFetch(managedContext: managedContext, fetchRequest: fetchRequest) as? [MBCategory] ?? []
+        return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBCategory] ?? []
     }
     
-    func getArticles(managedContext: NSManagedObjectContext) -> [MBArticle] {
+    func getArticles(persistentContainer: NSPersistentContainer) -> [MBArticle] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
-        return performFetch(managedContext: managedContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
+        return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
     private func performFetch(managedContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<NSManagedObject>) -> [NSManagedObject] {
@@ -47,27 +47,27 @@ class MBStore: NSObject {
         }
     }
     
-    /***** Download Data from Network *****/
-    func syncAllData(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
+    /***** Download Data from Network (MAY BE INVOKED FROM ANY THREAD) *****/
+    func syncAllData(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
         var isNewData: Bool = false
         
-        downloadAuthors(context: context) { (isNewAuthorData, authorsErr) in
-            isNewData = isNewAuthorData
-            if authorsErr != nil {
-                print("There was an error downloading author data!")
-                completion(isNewData, authorsErr)
+        downloadAuthors(persistentContainer: persistentContainer) { (isNewAuthorData, authorsErr) in
+            isNewData = isNewAuthorData ?? false
+            if let unwrappedAuthorsErr = authorsErr {
+                print("There was an error downloading author data! \(unwrappedAuthorsErr)")
+                completion(nil, authorsErr)
             } else {
-                self.downloadCategories(context: context, completion: { (isNewCategoryData, catErr) in
-                    isNewData = isNewAuthorData || isNewCategoryData
-                    if catErr != nil {
-                        print("There was an error downloading category data!")
-                        completion(isNewData, catErr)
+                self.downloadCategories(persistentContainer: persistentContainer, completion: { (isNewCategoryData, catErr) in
+                    isNewData = isNewAuthorData ?? false || isNewCategoryData ?? false
+                    if let unwrappedCatErr = catErr {
+                        print("There was an error downloading category data! \(unwrappedCatErr)")
+                        completion(nil, catErr)
                     } else {
-                        self.downloadArticles(context: context, completion: { (isNewArticleData, articleErr) in
-                            isNewData = isNewAuthorData || isNewCategoryData || isNewArticleData
-                            if articleErr != nil {
-                                print("There was an error downloading article data!")
-                                completion(isNewData, articleErr)
+                        self.downloadArticles(persistentContainer: persistentContainer, completion: { (isNewArticleData, articleErr) in
+                            isNewData = isNewAuthorData ?? false || isNewCategoryData ?? false || isNewArticleData ?? false
+                            if let unwrappedArticleErr = articleErr {
+                                print("There was an error downloading article data! \(unwrappedArticleErr)")
+                                completion(nil, articleErr)
                             } else {
                                 completion(isNewData, nil)
                             }
@@ -78,48 +78,79 @@ class MBStore: NSObject {
         }
     }
     
-    private func downloadAuthors(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
-        performDownload(clientFunction: client.getAuthorsWithCompletion, managedContext: context, deserializeFunc: MBAuthor.deserialize, completion: completion)
+    private func downloadAuthors(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
+        performDownload(clientFunction: client.getAuthorsWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBAuthor.deserialize, completion: completion)
     }
     
-    private func downloadCategories(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
-        performDownload(clientFunction: client.getCategoriesWithCompletion, managedContext: context, deserializeFunc: MBCategory.deserialize, completion: completion)
+    private func downloadCategories(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
+        performDownload(clientFunction: client.getCategoriesWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBCategory.deserialize, completion: completion)
     }
     
-    private func downloadArticles(context: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
-        performDownload(clientFunction: client.getArticlesWithCompletion, managedContext: context, deserializeFunc: MBArticle.deserialize, completion: completion)
+    private func downloadArticles(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
+        performDownload(clientFunction: client.getArticlesWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBArticle.deserialize, completion: completion)
     }
     
     // An internal helper function to perform a download
     private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> (),
-                                 managedContext: NSManagedObjectContext,
+                                 persistentContainer: NSPersistentContainer,
                                  deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool,
-                                 completion: @escaping (Bool, Error?) -> Void) {
+                                 completion: @escaping (Bool?, Error?) -> Void) {
         
-        var isNewData: Bool = false
+        var newDataFlag: Bool = false
         clientFunction { (data: [Data], err: Error?) in
             if let clientErr = err {
                 completion(false, clientErr)
                 return
             }
             
+            // This serialQueue enables us to be certain only to invoke the completion handler once
+            // It also guards us from race conditions when writing to the numHandled variable
+            let serialQueue = DispatchQueue(label: "syncpoint")
+            var numHandled = 0
+            var hasReturned = false
+            
+            // data is an array of Data, where each datum is a serialized array
+            // thus, think of data as an array of arrays of objects
             for jsonData in data {
                 do {
-                    if try self.downloadModelsHandler(managedContext: managedContext, data: jsonData, deserializeFunc: deserializeFunc) {
-                        isNewData = true
-                    }
+                    try self.downloadModelsHandler(persistentContainer: persistentContainer,
+                                                   data: jsonData,
+                                                   deserializeFunc: deserializeFunc,
+                                                   completion: { (isNewData: Bool?, err: Error?) in
+                        serialQueue.async {
+                            if !hasReturned {
+                                if err != nil {
+                                    completion(nil, err)
+                                    hasReturned = true
+                                } else {
+                                    if let isNewDataUnwrapped = isNewData, isNewDataUnwrapped == true {
+                                        newDataFlag = true
+                                    }
+                                    numHandled += 1
+                                    if numHandled == data.count {
+                                        completion(newDataFlag, nil)
+                                    }
+                                }
+                            }
+                        }
+                    })
                 } catch {
-                    completion(isNewData, error)
+                    serialQueue.async {
+                        if !hasReturned {
+                           completion(nil, error)
+                           hasReturned = true
+                        }
+                    }
                 }
             }
-            
-            completion(isNewData, nil)
         }
-        
     }
     
     // An internal helper that returns a handler which saves the json array as a group of core data objects
-    private func downloadModelsHandler(managedContext: NSManagedObjectContext, data: Data, deserializeFunc: (NSDictionary, NSManagedObjectContext) throws -> Bool) throws -> Bool {
+    private func downloadModelsHandler(persistentContainer: NSPersistentContainer,
+                                       data: Data,
+                                       deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool,
+                                       completion: @escaping (Bool?, Error?) -> Void) throws {
         
         var json : Any
         var isNewData: Bool = false
@@ -127,16 +158,24 @@ class MBStore: NSObject {
         // deserialize data into the managed context and save it
         json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
         if let arr = json as? [NSDictionary] {
-            
-            try arr.forEach({ (json: NSDictionary) in
-                if try deserializeFunc(json, managedContext) {
-                    isNewData = true
+            persistentContainer.performBackgroundTask({ (managedContext) in
+                do {
+                    managedContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+                    try arr.forEach({ (json: NSDictionary) in
+                        if try deserializeFunc(json, managedContext) {
+                            isNewData = true
+                        }
+                    })
+                    
+                    try managedContext.save()
+                    
+                    completion(isNewData, nil)
+                } catch {
+                    completion(nil, error)
                 }
             })
-            
-            try managedContext.save()
+        } else {
+            throw MBDeserializationError.contractMismatch(msg: "unable to cast json object into an array of NSDictionary objects")
         }
-        
-        return isNewData
     }
 }
