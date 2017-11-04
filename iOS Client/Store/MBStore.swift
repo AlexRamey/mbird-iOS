@@ -50,15 +50,12 @@ class MBStore: NSObject {
     /***** Download Data from Network (MAY BE INVOKED FROM ANY THREAD) *****/
     func syncAllData(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
         var isNewData: Bool = false
-        
         downloadAuthors(persistentContainer: persistentContainer) { (isNewAuthorData, authorsErr) in
-            isNewData = isNewAuthorData ?? false
             if let unwrappedAuthorsErr = authorsErr {
                 print("There was an error downloading author data! \(unwrappedAuthorsErr)")
                 completion(nil, authorsErr)
             } else {
                 self.downloadCategories(persistentContainer: persistentContainer, completion: { (isNewCategoryData, catErr) in
-                    isNewData = isNewAuthorData ?? false || isNewCategoryData ?? false
                     if let unwrappedCatErr = catErr {
                         print("There was an error downloading category data! \(unwrappedCatErr)")
                         completion(nil, catErr)
