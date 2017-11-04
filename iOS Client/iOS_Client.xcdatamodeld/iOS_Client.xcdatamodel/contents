@@ -5,6 +5,7 @@
         <attribute name="authorID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="imageID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Author" inverseName="articles" inverseEntity="Author" syncable="YES"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Category" inverseName="articles" inverseEntity="Category" syncable="YES"/>
@@ -22,7 +23,7 @@
         <relationship name="articles" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="Article" inverseName="categories" inverseEntity="Article" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Article" positionX="-63" positionY="-18" width="128" height="148"/>
+        <element name="Article" positionX="-63" positionY="-18" width="128" height="165"/>
         <element name="Author" positionX="-36" positionY="45" width="128" height="103"/>
         <element name="Category" positionX="-54" positionY="18" width="128" height="103"/>
     </elements>

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class MBClient: NSObject {
     private let session: URLSession
@@ -16,6 +17,7 @@ class MBClient: NSObject {
     private let articlesEndpoint = "/posts"
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
+    private let mediaEndpoint = "/media"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -106,6 +108,62 @@ class MBClient: NSObject {
         }.resume()
     }
     
+    func getImageData(imageID: Int, completion: @escaping (UIImage?) -> Void) {
+        let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
+        print("firing get media request: \(imageID)")
+        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+            guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
+                completion(nil)
+                return
+            }
+            
+            // Process Data
+            guard let mediaData = data else {
+                completion(nil)
+                return
+            }
+            
+            var json : Any
+            do {
+                json = try JSONSerialization.jsonObject(with: mediaData, options: .allowFragments)
+            } catch let error as NSError {
+                print("Could not get media object. \(error), \(error.userInfo)")
+                completion(nil)
+                return
+            }
+            
+            if let arr = json as? NSDictionary, let imageLink = arr.value(forKeyPath: "media_details.sizes.thumbnail.source_url") as? String {
+                guard let imageUrl = URL(string: imageLink) else {
+                    completion(nil)
+                    return
+                }
+                print("firing get image request: \(imageID)")
+                self.session.dataTask(with: imageUrl) { (data: Data?, resp: URLResponse?, err: Error?) in
+                    guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
+                        completion(nil)
+                        return
+                    }
+                    
+                    // Process Data
+                    guard let imageData = data, let image = UIImage(data: imageData) else {
+                        completion(nil)
+                        return
+                    }
+                    
+                    completion(image)
+                }.resume()
+            } else {
+                completion(nil)
+            }
+            
+        }.resume()
+    }
+    
     private func pagingHandler(url: String, data: Data?, resp: URLResponse?, err: Error?, completion: @escaping ([Data], Error?) -> Void) {
         
         if let networkErr = err {
@@ -170,12 +228,29 @@ class MBClient: NSObject {
             }
         }
         
-        
         if retVal.count != results.count {
             completion([], NetworkRequestError.failedPagingRequest(msg: "a request for paged data failed"))
             return
         }
         
         completion(retVal, nil)
+    }
+    
+    private func wasDataTaskSuccessful(resp: URLResponse?, err: Error?) -> Bool {
+        // Connectivity errors
+        if err != nil {
+            return false
+        }
+        
+        // HTTP Errors
+        if let httpResponse = resp as? HTTPURLResponse {
+            let statusCode = httpResponse.statusCode
+            
+            if statusCode < 200 || statusCode > 299 {
+                return false
+            }
+        }
+        
+        return true
     }
 }
