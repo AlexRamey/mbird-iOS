@@ -10,13 +10,12 @@ import UIKit
 
 class ArticleTableViewCell: UITableViewCell {
 
+    
+    @IBOutlet weak var coverImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var authorLabel: UILabel!
     private var isInitialized: Bool = false
-    var titleAttrString: NSAttributedString?
-    var authorAttrString: NSAttributedString?
     var indexPath: IndexPath?
-    var delegate: HTMLCellDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -28,22 +27,19 @@ class ArticleTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: String?, author: String?, indexPath: IndexPath ) {
+    func configure(title: NSAttributedString?, author: NSAttributedString?, imageId: Int32?, client: MBClient, indexPath: IndexPath ) {
         self.indexPath = indexPath
-        if isInitialized {
-            titleLabel.attributedText = self.titleAttrString
-            authorLabel.attributedText = self.authorAttrString
-        } else {
-            DispatchQueue.global(qos: .background).async {
-                self.titleAttrString = title?.convertHtml()
-                self.authorAttrString = author?.convertHtml()
-                DispatchQueue.main.async {
-                    self.isInitialized = true
-                    self.delegate?.cellDoneRenderingHTML(cell: self)
+        if let id = imageId {
+            client.getImageData(imageID: Int(id)) { imageView in
+                if imageView != nil {
+                    DispatchQueue.main.async {
+                        self.coverImage.image = imageView
+                    }
                 }
             }
         }
-
+        titleLabel.attributedText = title
+        authorLabel.attributedText = author
     }
     
 }

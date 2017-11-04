@@ -13,6 +13,9 @@ import CoreData
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
     @IBOutlet weak var tableView: UITableView!
     var articles: [MBArticle] = []
+    var attributedTitles: [NSAttributedString] = []
+    var attributedAuthors: [NSAttributedString] = []
+    let client = MBClient()
     
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -104,6 +107,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             if data.count != articles.count {
                 print("New Data for table view")
                 articles = data
+                attributedTitles = articles.flatMap{ $0.title?.convertHtml() }
+                attributedAuthors = articles.flatMap{ $0.author?.name?.convertHtml() }
                 tableView.reloadData()
             }
         }
@@ -153,7 +158,7 @@ extension MBArticlesViewController {
         let article = articles[indexPath.row]
         if let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") as? ArticleTableViewCell {
             cell.delegate = self
-            cell.configure(title: article.title, author: article.author?.name, indexPath: indexPath)
+            cell.configure(title: attributedTitles[indexPath.row], author: attributedAuthors[indexPath.row], imageId: article.imageID, client: client, indexPath: indexPath)
             return cell
         } else {
             return UITableViewCell()
@@ -168,14 +173,3 @@ extension MBArticlesViewController {
     }
 }
 
-protocol HTMLCellDelegate {
-    func cellDoneRenderingHTML(cell: ArticleTableViewCell)
-}
-
-extension MBArticlesViewController: HTMLCellDelegate {
-    func cellDoneRenderingHTML(cell: ArticleTableViewCell) {
-        if let ip = cell.indexPath {
-            self.tableView.reloadRows(at: [ip], with: .automatic)
-        }
-    }
-}
