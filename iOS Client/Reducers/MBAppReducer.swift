@@ -11,7 +11,8 @@ import ReSwift
 func appReducer(action: Action, state: MBAppState?) -> MBAppState {
     return MBAppState(
         navigationState: navigationReducer(action: action, state: state?.navigationState),
-        articleState: articleReducer(action: action, state: state?.articleState)
+        articleState: articleReducer(action: action, state: state?.articleState),
+        devotionState: devotionReducer(action: action, state: state?.devotionState)
     )
 }
 
@@ -48,5 +49,16 @@ func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
         break
     }
     
+    return nextState
+}
+
+func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
+    var nextState = state ?? MBDevotionState()
+    switch action {
+    case let action as LoadedDevotions:
+        nextState.devotions = action.devotions
+    default:
+        break
+    }
     return nextState
 }
