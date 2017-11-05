@@ -74,8 +74,9 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             dstURL.absoluteString.range(of: "youtube.com/embed") == nil,
             dstURL.absoluteString.range(of: "embed.vevo.com") == nil {
             MBStore.sharedStore.dispatch(SelectedArticleLink(url: dstURL))
+            decisionHandler(.cancel) // we're handling it manually
+        } else {
+            decisionHandler(.allow)
         }
-        
-        decisionHandler(.allow)
     }
 }
