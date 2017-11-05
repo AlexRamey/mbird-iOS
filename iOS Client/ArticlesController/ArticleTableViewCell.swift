@@ -11,10 +11,10 @@ import UIKit
 class ArticleTableViewCell: UITableViewCell {
 
     
+    @IBOutlet weak var snippetLabel: UILabel!
     @IBOutlet weak var coverImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var authorLabel: UILabel!
-    private var isInitialized: Bool = false
     var indexPath: IndexPath?
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,7 +27,7 @@ class ArticleTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: NSAttributedString?, author: NSAttributedString?, imageId: Int32?, client: MBClient, indexPath: IndexPath ) {
+    func configure(title: NSAttributedString?, author: NSAttributedString?, snippet: String?, imageId: Int32?, client: MBClient, indexPath: IndexPath ) {
         self.indexPath = indexPath
         if let id = imageId {
             client.getImageData(imageID: Int(id)) { imageView in
@@ -39,7 +39,11 @@ class ArticleTableViewCell: UITableViewCell {
             }
         }
         titleLabel.attributedText = title
+        titleLabel.font = UIFont.systemFont(ofSize: 18)
+        titleLabel.textColor = UIColor.ArticleTitle
         authorLabel.attributedText = author
+        authorLabel.font = UIFont.boldSystemFont(ofSize: 15)
+        snippetLabel.text = snippet
     }
     
 }

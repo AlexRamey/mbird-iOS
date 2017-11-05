@@ -157,8 +157,9 @@ extension MBArticlesViewController {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let article = articles[indexPath.row]
         if let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") as? ArticleTableViewCell {
-            cell.delegate = self
-            cell.configure(title: attributedTitles[indexPath.row], author: attributedAuthors[indexPath.row], imageId: article.imageID, client: client, indexPath: indexPath)
+            let snippetEndIndex = article.content?.index(article.content!.startIndex, offsetBy: 200)
+            let snippet = String(article.content!.prefix(through: snippetEndIndex!))
+            cell.configure(title: attributedTitles[indexPath.row], author: attributedAuthors[indexPath.row], snippet: snippet, imageId: article.imageID, client: client, indexPath: indexPath)
             return cell
         } else {
             return UITableViewCell()
