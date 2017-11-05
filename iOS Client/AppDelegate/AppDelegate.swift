@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.appCoordinator = AppCoordinator(window: self.window!)
         self.appCoordinator.start()
+        application.setMinimumBackgroundFetchInterval(MBConstants.SECONDS_IN_A_DAY)
         return true
     }
 
