@@ -71,7 +71,8 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         
         if let dstURL = navigationAction.request.url,
             dstURL.absoluteString.range(of: "http") != nil,
-            dstURL.absoluteString.range(of: "youtube.com/embed") == nil {
+            dstURL.absoluteString.range(of: "youtube.com/embed") == nil,
+            dstURL.absoluteString.range(of: "embed.vevo.com") == nil {
             MBStore.sharedStore.dispatch(SelectedArticleLink(url: dstURL))
         }
         
