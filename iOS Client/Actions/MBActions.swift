@@ -26,3 +26,7 @@ struct SelectedArticle: Action {
 
 struct PopCurrentNavigation: Action {
 }
+
+struct SelectedArticleLink: Action {
+    var url: URL?
+}

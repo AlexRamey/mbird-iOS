@@ -20,11 +20,13 @@ protocol TabOneNavControllerState {
 protocol NavigationState {
     var routes: [Tab: [RouteComponent]] { get set }
     var selectedTab: Tab { get set }
+    var safariOverlays: [Tab: URL?] { get set }
 }
 
 struct MBNavigationState: NavigationState {
     var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base]]
     var selectedTab: Tab = .articles
+    var safariOverlays: [Tab: URL?] = [.articles: nil, .bookmarks: nil]
 }
 /**************************************/
 

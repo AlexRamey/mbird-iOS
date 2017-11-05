@@ -3,8 +3,8 @@ body
     font-family: 'SinaNovaReg';
     font-size: 60px;
     font-weight: normal;
-    color: #474747;
-    background-color: #F7F7F7;
+    color: #090909;
+    background-color: #ffffff;
 }
 
 @font-face {
@@ -18,11 +18,13 @@ body
 p.title {
     margin: 0px;
     font-weight: 200;
+    color: #eb615e
 }
 
 p.author {
     margin: 0px;
     font-style: italic;
+    color: #000000
 }
 
 img.alignleft {

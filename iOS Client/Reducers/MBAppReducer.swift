@@ -25,6 +25,8 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.selectedTab = action.tab
     case let action as SelectedArticle:
         nextState.routes[.articles]?.append(.detail(item: action.article))
+    case let action as SelectedArticleLink:
+        nextState.safariOverlays[.articles] = action.url
     case _ as PopCurrentNavigation:
         nextState.routes[nextState.selectedTab]?.removeLast()
     default:

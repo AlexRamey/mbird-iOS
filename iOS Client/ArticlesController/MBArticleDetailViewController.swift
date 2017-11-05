@@ -10,7 +10,7 @@ import UIKit
 import ReSwift
 import WebKit
 
-class MBArticleDetailViewController: UIViewController {
+class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
     var selectedArticle: MBArticle?
     
@@ -32,6 +32,7 @@ class MBArticleDetailViewController: UIViewController {
     func configureWebView() {
         let webConfiguration = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
+        webView.navigationDelegate = self
         view = webView
         
         if let content = self.selectedArticle?.content {
@@ -63,5 +64,17 @@ class MBArticleDetailViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: WKNavigationDelegate
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        
+        if let dstURL = navigationAction.request.url,
+            dstURL.absoluteString.range(of: "http") != nil,
+            dstURL.absoluteString.range(of: "youtube.com/embed") == nil {
+            MBStore.sharedStore.dispatch(SelectedArticleLink(url: dstURL))
+        }
+        
+        decisionHandler(.allow)
     }
 }
