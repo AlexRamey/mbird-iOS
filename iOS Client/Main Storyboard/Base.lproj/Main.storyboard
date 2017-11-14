@@ -5,7 +5,8 @@
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -41,6 +42,39 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rhs-ES-BnK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-538" y="-56"/>
+        </scene>
+        <!--Devotions-->
+        <scene sceneID="XbH-7k-ftX">
+            <objects>
+                <viewController storyboardIdentifier="DevotionsViewController" title="Devotions" useStoryboardIdentifierAsRestorationIdentifier="YES" id="jfS-oi-I1R" customClass="MBDevotionsViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="JkU-zA-RQa"/>
+                        <viewControllerLayoutGuide type="bottom" id="C6d-Hs-PKt"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="4QY-mg-7u0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="z76-D2-CzV">
+                                <rect key="frame" x="16" y="28" width="343" height="619"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leadingMargin" id="0hm-BK-wfp"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="top" secondItem="JkU-zA-RQa" secondAttribute="bottom" constant="8" id="Ck4-bb-T7J"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="trailing" secondItem="4QY-mg-7u0" secondAttribute="trailingMargin" id="OGM-eO-TuW"/>
+                            <constraint firstItem="C6d-Hs-PKt" firstAttribute="top" secondItem="z76-D2-CzV" secondAttribute="bottom" constant="20" id="Y8T-Xg-YBb"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="z76-D2-CzV" id="WYH-ZT-gBb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="byN-QR-M0r" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-538.39999999999998" y="672.41379310344837"/>
         </scene>
         <!--Articles-->
         <scene sceneID="tne-QT-ifu">

@@ -24,7 +24,7 @@ protocol NavigationState {
 }
 
 struct MBNavigationState: NavigationState {
-    var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base]]
+    var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base], .devotions: [.base]]
     var selectedTab: Tab = .articles
     var safariOverlays: [Tab: URL?] = [.articles: nil, .bookmarks: nil]
 }
@@ -42,21 +42,36 @@ struct MBArticleState: ArticleState {
 }
 /**************************************/
 
+/********** Devotion State *************/
+protocol DevotionState {
+    var devotions: Loaded<[MBDevotion]> { get set }
+    var selectedDevotion: MBDevotion? { get set }
+}
+struct MBDevotionState: DevotionState {
+    var devotions: Loaded<[MBDevotion]> = .initial
+    var selectedDevotion: MBDevotion? = nil
+    
+}
+/**************************************/
+
 /********** App State *************/
 protocol AppState: StateType {
     var navigationState: NavigationState { get }
     var articleState: ArticleState { get }
+    var devotionState: DevotionState { get }
     
-    init(navigationState: NavigationState, articleState: ArticleState)
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState)
 }
 
 struct MBAppState: AppState {
     var navigationState: NavigationState = MBNavigationState()
     var articleState: ArticleState = MBArticleState()
+    var devotionState: DevotionState = MBDevotionState()
     
-    init(navigationState: NavigationState, articleState: ArticleState) {
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState) {
         self.navigationState = navigationState
         self.articleState = articleState
+        self.devotionState = devotionState
     }
 }
 /**************************************/

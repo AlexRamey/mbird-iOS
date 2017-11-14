@@ -108,6 +108,20 @@ class MBClient: NSObject {
         }.resume()
     }
     
+    func getDevotionsWithCompletion(completion: @escaping (Data?, Error?) -> Void ) {
+        do {
+            if let file = Bundle.main.url(forResource: "devotions", withExtension: "json") {
+                let data = try Data(contentsOf: file)
+                completion(data, nil)
+            } else {
+                completion(nil, NetworkRequestError.badResponse(status: 404))
+            }
+        } catch {
+            print(error.localizedDescription)
+            completion(nil, NetworkRequestError.badResponse(status: 404))
+        }
+    }
+
     func getImageData(imageID: Int, completion: @escaping (UIImage?) -> Void) {
         let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
         guard let url = URL(string: urlString) else {

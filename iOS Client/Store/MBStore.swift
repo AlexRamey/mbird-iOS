@@ -47,6 +47,7 @@ class MBStore: NSObject {
         }
     }
     
+
     /***** Download Data from Network (MAY BE INVOKED FROM ANY THREAD) *****/
     func syncAllData(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
         var isNewData: Bool = false
@@ -75,6 +76,14 @@ class MBStore: NSObject {
         }
     }
     
+
+    //New function for devotions until we figure out if this will have to go over network or can be stored locally
+    func syncDevotions(completion: @escaping ([MBDevotion]?, Error?) -> Void) {
+        loadDevotions { (devotions, devotionError) in
+            completion(devotions, devotionError)
+        }
+    }
+
     private func downloadAuthors(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
         performDownload(clientFunction: client.getAuthorsWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBAuthor.deserialize, completion: completion)
     }
@@ -87,6 +96,54 @@ class MBStore: NSObject {
         performDownload(clientFunction: client.getArticlesWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBArticle.deserialize, completion: completion)
     }
     
+    private func loadDevotions(completion: @escaping ([MBDevotion]?, Error?) -> Void) {
+        
+        let manager = FileManager.default
+        guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first as URL? else {
+            completion(nil, MBDeserializationError.contextInsertionError(msg: "Could not create Devotions path"))
+            return
+        }
+        let path = url.path.appending("/devotions")
+        let pathUrl = URL(fileURLWithPath: path)
+        if !FileManager.default.fileExists(atPath: path) {
+            client.getDevotionsWithCompletion { data, error in
+                if error == nil, let data = data {
+                    self.save(data, pathUrl) { error in
+                        if error != nil {
+                            print("Could not save devotions data to disk")
+                        }
+                    }
+                    self.parse(data, [MBDevotion].self, completion)
+                } else {
+                    completion(nil, error)
+                }
+            }
+        } else if let data = FileManager.default.contents(atPath: path) {
+            parse(data, [MBDevotion].self, completion)
+        } else {
+            completion(nil, MBDeserializationError.fetchError(msg: "Could not fetch devotions"))
+        }
+    }
+    
+    private func parse<T: Codable>(_ data: Data, _ resource: T.Type, _ completion: @escaping (T?, Error?) -> Void) {
+        let decoder = JSONDecoder()
+        do {
+            let models = try decoder.decode(T.self, from: data)
+            return completion(models, nil)
+        } catch {
+            completion(nil, MBDeserializationError.fetchError(msg: "Could not read devotions from documents"))
+        }
+    }
+    
+    private func save(_ data: Data, _ pathUrl: URL, _ completion: @escaping (Error?) -> Void) {
+        do {
+            try data.write(to: pathUrl, options: [.atomic])
+            return completion(nil)
+        } catch {
+            completion(MBDeserializationError.fetchError(msg: "Could not save devotions to documents directory"))
+        }
+    }
+
     // An internal helper function to perform a download
     private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> (),
                                  persistentContainer: NSPersistentContainer,
