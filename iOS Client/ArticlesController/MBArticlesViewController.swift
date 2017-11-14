@@ -16,6 +16,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var attributedTitles: [NSAttributedString] = []
     var attributedAuthors: [NSAttributedString] = []
     let client = MBClient()
+    static let ArticleTableViewCellId = "ArticleTableViewCell"
     
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -156,7 +157,7 @@ extension MBArticlesViewController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let article = articles[indexPath.row]
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") as? ArticleTableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: MBArticlesViewController.ArticleTableViewCellId) as? ArticleTableViewCell {
             let snippetEndIndex = article.content?.index(article.content!.startIndex, offsetBy: 200)
             let snippet = String(article.content!.prefix(through: snippetEndIndex!))
             cell.configure(title: attributedTitles[indexPath.row], author: attributedAuthors[indexPath.row], snippet: snippet, imageId: article.imageID, client: client, indexPath: indexPath)
