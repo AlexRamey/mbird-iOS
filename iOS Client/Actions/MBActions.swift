@@ -26,3 +26,12 @@ struct SelectedArticle: Action {
 
 struct PopCurrentNavigation: Action {
 }
+
+
+struct LoadedDevotions: Action {
+    var devotions: Loaded<[MBDevotion]>
+}
+
+struct SelectedArticleLink: Action {
+    var url: URL?
+}

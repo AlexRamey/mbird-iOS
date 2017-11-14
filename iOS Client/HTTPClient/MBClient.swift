@@ -42,7 +42,7 @@ class MBClient: NSObject {
     // getArticlesWithCompletion makes a single URL request for the 25 most recent posts
     // When the response is received, it calls the completion block with the resulting data and error
     func getArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=25"
+        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=50"
         guard let url = URL(string: urlString) else {
             completion([], NetworkRequestError.invalidURL(url: urlString))
             return
@@ -108,6 +108,20 @@ class MBClient: NSObject {
         }.resume()
     }
     
+    func getDevotionsWithCompletion(completion: @escaping (Data?, Error?) -> Void ) {
+        do {
+            if let file = Bundle.main.url(forResource: "devotions", withExtension: "json") {
+                let data = try Data(contentsOf: file)
+                completion(data, nil)
+            } else {
+                completion(nil, NetworkRequestError.badResponse(status: 404))
+            }
+        } catch {
+            print(error.localizedDescription)
+            completion(nil, NetworkRequestError.badResponse(status: 404))
+        }
+    }
+
     func getImageData(imageID: Int, completion: @escaping (UIImage?) -> Void) {
         let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
         guard let url = URL(string: urlString) else {

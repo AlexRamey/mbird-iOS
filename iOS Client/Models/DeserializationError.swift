@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum MBDeserializationError: Error {
+public enum MBDeserializationError: Error {
     case contractMismatch(msg: String)
     case fetchError(msg: String)
     case contextInsertionError(msg: String)

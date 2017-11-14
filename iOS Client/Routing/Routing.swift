@@ -38,14 +38,17 @@ enum RouteComponent: Equatable {
             if case .base = self {
                 retVal = MBBookmarksViewController.instantiateFromStoryboard()
             }
+        case .devotions:
+            if case .base = self {
+                retVal = MBDevotionsViewController.instantiateFromStoryboard()
+            }
         }
-        
         return retVal
     }
 }
 
 enum Tab: Int {
-    case articles, bookmarks
+    case articles, bookmarks, devotions
 }
 
 protocol Detailable {

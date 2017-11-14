@@ -54,8 +54,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         
-        guard let managedContext = appDelegate.persistentContainer?.viewContext else {
-            print("Unable to get the managed object context!")
+        guard let persistentContainer = appDelegate.persistentContainer else {
+            print("Unable to get the persistent container!")
             return
         }
   
@@ -64,7 +64,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
         
         if lastUpdateTimestamp > oneWeekAgoTimestamp {
-            let articles = MBStore().getArticles(managedContext: managedContext)
+            let articles = MBStore().getArticles(persistentContainer: persistentContainer)
             
             if articles.count > 0 {
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
@@ -72,14 +72,17 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
-        downloadArticleData(managedContext: managedContext)
+        downloadArticleData(persistentContainer: persistentContainer)
     }
     
-    private func downloadArticleData(managedContext: NSManagedObjectContext) {
-        MBStore().syncAllData(context: managedContext) { (isNewData: Bool, err: Error?) in
+    private func downloadArticleData(persistentContainer: NSPersistentContainer) {
+        MBStore().syncAllData(persistentContainer: persistentContainer) { (isNewData: Bool?, err: Error?) in
             if let syncErr = err {
                 print(syncErr)
-                MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
+                DispatchQueue.main.async {
+                    // ReSwift recommends always dispatching from the main thread
+                    MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
+                }
                 return
             }
             
@@ -87,10 +90,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             // Update timestamp
             let timestamp: Double = Date().timeIntervalSinceReferenceDate
             UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+            print("IS NEW DATA? \(isNewData ?? false)")
             
-            print("IS NEW DATA? \(isNewData)")
-            let loadedArticles = MBStore().getArticles(managedContext: managedContext)
             DispatchQueue.main.async {
+                // ReSwift recommends always dispatching from the main thread
+                let loadedArticles = MBStore().getArticles(persistentContainer: persistentContainer)
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
             }
         }

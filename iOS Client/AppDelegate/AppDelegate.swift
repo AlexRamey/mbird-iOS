@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.appCoordinator = AppCoordinator(window: self.window!)
         self.appCoordinator.start()
+        application.setMinimumBackgroundFetchInterval(MBConstants.SECONDS_IN_A_DAY)
         return true
     }
 
@@ -51,19 +52,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
         
-        guard let managedContext = self.persistentContainer?.viewContext else {
+        guard let persistentContainer = self.persistentContainer else {
             completionHandler(.failed)
             return
         }
         
-        MBStore().syncAllData(context: managedContext) { (isNewData: Bool, syncErr: Error?) in
+        MBStore().syncAllData(persistentContainer: persistentContainer) { (isNewData: Bool?, syncErr: Error?) in
             if syncErr != nil {
                 completionHandler(.failed)
             } else {
                 let timestamp: Double = Date().timeIntervalSinceReferenceDate
                 UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
                 UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
-                if isNewData == true {
+                if let isNewDataUnwrapped = isNewData, isNewDataUnwrapped == true {
                     // TODO: Run Data Cleanup Task
                     completionHandler(.newData)
                 } else {

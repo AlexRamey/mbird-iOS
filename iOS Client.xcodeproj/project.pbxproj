@@ -13,6 +13,11 @@
 		23864DE31FA690D00061F212 /* ArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */; };
 		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
 		23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F91FAECD0B004964AE /* Color.swift */; };
+		237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */; };
+		237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */; };
+		23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */ = {isa = PBXBuildFile; fileRef = 23D8F1EF1FAAB3A1004964AE /* devotions.json */; };
+		23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */; };
+		23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F61FAE12D2004964AE /* MBDevotion.swift */; };
 		23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FFB0231F85CC0E006A0AC8 /* Routing.swift */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
 		D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */; };
@@ -33,7 +38,6 @@
 		D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55861F786DCD0071ED86 /* AppDelegate.swift */; };
 		D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */; };
 		D08F558C1F786DCD0071ED86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08F558A1F786DCD0071ED86 /* Main.storyboard */; };
-		D08F558F1F786DCD0071ED86 /* iOS_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D08F558D1F786DCD0071ED86 /* iOS_Client.xcdatamodeld */; };
 		D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D08F55901F786DCD0071ED86 /* Assets.xcassets */; };
 		D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */; };
 		D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496451F93DB5C004ACA4E /* DeserializationError.swift */; };
@@ -57,6 +61,11 @@
 		23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleTableViewCell.xib; sourceTree = "<group>"; };
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		23D8F1F91FAECD0B004964AE /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsViewController.swift; sourceTree = "<group>"; };
+		237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionsCoordinator.swift; sourceTree = "<group>"; };
+		23D8F1EF1FAAB3A1004964AE /* devotions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = devotions.json; sourceTree = "<group>"; };
+		23D8F1F41FAE129D004964AE /* iOS_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_Client.xcdatamodel; sourceTree = "<group>"; };
+		23D8F1F61FAE12D2004964AE /* MBDevotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotion.swift; sourceTree = "<group>"; };
 		23FFB0231F85CC0E006A0AC8 /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
 		D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppCoordinator.swift; path = "iOS Client/TabController/AppCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
@@ -77,7 +86,6 @@
 		D08F55861F786DCD0071ED86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticlesViewController.swift; sourceTree = "<group>"; };
 		D08F558B1F786DCD0071ED86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		D08F558E1F786DCD0071ED86 /* iOS_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_Client.xcdatamodel; sourceTree = "<group>"; };
 		D08F55901F786DCD0071ED86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D08F55931F786DCD0071ED86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D08F55951F786DCD0071ED86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -113,6 +121,23 @@
 				23864DE51FA6A1C10061F212 /* String.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		237815501FA7FEF7000555B6 /* DevotionsController */ = {
+			isa = PBXGroup;
+			children = (
+				237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */,
+				237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */,
+			);
+			path = DevotionsController;
+			sourceTree = "<group>";
+		};
+		23D8F1EE1FAAB310004964AE /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				23D8F1EF1FAAB3A1004964AE /* devotions.json */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		23FFB0221F85CBC4006A0AC8 /* Routing */ = {
@@ -187,6 +212,7 @@
 				D032F1A61F872B8300E78333 /* MBAuthor+Custom.swift */,
 				D032F1AA1F873C8C00E78333 /* MBCategory+Custom.swift */,
 				D032F1AC1F873EBC00E78333 /* MBArticle+Custom.swift */,
+				23D8F1F61FAE12D2004964AE /* MBDevotion.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -213,6 +239,9 @@
 			isa = PBXGroup;
 			children = (
 				23864DE41FA6A0930061F212 /* Utilities */,
+				23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */,
+				23D8F1EE1FAAB310004964AE /* Data */,
+				237815501FA7FEF7000555B6 /* DevotionsController */,
 				D0DDEC301F7C7B1F007822CB /* Actions */,
 				D0DDEC371F7C7F52007822CB /* AppDelegate */,
 				D0DDEC391F7C7F8B007822CB /* ArticlesController */,
@@ -232,7 +261,6 @@
 				D08F55901F786DCD0071ED86 /* Assets.xcassets */,
 				D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */,
 				D08F55951F786DCD0071ED86 /* Info.plist */,
-				D08F558D1F786DCD0071ED86 /* iOS_Client.xcdatamodeld */,
 			);
 			path = "iOS Client";
 			sourceTree = "<group>";
@@ -399,6 +427,7 @@
 				D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
+				23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */,
 				D08F558C1F786DCD0071ED86 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -482,15 +511,18 @@
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
 				D032F1A11F8728B700E78333 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
-				D08F558F1F786DCD0071ED86 /* iOS_Client.xcdatamodeld in Sources */,
 				23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */,
 				D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */,
+				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,
 				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
+				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
 				23864DE61FA6A1C10061F212 /* String.swift in Sources */,
 				D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */,
+				23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */,
+				23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
 				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
@@ -694,12 +726,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		D08F558D1F786DCD0071ED86 /* iOS_Client.xcdatamodeld */ = {
+		23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				D08F558E1F786DCD0071ED86 /* iOS_Client.xcdatamodel */,
+				23D8F1F41FAE129D004964AE /* iOS_Client.xcdatamodel */,
 			);
-			currentVersion = D08F558E1F786DCD0071ED86 /* iOS_Client.xcdatamodel */;
+			currentVersion = 23D8F1F41FAE129D004964AE /* iOS_Client.xcdatamodel */;
 			path = iOS_Client.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
