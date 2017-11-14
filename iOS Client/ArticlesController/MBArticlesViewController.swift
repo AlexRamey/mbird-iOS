@@ -14,6 +14,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
     var articles: [MBArticle] = []
     
+    static var ArticleTableViewCell = "ArticleTableViewCell"
+    
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
@@ -146,7 +148,7 @@ extension MBArticlesViewController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let article = articles[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") ?? UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: MBArticlesViewController.ArticleTableViewCell) ?? UITableViewCell()
         cell.textLabel?.text = article.title
         return cell
     }
