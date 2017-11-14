@@ -13,6 +13,10 @@ import CoreData
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
     @IBOutlet weak var tableView: UITableView!
     var articles: [MBArticle] = []
+    var attributedTitles: [NSAttributedString] = []
+    var attributedAuthors: [NSAttributedString] = []
+    let client = MBClient()
+    static let ArticleTableViewCellId = "ArticleTableViewCell"
     
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -34,6 +38,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        
+        tableView.register(UINib(nibName: MBArticlesViewController.ArticleTableViewCellId, bundle: nil), forCellReuseIdentifier: MBArticlesViewController.ArticleTableViewCellId)
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
+        
         
         // Set up a bar button item to toggle debug info on background app refresh
         let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(MBArticlesViewController.showTimestamps))
@@ -103,6 +112,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             if data.count != articles.count {
                 print("New Data for table view")
                 articles = data
+                attributedTitles = articles.flatMap{ $0.title?.convertHtml() }
+                attributedAuthors = articles.flatMap{ $0.author?.name?.convertHtml() }
                 tableView.reloadData()
             }
         }
@@ -150,9 +161,14 @@ extension MBArticlesViewController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let article = articles[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") ?? UITableViewCell()
-        cell.textLabel?.text = article.title
-        return cell
+        if let cell = tableView.dequeueReusableCell(withIdentifier: MBArticlesViewController.ArticleTableViewCellId) as? ArticleTableViewCell {
+            let snippetEndIndex = article.content?.index(article.content!.startIndex, offsetBy: 200)
+            let snippet = String(article.content!.prefix(through: snippetEndIndex!))
+            cell.configure(title: attributedTitles[indexPath.row], author: attributedAuthors[indexPath.row], snippet: snippet, imageId: article.imageID, client: client, indexPath: indexPath)
+            return cell
+        } else {
+            return UITableViewCell()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -162,3 +178,4 @@ extension MBArticlesViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
+
