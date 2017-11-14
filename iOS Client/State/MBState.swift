@@ -35,7 +35,7 @@ protocol ArticleState {
 }
 struct MBArticleState: ArticleState {
     var articles: Loaded<[MBArticle]> = .initial
-    var selectedArticle: MBArticle? = nil
+    var selectedArticle: MBArticle?
     
 }
 /**************************************/
@@ -47,29 +47,41 @@ protocol DevotionState {
 }
 struct MBDevotionState: DevotionState {
     var devotions: Loaded<[MBDevotion]> = .initial
-    var selectedDevotion: MBDevotion? = nil
+    var selectedDevotion: MBDevotion?
     
 }
 /**************************************/
+
+/********** Settings State *************/
+protocol SettingsState {
+    var notificationPermission: Permission { get set }
+}
+
+struct MBSettingsState: SettingsState {
+    var notificationPermission: Permission = .unprompted
+}
 
 /********** App State *************/
 protocol AppState: StateType {
     var navigationState: NavigationState { get }
     var articleState: ArticleState { get }
     var devotionState: DevotionState { get }
+    var settingsState: SettingsState { get }
     
-    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState)
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, settingsState: SettingsState)
 }
 
 struct MBAppState: AppState {
     var navigationState: NavigationState = MBNavigationState()
     var articleState: ArticleState = MBArticleState()
     var devotionState: DevotionState = MBDevotionState()
+    var settingsState: SettingsState = MBSettingsState()
     
-    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState) {
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, settingsState: SettingsState) {
         self.navigationState = navigationState
         self.articleState = articleState
         self.devotionState = devotionState
+        self.settingsState = settingsState
     }
 }
 /**************************************/
@@ -80,5 +92,12 @@ enum Loaded<T> {
     case loading
     case loaded(data: T)
     case error
+}
+
+/****** Permission *****/
+enum Permission {
+    case unprompted
+    case approved
+    case denied
 }
 

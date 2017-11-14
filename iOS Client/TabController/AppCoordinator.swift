@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import ReSwift
+import UserNotifications
 
 class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSubscriber {
     var route: [RouteComponent] = [RouteComponent]()
@@ -43,6 +44,36 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
             self.addChildCoordinator(childCoordinator: coord)
             return coord.rootViewController
         })
+        promptForNotifications()
+    }
+    
+    func promptForNotifications() {
+        let center = UNUserNotificationCenter.current()
+        
+        center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+            if granted {
+                self.scheduleNotifications()
+            } else {
+                print(error)
+            }
+        }
+    }
+    
+    func scheduleNotifications() {
+        var dateComponents = DateComponents()
+        dateComponents.hour = 11
+        dateComponents.minute = 0
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 60, repeats: true)
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Title goes here"
+        content.body = "Main text goes here"
+        content.categoryIdentifier = "customIdentifier"
+        content.userInfo = ["customData": "fizzbuzz"]
+        content.sound = UNNotificationSound.default()
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        let center = UNUserNotificationCenter.current()
+        center.add(request)
     }
     
     // MARK: - StoreSubscriber

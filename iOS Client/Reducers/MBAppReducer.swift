@@ -12,7 +12,8 @@ func appReducer(action: Action, state: MBAppState?) -> MBAppState {
     return MBAppState(
         navigationState: navigationReducer(action: action, state: state?.navigationState),
         articleState: articleReducer(action: action, state: state?.articleState),
-        devotionState: devotionReducer(action: action, state: state?.devotionState)
+        devotionState: devotionReducer(action: action, state: state?.devotionState),
+        settingsState: settingsReducer(action: action, state: state?.settingsState)
     )
 }
 
@@ -60,5 +61,10 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
     default:
         break
     }
+    return nextState
+}
+
+func settingsReducer(action: Action, state: SettingsState?) -> SettingsState {
+    var nextState = state ?? MBSettingsState()
     return nextState
 }
