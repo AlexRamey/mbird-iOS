@@ -39,9 +39,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UINib(nibName: "ArticleTableViewCell", bundle: nil), forCellReuseIdentifier: "ArticleTableViewCell")
+        tableView.register(UINib(nibName: MBArticlesViewController.ArticleTableViewCellId, bundle: nil), forCellReuseIdentifier: MBArticlesViewController.ArticleTableViewCellId)
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 140
+        tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
         
         
         // Set up a bar button item to toggle debug info on background app refresh
