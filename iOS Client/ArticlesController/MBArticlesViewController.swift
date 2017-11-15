@@ -13,6 +13,10 @@ import CoreData
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
     @IBOutlet weak var tableView: UITableView!
     var articles: [MBArticle] = []
+    var attributedTitles: [NSAttributedString] = []
+    var attributedAuthors: [NSAttributedString] = []
+    let client = MBClient()
+    static let ArticleTableViewCellId = "ArticleTableViewCell"
     
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -35,6 +39,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
+        tableView.register(UINib(nibName: MBArticlesViewController.ArticleTableViewCellId, bundle: nil), forCellReuseIdentifier: MBArticlesViewController.ArticleTableViewCellId)
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
+        
+        
         // Set up a bar button item to toggle debug info on background app refresh
         let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(MBArticlesViewController.showTimestamps))
         self.navigationItem.setRightBarButton(item, animated: false)
@@ -45,8 +54,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             return
         }
         
-        guard let managedContext = appDelegate.persistentContainer?.viewContext else {
-            print("Unable to get the managed object context!")
+        guard let persistentContainer = appDelegate.persistentContainer else {
+            print("Unable to get the persistent container!")
             return
         }
   
@@ -55,7 +64,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
         
         if lastUpdateTimestamp > oneWeekAgoTimestamp {
-            let articles = MBStore().getArticles(managedContext: managedContext)
+            let articles = MBStore().getArticles(persistentContainer: persistentContainer)
             
             if articles.count > 0 {
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
@@ -63,14 +72,17 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
-        downloadArticleData(managedContext: managedContext)
+        downloadArticleData(persistentContainer: persistentContainer)
     }
     
-    private func downloadArticleData(managedContext: NSManagedObjectContext) {
-        MBStore().syncAllData(context: managedContext) { (isNewData: Bool, err: Error?) in
+    private func downloadArticleData(persistentContainer: NSPersistentContainer) {
+        MBStore().syncAllData(persistentContainer: persistentContainer) { (isNewData: Bool?, err: Error?) in
             if let syncErr = err {
                 print(syncErr)
-                MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
+                DispatchQueue.main.async {
+                    // ReSwift recommends always dispatching from the main thread
+                    MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
+                }
                 return
             }
             
@@ -78,10 +90,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             // Update timestamp
             let timestamp: Double = Date().timeIntervalSinceReferenceDate
             UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+            print("IS NEW DATA? \(isNewData ?? false)")
             
-            print("IS NEW DATA? \(isNewData)")
-            let loadedArticles = MBStore().getArticles(managedContext: managedContext)
             DispatchQueue.main.async {
+                // ReSwift recommends always dispatching from the main thread
+                let loadedArticles = MBStore().getArticles(persistentContainer: persistentContainer)
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
             }
         }
@@ -99,6 +112,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             if data.count != articles.count {
                 print("New Data for table view")
                 articles = data
+                attributedTitles = articles.flatMap{ $0.title?.convertHtml() }
+                attributedAuthors = articles.flatMap{ $0.author?.name?.convertHtml() }
                 tableView.reloadData()
             }
         }
@@ -146,9 +161,14 @@ extension MBArticlesViewController {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let article = articles[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleTableViewCell") ?? UITableViewCell()
-        cell.textLabel?.text = article.title
-        return cell
+        if let cell = tableView.dequeueReusableCell(withIdentifier: MBArticlesViewController.ArticleTableViewCellId) as? ArticleTableViewCell {
+            let snippetEndIndex = article.content?.index(article.content!.startIndex, offsetBy: 200)
+            let snippet = String(article.content!.prefix(through: snippetEndIndex!))
+            cell.configure(title: attributedTitles[indexPath.row], author: attributedAuthors[indexPath.row], snippet: snippet, imageId: article.imageID, client: client, indexPath: indexPath)
+            return cell
+        } else {
+            return UITableViewCell()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -158,3 +178,4 @@ extension MBArticlesViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
+
