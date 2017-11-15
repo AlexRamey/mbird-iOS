@@ -26,7 +26,7 @@ class MBClient: NSObject {
         config.allowsCellularAccess = true
         config.httpAdditionalHeaders = ["Accept": "application/json"]
         self.session = URLSession(configuration: config)
-        urlArgs = "?page=1&per_page=\(numResultsPerPage)&offset="
+        urlArgs = "?per_page=\(numResultsPerPage)&page="
         
         super.init()
     }
@@ -77,9 +77,9 @@ class MBClient: NSObject {
     // and optionally an error if one occurred at any point in the process.
     func getCategoriesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
         let urlString = "\(baseURL)\(categoriesEndpoint)\(urlArgs)"
-        let urlStringWithOffsetZero = "\(urlString)0"
-        guard let url = URL(string: urlStringWithOffsetZero) else {
-            completion([], NetworkRequestError.invalidURL(url: urlStringWithOffsetZero))
+        let urlStringWithPageOne = "\(urlString)1"
+        guard let url = URL(string: urlStringWithPageOne) else {
+            completion([], NetworkRequestError.invalidURL(url: urlStringWithPageOne))
             return
         }
         
@@ -96,9 +96,9 @@ class MBClient: NSObject {
     // and optionally an error if one occurred at any point in the process.
     func getAuthorsWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
         let urlString = "\(baseURL)\(authorsEndpoint)\(urlArgs)"
-        let urlStringWithOffsetZero = "\(urlString)0"
-        guard let url = URL(string: urlStringWithOffsetZero) else {
-            completion([], NetworkRequestError.invalidURL(url: urlStringWithOffsetZero))
+        let urlStringWithPageOne = "\(urlString)1"
+        guard let url = URL(string: urlStringWithPageOne) else {
+            completion([], NetworkRequestError.invalidURL(url: urlStringWithPageOne))
             return
         }
         
@@ -213,8 +213,8 @@ class MBClient: NSObject {
         
         var dataTasks: [URLSessionDataTask] = []
         var results: [Data?] = [data]
-        for i in 1...numPages {
-            let urlString = "\(url)\(i*self.numResultsPerPage)"
+        for i in 2...numPages {
+            let urlString = "\(url)\(i)"
             guard let url = URL(string: urlString) else {
                 completion([], NetworkRequestError.invalidURL(url: urlString))
                 return

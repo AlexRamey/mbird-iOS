@@ -38,12 +38,13 @@ class ArticleTableViewCell: UITableViewCell {
                 }
             }
         }
+        self.coverImage.image = nil
         titleLabel.attributedText = title
         titleLabel.font = UIFont.systemFont(ofSize: 18)
         titleLabel.textColor = UIColor.ArticleTitle
         authorLabel.attributedText = author
         authorLabel.font = UIFont.boldSystemFont(ofSize: 15)
-        snippetLabel.text = snippet
+        snippetLabel.text = ""//snippet
     }
     
 }
