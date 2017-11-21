@@ -64,5 +64,10 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let devotion = devotions[indexPath.row]
+        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
+    }
 }
 

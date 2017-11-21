@@ -35,3 +35,11 @@ struct LoadedDevotions: Action {
 struct SelectedArticleLink: Action {
     var url: URL?
 }
+
+struct SelectedDevotion: Action {
+    var devotion: MBDevotion
+}
+
+struct DevotionNotification: Action {
+    var devotion: MBDevotion
+}

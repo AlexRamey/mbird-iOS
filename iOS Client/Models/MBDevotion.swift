@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct MBDevotion: Codable {
+struct MBDevotion: Codable, Detailable {
     var date: String
     var text: String
     var verse: String

@@ -41,6 +41,8 @@ enum RouteComponent: Equatable {
         case .devotions:
             if case .base = self {
                 retVal = MBDevotionsViewController.instantiateFromStoryboard()
+            } else if case let .detail(detailItem) = self {
+                retVal = DevotionDetailViewController.instantiateFromStoryboard()
             }
         }
         return retVal

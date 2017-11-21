@@ -11,7 +11,7 @@ import UIKit
 import ReSwift
 import UserNotifications
 
-class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSubscriber {
+class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSubscriber, UNUserNotificationCenterDelegate {
     var route: [RouteComponent] = [RouteComponent]()
     
     var childCoordinators: [Coordinator] = []
@@ -52,28 +52,43 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
         
         center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             if granted {
-                self.scheduleNotifications()
+                MBStore().syncDevotions { devotions, error in
+                    if error != nil {
+                        print("Could not sync devotions and schedule devotions")
+                        print(error)
+                    } else if devotions != nil {
+                        center.delegate = self
+                        self.scheduleNotifications(devotions: devotions!)
+                    }
+                }
             } else {
                 print(error)
             }
         }
     }
     
-    func scheduleNotifications() {
-        var dateComponents = DateComponents()
-        dateComponents.hour = 11
-        dateComponents.minute = 0
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 60, repeats: true)
-        
-        let content = UNMutableNotificationContent()
-        content.title = "Title goes here"
-        content.body = "Main text goes here"
-        content.categoryIdentifier = "customIdentifier"
-        content.userInfo = ["customData": "fizzbuzz"]
-        content.sound = UNNotificationSound.default()
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+    func scheduleNotifications(devotions: [MBDevotion]) {
+        print("scheduling notifications")
         let center = UNUserNotificationCenter.current()
-        center.add(request)
+        center.removeAllPendingNotificationRequests()
+        devotions.forEach { devotion in
+            guard let devotionDay = Formatters.devotionDateFormatter.date(from: devotion.date), let calendar = Formatters.calendar else {
+                return
+            }
+            var dateComponents = DateComponents()
+            dateComponents.hour = 10
+            dateComponents.minute = 30
+            dateComponents.year = calendar.component(NSCalendar.Unit.year, from: devotionDay)
+            dateComponents.month = calendar.component(NSCalendar.Unit.month, from: devotionDay)
+            dateComponents.day = calendar.component(NSCalendar.Unit.day, from: devotionDay)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+            let content = UNMutableNotificationContent()
+            content.title = devotion.verse
+            content.body = "Read your daily devotion from Mockingbird"
+            content.sound = UNNotificationSound.default()
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            center.add(request)
+        }
     }
     
     // MARK: - StoreSubscriber
@@ -92,5 +107,20 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
         }
         
         return false
+    }
+    
+    // MARK: - UNNotificationDelegate
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        MBStore().syncDevotions { devotions, error in
+            if error != nil {
+                print("Could not load devotion from notifications")
+            } else {
+                let date = Date()
+                if let devotion = devotions?.first(where: { Formatters.devotionDateFormatter.date(from: $0.date) == date}) {
+                    MBStore.sharedStore.dispatch(DevotionNotification(devotion: devotion))
+                }
+                MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions ?? [])))
+            }
+        }
     }
 }
