@@ -11,7 +11,13 @@ import ReSwift
 
 class DevotionDetailViewController: UIViewController, StoreSubscriber {
 
-    @IBOutlet weak var contentLabel: UILabel!
+    @IBOutlet weak var monthLabel: UILabel!
+    @IBOutlet weak var dayLabel: UILabel!
+    @IBOutlet weak var verseLabel: UILabel!
+    @IBOutlet weak var verseTextLabel: UILabel!
+    @IBOutlet weak var bodyLabel: UILabel!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackButton()
@@ -28,8 +34,16 @@ class DevotionDetailViewController: UIViewController, StoreSubscriber {
     }
 
     func newState(state: MBAppState) {
-        if let devotion = state.devotionState.selectedDevotion {
-            contentLabel.text = devotion.text
+        if let devotion = state.devotionState.selectedDevotion,
+            let date = Formatters.devotionDateFormatter.date(from: devotion.date),
+            let monthInt = Formatters.calendar?.component(.month, from: date),
+            let day = Formatters.calendar?.component(.day, from: date) {
+            monthLabel.text = Formatters.getMonth(fromInt: monthInt)
+            dayLabel.text = String(describing: day)
+            verseLabel.text = devotion.verse
+            verseTextLabel.text = devotion.verseText
+            bodyLabel.text = devotion.text
+            
         }
     }
     

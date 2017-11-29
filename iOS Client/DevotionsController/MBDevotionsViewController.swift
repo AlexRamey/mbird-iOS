@@ -12,11 +12,14 @@ import ReSwift
 class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    var devotions: [MBDevotion] = []
+    var devotions: [LoadedDevotion] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        
+        tableView.register(UINib(nibName: "DevotionTableViewCell", bundle: nil), forCellReuseIdentifier: "DevotionTableViewCell")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,8 +55,15 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let devotion = devotions[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DevotionTableViewCell") ?? UITableViewCell()
-        cell.textLabel?.text = devotion.text
+        //swiftlint:disable force_cast
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DevotionTableViewCell") as! DevotionTableViewCell
+        //swiftlint:enable force_cast
+        if let date = Formatters.devotionDateFormatter.date(from: devotion.devotion.date),
+            let day = Formatters.calendar?.components(.day, from: date).day,
+            let monthInt = Formatters.calendar?.component(.month, from: date) {
+            cell.configure(day: String(describing: day), month: Formatters.getMonth(fromInt: monthInt), verse: devotion.devotion.verse, read: devotion.read)
+
+        }
         return cell
     }
 
@@ -67,7 +77,17 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let devotion = devotions[indexPath.row]
-        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
+        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion.devotion))
+        let store = MBStore()
+        store.markDevotionAsRead(date: devotion.devotion.date) { error in
+            if error == nil {
+                store.syncDevotions { devotions, error in
+                    if error == nil, let loadedDevotions = devotions {
+                        MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: loadedDevotions)))
+                    }
+                }
+            }
+        }
     }
 }
 

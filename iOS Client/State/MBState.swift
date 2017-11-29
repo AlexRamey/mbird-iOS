@@ -44,11 +44,11 @@ struct MBArticleState: ArticleState {
 
 /********** Devotion State *************/
 protocol DevotionState {
-    var devotions: Loaded<[MBDevotion]> { get set }
+    var devotions: Loaded<[LoadedDevotion]> { get set }
     var selectedDevotion: MBDevotion? { get set }
 }
 struct MBDevotionState: DevotionState {
-    var devotions: Loaded<[MBDevotion]> = .initial
+    var devotions: Loaded<[LoadedDevotion]> = .initial
     var selectedDevotion: MBDevotion?
     
 }

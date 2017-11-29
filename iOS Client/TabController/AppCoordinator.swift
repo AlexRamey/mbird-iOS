@@ -58,7 +58,7 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
                         print(error)
                     } else if devotions != nil {
                         center.delegate = self
-                        self.scheduleNotifications(devotions: devotions!)
+                        self.scheduleNotifications(devotions: devotions!.map{$0.devotion})
                     }
                 }
             } else {
@@ -116,8 +116,8 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
                 print("Could not load devotion from notifications")
             } else {
                 let date = Date()
-                if let devotion = devotions?.first(where: { Formatters.devotionDateFormatter.date(from: $0.date) == date}) {
-                    MBStore.sharedStore.dispatch(DevotionNotification(devotion: devotion))
+                if let devotion = devotions?.first(where: { Formatters.devotionDateFormatter.date(from: $0.devotion.date) == date}) {
+                    MBStore.sharedStore.dispatch(DevotionNotification(devotion: devotion.devotion))
                 }
                 MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions ?? [])))
             }

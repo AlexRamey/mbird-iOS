@@ -15,3 +15,8 @@ struct MBDevotion: Codable, Detailable {
     var verse: String
     var verseText: String
 }
+
+struct LoadedDevotion: Codable, Detailable {
+    var devotion: MBDevotion
+    var read: Bool
+}

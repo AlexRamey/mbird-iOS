@@ -29,7 +29,7 @@ struct PopCurrentNavigation: Action {
 
 
 struct LoadedDevotions: Action {
-    var devotions: Loaded<[MBDevotion]>
+    var devotions: Loaded<[LoadedDevotion]>
 }
 
 struct SelectedArticleLink: Action {

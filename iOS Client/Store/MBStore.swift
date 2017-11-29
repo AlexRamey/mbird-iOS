@@ -93,11 +93,29 @@ class MBStore: NSObject {
     
 
     //New function for devotions until we figure out if this will have to go over network or can be stored locally
-    func syncDevotions(completion: @escaping ([MBDevotion]?, Error?) -> Void) {
-        loadDevotions { (devotions, devotionError) in
-            completion(devotions, devotionError)
+    func syncDevotions(completion: @escaping ([LoadedDevotion]?, Error?) -> Void) {
+        read(fromPath: "devotions", [MBDevotion].self) { (devotions, error) in
+            if error == nil {
+                self.read(fromPath: "readDevotionDates", [String].self) { (dates, error) in
+                    if error != nil {
+                       completion([], error)
+                    } else if let devotions = devotions {
+                        let markedDevotions: [LoadedDevotion] = devotions.map { devotion in
+                            let read = dates?.contains { $0 == devotion.date } ?? false
+                            return LoadedDevotion(devotion: devotion, read: read)
+                        }
+                        completion(markedDevotions, nil)
+                        
+                    } else {
+                        completion([], nil)
+                    }
+                }
+            } else {
+                completion(nil, error)
+            }
         }
     }
+    
 
     private func downloadAuthors(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
         performDownload(clientFunction: client.getAuthorsWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBAuthor.deserialize, completion: completion)
@@ -111,33 +129,58 @@ class MBStore: NSObject {
         performDownload(clientFunction: client.getArticlesWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBArticle.deserialize, completion: completion)
     }
     
-    private func loadDevotions(completion: @escaping ([MBDevotion]?, Error?) -> Void) {
-        
-        let manager = FileManager.default
-        guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first as URL? else {
-            completion(nil, MBDeserializationError.contextInsertionError(msg: "Could not create Devotions path"))
-            return
-        }
-        let path = url.path.appending("/devotions")
-        let pathUrl = URL(fileURLWithPath: path)
-        if !FileManager.default.fileExists(atPath: path) {
-            client.getDevotionsWithCompletion { data, error in
-                if error == nil, let data = data {
-                    self.save(data, pathUrl) { error in
-                        if error != nil {
-                            print("Could not save devotions data to disk")
+    func markDevotionAsRead(date: String, completion: @escaping (Error?) -> Void) {
+        read(fromPath: "readDevotionDates", [String].self) { dates, error in
+            do {
+                if var readDates = dates {
+                    if error != nil {
+                        print("could not mark devotion as read")
+                    } else if !readDates.contains { $0 == date } {
+                        readDates.append(date)
+                        let encoder = JSONEncoder()
+                        let (_, _, url) = try self.urlPackage(forPath: "/readDevotionDates")
+                        let data = try encoder.encode(readDates)
+                        self.save(data, url){ error in
+                            completion(error)
                         }
                     }
-                    self.parse(data, [MBDevotion].self, completion)
                 } else {
-                    completion(nil, error)
+                    throw StoreError.readError(msg: "couldn't read dates from documents")
                 }
+            } catch let error {
+                completion(error)
             }
-        } else if let data = FileManager.default.contents(atPath: path) {
-            parse(data, [MBDevotion].self, completion)
-        } else {
-            completion(nil, MBDeserializationError.fetchError(msg: "Could not fetch devotions"))
         }
+    }
+    
+    
+    private func read<T: Codable>(fromPath: String, _ resource: T.Type, completion: @escaping (T?, Error?) -> Void) {
+        do {
+            let (manager, path, _) = try urlPackage(forPath: "/\(fromPath)")
+            if !manager.fileExists(atPath: path), let file = Bundle.main.url(forResource: fromPath, withExtension: "json") {
+                    let data = try Data(contentsOf: file)
+                    parse(data, T.self, completion)
+            } else if let data = FileManager.default.contents(atPath: path) {
+                parse(data, T.self, completion)
+            } else {
+                let empty: [String] = []
+                let jsonEncoder = JSONEncoder()
+                let data = try jsonEncoder.encode(empty)
+                parse(data, T.self, completion)
+            }
+        } catch let error {
+            completion(nil, error)
+        }
+    }
+    
+    private func urlPackage(forPath: String) throws -> (FileManager, String, URL) {
+        let manager = FileManager.default
+        guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first as URL? else {
+            throw StoreError.urlError(msg: "Could not create path")
+        }
+        let path = url.path.appending(forPath)
+        let pathUrl = URL(fileURLWithPath: path)
+        return (manager, path, pathUrl)
     }
     
     private func parse<T: Codable>(_ data: Data, _ resource: T.Type, _ completion: @escaping (T?, Error?) -> Void) {
@@ -247,4 +290,11 @@ class MBStore: NSObject {
             throw MBDeserializationError.contractMismatch(msg: "unable to cast json object into an array of NSDictionary objects")
         }
     }
+}
+
+enum StoreError: Error {
+    case readError(msg: String)
+    case writeError(msg: String)
+    case parseError(msg: String)
+    case urlError(msg: String)
 }
