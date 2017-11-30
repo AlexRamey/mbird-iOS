@@ -22,21 +22,6 @@ class MBStore: NSObject {
         super.init()
     }
     
-    
-    static func loadState() -> MBAppState {
-        let defaults = UserDefaults.standard
-        var notificationPermission: Permission = .unprompted
-        if let notificationSetting = defaults.object(forKey: "notifications") as? Bool {
-            notificationPermission = notificationSetting ? .approved : .denied
-        }
-        return MBAppState(navigationState: MBNavigationState(), articleState: MBArticleState(), devotionState: MBDevotionState(), settingsState: MBSettingsState(notificationPermission: notificationPermission))
-    }
-    
-    static func saveState(state: AppState) {
-        let defaults = UserDefaults.standard
-        defaults.set(state.settingsState.notificationPermission, forKey: "notifications")
-    }
-    
     /***** Read Data from Core Data (Only Invoke These From The Main Thread) *****/
     func getAuthors(persistentContainer: NSPersistentContainer) -> [MBAuthor] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
@@ -94,24 +79,60 @@ class MBStore: NSObject {
 
     //New function for devotions until we figure out if this will have to go over network or can be stored locally
     func syncDevotions(completion: @escaping ([LoadedDevotion]?, Error?) -> Void) {
-        read(fromPath: "devotions", [MBDevotion].self) { (devotions, error) in
-            if error == nil {
-                self.read(fromPath: "readDevotionDates", [String].self) { (dates, error) in
-                    if error != nil {
-                       completion([], error)
-                    } else if let devotions = devotions {
-                        let markedDevotions: [LoadedDevotion] = devotions.map { devotion in
-                            let read = dates?.contains { $0 == devotion.date } ?? false
-                            return LoadedDevotion(devotion: devotion, read: read)
+        //Try to get any previously saved devotions
+        read(fromPath: "devotions", [LoadedDevotion].self) { (devotions, error) in
+            if error == nil, let devotions = devotions { //success
+                let regDevotions = devotions.map { $0.devotion }
+                self.syncDevotionsWithReadDates(devotions: regDevotions, completion: completion)
+                print("Fetched devotions from documents")
+            } else {
+                //If none in Documents file try to read from bundle
+                self.client.getJSONFile(name: "devotions") { data, error in
+                    if error == nil, let data = data {
+                        //We got some data now parse
+                        print("fetched devotions from bundle")
+                        self.parse(data, [MBDevotion].self) { devotions, error in
+                            if error == nil, let devotions = devotions {
+                                //We got devotion objects now sync with read dates (if any) and save
+                                self.syncDevotionsWithReadDates(devotions: devotions, completion: completion)
+                            } else {
+                                //Failed so complete with no devotions
+                                completion(nil, error)
+                            }
                         }
-                        completion(markedDevotions, nil)
-                        
                     } else {
-                        completion([], nil)
+                        //Failed so complete with no devotions
+                        completion(nil, error)
                     }
                 }
-            } else {
-                completion(nil, error)
+            }
+        }
+    }
+    
+    private func syncDevotionsWithReadDates(devotions: [MBDevotion], completion: @escaping ([LoadedDevotion]?, Error?) -> Void) {
+        //Try to get the list of dates
+        self.read(fromPath: "readDevotionDates", [String].self) { (dates, error) in
+            var loadedDevotions: [LoadedDevotion] = []
+            
+            if let dates = dates { //Success: so map to corresponding devotions
+                loadedDevotions = devotions.map { devotion in
+                    let read = dates.contains { $0 == devotion.date }
+                    return LoadedDevotion(devotion: devotion, read: read)
+                }
+            } else { //Failure: so set all reads to false
+                loadedDevotions = devotions.map { return LoadedDevotion(devotion: $0, read: false) }
+            }
+            
+            //Now try to save these for future in the devotions directory
+            do {
+                let encoder = JSONEncoder()
+                let data = try encoder.encode(loadedDevotions)
+                let (_, _, url) = try self.urlPackage(forPath: "devotions")
+                self.save(data, url) { error in
+                    completion(loadedDevotions, nil)
+                }
+            } catch {
+                completion(loadedDevotions, nil)
             }
         }
     }
@@ -130,25 +151,33 @@ class MBStore: NSObject {
     }
     
     func markDevotionAsRead(date: String, completion: @escaping (Error?) -> Void) {
+        //Get existing read dates
         read(fromPath: "readDevotionDates", [String].self) { dates, error in
             do {
-                if var readDates = dates {
-                    if error != nil {
-                        print("could not mark devotion as read")
-                    } else if !readDates.contains { $0 == date } {
+                let (_, _, url) = try self.urlPackage(forPath: "readDevotionDates")
+                var readDates: [String] = []
+                if error == nil, let oldDates = dates {
+                    //Add new date to arr
+                    if !readDates.contains { $0 == date } {
+                        readDates = oldDates
                         readDates.append(date)
-                        let encoder = JSONEncoder()
-                        let (_, _, url) = try self.urlPackage(forPath: "/readDevotionDates")
-                        let data = try encoder.encode(readDates)
-                        self.save(data, url){ error in
-                            completion(error)
-                        }
+                    } else {
+                        completion(nil)
+                    }
+                } else { //Case where no read dates existed
+                    readDates = [date]
+                }
+                //Save read dates
+                let encoder = JSONEncoder()
+                if let data = try? encoder.encode(readDates) {
+                    self.save(data, url) { error in
+                        completion(error)
                     }
                 } else {
-                    throw StoreError.readError(msg: "couldn't read dates from documents")
+                    throw StoreError.parseError(msg: "Could not encode to json")
                 }
-            } catch let error {
-                completion(error)
+            } catch {
+                completion(StoreError.parseError(msg: "Could not encode to json"))
             }
         }
     }
@@ -156,17 +185,11 @@ class MBStore: NSObject {
     
     private func read<T: Codable>(fromPath: String, _ resource: T.Type, completion: @escaping (T?, Error?) -> Void) {
         do {
-            let (manager, path, _) = try urlPackage(forPath: "/\(fromPath)")
-            if !manager.fileExists(atPath: path), let file = Bundle.main.url(forResource: fromPath, withExtension: "json") {
-                    let data = try Data(contentsOf: file)
-                    parse(data, T.self, completion)
-            } else if let data = FileManager.default.contents(atPath: path) {
+            let (manager, path, _) = try urlPackage(forPath: "\(fromPath)")
+            if let data = manager.contents(atPath: path) {
                 parse(data, T.self, completion)
             } else {
-                let empty: [String] = []
-                let jsonEncoder = JSONEncoder()
-                let data = try jsonEncoder.encode(empty)
-                parse(data, T.self, completion)
+               throw StoreError.readError(msg: "No data could be read from file \(fromPath)")
             }
         } catch let error {
             completion(nil, error)
@@ -178,7 +201,7 @@ class MBStore: NSObject {
         guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first as URL? else {
             throw StoreError.urlError(msg: "Could not create path")
         }
-        let path = url.path.appending(forPath)
+        let path = url.path.appending("/\(forPath)")
         let pathUrl = URL(fileURLWithPath: path)
         return (manager, path, pathUrl)
     }
@@ -189,7 +212,7 @@ class MBStore: NSObject {
             let models = try decoder.decode(T.self, from: data)
             return completion(models, nil)
         } catch {
-            completion(nil, MBDeserializationError.fetchError(msg: "Could not read devotions from documents"))
+            completion(nil, StoreError.parseError(msg: "Could not read devotions from documents"))
         }
     }
     
