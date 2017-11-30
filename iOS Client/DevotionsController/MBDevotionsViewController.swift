@@ -13,13 +13,14 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
 
     @IBOutlet weak var tableView: UITableView!
     var devotions: [LoadedDevotion] = []
+    var cellReusableId: String = "DevotionTableViewCell"
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        tableView.register(UINib(nibName: "DevotionTableViewCell", bundle: nil), forCellReuseIdentifier: "DevotionTableViewCell")
+        tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -56,7 +57,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let devotion = devotions[indexPath.row]
         //swiftlint:disable force_cast
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DevotionTableViewCell") as! DevotionTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReusableId) as! DevotionTableViewCell
         //swiftlint:enable force_cast
         if let date = Formatters.devotionDateFormatter.date(from: devotion.devotion.date),
             let day = Formatters.calendar?.components(.day, from: date).day,
