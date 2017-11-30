@@ -12,9 +12,8 @@ import CoreData
 
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
     @IBOutlet weak var tableView: UITableView!
-    var articles: [MBArticle] = []
-    var attributedTitles: [NSAttributedString] = []
-    var attributedAuthors: [NSAttributedString] = []
+    var articlesByCategory = [String: [MBArticle]]()
+    var topLevelCategories: [String] = []
     let client = MBClient()
     static let ArticleTableViewCellId = "ArticleTableViewCell"
     
@@ -42,11 +41,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.register(UINib(nibName: MBArticlesViewController.ArticleTableViewCellId, bundle: nil), forCellReuseIdentifier: MBArticlesViewController.ArticleTableViewCellId)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
-        
-        
-        // Set up a bar button item to toggle debug info on background app refresh
-        let item = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(MBArticlesViewController.showTimestamps))
-        self.navigationItem.setRightBarButton(item, animated: false)
         
         // 1. the managed context has to be passed in (UIApplication should only be accessed from main thread)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -109,73 +103,84 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         case .error:
             print("Error: Loading articles")
         case .loaded(let data):
-            if data.count != articles.count {
-                print("New Data for table view")
-                articles = data
-                attributedTitles = articles.flatMap{ $0.title?.convertHtml() }
-                attributedAuthors = articles.flatMap{ $0.author?.name?.convertHtml() }
-                tableView.reloadData()
+            print("New Data for table view")
+            articlesByCategory = groupArticlesByTopLevelCategoryName(articles: data)
+            topLevelCategories = Array(articlesByCategory.keys)
+            tableView.reloadData()
+        }
+    }
+    
+    private func groupArticlesByTopLevelCategoryName(articles: [MBArticle]) -> [String: [MBArticle]] {
+        var retVal = [String: [MBArticle]]()
+        
+        articles.forEach { (article) in
+            if let categories = article.categories {
+                let topLevelCategories = Set(categories.flatMap({ (category) -> String? in
+                    return (category as? MBCategory)?.getTopLevelCategory()?.name
+                }))
+            
+                for topLevelCategory in topLevelCategories {
+                    if let _ = retVal[topLevelCategory] {
+                        retVal[topLevelCategory]?.append(article)
+                    } else {
+                        retVal[topLevelCategory] = [article]
+                    }
+                }
+                
+                if topLevelCategories.count == 0 {
+                    print("Excluding article! \(article.title ?? "<no title>") b/c it has no categories")
+                }
+            } else {
+                print("Excluding article \(article.title ?? "<no title>") b/c it has no categories")
             }
         }
+        return retVal
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    // MARK: - showTimestamps() is used for debug purposes
-    @objc func showTimestamps() {
-        let lastOverallUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-        let lastBackgroundUpdate = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
-        let lastBackgroundAttempt = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
-        
-        let lastOverallUpdateDate = Date(timeIntervalSinceReferenceDate: lastOverallUpdate)
-        let lastBackgroundUpdateDate = Date(timeIntervalSinceReferenceDate: lastBackgroundUpdate)
-        let lastBackgroundAttemptDate = Date(timeIntervalSinceReferenceDate: lastBackgroundAttempt)
-        
-        let dateFormatter = DateFormatter()
-        if let timeZone = TimeZone(identifier: "America/New_York") {
-            dateFormatter.timeZone = timeZone
-        }
-        dateFormatter.locale = NSLocale.current
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-        
-        let msg = "Last Update: \(dateFormatter.string(from: lastOverallUpdateDate))\nLast Background Refresh: \(dateFormatter.string(from: lastBackgroundUpdateDate))\nLast Background Attempt: \(dateFormatter.string(from: lastBackgroundAttemptDate))"
-        
-        let ac = UIAlertController(title: "DEBUG", message: msg, preferredStyle: .actionSheet)
-        ac.addAction(UIAlertAction(title: "👍", style: .default, handler: nil))
-        self.present(ac, animated: true, completion: nil)
-    }
 }
 
-// MARK: - UITableViewDataSource
 extension MBArticlesViewController {
+    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return articles.count
+        return articlesByCategory[topLevelCategories[section]]!.count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return topLevelCategories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let article = articles[indexPath.row]
+        let article = articlesByCategory[topLevelCategories[indexPath.section]]![indexPath.row]
+        
         if let cell = tableView.dequeueReusableCell(withIdentifier: MBArticlesViewController.ArticleTableViewCellId) as? ArticleTableViewCell {
             let snippetEndIndex = article.content?.index(article.content!.startIndex, offsetBy: 200)
             let snippet = String(article.content!.prefix(through: snippetEndIndex!))
-            cell.configure(title: attributedTitles[indexPath.row], author: attributedAuthors[indexPath.row], snippet: snippet, imageId: article.imageID, client: client, indexPath: indexPath)
+            cell.configure(title: article.title?.convertHtml(), author: article.author?.name?.convertHtml(), snippet: snippet, imageId: article.imageID, client: client, indexPath: indexPath)
             return cell
         } else {
             return UITableViewCell()
         }
     }
-    
+
+    // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedArticle = articles[indexPath.row]
+        let selectedArticle = articlesByCategory[topLevelCategories[indexPath.section]]![indexPath.row]
         let action = SelectedArticle(article: selectedArticle)
         MBStore.sharedStore.dispatch(action)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 30))
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 30))
+        label.text = topLevelCategories[section]
+        view.addSubview(label)
+        view.backgroundColor = UIColor.orange
+        return view
     }
 }
 

@@ -2,7 +2,7 @@
 //  MBCategory+CoreDataProperties.swift
 //
 //
-//  Created by Alex Ramey on 11/4/17.
+//  Created by Alex Ramey on 11/14/17.
 //
 //
 
@@ -18,8 +18,9 @@ extension MBCategory {
     
     @NSManaged public var categoryID: Int32
     @NSManaged public var name: String?
-    @NSManaged public var parent: Int32
+    @NSManaged public var parentID: Int32
     @NSManaged public var articles: NSSet?
+    @NSManaged public var parent: MBCategory?
     
 }
 
@@ -39,4 +40,3 @@ extension MBCategory {
     @NSManaged public func removeFromArticles(_ values: NSSet)
     
 }
-
