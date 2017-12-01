@@ -16,6 +16,7 @@
 		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
 		239E3BA51FBBCC94006E3C9C /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA41FBBCC94006E3C9C /* Formatters.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
+		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
 		23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */ = {isa = PBXBuildFile; fileRef = 23D8F1EF1FAAB3A1004964AE /* devotions.json */; };
 		23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */; };
 		23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F61FAE12D2004964AE /* MBDevotion.swift */; };
@@ -68,6 +69,7 @@
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		239E3BA41FBBCC94006E3C9C /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
+		23A278711FD10091003B2022 /* DevotionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionNotification.swift; sourceTree = "<group>"; };
 		23D8F1EF1FAAB3A1004964AE /* devotions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = devotions.json; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		23D8F1F41FAE129D004964AE /* iOS_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_Client.xcdatamodel; sourceTree = "<group>"; };
 		23D8F1F61FAE12D2004964AE /* MBDevotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotion.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */,
 				23ED5DAE1FC652F6003B1BB3 /* DevotionTableViewCell.swift */,
 				23ED5DAF1FC652F6003B1BB3 /* DevotionTableViewCell.xib */,
+				23A278711FD10091003B2022 /* DevotionNotification.swift */,
 			);
 			path = DevotionsController;
 			sourceTree = "<group>";
@@ -531,6 +534,7 @@
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
+				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
 				239E3BA51FBBCC94006E3C9C /* Formatters.swift in Sources */,
