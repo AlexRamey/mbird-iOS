@@ -76,6 +76,51 @@
             </objects>
             <point key="canvasLocation" x="-538.39999999999998" y="672.41379310344837"/>
         </scene>
+        <!--Devotion Detail View Controller-->
+        <scene sceneID="d40-1k-nQD">
+            <objects>
+                <viewController storyboardIdentifier="DevotionDetailViewController" id="35F-h3-CEL" customClass="DevotionDetailViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="q2o-G9-c9o"/>
+                        <viewControllerLayoutGuide type="bottom" id="Hxf-VB-Bgy"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="CBg-Al-1IM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="w3S-lz-EZj">
+                                <rect key="frame" x="16" y="28" width="343" height="619"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lAL-Ds-gks">
+                                        <rect key="frame" x="8" y="8" width="42" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="lAL-Ds-gks" firstAttribute="leading" secondItem="w3S-lz-EZj" secondAttribute="leading" constant="8" id="1HN-7j-di7"/>
+                                    <constraint firstItem="lAL-Ds-gks" firstAttribute="top" secondItem="w3S-lz-EZj" secondAttribute="top" constant="8" id="9zN-3T-a3m"/>
+                                    <constraint firstAttribute="trailing" secondItem="lAL-Ds-gks" secondAttribute="trailing" constant="8" id="eei-SS-veN"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="w3S-lz-EZj" firstAttribute="top" secondItem="q2o-G9-c9o" secondAttribute="bottom" constant="8" id="XqV-Ka-Twh"/>
+                            <constraint firstItem="w3S-lz-EZj" firstAttribute="leading" secondItem="CBg-Al-1IM" secondAttribute="leadingMargin" id="Zj4-Jl-45Q"/>
+                            <constraint firstItem="w3S-lz-EZj" firstAttribute="trailing" secondItem="CBg-Al-1IM" secondAttribute="trailingMargin" id="r73-Q4-SzM"/>
+                            <constraint firstItem="Hxf-VB-Bgy" firstAttribute="top" secondItem="w3S-lz-EZj" secondAttribute="bottom" constant="20" id="tFV-rR-muP"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="contentLabel" destination="lAL-Ds-gks" id="JOa-8b-XCU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nDv-vR-taW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="261.60000000000002" y="671.51424287856082"/>
+        </scene>
         <!--Articles-->
         <scene sceneID="tne-QT-ifu">
             <objects>

@@ -12,7 +12,8 @@ func appReducer(action: Action, state: MBAppState?) -> MBAppState {
     return MBAppState(
         navigationState: navigationReducer(action: action, state: state?.navigationState),
         articleState: articleReducer(action: action, state: state?.articleState),
-        devotionState: devotionReducer(action: action, state: state?.devotionState)
+        devotionState: devotionReducer(action: action, state: state?.devotionState),
+        settingsState: settingsReducer(action: action, state: state?.settingsState)
     )
 }
 
@@ -26,10 +27,15 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.selectedTab = action.tab
     case let action as SelectedArticle:
         nextState.routes[.articles]?.append(.detail(item: action.article))
+    case let action as SelectedDevotion:
+        nextState.routes[.devotions]?.append(.detail(item: action.devotion))
     case let action as SelectedArticleLink:
         nextState.safariOverlays[.articles] = action.url
     case _ as PopCurrentNavigation:
         nextState.routes[nextState.selectedTab]?.removeLast()
+    case let action as DevotionNotification:
+        nextState.selectedTab = .devotions
+        nextState.routes[.devotions] = [.base, .detail(item: action.devotion)]
     default:
         break
     }
@@ -59,8 +65,17 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
     switch action {
     case let action as LoadedDevotions:
         nextState.devotions = action.devotions
+    case let action as SelectedDevotion:
+        nextState.selectedDevotion = action.devotion
+    case let action as DevotionNotification:
+        nextState.selectedDevotion = action.devotion
     default:
         break
     }
+    return nextState
+}
+
+func settingsReducer(action: Action, state: SettingsState?) -> SettingsState {
+    var nextState = state ?? MBSettingsState()
     return nextState
 }

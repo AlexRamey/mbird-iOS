@@ -9,15 +9,17 @@
 /* Begin PBXBuildFile section */
 		2359296D1F904E8D00FE4839 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2359296C1F904E8D00FE4839 /* WebKit.framework */; };
 		2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */; };
+		237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */; };
+		237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */; };
 		23864DE21FA690D00061F212 /* ArticleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE01FA690D00061F212 /* ArticleTableViewCell.swift */; };
 		23864DE31FA690D00061F212 /* ArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */; };
 		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
-		23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F91FAECD0B004964AE /* Color.swift */; };
-		237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */; };
-		237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */; };
+		239E3BA51FBBCC94006E3C9C /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA41FBBCC94006E3C9C /* Formatters.swift */; };
+		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */ = {isa = PBXBuildFile; fileRef = 23D8F1EF1FAAB3A1004964AE /* devotions.json */; };
 		23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */; };
 		23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F61FAE12D2004964AE /* MBDevotion.swift */; };
+		23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F91FAECD0B004964AE /* Color.swift */; };
 		23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FFB0231F85CC0E006A0AC8 /* Routing.swift */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
 		D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */; };
@@ -57,15 +59,17 @@
 		2251FCAEBD05DD222F6C84FD /* Pods-iOS Client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client.debug.xcconfig"; sourceTree = "<group>"; };
 		2359296C1F904E8D00FE4839 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticleDetailViewController.swift; sourceTree = "<group>"; };
+		237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsViewController.swift; sourceTree = "<group>"; };
+		237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionsCoordinator.swift; sourceTree = "<group>"; };
 		23864DE01FA690D00061F212 /* ArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTableViewCell.swift; sourceTree = "<group>"; };
 		23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleTableViewCell.xib; sourceTree = "<group>"; };
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		23D8F1F91FAECD0B004964AE /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
-		237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsViewController.swift; sourceTree = "<group>"; };
-		237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionsCoordinator.swift; sourceTree = "<group>"; };
+		239E3BA41FBBCC94006E3C9C /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
 		23D8F1EF1FAAB3A1004964AE /* devotions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = devotions.json; sourceTree = "<group>"; };
 		23D8F1F41FAE129D004964AE /* iOS_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_Client.xcdatamodel; sourceTree = "<group>"; };
 		23D8F1F61FAE12D2004964AE /* MBDevotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotion.swift; sourceTree = "<group>"; };
+		23D8F1F91FAECD0B004964AE /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		23FFB0231F85CC0E006A0AC8 /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
 		D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppCoordinator.swift; path = "iOS Client/TabController/AppCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
@@ -115,21 +119,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		23864DE41FA6A0930061F212 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				23864DE51FA6A1C10061F212 /* String.swift */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
 		237815501FA7FEF7000555B6 /* DevotionsController */ = {
 			isa = PBXGroup;
 			children = (
 				237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */,
 				237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */,
+				239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */,
 			);
 			path = DevotionsController;
+			sourceTree = "<group>";
+		};
+		23864DE41FA6A0930061F212 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				23864DE51FA6A1C10061F212 /* String.swift */,
+				239E3BA41FBBCC94006E3C9C /* Formatters.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		23D8F1EE1FAAB310004964AE /* Data */ = {
@@ -519,6 +525,7 @@
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
+				239E3BA51FBBCC94006E3C9C /* Formatters.swift in Sources */,
 				23864DE61FA6A1C10061F212 /* String.swift in Sources */,
 				D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */,
 				23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */,
@@ -528,6 +535,7 @@
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
 				23864DE21FA690D00061F212 /* ArticleTableViewCell.swift in Sources */,
+				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,

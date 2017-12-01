@@ -22,6 +22,21 @@ class MBStore: NSObject {
         super.init()
     }
     
+    
+    static func loadState() -> MBAppState {
+        let defaults = UserDefaults.standard
+        var notificationPermission: Permission = .unprompted
+        if let notificationSetting = defaults.object(forKey: "notifications") as? Bool {
+            notificationPermission = notificationSetting ? .approved : .denied
+        }
+        return MBAppState(navigationState: MBNavigationState(), articleState: MBArticleState(), devotionState: MBDevotionState(), settingsState: MBSettingsState(notificationPermission: notificationPermission))
+    }
+    
+    static func saveState(state: AppState) {
+        let defaults = UserDefaults.standard
+        defaults.set(state.settingsState.notificationPermission, forKey: "notifications")
+    }
+    
     /***** Read Data from Core Data (Only Invoke These From The Main Thread) *****/
     func getAuthors(persistentContainer: NSPersistentContainer) -> [MBAuthor] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
