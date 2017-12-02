@@ -94,7 +94,7 @@ class MBStore: NSObject {
                     print("fetched devotions from bundle")
                     let devotions = try self.parse(data, [MBDevotion].self)
                     let loadedDevotions = devotions.map {LoadedDevotion(devotion: $0, read: false)}
-                    try self.save(loadedDevotions, "devotions")
+                    try self.save(loadedDevotions, forPath: "devotions")
                     completion(loadedDevotions, nil)
                 } catch let error {
                     completion(nil, error)
@@ -119,15 +119,15 @@ class MBStore: NSObject {
     }
     
     func saveDevotions(devotions: [LoadedDevotion]) throws {
-        try self.save(devotions, "devotions")
+        try self.save(devotions, forPath: "devotions")
     }
     
-    private func read<T: Codable>(fromPath: String, _ resource: T.Type) throws -> T {
-        let (manager, path, _) = try urlPackage(forPath: "\(fromPath)")
+    private func read<T: Codable>(fromPath path: String, _ resource: T.Type) throws -> T {
+        let (manager, path, _) = try urlPackage(forPath: path)
         if let data = manager.contents(atPath: path) {
             return try parse(data, T.self)
         } else {
-            throw StoreError.readError(msg: "No data could be read from file \(fromPath)")
+            throw StoreError.readError(msg: "No data could be read from file \(path)")
         }
     }
     
@@ -151,7 +151,7 @@ class MBStore: NSObject {
         }
     }
     
-    private func save<T: Encodable>(_ data: T, _ path: String) throws {
+    private func save<T: Encodable>(_ data: T, forPath path: String) throws {
         do {
             let (_, _, pathUrl) = try self.urlPackage(forPath: path)
             let encoder = JSONEncoder()
