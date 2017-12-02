@@ -61,12 +61,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         //swiftlint:disable force_cast
         let cell = tableView.dequeueReusableCell(withIdentifier: cellReusableId) as! DevotionTableViewCell
         //swiftlint:enable force_cast
-        if let date = Formatters.devotionDateFormatter.date(from: devotion.devotion.date),
-            let day = Formatters.calendar?.components(.day, from: date).day,
-            let monthInt = Formatters.calendar?.component(.month, from: date) {
-            cell.configure(day: String(describing: day), month: Formatters.getMonth(fromInt: monthInt), verse: devotion.devotion.verse, read: devotion.read)
-
-        }
+        cell.configure(devotion: devotion)
         return cell
     }
 

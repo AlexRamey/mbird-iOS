@@ -16,13 +16,12 @@ class DevotionTableViewCell: UITableViewCell {
     @IBOutlet weak var readNotifier: UIImageView!
     
     
-    func configure(day: String, month: String, verse: String, read: Bool) {
-        dayLabel.text = day
-        monthLabel.text = month
-        verseLabel.text = verse
-        
+    func configure(devotion: LoadedDevotion) {
+        dayLabel.text = devotion.formattedMonthDay
+        monthLabel.text = devotion.formattedMonth
+        verseLabel.text = devotion.verse
         readNotifier.layer.cornerRadius = readNotifier.bounds.width / 2
-        readNotifier.backgroundColor = read ? .clear : UIColor.ArticleTitle
+        readNotifier.backgroundColor = devotion.read ? .clear : UIColor.ArticleTitle
     }
     
 }
