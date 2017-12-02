@@ -38,6 +38,14 @@ class MBStore: NSObject {
         return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
+    func getDevotions() -> [LoadedDevotion] {
+        do {
+            return try read(fromPath: "devotions", [LoadedDevotion].self)
+        } catch {
+            return []
+        }
+    }
+    
     private func performFetch(managedContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<NSManagedObject>) -> [NSManagedObject] {
         do {
             return try managedContext.fetch(fetchRequest)
@@ -79,28 +87,21 @@ class MBStore: NSObject {
 
     //New function for devotions until we figure out if this will have to go over network or can be stored locally
     func syncDevotions(completion: @escaping ([LoadedDevotion]?, Error?) -> Void) {
-        do{
-            //Try to get any previously saved devotions
-            let devotions = try read(fromPath: "devotions", [LoadedDevotion].self)
-            completion(devotions, nil)
-        } catch {
-            //If none in Documents file try to read from bundle
-            self.client.getJSONFile(name: "devotions") { data, error in
-                if error == nil, let data = data {
-                    do{
-                        //We got some data now parse
-                        print("fetched devotions from bundle")
-                        let devotions = try self.parse(data, [MBDevotion].self)
-                        let loadedDevotions = devotions.map {LoadedDevotion(devotion: $0, read: false)}
-                        try self.save(loadedDevotions, "devotions")
-                        completion(loadedDevotions, nil)
-                    } catch let error {
-                        completion(nil, error)
-                    }
-                } else {
-                    //Failed so complete with no devotions
+        self.client.getJSONFile(name: "devotions") { data, error in
+            if error == nil, let data = data {
+                do {
+                    //We got some data now parse
+                    print("fetched devotions from bundle")
+                    let devotions = try self.parse(data, [MBDevotion].self)
+                    let loadedDevotions = devotions.map {LoadedDevotion(devotion: $0, read: false)}
+                    try self.save(loadedDevotions, "devotions")
+                    completion(loadedDevotions, nil)
+                } catch let error {
                     completion(nil, error)
                 }
+            } else {
+                //Failed so complete with no devotions
+                completion(nil, error)
             }
         }
     }

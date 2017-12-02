@@ -26,13 +26,18 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
         let devotionsController = MBDevotionsViewController.instantiateFromStoryboard()
         navigationController.pushViewController(devotionsController, animated: true)
         MBStore.sharedStore.subscribe(self)
-        
-        MBStore().syncDevotions { devotions, error in
-            if error != nil {
-                MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.error))
-            } else if let devotions = devotions {
-                MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: devotions)))
+        let store = MBStore()
+        let devotions = store.getDevotions()
+        if devotions.count == 0 {
+            store.syncDevotions { syncedDevotions, error in
+                if error != nil {
+                    MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.error))
+                } else if let newDevotions = syncedDevotions {
+                    MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: newDevotions)))
+                }
             }
+        } else {
+            MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: devotions)))
         }
     }
     
