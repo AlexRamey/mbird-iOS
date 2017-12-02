@@ -10,9 +10,9 @@ import Foundation
 import UserNotifications
 
 class DevotionNotificationContent: UNMutableNotificationContent {
-    var devotion: MBDevotion
+    var devotion: LoadedDevotion
     
-    init(devotion: MBDevotion) {
+    init(devotion: LoadedDevotion) {
         self.devotion = devotion
         super.init()
         self.title = devotion.verse
