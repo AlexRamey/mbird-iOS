@@ -88,7 +88,7 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
             } else {
                 let date = Date()
                 if let devotion = devotions?.first(where: { Formatters.devotionDateFormatter.date(from: $0.devotion.date) == date}) {
-                    MBStore.sharedStore.dispatch(DevotionNotification(devotion: devotion.devotion))
+                    MBStore.sharedStore.dispatch(DevotionNotification(devotion: devotion))
                 }
                 MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions ?? [])))
             }

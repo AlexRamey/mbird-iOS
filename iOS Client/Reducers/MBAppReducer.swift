@@ -67,6 +67,16 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
         nextState.devotions = action.devotions
     case let action as SelectedDevotion:
         nextState.selectedDevotion = action.devotion
+        if case Loaded.loaded(data: let devotions) = nextState.devotions {
+            let newDevotions: [LoadedDevotion] = devotions.map { devotion in
+                if devotion.date == nextState.selectedDevotion?.date {
+                    return LoadedDevotion(devotion: devotion.devotion, read: true)
+                } else {
+                    return devotion
+                }
+            }
+            nextState.devotions = Loaded.loaded(data: newDevotions)
+        }
     case let action as DevotionNotification:
         nextState.selectedDevotion = action.devotion
     default:

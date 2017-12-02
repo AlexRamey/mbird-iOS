@@ -12,10 +12,12 @@ import ReSwift
 class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    var store: MBStore!
     var devotions: [LoadedDevotion] = []
     var cellReusableId: String = "DevotionTableViewCell"
     override func viewDidLoad() {
         super.viewDidLoad()
+        store = MBStore()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -77,18 +79,15 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let devotion = devotions[indexPath.row]
-        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion.devotion))
-        let store = MBStore()
-        store.markDevotionAsRead(date: devotion.devotion.date) { error in
-            if error == nil {
-                store.syncDevotions { devotions, error in
-                    if error == nil, let loadedDevotions = devotions {
-                        MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: loadedDevotions)))
-                    }
-                }
-            }
+       let devotion = devotions[indexPath.row]
+        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
+        do {
+            try store.saveDevotions(devotions: devotions)
+        } catch {
+            //There was an error saving devotion as read so reverse
+            print("Error marking devotion as read")
+            devotions[indexPath.row].read = false
+            MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions)))
         }
     }
 }
-
