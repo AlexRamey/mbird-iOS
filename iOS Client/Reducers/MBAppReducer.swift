@@ -28,14 +28,12 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
     case let action as SelectedArticle:
         nextState.routes[.articles]?.append(.detail(item: action.article))
     case let action as SelectedDevotion:
+        nextState.selectedTab = .devotions
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))
     case let action as SelectedArticleLink:
         nextState.safariOverlays[.articles] = action.url
     case _ as PopCurrentNavigation:
         nextState.routes[nextState.selectedTab]?.removeLast()
-    case let action as DevotionNotification:
-        nextState.selectedTab = .devotions
-        nextState.routes[.devotions] = [.base, .detail(item: action.devotion)]
     default:
         break
     }
@@ -69,14 +67,7 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
         nextState.selectedDevotion = action.devotion
         if case Loaded.loaded(data: var devotions) = nextState.devotions,
             let index = devotions.index(where: { $0.date == action.devotion.date }) {
-            devotions[index].read = true
-            nextState.devotions = Loaded.loaded(data: devotions)
-        }
-    case let action as DevotionNotification:
-        nextState.selectedDevotion = action.devotion
-        if case Loaded.loaded(data: var devotions) = nextState.devotions,
-            let index = devotions.index(where: { $0.date == action.devotion.date }) {
-            devotions[index].read = true
+            devotions[index] = action.devotion
             nextState.devotions = Loaded.loaded(data: devotions)
         }
     default:

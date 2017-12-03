@@ -89,8 +89,8 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let devotions = MBStore().getDevotions()
         let date = Date()
-        if let devotion = devotions.first(where: { Formatters.devotionDateFormatter.date(from: $0.date) == date}) {
-            MBStore.sharedStore.dispatch(DevotionNotification(devotion: devotion))
+        if let devotion = devotions.first(where: { $0.date == LoadedDevotion.devotionDateFormatter.string(from: date) }) {
+            MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
         }
         MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions)))
     }

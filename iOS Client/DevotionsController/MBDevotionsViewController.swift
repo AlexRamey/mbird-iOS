@@ -74,12 +74,13 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       let devotion = devotions[indexPath.row]
+        var devotion = devotions[indexPath.row]
+        devotion.read = true
         MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
         do {
-            try store.saveDevotions(devotions: devotions)
+            try store.replace(devotion: devotion)
         } catch {
-            //There was an error saving devotion as read so reverse
+            // There was an error saving devotion as read so reverse
             print("Error marking devotion as read")
             devotions[indexPath.row].read = false
             MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions)))

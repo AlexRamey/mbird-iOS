@@ -14,7 +14,6 @@
 		23864DE21FA690D00061F212 /* ArticleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE01FA690D00061F212 /* ArticleTableViewCell.swift */; };
 		23864DE31FA690D00061F212 /* ArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */; };
 		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
-		239E3BA51FBBCC94006E3C9C /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA41FBBCC94006E3C9C /* Formatters.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
 		23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */ = {isa = PBXBuildFile; fileRef = 23D8F1EF1FAAB3A1004964AE /* devotions.json */; };
@@ -67,7 +66,6 @@
 		23864DE01FA690D00061F212 /* ArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTableViewCell.swift; sourceTree = "<group>"; };
 		23864DE11FA690D00061F212 /* ArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleTableViewCell.xib; sourceTree = "<group>"; };
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		239E3BA41FBBCC94006E3C9C /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
 		23A278711FD10091003B2022 /* DevotionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionNotification.swift; sourceTree = "<group>"; };
 		23D8F1EF1FAAB3A1004964AE /* devotions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = devotions.json; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
@@ -142,7 +140,6 @@
 			isa = PBXGroup;
 			children = (
 				23864DE51FA6A1C10061F212 /* String.swift */,
-				239E3BA41FBBCC94006E3C9C /* Formatters.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -537,7 +534,6 @@
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
-				239E3BA51FBBCC94006E3C9C /* Formatters.swift in Sources */,
 				23864DE61FA6A1C10061F212 /* String.swift in Sources */,
 				D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */,
 				23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */,

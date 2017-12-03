@@ -31,30 +31,30 @@ struct LoadedDevotion: Codable, Detailable {
         self.read = read
     }
     
-    var devotion: MBDevotion {
-        return MBDevotion(date: date, text: text, verse: verse, verseText: verseText)
-    }
-    
     var day: Date? {
-        return Formatters.devotionDateFormatter.date(from: self.date)
+        return LoadedDevotion.devotionDateFormatter.date(from: self.date)
     }
     var formattedMonthDay: String? {
-        if let date = self.day, let day = Formatters.calendar?.components(.day, from: date).day {
+        if let date = self.day, let day = LoadedDevotion.calendar?.components(.day, from: date).day {
             return String(describing: day)
         } else {
             return nil
         }
     }
     var formattedMonth: String? {
-        if let date = self.day, let monthInt = Formatters.calendar?.components(.day, from: date).month {
-            return Formatters.getMonth(fromInt: monthInt)
+        if let date = self.day, let monthInt = LoadedDevotion.calendar?.components(.day, from: date).month {
+            return LoadedDevotion.getMonth(fromInt: monthInt)
         } else {
             return nil
         }
     }
     
+    static func getMonth(fromInt: Int) -> String {
+        return LoadedDevotion.devotionDateFormatter.monthSymbols[fromInt-1]
+    }
+    
     var dateComponentsForNotification: DateComponents? {
-        guard let devotionDay = Formatters.devotionDateFormatter.date(from: self.date), let calendar = LoadedDevotion.calendar else {
+        guard let devotionDay = LoadedDevotion.devotionDateFormatter.date(from: self.date), let calendar = LoadedDevotion.calendar else {
             return nil
         }
         var dateComponents = DateComponents()
@@ -68,5 +68,11 @@ struct LoadedDevotion: Codable, Detailable {
     
     private static let calendar: NSCalendar? = {
         return NSCalendar.init(calendarIdentifier: NSCalendar.Identifier.gregorian)
+    }()
+    
+    static let devotionDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-DD"
+        return formatter
     }()
 }

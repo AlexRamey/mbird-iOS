@@ -39,7 +39,3 @@ struct SelectedArticleLink: Action {
 struct SelectedDevotion: Action {
     var devotion: LoadedDevotion
 }
-
-struct DevotionNotification: Action {
-    var devotion: LoadedDevotion
-}

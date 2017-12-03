@@ -34,12 +34,9 @@ class DevotionDetailViewController: UIViewController, StoreSubscriber {
     }
 
     func newState(state: MBAppState) {
-        if let devotion = state.devotionState.selectedDevotion,
-            let date = Formatters.devotionDateFormatter.date(from: devotion.date),
-            let monthInt = Formatters.calendar?.component(.month, from: date),
-            let day = Formatters.calendar?.component(.day, from: date) {
-            monthLabel.text = Formatters.getMonth(fromInt: monthInt)
-            dayLabel.text = String(describing: day)
+        if let devotion = state.devotionState.selectedDevotion {
+            monthLabel.text = devotion.formattedMonth
+            dayLabel.text = devotion.formattedMonthDay
             verseLabel.text = devotion.verse
             verseTextLabel.text = devotion.verseText
             bodyLabel.text = devotion.text

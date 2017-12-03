@@ -85,12 +85,12 @@ class MBStore: NSObject {
     }
     
 
-    //New function for devotions until we figure out if this will have to go over network or can be stored locally
+    // New function for devotions until we figure out if this will have to go over network or can be stored locally
     func syncDevotions(completion: @escaping ([LoadedDevotion]?, Error?) -> Void) {
         self.client.getJSONFile(name: "devotions") { data, error in
             if error == nil, let data = data {
                 do {
-                    //We got some data now parse
+                    // We got some data now parse
                     print("fetched devotions from bundle")
                     let devotions = try self.parse(data, [MBDevotion].self)
                     let loadedDevotions = devotions.map {LoadedDevotion(devotion: $0, read: false)}
@@ -100,7 +100,7 @@ class MBStore: NSObject {
                     completion(nil, error)
                 }
             } else {
-                //Failed so complete with no devotions
+                // Failed so complete with no devotions
                 completion(nil, error)
             }
         }
@@ -120,6 +120,14 @@ class MBStore: NSObject {
     
     func saveDevotions(devotions: [LoadedDevotion]) throws {
         try self.save(devotions, forPath: "devotions")
+    }
+    
+    func replace(devotion: LoadedDevotion) throws {
+        let devotions = try self.read(fromPath: "devotions", [LoadedDevotion].self)
+        let markedDevotions = devotions.map { oldDevotion in
+            oldDevotion.date == devotion.date ? devotion : oldDevotion
+        }
+        try self.save(markedDevotions, forPath: "devotions")
     }
     
     private func read<T: Codable>(fromPath path: String, _ resource: T.Type) throws -> T {
