@@ -46,11 +46,19 @@ struct MBArticleState: ArticleState {
 protocol DevotionState {
     var devotions: Loaded<[LoadedDevotion]> { get set }
     var selectedDevotion: LoadedDevotion? { get set }
+    mutating func mark(devotion: LoadedDevotion, asRead read: Bool)
 }
 struct MBDevotionState: DevotionState {
     var devotions: Loaded<[LoadedDevotion]> = .initial
     var selectedDevotion: LoadedDevotion?
     
+    mutating func mark(devotion: LoadedDevotion, asRead read: Bool) {
+        if case Loaded.loaded(data: var devotions) = self.devotions,
+        let index = devotions.index(where: { $0.date == devotion.date }) {
+            devotions[index].read = read
+            self.devotions = .loaded(data: devotions)
+        }
+    }
 }
 /**************************************/
 

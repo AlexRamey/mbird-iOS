@@ -39,3 +39,7 @@ struct SelectedArticleLink: Action {
 struct SelectedDevotion: Action {
     var devotion: LoadedDevotion
 }
+
+struct UnreadDevotion: Action {
+    var devotion: LoadedDevotion
+}

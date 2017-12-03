@@ -65,11 +65,9 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
         nextState.devotions = action.devotions
     case let action as SelectedDevotion:
         nextState.selectedDevotion = action.devotion
-        if case Loaded.loaded(data: var devotions) = nextState.devotions,
-            let index = devotions.index(where: { $0.date == action.devotion.date }) {
-            devotions[index] = action.devotion
-            nextState.devotions = Loaded.loaded(data: devotions)
-        }
+        nextState.mark(devotion: action.devotion, asRead: true)
+    case let action as UnreadDevotion:
+        nextState.mark(devotion: action.devotion, asRead: false)
     default:
         break
     }

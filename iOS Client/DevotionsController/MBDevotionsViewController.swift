@@ -83,7 +83,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
             // There was an error saving devotion as read so reverse
             print("Error marking devotion as read")
             devotions[indexPath.row].read = false
-            MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions)))
+            MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotion))
         }
     }
 }
