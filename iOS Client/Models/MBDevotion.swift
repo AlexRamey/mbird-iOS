@@ -42,7 +42,7 @@ struct LoadedDevotion: Codable, Detailable {
         }
     }
     var formattedMonth: String? {
-        if let date = self.day, let monthInt = LoadedDevotion.calendar?.components(.day, from: date).month {
+        if let date = self.day, let monthInt = LoadedDevotion.calendar?.components(.month, from: date).month {
             return LoadedDevotion.getMonth(fromInt: monthInt)
         } else {
             return nil
