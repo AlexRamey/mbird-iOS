@@ -69,13 +69,20 @@ class MBStore: NSObject {
                         print("There was an error downloading category data! \(unwrappedCatErr)")
                         completion(nil, catErr)
                     } else {
-                        self.downloadArticles(persistentContainer: persistentContainer, completion: { (isNewArticleData, articleErr) in
-                            isNewData = isNewAuthorData ?? false || isNewCategoryData ?? false || isNewArticleData ?? false
-                            if let unwrappedArticleErr = articleErr {
-                                print("There was an error downloading article data! \(unwrappedArticleErr)")
-                                completion(nil, articleErr)
+                        self.linkCategoriesTogether(persistentContainer: persistentContainer, completion: { (linkErr) in
+                            if let unwrappedLinkErr = linkErr {
+                                print("There was an error linking categories! \(unwrappedLinkErr)")
+                                completion(nil, linkErr)
                             } else {
-                                completion(isNewData, nil)
+                                self.downloadArticles(persistentContainer: persistentContainer, completion: { (isNewArticleData, articleErr) in
+                                    isNewData = isNewAuthorData ?? false || isNewCategoryData ?? false || isNewArticleData ?? false
+                                    if let unwrappedArticleErr = articleErr {
+                                        print("There was an error downloading article data! \(unwrappedArticleErr)")
+                                        completion(nil, articleErr)
+                                    } else {
+                                        completion(isNewData, nil)
+                                    }
+                                })
                             }
                         })
                     }
@@ -106,6 +113,28 @@ class MBStore: NSObject {
         }
     }
     
+    private func linkCategoriesTogether(persistentContainer: NSPersistentContainer, completion: @escaping (Error?) -> Void) {
+        persistentContainer.performBackgroundTask { (managedContext) in
+            let fetchRequest: NSFetchRequest<MBCategory> = MBCategory.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "parentID", ascending: true)]
+            do {
+                let fetchedCategories = try managedContext.fetch(fetchRequest) as [MBCategory]
+                var categoriesByID = [Int32: MBCategory]()
+                fetchedCategories.forEach({ (category) in
+                    categoriesByID[category.categoryID] = category
+                })
+                fetchedCategories.forEach({ (category) in
+                    category.parent = categoriesByID[category.parentID]
+                })
+                try managedContext.save()
+                completion(nil)
+            } catch {
+                print("Could not fetch. \(error)")
+                completion(error)
+            }
+        }
+    }
+  
     private func downloadAuthors(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
         performDownload(clientFunction: client.getAuthorsWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBAuthor.deserialize, completion: completion)
     }

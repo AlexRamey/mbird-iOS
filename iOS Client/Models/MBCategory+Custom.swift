@@ -48,9 +48,20 @@ extension MBCategory {
         }
         
         category.setValue(json.object(forKey: "id") as? Int32, forKey: "categoryID")
-        category.setValue(json.object(forKey: "parent") as? Int32, forKey: "parent")
+        category.setValue(json.object(forKey: "parent") as? Int32, forKey: "parentID")
         category.setValue(json.object(forKey: "name") as? String, forKey: "name")
         return isNewData
     }
     
+    // There are multiple top-level categories (whose parentID is 0). The rest are children.
+    // This method follows the parent links until it encounters a top-level category,
+    // which it returns. If called on a top-level category, this method returns the
+    // receiver.
+    public func getTopLevelCategory() -> MBCategory? {
+        if self.parentID == 0 {
+            return self
+        } else {
+            return self.parent?.getTopLevelCategory() ?? nil
+        }
+    }
 }
