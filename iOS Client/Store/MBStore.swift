@@ -38,6 +38,14 @@ class MBStore: NSObject {
         return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
+    func getDevotions() -> [LoadedDevotion] {
+        do {
+            return try read(fromPath: "devotions", [LoadedDevotion].self)
+        } catch {
+            return []
+        }
+    }
+    
     private func performFetch(managedContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<NSManagedObject>) -> [NSManagedObject] {
         do {
             return try managedContext.fetch(fetchRequest)
@@ -84,10 +92,24 @@ class MBStore: NSObject {
     }
     
 
-    //New function for devotions until we figure out if this will have to go over network or can be stored locally
-    func syncDevotions(completion: @escaping ([MBDevotion]?, Error?) -> Void) {
-        loadDevotions { (devotions, devotionError) in
-            completion(devotions, devotionError)
+    // New function for devotions until we figure out if this will have to go over network or can be stored locally
+    func syncDevotions(completion: @escaping ([LoadedDevotion]?, Error?) -> Void) {
+        self.client.getJSONFile(name: "devotions") { data, error in
+            if error == nil, let data = data {
+                do {
+                    // We got some data now parse
+                    print("fetched devotions from bundle")
+                    let devotions = try self.parse(data, [MBDevotion].self)
+                    let loadedDevotions = devotions.map {LoadedDevotion(devotion: $0, read: false)}
+                    try self.save(loadedDevotions, forPath: "devotions")
+                    completion(loadedDevotions, nil)
+                } catch let error {
+                    completion(nil, error)
+                }
+            } else {
+                // Failed so complete with no devotions
+                completion(nil, error)
+            }
         }
     }
     
@@ -112,7 +134,7 @@ class MBStore: NSObject {
             }
         }
     }
-
+  
     private func downloadAuthors(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
         performDownload(clientFunction: client.getAuthorsWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBAuthor.deserialize, completion: completion)
     }
@@ -125,51 +147,55 @@ class MBStore: NSObject {
         performDownload(clientFunction: client.getArticlesWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBArticle.deserialize, completion: completion)
     }
     
-    private func loadDevotions(completion: @escaping ([MBDevotion]?, Error?) -> Void) {
-        
+    func saveDevotions(devotions: [LoadedDevotion]) throws {
+        try self.save(devotions, forPath: "devotions")
+    }
+    
+    func replace(devotion: LoadedDevotion) throws {
+        let devotions = try self.read(fromPath: "devotions", [LoadedDevotion].self)
+        let markedDevotions = devotions.map { oldDevotion in
+            oldDevotion.date == devotion.date ? devotion : oldDevotion
+        }
+        try self.save(markedDevotions, forPath: "devotions")
+    }
+    
+    private func read<T: Codable>(fromPath path: String, _ resource: T.Type) throws -> T {
+        let (manager, path, _) = try urlPackage(forPath: path)
+        if let data = manager.contents(atPath: path) {
+            return try parse(data, T.self)
+        } else {
+            throw StoreError.readError(msg: "No data could be read from file \(path)")
+        }
+    }
+    
+    private func urlPackage(forPath: String) throws -> (FileManager, String, URL) {
         let manager = FileManager.default
         guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first as URL? else {
-            completion(nil, MBDeserializationError.contextInsertionError(msg: "Could not create Devotions path"))
-            return
+            throw StoreError.urlError(msg: "Could not create path")
         }
-        let path = url.path.appending("/devotions")
+        let path = url.path.appending("/\(forPath)")
         let pathUrl = URL(fileURLWithPath: path)
-        if !FileManager.default.fileExists(atPath: path) {
-            client.getDevotionsWithCompletion { data, error in
-                if error == nil, let data = data {
-                    self.save(data, pathUrl) { error in
-                        if error != nil {
-                            print("Could not save devotions data to disk")
-                        }
-                    }
-                    self.parse(data, [MBDevotion].self, completion)
-                } else {
-                    completion(nil, error)
-                }
-            }
-        } else if let data = FileManager.default.contents(atPath: path) {
-            parse(data, [MBDevotion].self, completion)
-        } else {
-            completion(nil, MBDeserializationError.fetchError(msg: "Could not fetch devotions"))
-        }
+        return (manager, path, pathUrl)
     }
     
-    private func parse<T: Codable>(_ data: Data, _ resource: T.Type, _ completion: @escaping (T?, Error?) -> Void) {
-        let decoder = JSONDecoder()
+    private func parse<T: Codable>(_ data: Data, _ resource: T.Type) throws -> T {
         do {
+            let decoder = JSONDecoder()
             let models = try decoder.decode(T.self, from: data)
-            return completion(models, nil)
+            return models
         } catch {
-            completion(nil, MBDeserializationError.fetchError(msg: "Could not read devotions from documents"))
+            throw StoreError.parseError(msg: "Could not read devotions from documents")
         }
     }
     
-    private func save(_ data: Data, _ pathUrl: URL, _ completion: @escaping (Error?) -> Void) {
+    private func save<T: Encodable>(_ data: T, forPath path: String) throws {
         do {
-            try data.write(to: pathUrl, options: [.atomic])
-            return completion(nil)
+            let (_, _, pathUrl) = try self.urlPackage(forPath: path)
+            let encoder = JSONEncoder()
+            let encodedData = try encoder.encode(data)
+            try encodedData.write(to: pathUrl, options: [.atomic])
         } catch {
-            completion(MBDeserializationError.fetchError(msg: "Could not save devotions to documents directory"))
+            throw StoreError.writeError(msg: "Could not save devotions to documents directory")
         }
     }
 
@@ -261,4 +287,11 @@ class MBStore: NSObject {
             throw MBDeserializationError.contractMismatch(msg: "unable to cast json object into an array of NSDictionary objects")
         }
     }
+}
+
+enum StoreError: Error {
+    case readError(msg: String)
+    case writeError(msg: String)
+    case parseError(msg: String)
+    case urlError(msg: String)
 }

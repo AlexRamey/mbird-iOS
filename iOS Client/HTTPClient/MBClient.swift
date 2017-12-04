@@ -108,9 +108,9 @@ class MBClient: NSObject {
         }.resume()
     }
     
-    func getDevotionsWithCompletion(completion: @escaping (Data?, Error?) -> Void ) {
+    func getJSONFile(name: String, completion: @escaping (Data?, Error?) -> Void ) {
         do {
-            if let file = Bundle.main.url(forResource: "devotions", withExtension: "json") {
+            if let file = Bundle.main.url(forResource: name, withExtension: "json") {
                 let data = try Data(contentsOf: file)
                 completion(data, nil)
             } else {

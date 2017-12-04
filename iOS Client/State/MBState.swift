@@ -37,41 +37,61 @@ protocol ArticleState {
 }
 struct MBArticleState: ArticleState {
     var articles: Loaded<[MBArticle]> = .initial
-    var selectedArticle: MBArticle? = nil
+    var selectedArticle: MBArticle?
     
 }
 /**************************************/
 
 /********** Devotion State *************/
 protocol DevotionState {
-    var devotions: Loaded<[MBDevotion]> { get set }
-    var selectedDevotion: MBDevotion? { get set }
+    var devotions: Loaded<[LoadedDevotion]> { get set }
+    var selectedDevotion: LoadedDevotion? { get set }
+    mutating func mark(devotion: LoadedDevotion, asRead read: Bool)
 }
 struct MBDevotionState: DevotionState {
-    var devotions: Loaded<[MBDevotion]> = .initial
-    var selectedDevotion: MBDevotion? = nil
+    var devotions: Loaded<[LoadedDevotion]> = .initial
+    var selectedDevotion: LoadedDevotion?
     
+    mutating func mark(devotion: LoadedDevotion, asRead read: Bool) {
+        if case Loaded.loaded(data: var devotions) = self.devotions,
+        let index = devotions.index(where: { $0.date == devotion.date }) {
+            devotions[index].read = read
+            self.devotions = .loaded(data: devotions)
+        }
+    }
 }
 /**************************************/
+
+/********** Settings State *************/
+protocol SettingsState {
+    var notificationPermission: Permission { get set }
+}
+
+struct MBSettingsState: SettingsState {
+    var notificationPermission: Permission = .unprompted
+}
 
 /********** App State *************/
 protocol AppState: StateType {
     var navigationState: NavigationState { get }
     var articleState: ArticleState { get }
     var devotionState: DevotionState { get }
+    var settingsState: SettingsState { get }
     
-    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState)
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, settingsState: SettingsState)
 }
 
 struct MBAppState: AppState {
     var navigationState: NavigationState = MBNavigationState()
     var articleState: ArticleState = MBArticleState()
     var devotionState: DevotionState = MBDevotionState()
+    var settingsState: SettingsState = MBSettingsState()
     
-    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState) {
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, settingsState: SettingsState) {
         self.navigationState = navigationState
         self.articleState = articleState
         self.devotionState = devotionState
+        self.settingsState = settingsState
     }
 }
 /**************************************/
@@ -82,5 +102,12 @@ enum Loaded<T> {
     case loading
     case loaded(data: T)
     case error
+}
+
+/****** Permission *****/
+enum Permission {
+    case unprompted
+    case approved
+    case denied
 }
 

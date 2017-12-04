@@ -12,11 +12,17 @@ import ReSwift
 class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    var devotions: [MBDevotion] = []
+    var store: MBStore!
+    var devotions: [LoadedDevotion] = []
+    var cellReusableId: String = "DevotionTableViewCell"
     override func viewDidLoad() {
         super.viewDidLoad()
+        store = MBStore()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        
+        tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,8 +58,10 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let devotion = devotions[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DevotionTableViewCell") ?? UITableViewCell()
-        cell.textLabel?.text = devotion.text
+        //swiftlint:disable force_cast
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReusableId) as! DevotionTableViewCell
+        //swiftlint:enable force_cast
+        cell.configure(devotion: devotion)
         return cell
     }
 
@@ -64,5 +72,18 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        var devotion = devotions[indexPath.row]
+        devotion.read = true
+        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
+        do {
+            try store.replace(devotion: devotion)
+        } catch {
+            // There was an error saving devotion as read so reverse
+            print("Error marking devotion as read")
+            devotions[indexPath.row].read = false
+            MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotion))
+        }
+    }
 }
-
