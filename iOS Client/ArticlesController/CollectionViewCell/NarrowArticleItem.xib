@@ -27,7 +27,7 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="wqd-Sk-m0G">
-                        <rect key="frame" x="0.0" y="192" width="192" height="179"/>
+                        <rect key="frame" x="0.0" y="196" width="192" height="30"/>
                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -37,8 +37,8 @@
             <constraints>
                 <constraint firstItem="ywH-BE-WOD" firstAttribute="trailing" secondItem="wqd-Sk-m0G" secondAttribute="trailing" id="MiF-mI-T3v"/>
                 <constraint firstItem="ywH-BE-WOD" firstAttribute="trailing" secondItem="44l-EM-aQM" secondAttribute="trailing" id="NM6-uH-Qso"/>
-                <constraint firstItem="ywH-BE-WOD" firstAttribute="bottom" secondItem="wqd-Sk-m0G" secondAttribute="bottom" id="NOC-mj-cw2"/>
-                <constraint firstItem="wqd-Sk-m0G" firstAttribute="top" secondItem="44l-EM-aQM" secondAttribute="bottom" id="Rdd-xa-6DV"/>
+                <constraint firstItem="ywH-BE-WOD" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="wqd-Sk-m0G" secondAttribute="bottom" id="NOC-mj-cw2"/>
+                <constraint firstItem="wqd-Sk-m0G" firstAttribute="top" secondItem="44l-EM-aQM" secondAttribute="bottom" constant="4" id="Rdd-xa-6DV"/>
                 <constraint firstItem="44l-EM-aQM" firstAttribute="top" secondItem="ywH-BE-WOD" secondAttribute="top" id="WFa-7j-N5g"/>
                 <constraint firstItem="wqd-Sk-m0G" firstAttribute="leading" secondItem="ywH-BE-WOD" secondAttribute="leading" id="nJW-k0-n1Y"/>
                 <constraint firstItem="44l-EM-aQM" firstAttribute="leading" secondItem="ywH-BE-WOD" secondAttribute="leading" id="pAK-iQ-1uB"/>

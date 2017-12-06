@@ -32,6 +32,7 @@ class ArticleItem: UICollectionViewCell {
         titleLabel.attributedText = article.title?.convertHtml()
         titleLabel.font = UIFont.systemFont(ofSize: 18)
         titleLabel.textColor = UIColor.ArticleTitle
+        titleLabel.sizeToFit()
     }
     
 }
