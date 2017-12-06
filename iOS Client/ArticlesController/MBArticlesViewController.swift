@@ -129,6 +129,22 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 print("Excluding article \(article.title ?? "<no title>") b/c it has no categories")
             }
         }
+        
+        // sort newest articles first
+        for key in retVal.keys {
+            retVal[key] = retVal[key]!.sorted(by: { (a1, a2) -> Bool in
+                guard let a1Date = a1.date as Date? else {
+                    return false
+                }
+
+                guard let a2Date = a2.date as Date? else {
+                    return true
+                }
+
+                return a1Date > a2Date
+            })
+        }
+        
         return retVal
     }
     
