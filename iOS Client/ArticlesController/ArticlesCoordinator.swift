@@ -27,7 +27,7 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     
     // MARK: - Coordinator
     func start() {
-        let articlesController = MBArticlesViewController.instantiateFromStoryboard()
+        let articlesController = MBArticlesViewController.instantiateFromStoryboard(bookmarks: false)
         self.navigationController.pushViewController(articlesController, animated: true)
         MBStore.sharedStore.subscribe(self)
     }

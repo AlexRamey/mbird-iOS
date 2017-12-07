@@ -27,6 +27,12 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
         configureWebView()
         configureBackButton()
+        configureBookmarkButton()
+    }
+    
+    func configureBookmarkButton() {
+        let barButton = UIBarButtonItem(title: "Bookmark", style: .plain, target: self, action: #selector(MBArticleDetailViewController.bookmark(_:)))
+        self.navigationItem.rightBarButtonItem = barButton
     }
     
     func configureWebView() {
@@ -34,7 +40,6 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.navigationDelegate = self
         view = webView
-        
         if let content = self.selectedArticle?.content {
             print(content)
             let cssHead: String = "<head>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"MB.css\">\n</head>\n"
@@ -53,6 +58,23 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         }
     }
     
+   @objc func bookmark(_ sender: Any) {
+        do {
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+                let container = appDelegate.persistentContainer,
+                let article = selectedArticle else {
+                return
+            }
+            
+            try MBStore().bookmark(article: article, persistentContainer: container)
+            // TODO: Dispatch an action here to update state if we change our models to be structs
+            // We don't have to do this now because our models are reference types, so marking it bookmarked in CoreData is enough
+            // But this doesn't exactly follow the immutable state aspect of Redux
+        } catch {
+            print("Error saving bookmark")
+        }
+        
+    }
     func configureBackButton() {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backToArticles(sender:)))
     }

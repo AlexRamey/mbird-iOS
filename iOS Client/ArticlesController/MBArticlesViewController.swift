@@ -16,11 +16,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var topLevelCategories: [String] = []
     let client = MBClient()
     static let ArticleTableViewCellId = "ArticleTableViewCell"
+    var bookmarks: Bool = false
     
-    static func instantiateFromStoryboard() -> MBArticlesViewController {
+    static func instantiateFromStoryboard(bookmarks: Bool) -> MBArticlesViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
         // swiftlint:enable force_cast
+        vc.bookmarks = bookmarks
+        return vc
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -104,7 +107,13 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             print("Error: Loading articles")
         case .loaded(let data):
             print("New Data for table view")
-            articlesByCategory = groupArticlesByTopLevelCategoryName(articles: data)
+            var articles: [MBArticle]
+            if bookmarks {
+                articles = data.flatMap{ return $0.bookmarked ? $0 : nil }
+            } else {
+                articles = data
+            }
+            articlesByCategory = groupArticlesByTopLevelCategoryName(articles: articles)
             topLevelCategories = Array(articlesByCategory.keys)
             tableView.reloadData()
         }

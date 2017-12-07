@@ -25,7 +25,7 @@ class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber {
     
     // MARK: - Coordinator
     func start() {
-        let bookmarksController = MBBookmarksViewController.instantiateFromStoryboard()
+        let bookmarksController = MBArticlesViewController.instantiateFromStoryboard(bookmarks: true)
         self.navigationController.pushViewController(bookmarksController, animated: true)
         MBStore.sharedStore.subscribe(self)
     }
