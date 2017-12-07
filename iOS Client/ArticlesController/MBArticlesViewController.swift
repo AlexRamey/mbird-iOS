@@ -131,20 +131,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         // sort newest articles first
-        for key in retVal.keys {
-            retVal[key] = retVal[key]!.sorted(by: { (a1, a2) -> Bool in
-                guard let a1Date = a1.date as Date? else {
-                    return false
-                }
+        retVal.keys.forEach { retVal[$0] = retVal[$0]?.sorted { return ($0.date as Date? ?? Date.distantPast) > ($1.date as Date? ?? Date.distantPast) } }
 
-                guard let a2Date = a2.date as Date? else {
-                    return true
-                }
-
-                return a1Date > a2Date
-            })
-        }
-        
         return retVal
     }
     
