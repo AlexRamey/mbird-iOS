@@ -57,7 +57,7 @@ extension MBCategory {
     // This method follows the parent links until it encounters a top-level category,
     // which it returns. If called on a top-level category, this method returns the
     // receiver.
-    public func getTopLevelCategory() -> MBCategory? {
+    func getTopLevelCategory() -> MBCategory? {
         if self.parentID == 0 {
             return self
         } else {

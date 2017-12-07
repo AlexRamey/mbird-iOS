@@ -109,24 +109,16 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         var retVal = [String: [MBArticle]]()
         
         articles.forEach { (article) in
-            if let categories = article.categories {
-                let topLevelCategories = Set(categories.flatMap({ (category) -> String? in
-                    return (category as? MBCategory)?.getTopLevelCategory()?.name
-                }))
+            article.getTopLevelCategories().forEach {
+                if retVal[$0] == nil {
+                    retVal[$0] = []
+                }
+                retVal[$0]?.append(article)
+            }
             
-                for topLevelCategory in topLevelCategories {
-                    if retVal[topLevelCategory] != nil {
-                        retVal[topLevelCategory]?.append(article)
-                    } else {
-                        retVal[topLevelCategory] = [article]
-                    }
-                }
-                
-                if topLevelCategories.count == 0 {
-                    print("Excluding article! \(article.title ?? "<no title>") b/c it has no categories")
-                }
-            } else {
-                print("Excluding article \(article.title ?? "<no title>") b/c it has no categories")
+            // debug alert
+            if topLevelCategories.count == 0 {
+                print("Excluding article! \(article.title ?? "<no title>") b/c it has no categories")
             }
         }
         
