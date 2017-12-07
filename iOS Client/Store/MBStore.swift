@@ -38,6 +38,19 @@ class MBStore: NSObject {
         return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
+    func getBookmarkedArticles(persistentContainer: NSPersistentContainer) -> [MBArticle]{
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        let predicate = NSPredicate(format: "bookmarked == TRUE")
+        fetchRequest.predicate = predicate
+        return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
+
+    }
+    
+    func bookmark(article: MBArticle, persistentContainer: NSPersistentContainer) throws {
+        article.bookmarked = true
+        try persistentContainer.viewContext.save()
+    }
+    
     func getDevotions() -> [LoadedDevotion] {
         do {
             return try read(fromPath: "devotions", [LoadedDevotion].self)

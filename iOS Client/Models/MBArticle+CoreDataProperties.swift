@@ -24,6 +24,7 @@ extension MBArticle {
     @NSManaged public var title: String?
     @NSManaged public var author: MBAuthor?
     @NSManaged public var categories: NSSet?
+    @NSManaged public var bookmarked: Bool
     
 }
 

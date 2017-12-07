@@ -30,13 +30,13 @@ enum RouteComponent: Equatable {
         switch tab {
         case .articles:
             if case .base = self {
-                retVal = MBArticlesViewController.instantiateFromStoryboard()
+                retVal = MBArticlesViewController.instantiateFromStoryboard(bookmarks: false)
             } else if case let .detail(detailItem) = self {
                 retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? MBArticle)
             }
         case .bookmarks:
             if case .base = self {
-                retVal = MBBookmarksViewController.instantiateFromStoryboard()
+                retVal = MBArticlesViewController.instantiateFromStoryboard(bookmarks: true)
             }
         case .devotions:
             if case .base = self {
