@@ -58,7 +58,7 @@ struct LoadedDevotion: Codable, Detailable {
             return nil
         }
         var dateComponents = DateComponents()
-        dateComponents.hour = 10
+        dateComponents.hour = 12
         dateComponents.minute = 30
         dateComponents.year = calendar.component(NSCalendar.Unit.year, from: devotionDay)
         dateComponents.month = calendar.component(NSCalendar.Unit.month, from: devotionDay)
@@ -72,7 +72,7 @@ struct LoadedDevotion: Codable, Detailable {
     
     static let devotionDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-DD"
+        formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }()
 }
