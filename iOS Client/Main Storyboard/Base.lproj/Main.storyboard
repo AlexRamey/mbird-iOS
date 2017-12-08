@@ -199,16 +199,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Vfm-0u-6pl">
-                                <rect key="frame" x="16" y="0.0" width="343" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Vfm-0u-6pl" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="SHx-QM-Yjj"/>
-                            <constraint firstAttribute="trailing" secondItem="Vfm-0u-6pl" secondAttribute="trailing" constant="16" id="YzW-Nk-Vfb"/>
-                            <constraint firstItem="Vfm-0u-6pl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="16" id="gvK-Ei-Am1"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Vfm-0u-6pl" secondAttribute="bottom" constant="20" id="yEh-14-Vac"/>
+                            <constraint firstAttribute="trailing" secondItem="Vfm-0u-6pl" secondAttribute="trailing" id="YzW-Nk-Vfb"/>
+                            <constraint firstItem="Vfm-0u-6pl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gvK-Ei-Am1"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Vfm-0u-6pl" secondAttribute="bottom" id="yEh-14-Vac"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="sAQ-kN-2cw"/>

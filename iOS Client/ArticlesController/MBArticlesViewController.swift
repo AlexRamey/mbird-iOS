@@ -15,7 +15,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var articlesByCategory = [String: [MBArticle]]()
     var topLevelCategories: [String] = []
     let client = MBClient()
-    static let ArticleTableViewCellId = "ArticleTableViewCell"
+    let reuseIdentifier = "ArticleCellReuseIdentifier"
     
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -38,21 +38,16 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UINib(nibName: MBArticlesViewController.ArticleTableViewCellId, bundle: nil), forCellReuseIdentifier: MBArticlesViewController.ArticleTableViewCellId)
+        tableView.register(UINib(nibName: "ArticleTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
         
-        // 1. the managed context has to be passed in (UIApplication should only be accessed from main thread)
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            print("Unable to get the app delegate!")
-            return
-        }
-        
-        guard let persistentContainer = appDelegate.persistentContainer else {
+
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+              let persistentContainer = appDelegate.persistentContainer else {
             print("Unable to get the persistent container!")
             return
         }
-  
         
         let oneWeekAgoTimestamp = Date().timeIntervalSinceReferenceDate - MBConstants.SECONDS_IN_A_WEEK
         let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
@@ -105,7 +100,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         case .loaded(let data):
             print("New Data for table view")
             articlesByCategory = groupArticlesByTopLevelCategoryName(articles: data)
-            topLevelCategories = Array(articlesByCategory.keys)
+            topLevelCategories = Array(articlesByCategory.keys).sorted()
             tableView.reloadData()
         }
     }
@@ -114,26 +109,22 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         var retVal = [String: [MBArticle]]()
         
         articles.forEach { (article) in
-            if let categories = article.categories {
-                let topLevelCategories = Set(categories.flatMap({ (category) -> String? in
-                    return (category as? MBCategory)?.getTopLevelCategory()?.name
-                }))
+            article.getTopLevelCategories().forEach {
+                if retVal[$0] == nil {
+                    retVal[$0] = []
+                }
+                retVal[$0]?.append(article)
+            }
             
-                for topLevelCategory in topLevelCategories {
-                    if let _ = retVal[topLevelCategory] {
-                        retVal[topLevelCategory]?.append(article)
-                    } else {
-                        retVal[topLevelCategory] = [article]
-                    }
-                }
-                
-                if topLevelCategories.count == 0 {
-                    print("Excluding article! \(article.title ?? "<no title>") b/c it has no categories")
-                }
-            } else {
-                print("Excluding article \(article.title ?? "<no title>") b/c it has no categories")
+            // debug alert
+            if topLevelCategories.count == 0 {
+                print("Excluding article! \(article.title ?? "<no title>") b/c it has no categories")
             }
         }
+        
+        // sort newest articles first
+        retVal.keys.forEach { retVal[$0] = retVal[$0]?.sorted { return ($0.date as Date? ?? Date.distantPast) > ($1.date as Date? ?? Date.distantPast) } }
+
         return retVal
     }
     
@@ -146,7 +137,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
 extension MBArticlesViewController {
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return articlesByCategory[topLevelCategories[section]]!.count
+        return 1
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -154,33 +145,18 @@ extension MBArticlesViewController {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let article = articlesByCategory[topLevelCategories[indexPath.section]]![indexPath.row]
-        
-        if let cell = tableView.dequeueReusableCell(withIdentifier: MBArticlesViewController.ArticleTableViewCellId) as? ArticleTableViewCell {
-            let snippetEndIndex = article.content?.index(article.content!.startIndex, offsetBy: 200)
-            let snippet = String(article.content!.prefix(through: snippetEndIndex!))
-            cell.configure(title: article.title?.convertHtml(), author: article.author?.name?.convertHtml(), snippet: snippet, imageId: article.imageID, client: client, indexPath: indexPath)
-            return cell
-        } else {
-            return UITableViewCell()
-        }
-    }
-
-    // MARK: - UITableViewDelegate
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedArticle = articlesByCategory[topLevelCategories[indexPath.section]]![indexPath.row]
-        let action = SelectedArticle(article: selectedArticle)
-        MBStore.sharedStore.dispatch(action)
-        tableView.deselectRow(at: indexPath, animated: true)
+        // swiftlint:disable force_cast
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as! ArticleTableViewCell
+        // swiftlint:enable force_cast
+        cell.configure(articles: articlesByCategory[topLevelCategories[indexPath.section]]!)
+        return cell
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 30))
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 30))
-        label.text = topLevelCategories[section]
-        view.addSubview(label)
-        view.backgroundColor = UIColor.orange
-        return view
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 300.0
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return topLevelCategories[section]
     }
 }
-

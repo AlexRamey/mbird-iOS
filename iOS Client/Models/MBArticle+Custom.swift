@@ -94,6 +94,15 @@ extension MBArticle {
         
         return isNewData
     }
+    
+    func getTopLevelCategories() -> Set<String> {
+        guard let cats = self.categories else {
+            return []
+        }
+        
+        // use a set to remove duplicates
+        return Set(cats.flatMap { return ($0 as? MBCategory)?.getTopLevelCategory()?.name })
+    }
 }
 
 extension MBArticle: Detailable {
