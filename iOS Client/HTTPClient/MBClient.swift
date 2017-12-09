@@ -122,7 +122,7 @@ class MBClient: NSObject {
         }
     }
 
-    func getImageData(imageID: Int, completion: @escaping (UIImage?) -> Void) {
+    func getImageData(imageID: Int, completion: @escaping (Data?) -> Void) {
         let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
         guard let url = URL(string: urlString) else {
             completion(nil)
@@ -164,12 +164,12 @@ class MBClient: NSObject {
                     }
                     
                     // Process Data
-                    guard let imageData = data, let image = UIImage(data: imageData) else {
+                    guard let imageData = data else {
                         completion(nil)
                         return
                     }
                     
-                    completion(image)
+                    completion(imageData)
                 }.resume()
             } else {
                 completion(nil)

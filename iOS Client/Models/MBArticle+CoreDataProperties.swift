@@ -22,9 +22,9 @@ extension MBArticle {
     @NSManaged public var date: NSDate?
     @NSManaged public var imageID: Int32
     @NSManaged public var title: String?
-    @NSManaged public var image: NSData?
     @NSManaged public var author: MBAuthor?
     @NSManaged public var categories: NSSet?
+    @NSManaged public var image: ArticlePicture?
 
 }
 
