@@ -31,7 +31,7 @@ class ArticleItem: UICollectionViewCell {
         
         if let savedData = article.image?.image {
             self.coverImage.image = UIImage(data: savedData as Data)
-        } else {
+        } else if article.imageID != 0 {
             self.client.getImageData(imageID: Int(article.imageID)) { data in
                 DispatchQueue.main.async {
                     if let imageData = data, self.articleID == article.articleID, article.image?.image == nil {
@@ -39,7 +39,7 @@ class ArticleItem: UICollectionViewCell {
                         if let context = article.managedObjectContext {
                             do {
                                 let imageObject = ArticlePicture(context: context)
-                                imageObject.image = imageData as NSData?
+                                imageObject.image = imageData as NSData
                                 article.image = imageObject
                                 try context.save()
                             } catch {
