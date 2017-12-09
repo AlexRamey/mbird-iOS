@@ -35,12 +35,8 @@
 		D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */; };
 		D032F1A11F8728B700E78333 /* MBCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */; };
 		D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */; };
-		D032F1A31F8728B700E78333 /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19D1F8728B700E78333 /* MBArticle+CoreDataProperties.swift */; };
 		D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */; };
 		D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */; };
-		D032F1A71F872B8300E78333 /* MBAuthor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F1A61F872B8300E78333 /* MBAuthor+Custom.swift */; };
-		D032F1AB1F873C8C00E78333 /* MBCategory+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F1AA1F873C8C00E78333 /* MBCategory+Custom.swift */; };
-		D032F1AD1F873EBC00E78333 /* MBArticle+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F1AC1F873EBC00E78333 /* MBArticle+Custom.swift */; };
 		D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */; };
 		D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55861F786DCD0071ED86 /* AppDelegate.swift */; };
 		D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */; };
@@ -55,6 +51,7 @@
 		D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC2D1F7B1B49007822CB /* MBActions.swift */; };
 		D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */; };
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
+		D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */; };
 		D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */ = {isa = PBXBuildFile; fileRef = D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */; };
 /* End PBXBuildFile section */
 
@@ -89,12 +86,8 @@
 		D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataClass.swift"; sourceTree = "<group>"; };
-		D032F19D1F8728B700E78333 /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		D032F1A61F872B8300E78333 /* MBAuthor+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+Custom.swift"; sourceTree = "<group>"; };
-		D032F1AA1F873C8C00E78333 /* MBCategory+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBCategory+Custom.swift"; sourceTree = "<group>"; };
-		D032F1AC1F873EBC00E78333 /* MBArticle+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+Custom.swift"; sourceTree = "<group>"; };
 		D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTabBarController.swift; sourceTree = "<group>"; };
 		D08F55831F786DCD0071ED86 /* iOS Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D08F55861F786DCD0071ED86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -111,6 +104,7 @@
 		D0DDEC2D1F7B1B49007822CB /* MBActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBActions.swift; sourceTree = "<group>"; };
 		D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBMiddleware.swift; sourceTree = "<group>"; };
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
+		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MBArticle+CoreDataProperties.swift"; path = "/Users/alexramey/Documents/mbird/iOS Client/iOS Client/Models/MBArticle+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = MB.css; path = "iOS Client/Style/MB.css"; sourceTree = SOURCE_ROOT; };
 		D0ED48E01F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff"; sourceTree = "<group>"; };
 		D0ED48E11F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff2"; sourceTree = "<group>"; };
@@ -240,15 +234,12 @@
 			isa = PBXGroup;
 			children = (
 				D09496451F93DB5C004ACA4E /* DeserializationError.swift */,
+				D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */,
+				D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */,
+				D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */,
+				D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */,
 				D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */,
 				D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */,
-				D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */,
-				D032F19D1F8728B700E78333 /* MBArticle+CoreDataProperties.swift */,
-				D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */,
-				D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */,
-				D032F1A61F872B8300E78333 /* MBAuthor+Custom.swift */,
-				D032F1AA1F873C8C00E78333 /* MBCategory+Custom.swift */,
-				D032F1AC1F873EBC00E78333 /* MBArticle+Custom.swift */,
 				23D8F1F61FAE12D2004964AE /* MBDevotion.swift */,
 			);
 			path = Models;
@@ -575,15 +566,12 @@
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
-				D032F1A71F872B8300E78333 /* MBAuthor+Custom.swift in Sources */,
-				D032F1A31F8728B700E78333 /* MBArticle+CoreDataProperties.swift in Sources */,
 				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
 				D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */,
 				D0CD7BB61F7875F7000E26B0 /* MBState.swift in Sources */,
-				D032F1AB1F873C8C00E78333 /* MBCategory+Custom.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
+				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
 				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,
-				D032F1AD1F873EBC00E78333 /* MBArticle+Custom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
