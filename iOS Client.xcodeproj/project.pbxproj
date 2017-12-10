@@ -27,6 +27,8 @@
 		D02525601FD77892009980BB /* ArticleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D025255F1FD77892009980BB /* ArticleTableViewCell.swift */; };
 		D02525621FD78E32009980BB /* ArticleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02525611FD78E32009980BB /* ArticleItem.swift */; };
 		D02525641FD78E5B009980BB /* ArticleItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = D02525631FD78E5B009980BB /* ArticleItem.xib */; };
+		D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */; };
+		D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */; };
 		D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */; };
 		D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363C1F7FE19400D4E674 /* Coordinator.swift */; };
 		D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */; };
@@ -80,6 +82,8 @@
 		D025255F1FD77892009980BB /* ArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTableViewCell.swift; sourceTree = "<group>"; };
 		D02525611FD78E32009980BB /* ArticleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleItem.swift; sourceTree = "<group>"; };
 		D02525631FD78E5B009980BB /* ArticleItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleItem.xib; sourceTree = "<group>"; };
+		D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticlesStore.swift; sourceTree = "<group>"; };
+		D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsStore.swift; sourceTree = "<group>"; };
 		D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppCoordinator.swift; path = "iOS Client/TabController/AppCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ArticlesCoordinator.swift; path = "iOS Client/ArticlesController/ArticlesCoordinator.swift"; sourceTree = SOURCE_ROOT; };
@@ -343,6 +347,8 @@
 			isa = PBXGroup;
 			children = (
 				D0DDEC291F7B178C007822CB /* MBStore.swift */,
+				D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */,
+				D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -554,6 +560,7 @@
 				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,
 				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
+				D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */,
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
@@ -566,6 +573,7 @@
 				23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
 				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,
+				D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
 				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
