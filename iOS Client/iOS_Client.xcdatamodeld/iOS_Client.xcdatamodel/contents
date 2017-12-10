@@ -39,7 +39,6 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-<<<<<<< HEAD
         <element name="Article" positionX="-63" positionY="-18" width="128" height="165"/>
         <element name="Author" positionX="-36" positionY="45" width="128" height="103"/>
         <element name="Category" positionX="-54" positionY="18" width="128" height="120"/>
