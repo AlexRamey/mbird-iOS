@@ -115,11 +115,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
                 retVal[$0]?.append(article)
             }
-            
-            // debug alert
-            if topLevelCategories.count == 0 {
-                print("Excluding article! \(article.title ?? "<no title>") b/c it has no categories")
-            }
         }
         
         // sort newest articles first
