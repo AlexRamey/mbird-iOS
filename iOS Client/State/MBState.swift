@@ -62,6 +62,16 @@ struct MBDevotionState: DevotionState {
 }
 /**************************************/
 
+
+/********** Podcasts State *************/
+protocol PodcastsState {
+    var podcasts: Loaded<[MBPodcast]> { get set }
+}
+
+struct MBPodcastsState: PodcastsState {
+    var podcasts: Loaded<[MBPodcast]> = .initial
+}
+
 /********** Settings State *************/
 protocol SettingsState {
     var notificationPermission: Permission { get set }
@@ -76,21 +86,24 @@ protocol AppState: StateType {
     var navigationState: NavigationState { get }
     var articleState: ArticleState { get }
     var devotionState: DevotionState { get }
+    var podcastsState: PodcastsState { get }
     var settingsState: SettingsState { get }
     
-    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, settingsState: SettingsState)
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, podcastsState: PodcastsState, settingsState: SettingsState)
 }
 
 struct MBAppState: AppState {
     var navigationState: NavigationState = MBNavigationState()
     var articleState: ArticleState = MBArticleState()
     var devotionState: DevotionState = MBDevotionState()
+    var podcastsState: PodcastsState = MBPodcastsState()
     var settingsState: SettingsState = MBSettingsState()
     
-    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, settingsState: SettingsState) {
+    init(navigationState: NavigationState, articleState: ArticleState, devotionState: DevotionState, podcastsState: PodcastsState, settingsState: SettingsState) {
         self.navigationState = navigationState
         self.articleState = articleState
         self.devotionState = devotionState
+        self.podcastsState = podcastsState
         self.settingsState = settingsState
     }
 }
