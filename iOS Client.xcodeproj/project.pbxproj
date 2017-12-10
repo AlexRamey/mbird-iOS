@@ -21,6 +21,14 @@
 		23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F91FAECD0B004964AE /* Color.swift */; };
 		23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED5DAE1FC652F6003B1BB3 /* DevotionTableViewCell.swift */; };
 		23ED5DB11FC652F6003B1BB3 /* DevotionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23ED5DAF1FC652F6003B1BB3 /* DevotionTableViewCell.xib */; };
+		23F2CB3F1FDC3AD700B80856 /* MBPodcast+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB3D1FDC3AD700B80856 /* MBPodcast+CoreDataClass.swift */; };
+		23F2CB401FDC3AD700B80856 /* MBPodcast+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB3E1FDC3AD700B80856 /* MBPodcast+CoreDataProperties.swift */; };
+		23F2CB421FDC3B0B00B80856 /* MBPodcast+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB411FDC3B0B00B80856 /* MBPodcast+Custom.swift */; };
+		23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */; };
+		23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */; };
+		23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */; };
+		23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */; };
+		23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */; };
 		23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FFB0231F85CC0E006A0AC8 /* Routing.swift */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
 		D025255E1FD775B7009980BB /* ArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D025255D1FD775B7009980BB /* ArticleTableViewCell.xib */; };
@@ -76,6 +84,14 @@
 		23D8F1F91FAECD0B004964AE /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		23ED5DAE1FC652F6003B1BB3 /* DevotionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionTableViewCell.swift; sourceTree = "<group>"; };
 		23ED5DAF1FC652F6003B1BB3 /* DevotionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DevotionTableViewCell.xib; sourceTree = "<group>"; };
+		23F2CB3D1FDC3AD700B80856 /* MBPodcast+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MBPodcast+CoreDataClass.swift"; path = "/Users/jonathanwitten/mbird-iOS/iOS Client/Models/MBPodcast+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		23F2CB3E1FDC3AD700B80856 /* MBPodcast+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MBPodcast+CoreDataProperties.swift"; path = "/Users/jonathanwitten/mbird-iOS/iOS Client/Models/MBPodcast+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		23F2CB411FDC3B0B00B80856 /* MBPodcast+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBPodcast+Custom.swift"; sourceTree = "<group>"; };
+		23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLParsingDelegate.swift; sourceTree = "<group>"; };
+		23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcastsViewController.swift; sourceTree = "<group>"; };
+		23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsCoordinator.swift; sourceTree = "<group>"; };
+		23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastTableViewCell.swift; sourceTree = "<group>"; };
+		23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastTableViewCell.xib; sourceTree = "<group>"; };
 		23FFB0231F85CC0E006A0AC8 /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
 		D025255D1FD775B7009980BB /* ArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleTableViewCell.xib; sourceTree = "<group>"; };
 		D025255F1FD77892009980BB /* ArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTableViewCell.swift; sourceTree = "<group>"; };
@@ -156,6 +172,17 @@
 				23D8F1EF1FAAB3A1004964AE /* devotions.json */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		23F2CB451FDC91D100B80856 /* PodcastsController */ = {
+			isa = PBXGroup;
+			children = (
+				23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */,
+				23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */,
+				23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */,
+				23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */,
+			);
+			path = PodcastsController;
 			sourceTree = "<group>";
 		};
 		23FFB0221F85CBC4006A0AC8 /* Routing */ = {
@@ -239,6 +266,8 @@
 		D032F1991F87289D00E78333 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				23F2CB3D1FDC3AD700B80856 /* MBPodcast+CoreDataClass.swift */,
+				23F2CB3E1FDC3AD700B80856 /* MBPodcast+CoreDataProperties.swift */,
 				D09496451F93DB5C004ACA4E /* DeserializationError.swift */,
 				D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */,
 				D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */,
@@ -249,6 +278,7 @@
 				D032F1A61F872B8300E78333 /* MBAuthor+Custom.swift */,
 				D032F1AA1F873C8C00E78333 /* MBCategory+Custom.swift */,
 				D032F1AC1F873EBC00E78333 /* MBArticle+Custom.swift */,
+				23F2CB411FDC3B0B00B80856 /* MBPodcast+Custom.swift */,
 				23D8F1F61FAE12D2004964AE /* MBDevotion.swift */,
 			);
 			path = Models;
@@ -275,6 +305,7 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
+				23F2CB451FDC91D100B80856 /* PodcastsController */,
 				23864DE41FA6A0930061F212 /* Utilities */,
 				23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */,
 				23D8F1EE1FAAB310004964AE /* Data */,
@@ -346,6 +377,7 @@
 			isa = PBXGroup;
 			children = (
 				D0DDEC291F7B178C007822CB /* MBStore.swift */,
+				23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -464,6 +496,7 @@
 				D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				D025255E1FD775B7009980BB /* ArticleTableViewCell.xib in Resources */,
+				23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
 				D02525641FD78E5B009980BB /* ArticleItem.xib in Resources */,
 				23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */,
@@ -547,13 +580,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */,
+				23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */,
 				D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */,
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
+				23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */,
 				D032F1A11F8728B700E78333 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
 				D02525621FD78E32009980BB /* ArticleItem.swift in Sources */,
 				23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */,
 				D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */,
+				23F2CB3F1FDC3AD700B80856 /* MBPodcast+CoreDataClass.swift in Sources */,
+				23F2CB401FDC3AD700B80856 /* MBPodcast+CoreDataProperties.swift in Sources */,
 				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,
 				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
@@ -570,6 +607,7 @@
 				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
+				23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */,
 				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
 				D02525601FD77892009980BB /* ArticleTableViewCell.swift in Sources */,
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
@@ -578,8 +616,10 @@
 				D032F1A71F872B8300E78333 /* MBAuthor+Custom.swift in Sources */,
 				D032F1A31F8728B700E78333 /* MBArticle+CoreDataProperties.swift in Sources */,
 				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
+				23F2CB421FDC3B0B00B80856 /* MBPodcast+Custom.swift in Sources */,
 				D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */,
 				D0CD7BB61F7875F7000E26B0 /* MBState.swift in Sources */,
+				23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */,
 				D032F1AB1F873C8C00E78333 /* MBCategory+Custom.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,
