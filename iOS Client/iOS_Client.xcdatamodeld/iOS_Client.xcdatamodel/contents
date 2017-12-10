@@ -39,10 +39,10 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Article" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Author" positionX="-36" positionY="45" width="128" height="103"/>
-        <element name="Category" positionX="-54" positionY="18" width="128" height="120"/>
         <element name="Podcast" positionX="-45" positionY="54" width="128" height="165"/>
+        <element name="Article" positionX="-450" positionY="-36" width="128" height="178"/>
+        <element name="Author" positionX="-218" positionY="167" width="128" height="103"/>
+        <element name="Category" positionX="-236" positionY="-300" width="128" height="120"/>
         <element name="ArticlePicture" positionX="-243" positionY="9" width="128" height="73"/>
     </elements>
 </model>

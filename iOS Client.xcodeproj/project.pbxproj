@@ -289,7 +289,7 @@
 				D04093111FDC4968007989A1 /* ArticlePicture+CoreDataClass.swift */,
 				D04093121FDC4968007989A1 /* ArticlePicture+CoreDataProperties.swift */,
 				D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */,
-				23ABE3C11FDDE6D200F4B36B /* MBCategory+CoreDataProperties.swift */,
+				D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */,
 				23D8F1F61FAE12D2004964AE /* MBDevotion.swift */,
 			);
 			path = Models;
