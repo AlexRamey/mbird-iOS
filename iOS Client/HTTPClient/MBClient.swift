@@ -18,6 +18,7 @@ class MBClient: NSObject {
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     private let mediaEndpoint = "/media"
+    private let podcastsEndpoint = "https://www.mbird.com/feed/podcast/"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -105,6 +106,24 @@ class MBClient: NSObject {
         print("firing initial getAuthors request")
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: completion)
+        }.resume()
+    }
+    
+    func getPodcastsWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
+        guard let url = URL(string: podcastsEndpoint) else {
+            completion([], NetworkRequestError.invalidURL(url: podcastsEndpoint))
+            return
+        }
+        
+        print("firing get podcasts request")
+        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+            if let e = err {
+                completion([], e)
+            } else if let response = data {
+                completion([response], nil)
+            } else {
+                completion([], NetworkRequestError.networkError(msg: "did not receive a response"))
+            }
         }.resume()
     }
     

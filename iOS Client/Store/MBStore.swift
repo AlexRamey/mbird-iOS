@@ -38,6 +38,11 @@ class MBStore: NSObject {
         return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
+    func getPodcasts(persistentContainer: NSPersistentContainer) -> [MBPodcast] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBPodcast.entityName)
+        return performFetch(managedContext: persistentContainer.viewContext, fetchRequest: fetchRequest) as? [MBPodcast] ?? []
+    }
+    
     func getDevotions() -> [LoadedDevotion] {
         do {
             return try read(fromPath: "devotions", [LoadedDevotion].self)
@@ -113,6 +118,17 @@ class MBStore: NSObject {
         }
     }
     
+    func syncPodcasts(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
+        self.downloadPodcasts(persistentContainer: persistentContainer, completion: { (isNewPodcastData, podcastErr) in
+            if let err = podcastErr {
+                print("There was an error downloading podcast data! \(err)")
+                completion(nil, err)
+            } else {
+                completion(isNewPodcastData, nil)
+            }
+        })
+    }
+    
     private func linkCategoriesTogether(persistentContainer: NSPersistentContainer, completion: @escaping (Error?) -> Void) {
         persistentContainer.performBackgroundTask { (managedContext) in
             let fetchRequest: NSFetchRequest<MBCategory> = MBCategory.fetchRequest()
@@ -136,15 +152,19 @@ class MBStore: NSObject {
     }
   
     private func downloadAuthors(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
-        performDownload(clientFunction: client.getAuthorsWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBAuthor.deserialize, completion: completion)
+        performDownload(clientFunction: client.getAuthorsWithCompletion, persistentContainer: persistentContainer, serializationType: .json, deserializeFunc: MBAuthor.deserialize, completion: completion)
     }
     
     private func downloadCategories(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
-        performDownload(clientFunction: client.getCategoriesWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBCategory.deserialize, completion: completion)
+        performDownload(clientFunction: client.getCategoriesWithCompletion, persistentContainer: persistentContainer, serializationType: .json, deserializeFunc: MBCategory.deserialize, completion: completion)
     }
     
     private func downloadArticles(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
-        performDownload(clientFunction: client.getArticlesWithCompletion, persistentContainer: persistentContainer, deserializeFunc: MBArticle.deserialize, completion: completion)
+        performDownload(clientFunction: client.getArticlesWithCompletion, persistentContainer: persistentContainer, serializationType: .json, deserializeFunc: MBArticle.deserialize, completion: completion)
+    }
+    
+    private func downloadPodcasts(persistentContainer: NSPersistentContainer, completion: @escaping(Bool?, Error?) -> Void ) {
+        performDownload(clientFunction: client.getPodcastsWithCompletion, persistentContainer: persistentContainer, serializationType: .xml, deserializeFunc: MBPodcast.deserialize, completion: completion)
     }
     
     func saveDevotions(devotions: [LoadedDevotion]) throws {
@@ -202,6 +222,7 @@ class MBStore: NSObject {
     // An internal helper function to perform a download
     private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> (),
                                  persistentContainer: NSPersistentContainer,
+                                 serializationType: SerializationType,
                                  deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool,
                                  completion: @escaping (Bool?, Error?) -> Void) {
         
@@ -224,6 +245,7 @@ class MBStore: NSObject {
                 do {
                     try self.downloadModelsHandler(persistentContainer: persistentContainer,
                                                    data: jsonData,
+                                                   serializationType: serializationType,
                                                    deserializeFunc: deserializeFunc,
                                                    completion: { (isNewData: Bool?, err: Error?) in
                         serialQueue.async {
@@ -258,15 +280,20 @@ class MBStore: NSObject {
     // An internal helper that returns a handler which saves the json array as a group of core data objects
     private func downloadModelsHandler(persistentContainer: NSPersistentContainer,
                                        data: Data,
+                                       serializationType: SerializationType,
                                        deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool,
                                        completion: @escaping (Bool?, Error?) -> Void) throws {
         
-        var json : Any
+        var deserialized : Any
         var isNewData: Bool = false
 
         // deserialize data into the managed context and save it
-        json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        if let arr = json as? [NSDictionary] {
+        if serializationType == .json {
+            deserialized = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        } else {
+            deserialized = try self.serializeXML(with: data)
+        }
+        if let arr = deserialized as? [NSDictionary] {
             persistentContainer.performBackgroundTask({ (managedContext) in
                 do {
                     managedContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
@@ -287,6 +314,13 @@ class MBStore: NSObject {
             throw MBDeserializationError.contractMismatch(msg: "unable to cast json object into an array of NSDictionary objects")
         }
     }
+    private func serializeXML(with data: Data) -> [[String:String]] {
+        let parser = XMLParser(data: data)
+        let delegate = PodcastXMLParsingDelegate()
+        parser.delegate = delegate
+        parser.parse()
+        return delegate.items
+    }
 }
 
 enum StoreError: Error {
@@ -294,4 +328,9 @@ enum StoreError: Error {
     case writeError(msg: String)
     case parseError(msg: String)
     case urlError(msg: String)
+}
+
+enum SerializationType {
+    case json
+    case xml
 }
