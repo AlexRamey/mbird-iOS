@@ -15,6 +15,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var articlesByCategory = [String: [MBArticle]]()
     var topLevelCategories: [String] = []
     let client = MBClient()
+    let articlesStore = MBArticlesStore()
     let reuseIdentifier = "ArticleCellReuseIdentifier"
     
     static func instantiateFromStoryboard() -> MBArticlesViewController {
@@ -53,7 +54,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
         
         if lastUpdateTimestamp > oneWeekAgoTimestamp {
-            let articles = MBStore().getArticles(persistentContainer: persistentContainer)
+            let articles = articlesStore.getArticles(persistentContainer: persistentContainer)
             
             if articles.count > 0 {
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
@@ -65,7 +66,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func downloadArticleData(persistentContainer: NSPersistentContainer) {
-        MBStore().syncAllData(persistentContainer: persistentContainer) { (isNewData: Bool?, err: Error?) in
+        articlesStore.syncAllData(persistentContainer: persistentContainer) { (isNewData: Bool?, err: Error?) in
             if let syncErr = err {
                 print(syncErr)
                 DispatchQueue.main.async {
@@ -83,7 +84,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             
             DispatchQueue.main.async {
                 // ReSwift recommends always dispatching from the main thread
-                let loadedArticles = MBStore().getArticles(persistentContainer: persistentContainer)
+                let loadedArticles = self.articlesStore.getArticles(persistentContainer: persistentContainer)
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
             }
         }

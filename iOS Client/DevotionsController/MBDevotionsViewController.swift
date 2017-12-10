@@ -12,12 +12,11 @@ import ReSwift
 class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    var store: MBStore!
+    let devotionsStore = MBDevotionsStore()
     var devotions: [LoadedDevotion] = []
     var cellReusableId: String = "DevotionTableViewCell"
     override func viewDidLoad() {
         super.viewDidLoad()
-        store = MBStore()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -78,7 +77,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         devotion.read = true
         MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
         do {
-            try store.replace(devotion: devotion)
+            try devotionsStore.replace(devotion: devotion)
         } catch {
             // There was an error saving devotion as read so reverse
             print("Error marking devotion as read")

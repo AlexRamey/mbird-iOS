@@ -60,7 +60,6 @@ struct LoadedDevotion: Codable, Detailable {
         var dateComponents = DateComponents()
         dateComponents.hour = 12
         dateComponents.minute = 30
-        dateComponents.year = calendar.component(NSCalendar.Unit.year, from: devotionDay)
         dateComponents.month = calendar.component(NSCalendar.Unit.month, from: devotionDay)
         dateComponents.day = calendar.component(NSCalendar.Unit.day, from: devotionDay)
         return dateComponents
