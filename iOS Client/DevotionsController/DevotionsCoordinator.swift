@@ -14,6 +14,8 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     var route: [RouteComponent] = [.base]
     var tab: Tab = .devotions
     var childCoordinators: [Coordinator] = []
+    var devotionsStore = MBDevotionsStore()
+    
     var rootViewController: UIViewController {
         return self.navigationController
     }
@@ -26,10 +28,9 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
         let devotionsController = MBDevotionsViewController.instantiateFromStoryboard()
         navigationController.pushViewController(devotionsController, animated: true)
         MBStore.sharedStore.subscribe(self)
-        let store = MBStore()
-        let devotions = store.getDevotions()
+        let devotions = devotionsStore.getDevotions()
         if devotions.count == 0 {
-            store.syncDevotions { syncedDevotions, error in
+            devotionsStore.syncDevotions { syncedDevotions, error in
                 DispatchQueue.main.async {
                     if error != nil {
                         MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.error))
@@ -51,7 +52,7 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
             let center = UNUserNotificationCenter.current()
             center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
                 if granted {
-                    let devotions = MBStore().getDevotions()
+                    let devotions = self.devotionsStore.getDevotions()
                     self.scheduleNotifications(devotions: devotions)
                     UserDefaults().set(true, forKey: "scheduledNotifications")
                 } else {
@@ -65,6 +66,7 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
         print("scheduling notifications")
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
+        
         devotions.forEach { devotion in
             guard let dateComponents = devotion.dateComponentsForNotification else {
                 return
@@ -87,7 +89,7 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     
     // MARK: - UNNotificationDelegate
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        let devotions = MBStore().getDevotions()
+        let devotions = devotionsStore.getDevotions()
         let date = Date()
         if let devotion = devotions.first(where: { $0.date == LoadedDevotion.devotionDateFormatter.string(from: date) }) {
             MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))

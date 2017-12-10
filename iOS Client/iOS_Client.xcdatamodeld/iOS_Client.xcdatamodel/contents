@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17B1003" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Article" representedClassName=".MBArticle" syncable="YES">
         <attribute name="articleID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="authorID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -9,6 +9,11 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Author" inverseName="articles" inverseEntity="Author" syncable="YES"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Category" inverseName="articles" inverseEntity="Category" syncable="YES"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ArticlePicture" inverseName="article" inverseEntity="ArticlePicture" syncable="YES"/>
+    </entity>
+    <entity name="ArticlePicture" representedClassName="ArticlePicture" syncable="YES">
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <relationship name="article" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Article" inverseName="image" inverseEntity="Article" syncable="YES"/>
     </entity>
     <entity name="Author" representedClassName=".MBAuthor" syncable="YES">
         <attribute name="authorID" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -34,9 +39,10 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Article" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Author" positionX="-36" positionY="45" width="128" height="103"/>
-        <element name="Category" positionX="-54" positionY="18" width="128" height="120"/>
         <element name="Podcast" positionX="-45" positionY="54" width="128" height="165"/>
+        <element name="Article" positionX="-450" positionY="-36" width="128" height="178"/>
+        <element name="Author" positionX="-218" positionY="167" width="128" height="103"/>
+        <element name="Category" positionX="-236" positionY="-300" width="128" height="120"/>
+        <element name="ArticlePicture" positionX="-243" positionY="9" width="128" height="73"/>
     </elements>
 </model>
