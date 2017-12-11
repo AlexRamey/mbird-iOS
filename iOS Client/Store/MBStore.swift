@@ -14,4 +14,8 @@ class MBStore: NSObject {
         reducer: appReducer,
         state: nil,
         middleware: [MiddlewareFactory.loggingMiddleware])      // Middlewares are optional
+    
+    
+    
+    
 }
