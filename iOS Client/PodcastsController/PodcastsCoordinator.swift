@@ -30,12 +30,10 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
         let podcastsController = MBPodcastsViewController.instantiateFromStoryboard()
         navigationController.pushViewController(podcastsController, animated: true)
         route = [.base]
-        if let persistentContainer = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer {
-            podcastsStore.syncPodcasts() { (podcasts: [MBPodcast]?, syncErr: Error?) in
-                if syncErr == nil, let pods = podcasts {
-                    DispatchQueue.main.async {
-                        MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: pods)))
-                    }
+        podcastsStore.syncPodcasts { (podcasts: [MBPodcast]?, syncErr: Error?) in
+            if syncErr == nil, let pods = podcasts {
+                DispatchQueue.main.async {
+                    MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: pods)))
                 }
             }
         }
