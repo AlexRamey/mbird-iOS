@@ -131,6 +131,7 @@ class MBArticlesStore: NSObject {
             }
             
             var isNewData = false
+            var caughtError: Error? = nil
             // data is an array of Data, where each datum is a serialized array representing a page of results
             // thus, think of data as an array of results pages
             for jsonData in data {
@@ -140,11 +141,15 @@ class MBArticlesStore: NSObject {
                                                    deserializeFunc: deserializeFunc) || isNewData
                 } catch {
                     print("could not handle data: \(error) \(error.localizedDescription)")
-                    completion(false, error)
+                    caughtError = error
                 }
             }
             
-            completion(isNewData, nil)
+            if let error = caughtError {
+                completion(nil, error)
+            } else {
+                completion(isNewData, nil)
+            }
         }
     }
     
