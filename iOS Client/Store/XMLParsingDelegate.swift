@@ -12,6 +12,7 @@ import Foundation
 class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
     var podcast: [String: String] = [:]
     var items: [[String:String]] = []
+    var podcasts: [MBPodcast] = []
     var foundCharacters: String = ""
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
@@ -41,5 +42,18 @@ class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
             self.podcast = [:]
         }
         self.foundCharacters = ""
+    }
+    
+    private func dictToPod(dict: [String: String]) -> MBPodcast {
+       return MBPodcast(
+        author: dict["author"],
+        duration: dict["duration"],
+        guid: dict["guid"],
+        image: dict["image"],
+        keywords: dict["keywords"],
+        summary: dict["summary"],
+        pubDate: dict["pubDate"],
+        title: dict["title"]
+    )
     }
 }

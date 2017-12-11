@@ -20,6 +20,8 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
     
     var tab: Tab = .podcasts
     
+    let podcastsStore = MBPodcastsStore()
+    
     private lazy var navigationController: UINavigationController = {
         return UINavigationController()
     }()
@@ -29,11 +31,10 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
         navigationController.pushViewController(podcastsController, animated: true)
         route = [.base]
         if let persistentContainer = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer {
-            MBStore().syncPodcasts(persistentContainer: persistentContainer) { (isNewData: Bool?, syncErr: Error?) in
-                if syncErr == nil {
-                    let podcasts = MBStore().getPodcasts(persistentContainer: persistentContainer)
+            podcastsStore.syncPodcasts() { (podcasts: [MBPodcast]?, syncErr: Error?) in
+                if syncErr == nil, let pods = podcasts {
                     DispatchQueue.main.async {
-                        MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
+                        MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: pods)))
                     }
                 }
             }

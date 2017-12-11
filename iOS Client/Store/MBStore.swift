@@ -14,17 +14,6 @@ class MBStore: NSObject {
         reducer: appReducer,
         state: nil,
         middleware: [MiddlewareFactory.loggingMiddleware])      // Middlewares are optional
-    
-    func syncPodcasts(persistentContainer: NSPersistentContainer, completion: @escaping (Bool?, Error?) -> Void) {
-        self.downloadPodcasts(persistentContainer: persistentContainer, completion: { (isNewPodcastData, podcastErr) in
-            if let err = podcastErr {
-                print("There was an error downloading podcast data! \(err)")
-                completion(nil, err)
-            } else {
-                completion(isNewPodcastData, nil)
-            }
-        })
-    }
 }
 
 enum SerializationType {
