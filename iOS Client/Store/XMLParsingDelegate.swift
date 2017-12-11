@@ -37,8 +37,7 @@ class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
         } else if elementName == "itunes:duration" {
             self.podcast["duration"] = self.foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)
         } else if elementName == "item" {
-            let tempPod = self.podcast
-            self.items.append(tempPod)
+            self.podcasts.append(dictToPod(dict: self.podcast))
             self.podcast = [:]
         }
         self.foundCharacters = ""

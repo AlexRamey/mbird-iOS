@@ -14,25 +14,23 @@ class MBPodcastsStore {
     
     let client: MBClient
     let fileHelper: FileHelper
-    var xmlParserDelegate: PodcastXMLParsingDelegate
     
     init() {
         client = MBClient()
         fileHelper = FileHelper()
-        xmlParserDelegate = PodcastXMLParsingDelegate()
     }
     
     func syncPodcasts(completion: @escaping ([MBPodcast]?, Error?) -> Void) {
         self.client.getPodcastsWithCompletion { data, error in
-            if error == nil {
+            if error == nil, let data = data {
                 do {
                     // We got some data now parse
                     print("fetched podcasts from server")
-                    let parser = XMLParser()
-                    self.xmlParserDelegate = PodcastXMLParsingDelegate()
-                    parser.delegate = self.xmlParserDelegate
+                    let parser = XMLParser(data: data)
+                    let xmlParserDelegate = PodcastXMLParsingDelegate()
+                    parser.delegate = xmlParserDelegate
                     parser.parse()
-                    let podcasts = self.xmlParserDelegate.podcasts
+                    let podcasts = xmlParserDelegate.podcasts
                     try self.fileHelper.save(podcasts, forPath: "podcasts")
                     completion(podcasts, nil)
                 } catch let error {

@@ -109,20 +109,20 @@ class MBClient: NSObject {
         }.resume()
     }
     
-    func getPodcastsWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
+    func getPodcastsWithCompletion(completion: @escaping (Data?, Error?) -> Void ) {
         guard let url = URL(string: podcastsEndpoint) else {
-            completion([], NetworkRequestError.invalidURL(url: podcastsEndpoint))
+            completion(nil, NetworkRequestError.invalidURL(url: podcastsEndpoint))
             return
         }
         
         print("firing get podcasts request")
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             if let e = err {
-                completion([], e)
+                completion(nil, e)
             } else if let response = data {
-                completion([response], nil)
+                completion(response, nil)
             } else {
-                completion([], NetworkRequestError.networkError(msg: "did not receive a response"))
+                completion(nil, NetworkRequestError.networkError(msg: "did not receive a response"))
             }
         }.resume()
     }
