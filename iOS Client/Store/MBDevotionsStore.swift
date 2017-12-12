@@ -50,9 +50,13 @@ class MBDevotionsStore: NSObject {
     func saveDevotions(devotions: [LoadedDevotion]) throws {
         try fileHelper.save(devotions, forPath: "devotions")
     }
-    
+
     func replace(devotion: LoadedDevotion) throws {
-        try fileHelper.replace(devotion: devotion)
+        let devotions = try fileHelper.read(fromPath: "devotions", [LoadedDevotion].self)
+        let markedDevotions = devotions.map { oldDevotion in
+            oldDevotion.date == devotion.date ? devotion : oldDevotion
+        }
+        try fileHelper.save(markedDevotions, forPath: "devotions")
     }
     
     

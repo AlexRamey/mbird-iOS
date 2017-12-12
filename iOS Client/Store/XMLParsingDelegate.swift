@@ -22,8 +22,8 @@ class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if elementName == "title" {
             self.podcast["title"] = self.foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)
-        } else if elementName == "author" {
-            self.podcast["itunes:author"] = self.foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)
+        } else if elementName == "itunes:author" {
+            self.podcast["author"] = self.foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)
         } else if elementName == "description" {
             self.podcast["description"] = self.foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)
         } else if elementName == "itunes:image" {

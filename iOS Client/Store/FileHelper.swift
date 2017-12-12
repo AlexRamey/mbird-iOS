@@ -12,19 +12,11 @@ import Foundation
 class FileHelper {
     
     // nested store error enumeration
-    enum StoreError: Error {
+    enum FileHelperError: Error {
         case readError(msg: String)
         case writeError(msg: String)
         case parseError(msg: String)
         case urlError(msg: String)
-    }
-    
-    func replace(devotion: LoadedDevotion) throws {
-        let devotions = try self.read(fromPath: "devotions", [LoadedDevotion].self)
-        let markedDevotions = devotions.map { oldDevotion in
-            oldDevotion.date == devotion.date ? devotion : oldDevotion
-        }
-        try self.save(markedDevotions, forPath: "devotions")
     }
     
     func read<T: Codable>(fromPath path: String, _ resource: T.Type) throws -> T {
@@ -32,14 +24,14 @@ class FileHelper {
         if let data = manager.contents(atPath: path) {
             return try parse(data, T.self)
         } else {
-            throw StoreError.readError(msg: "No data could be read from file \(path)")
+            throw FileHelperError.readError(msg: "No data could be read from file \(path)")
         }
     }
     
     func urlPackage(forPath: String) throws -> (FileManager, String, URL) {
         let manager = FileManager.default
         guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first as URL? else {
-            throw StoreError.urlError(msg: "Could not create path")
+            throw FileHelperError.urlError(msg: "Could not create path")
         }
         let path = url.path.appending("/\(forPath)")
         let pathUrl = URL(fileURLWithPath: path)
@@ -52,7 +44,7 @@ class FileHelper {
             let models = try decoder.decode(T.self, from: data)
             return models
         } catch {
-            throw StoreError.parseError(msg: "Could not read devotions from documents")
+            throw FileHelperError.parseError(msg: "Could not read devotions from documents")
         }
     }
     
@@ -63,7 +55,7 @@ class FileHelper {
             let encodedData = try encoder.encode(data)
             try encodedData.write(to: pathUrl, options: [.atomic])
         } catch {
-            throw StoreError.writeError(msg: "Could not save devotions to documents directory")
+            throw FileHelperError.writeError(msg: "Could not save devotions to documents directory")
         }
     }
     

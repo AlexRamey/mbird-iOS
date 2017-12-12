@@ -37,7 +37,7 @@ class MBPodcastsStore {
                     completion(nil, error)
                 }
             } else {
-                // Failed so complete with no devotions
+                // Failed so complete with no podcasts
                 completion(nil, error)
             }
         }

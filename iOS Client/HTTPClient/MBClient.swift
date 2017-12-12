@@ -18,7 +18,7 @@ class MBClient: NSObject {
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     private let mediaEndpoint = "/media"
-    private let podcastsEndpoint = "https://www.mbird.com/feed/podcast/"
+    private let mockingPulpitEndpoint = "https://www.mbird.com/feed/podcast/"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -110,8 +110,8 @@ class MBClient: NSObject {
     }
     
     func getPodcastsWithCompletion(completion: @escaping (Data?, Error?) -> Void ) {
-        guard let url = URL(string: podcastsEndpoint) else {
-            completion(nil, NetworkRequestError.invalidURL(url: podcastsEndpoint))
+        guard let url = URL(string: mockingPulpitEndpoint) else {
+            completion(nil, NetworkRequestError.invalidURL(url: mockingPulpitEndpoint))
             return
         }
         
