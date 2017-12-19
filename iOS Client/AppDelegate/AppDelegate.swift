@@ -12,12 +12,13 @@ import CoreData
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    lazy var coreDataStack = CoreDataStack(modelName: "iOS_Client")
     var appCoordinator: AppCoordinator!
     let articlesStore = MBArticlesStore()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.appCoordinator = AppCoordinator(window: self.window!)
+        self.appCoordinator = AppCoordinator(window: self.window!, managedObjectContext: coreDataStack.managedContext)
         self.appCoordinator.start()
         application.setMinimumBackgroundFetchInterval(MBConstants.SECONDS_IN_A_DAY)
         return true
@@ -31,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        coreDataStack.saveContext()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -44,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        self.saveContext()
+        coreDataStack.saveContext()
     }
     
     // MARK: - Background App Refresh
@@ -53,12 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
         
-        guard let persistentContainer = self.persistentContainer else {
-            completionHandler(.failed)
-            return
-        }
-        
-        articlesStore.syncAllData(persistentContainer: persistentContainer) { (isNewData: Bool?, syncErr: Error?) in
+        articlesStore.syncAllData(managedObjectContext: coreDataStack.privateQueueContext) { (isNewData: Bool?, syncErr: Error?) in
             if syncErr != nil {
                 completionHandler(.failed)
             } else {
@@ -74,34 +71,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
-    // MARK: - Core Data stack
-
-    lazy var persistentContainer: NSPersistentContainer? = {
-        var container: NSPersistentContainer? = NSPersistentContainer(name: "iOS_Client")
-        container?.loadPersistentStores(completionHandler: { (_, error) in
-            if let error = error as NSError? {
-                print("Unresolved error \(error), \(error.userInfo)")
-                container = nil
-            }
-        })
-        return container
-    }()
-
-    // MARK: - Core Data Saving support
-
-    func saveContext () {
-        guard let context = persistentContainer?.viewContext else {
-            print("Error getting the viewContext off the persistentContainer")
-            return
-        }
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                print("Unable to save before termination: \(error)")
-            }
-        }
-    }
-
 }
