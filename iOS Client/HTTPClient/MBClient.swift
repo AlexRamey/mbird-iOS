@@ -214,7 +214,16 @@ class MBClient: NSObject {
             return
         }
         
-        guard let wpTotalPages = httpResponse.allHeaderFields["X-WP-TotalPages"] as? String, let numPages = Int(wpTotalPages) else {
+        var filteredKeys = httpResponse.allHeaderFields.keys.filter { (key) -> Bool in
+            guard let strKey = key as? String else {
+                return false
+            }
+            return strKey.lowercased() == "x-wp-totalpages"
+        }
+        
+        guard filteredKeys.count > 0,
+              let wpTotalPages = httpResponse.allHeaderFields[filteredKeys[0]] as? String,
+              let numPages = Int(wpTotalPages) else {
             completion([], NetworkRequestError.missingResponseHeaders(msg: "x-wp-totalpages header was missing"))
             return
         }
