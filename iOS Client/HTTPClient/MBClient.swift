@@ -13,12 +13,12 @@ class MBClient: NSObject {
     private let session: URLSession
     
     // Endpoints
-    private let baseURL = "https://www.mbird.com/wp-json/wp/v2"
+    private let baseURL = "http://www.mbird.com/wp-json/wp/v2"
     private let articlesEndpoint = "/posts"
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     private let mediaEndpoint = "/media"
-    private let mockingPulpitEndpoint = "https://www.mbird.com/feed/podcast/"
+    private let mockingPulpitEndpoint = "http://www.mbird.com/feed/podcast/"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -214,7 +214,7 @@ class MBClient: NSObject {
             return
         }
         
-        guard let wpTotalPages = httpResponse.allHeaderFields["x-wp-totalpages"] as? String, let numPages = Int(wpTotalPages) else {
+        guard let wpTotalPages = httpResponse.allHeaderFields["X-WP-TotalPages"] as? String, let numPages = Int(wpTotalPages) else {
             completion([], NetworkRequestError.missingResponseHeaders(msg: "x-wp-totalpages header was missing"))
             return
         }
