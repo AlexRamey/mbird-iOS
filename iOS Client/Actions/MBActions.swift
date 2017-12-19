@@ -43,3 +43,7 @@ struct SelectedDevotion: Action {
 struct UnreadDevotion: Action {
     var devotion: LoadedDevotion
 }
+
+struct LoadedPodcasts: Action {
+    var podcasts: Loaded<[MBPodcast]>
+}

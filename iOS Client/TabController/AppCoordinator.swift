@@ -41,7 +41,7 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
     // MARK: - Coordinator
     func start() {
         MBStore.sharedStore.subscribe(self)
-        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(), DevotionsCoordinator()].map({(coord: Coordinator) -> UIViewController in
+        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(), DevotionsCoordinator(), PodcastsCoordinator()].map({(coord: Coordinator) -> UIViewController in
             coord.start()
             self.addChildCoordinator(childCoordinator: coord)
             return coord.rootViewController

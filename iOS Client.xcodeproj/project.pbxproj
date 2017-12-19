@@ -13,14 +13,24 @@
 		237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */; };
 		23864DE31FA690D00061F212 /* NarrowArticleItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23864DE11FA690D00061F212 /* NarrowArticleItem.xib */; };
 		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
+		239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
+		23ABE3C21FDDE6D200F4B36B /* (null) in Sources */ = {isa = PBXBuildFile; };
+		23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */; };
+		23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */; };
+		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
 		23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */ = {isa = PBXBuildFile; fileRef = 23D8F1EF1FAAB3A1004964AE /* devotions.json */; };
 		23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */; };
 		23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F61FAE12D2004964AE /* MBDevotion.swift */; };
 		23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F91FAECD0B004964AE /* Color.swift */; };
 		23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED5DAE1FC652F6003B1BB3 /* DevotionTableViewCell.swift */; };
 		23ED5DB11FC652F6003B1BB3 /* DevotionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23ED5DAF1FC652F6003B1BB3 /* DevotionTableViewCell.xib */; };
+		23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */; };
+		23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */; };
+		23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */; };
+		23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */; };
+		23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */; };
 		23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FFB0231F85CC0E006A0AC8 /* Routing.swift */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
 		D025255E1FD775B7009980BB /* ArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D025255D1FD775B7009980BB /* ArticleTableViewCell.xib */; };
@@ -36,7 +46,6 @@
 		D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D36411F7FE8FA00D4E674 /* BookmarksCoordinator.swift */; };
 		D032F1641F81695500E78333 /* MBClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F1631F81695500E78333 /* MBClient.swift */; };
 		D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */; };
-		D032F1A11F8728B700E78333 /* MBCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */; };
 		D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */; };
 		D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */; };
 		D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */; };
@@ -72,12 +81,21 @@
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
 		23A278711FD10091003B2022 /* DevotionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionNotification.swift; sourceTree = "<group>"; };
+		23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcastsStore.swift; sourceTree = "<group>"; };
+		23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
+		23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcast.swift; sourceTree = "<group>"; };
 		23D8F1EF1FAAB3A1004964AE /* devotions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = devotions.json; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		23D8F1F41FAE129D004964AE /* iOS_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_Client.xcdatamodel; sourceTree = "<group>"; };
 		23D8F1F61FAE12D2004964AE /* MBDevotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotion.swift; sourceTree = "<group>"; };
 		23D8F1F91FAECD0B004964AE /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		23ED5DAE1FC652F6003B1BB3 /* DevotionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionTableViewCell.swift; sourceTree = "<group>"; };
 		23ED5DAF1FC652F6003B1BB3 /* DevotionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DevotionTableViewCell.xib; sourceTree = "<group>"; };
+		23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLParsingDelegate.swift; sourceTree = "<group>"; };
+		23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcastsViewController.swift; sourceTree = "<group>"; };
+		23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsCoordinator.swift; sourceTree = "<group>"; };
+		23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastTableViewCell.swift; sourceTree = "<group>"; };
+		23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastTableViewCell.xib; sourceTree = "<group>"; };
 		23FFB0231F85CC0E006A0AC8 /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
 		D025255D1FD775B7009980BB /* ArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleTableViewCell.xib; sourceTree = "<group>"; };
 		D025255F1FD77892009980BB /* ArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleTableViewCell.swift; sourceTree = "<group>"; };
@@ -97,8 +115,8 @@
 		D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTabBarController.swift; sourceTree = "<group>"; };
-		D04093111FDC4968007989A1 /* ArticlePicture+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ArticlePicture+CoreDataClass.swift"; path = "/Users/alexramey/Documents/mbird/iOS Client/iOS Client/Models/ArticlePicture+CoreDataClass.swift"; sourceTree = "<absolute>"; };
-		D04093121FDC4968007989A1 /* ArticlePicture+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ArticlePicture+CoreDataProperties.swift"; path = "/Users/alexramey/Documents/mbird/iOS Client/iOS Client/Models/ArticlePicture+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		D04093111FDC4968007989A1 /* ArticlePicture+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArticlePicture+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D04093121FDC4968007989A1 /* ArticlePicture+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArticlePicture+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D08F55831F786DCD0071ED86 /* iOS Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D08F55861F786DCD0071ED86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticlesViewController.swift; sourceTree = "<group>"; };
@@ -114,7 +132,7 @@
 		D0DDEC2D1F7B1B49007822CB /* MBActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBActions.swift; sourceTree = "<group>"; };
 		D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBMiddleware.swift; sourceTree = "<group>"; };
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
-		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MBArticle+CoreDataProperties.swift"; path = "/Users/alexramey/Documents/mbird/iOS Client/iOS Client/Models/MBArticle+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = MB.css; path = "iOS Client/Style/MB.css"; sourceTree = SOURCE_ROOT; };
 		D0ED48E01F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff"; sourceTree = "<group>"; };
 		D0ED48E11F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff2"; sourceTree = "<group>"; };
@@ -154,12 +172,31 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		23ABE3C01FDDE3DA00F4B36B /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		23D8F1EE1FAAB310004964AE /* Data */ = {
 			isa = PBXGroup;
 			children = (
 				23D8F1EF1FAAB3A1004964AE /* devotions.json */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		23F2CB451FDC91D100B80856 /* PodcastsController */ = {
+			isa = PBXGroup;
+			children = (
+				23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */,
+				23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */,
+				23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */,
+				23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */,
+			);
+			path = PodcastsController;
 			sourceTree = "<group>";
 		};
 		23FFB0221F85CBC4006A0AC8 /* Routing */ = {
@@ -258,9 +295,10 @@
 				D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */,
 				D04093111FDC4968007989A1 /* ArticlePicture+CoreDataClass.swift */,
 				D04093121FDC4968007989A1 /* ArticlePicture+CoreDataProperties.swift */,
+				23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */,
 				D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */,
-				D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */,
 				23D8F1F61FAE12D2004964AE /* MBDevotion.swift */,
+				23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -272,6 +310,7 @@
 				D08F55841F786DCD0071ED86 /* Products */,
 				B2F9D019B88BC6D17F4B6012 /* Pods */,
 				CFEA2464E4078B7D25F1B301 /* Frameworks */,
+				23ABE3C01FDDE3DA00F4B36B /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -286,6 +325,7 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
+				23F2CB451FDC91D100B80856 /* PodcastsController */,
 				23864DE41FA6A0930061F212 /* Utilities */,
 				23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */,
 				23D8F1EE1FAAB310004964AE /* Data */,
@@ -358,8 +398,11 @@
 			isa = PBXGroup;
 			children = (
 				D0DDEC291F7B178C007822CB /* MBStore.swift */,
+				23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */,
 				D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */,
 				D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */,
+				23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */,
+				23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -478,6 +521,7 @@
 				D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				D025255E1FD775B7009980BB /* ArticleTableViewCell.xib in Resources */,
+				23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
 				D02525641FD78E5B009980BB /* ArticleItem.xib in Resources */,
 				23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */,
@@ -561,20 +605,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */,
+				23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */,
 				D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */,
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
-				D032F1A11F8728B700E78333 /* MBCategory+CoreDataProperties.swift in Sources */,
+				23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
 				D02525621FD78E32009980BB /* ArticleItem.swift in Sources */,
 				23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */,
 				D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */,
 				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,
 				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
+				23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */,
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
 				D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */,
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,
+				23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */,
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
+				23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */,
 				D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */,
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
@@ -588,6 +636,7 @@
 				D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
+				23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */,
 				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
 				D02525601FD77892009980BB /* ArticleTableViewCell.swift in Sources */,
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
@@ -596,9 +645,12 @@
 				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
 				D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */,
 				D0CD7BB61F7875F7000E26B0 /* MBState.swift in Sources */,
+				23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D04093131FDC4969007989A1 /* ArticlePicture+CoreDataClass.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
+				23ABE3C21FDDE6D200F4B36B /* (null) in Sources */,
+				239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
