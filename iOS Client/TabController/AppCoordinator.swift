@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreData
 import UIKit
 import ReSwift
 
@@ -21,6 +22,7 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
     }
     
     let window: UIWindow
+    let managedObjectContext: NSManagedObjectContext
     
     private lazy var tabBarController: MBTabBarController = {
         let tabBarController = MBTabBarController.instantiateFromStoryboard()
@@ -28,8 +30,9 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
         return tabBarController
     }()
     
-    init(window: UIWindow) {
+    init(window: UIWindow, managedObjectContext: NSManagedObjectContext) {
         self.window = window
+        self.managedObjectContext = managedObjectContext
         super.init()
         self.window.rootViewController = self.rootViewController
         self.window.makeKeyAndVisible()
@@ -38,7 +41,7 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
     // MARK: - Coordinator
     func start() {
         MBStore.sharedStore.subscribe(self)
-        self.tabBarController.viewControllers = [ArticlesCoordinator(), BookmarksCoordinator(), DevotionsCoordinator(), PodcastsCoordinator()].map({(coord: Coordinator) -> UIViewController in
+        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(), DevotionsCoordinator(), PodcastsCoordinator()].map({(coord: Coordinator) -> UIViewController in
             coord.start()
             self.addChildCoordinator(childCoordinator: coord)
             return coord.rootViewController

@@ -39,6 +39,7 @@
 		D02525641FD78E5B009980BB /* ArticleItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = D02525631FD78E5B009980BB /* ArticleItem.xib */; };
 		D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */; };
 		D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */; };
+		D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22961FDE15120024D0F6 /* CoreDataStack.swift */; };
 		D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */; };
 		D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363C1F7FE19400D4E674 /* Coordinator.swift */; };
 		D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */; };
@@ -102,6 +103,7 @@
 		D02525631FD78E5B009980BB /* ArticleItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ArticleItem.xib; sourceTree = "<group>"; };
 		D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticlesStore.swift; sourceTree = "<group>"; };
 		D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsStore.swift; sourceTree = "<group>"; };
+		D02C22961FDE15120024D0F6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppCoordinator.swift; path = "iOS Client/TabController/AppCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ArticlesCoordinator.swift; path = "iOS Client/ArticlesController/ArticlesCoordinator.swift"; sourceTree = SOURCE_ROOT; };
@@ -258,6 +260,14 @@
 			path = CollectionViewCell;
 			sourceTree = "<group>";
 		};
+		D02C22951FDE14E40024D0F6 /* CoreDataStack */ = {
+			isa = PBXGroup;
+			children = (
+				D02C22961FDE15120024D0F6 /* CoreDataStack.swift */,
+			);
+			path = CoreDataStack;
+			sourceTree = "<group>";
+		};
 		D02D36391F7C9FBF00D4E674 /* TabController */ = {
 			isa = PBXGroup;
 			children = (
@@ -326,6 +336,7 @@
 				D0DDEC3C1F7C812F007822CB /* BookmarksController */,
 				D00F8F591F93F122006CCD80 /* Constants */,
 				D02D363E1F7FE58600D4E674 /* Coordinator */,
+				D02C22951FDE14E40024D0F6 /* CoreDataStack */,
 				D00F8F5A1F93F132006CCD80 /* HTTPClient */,
 				D09F67111F93FAA3001D910E /* Main Storyboard */,
 				D0DDEC351F7C7BC6007822CB /* Middleware */,
@@ -612,6 +623,7 @@
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
 				23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */,
+				D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */,
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
 				D04093141FDC4969007989A1 /* ArticlePicture+CoreDataProperties.swift in Sources */,
