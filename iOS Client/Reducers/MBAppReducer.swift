@@ -33,6 +33,8 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))
     case let action as SelectedArticleLink:
         nextState.safariOverlays[.articles] = action.url
+    case let action as SelectedPodcast:
+        nextState.routes[.podcasts]?.append(.detail(item: action.podcast))
     case _ as PopCurrentNavigation:
         nextState.routes[nextState.selectedTab]?.removeLast()
     default:
@@ -80,6 +82,8 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
     switch action{
     case let action as LoadedPodcasts:
         nextState.podcasts = action.podcasts
+    case let action as SelectedPodcast:
+        nextState.selectedPodcast = action.podcast
     default:
         break
     }

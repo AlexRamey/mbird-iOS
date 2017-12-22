@@ -47,6 +47,8 @@ enum RouteComponent: Equatable {
         case .podcasts:
             if case .base = self {
                 retVal = MBPodcastsViewController.instantiateFromStoryboard()
+            } else if case let .detail(detailItem) = self {
+                retVal = PodcastDetailViewController.instantiateFromStoryboard()
             }
         }
         return retVal
