@@ -65,26 +65,20 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     private func downloadArticleData() {
-        articlesStore.syncAllData(managedObjectContext: self.managedObjectContext ) { (isNewData: Bool?, err: Error?) in
-            if let syncErr = err {
-                print(syncErr)
-                DispatchQueue.main.async {
-                    // ReSwift recommends always dispatching from the main thread
-                    MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
-                }
-                return
-            }
-            
-            // TODO: Run Data Cleanup Task
-            // Update timestamp
-            let timestamp: Double = Date().timeIntervalSinceReferenceDate
-            UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-            print("IS NEW DATA? \(isNewData ?? false)")
-            
-            DispatchQueue.main.async {
-                // ReSwift recommends always dispatching from the main thread
+        let bgq = DispatchQueue.global(qos: .utility)
+        bgq.async {
+            self.articlesStore.syncAllData(managedObjectContext: self.managedObjectContext).then { isNewData -> Void in
+                // TODO: Run Data Cleanup Task
+                // Update timestamp
+                let timestamp: Double = Date().timeIntervalSinceReferenceDate
+                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+                print("IS NEW DATA? \(isNewData)")
+                
                 let loadedArticles = self.articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
+            }.catch { syncErr in
+                print(syncErr)
+                MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
             }
         }
     }

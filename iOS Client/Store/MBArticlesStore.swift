@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import PromiseKit
 
 class MBArticlesStore: NSObject {
     private let client: MBClient
@@ -49,34 +50,29 @@ class MBArticlesStore: NSObject {
     }
     
     /***** Download Data from Network *****/
-    func syncAllData(managedObjectContext: NSManagedObjectContext, completion: @escaping (Bool?, Error?) -> Void) {
-        var isNewData: Bool = false
-        downloadAuthors(managedObjectContext: managedObjectContext) { (isNewAuthorData, authorsErr) in
-            if let unwrappedAuthorsErr = authorsErr {
-                print("There was an error downloading author data! \(unwrappedAuthorsErr)")
-                completion(nil, authorsErr)
-            } else {
-                self.downloadCategories(managedObjectContext: managedObjectContext, completion: { (isNewCategoryData, catErr) in
-                    if let unwrappedCatErr = catErr {
-                        print("There was an error downloading category data! \(unwrappedCatErr)")
-                        completion(nil, catErr)
-                    } else {
-                        if let linkErr = self.linkCategoriesTogether(managedObjectContext: managedObjectContext) {
-                            print("There was an error linking categories! \(linkErr)")
-                            completion(nil, linkErr)
-                        } else {
-                                self.downloadArticles(managedObjectContext: managedObjectContext, completion: { (isNewArticleData, articleErr) in
-                                    if let unwrappedArticleErr = articleErr {
-                                        print("There was an error downloading article data! \(unwrappedArticleErr)")
-                                        completion(nil, articleErr)
-                                    } else {
-                                        isNewData = isNewAuthorData ?? false || isNewCategoryData ?? false || isNewArticleData ?? false
-                                        completion(isNewData, nil)
-                                    }
-                                })
-                            }
-                        }
-                })
+    func syncAllData(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            var results: [Bool] = []
+            let bgq = DispatchQueue.global(qos: .userInitiated)
+            firstly {
+                downloadAuthors(managedObjectContext: managedObjectContext)
+            }.then(on: bgq) { result -> Promise<Bool> in
+                results.append(result)
+                return self.downloadCategories(managedObjectContext: managedObjectContext)
+            }.then(on: bgq) { result -> Promise<Bool> in
+                results.append(result)
+                if let linkErr = self.linkCategoriesTogether(managedObjectContext: managedObjectContext) {
+                    reject(linkErr)
+                }
+                return self.downloadArticles(managedObjectContext: managedObjectContext)
+            }.then(on: bgq) { result -> Void in
+                results.append(result)
+                fulfill(results.reduce(false, { (accumulator, item) -> Bool in
+                    return accumulator || item
+                }))
+            }.catch { error in
+                print("There was an error downloading data! \(error)")
+                reject(error)
             }
         }
     }
@@ -106,49 +102,49 @@ class MBArticlesStore: NSObject {
         return caughtError
     }
     
-    private func downloadAuthors(managedObjectContext: NSManagedObjectContext, completion: @escaping (Bool?, Error?) -> Void) {
-        performDownload(clientFunction: client.getAuthorsWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBAuthor.deserialize, completion: completion)
+    private func downloadAuthors(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
+        return performDownload(clientFunction: client.getAuthorsWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBAuthor.deserialize)
     }
     
-    private func downloadCategories(managedObjectContext: NSManagedObjectContext, completion: @escaping (Bool?, Error?) -> Void) {
-        performDownload(clientFunction: client.getCategoriesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBCategory.deserialize, completion: completion)
+    private func downloadCategories(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
+        return performDownload(clientFunction: client.getCategoriesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBCategory.deserialize)
     }
     
-    private func downloadArticles(managedObjectContext: NSManagedObjectContext, completion: @escaping (Bool?, Error?) -> Void) {
-        performDownload(clientFunction: client.getArticlesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBArticle.deserialize, completion: completion)
+    private func downloadArticles(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
+        return performDownload(clientFunction: client.getArticlesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBArticle.deserialize)
     }
     
     // An internal helper function to perform a download
     private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> Void,
                                  managedObjectContext: NSManagedObjectContext,
-                                 deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool,
-                                 completion: @escaping (Bool?, Error?) -> Void) {
-        
-        clientFunction { (data: [Data], err: Error?) in
-            if let clientErr = err {
-                completion(false, clientErr)
-                return
-            }
-            
-            var isNewData = false
-            var caughtError: Error? = nil
-            // data is an array of Data, where each datum is a serialized array representing a page of results
-            // thus, think of data as an array of results pages
-            for jsonData in data {
-                do {
-                    isNewData = try self.downloadModelsHandler(managedObjectContext: managedObjectContext,
-                                                   data: jsonData,
-                                                   deserializeFunc: deserializeFunc) || isNewData
-                } catch {
-                    print("could not handle data: \(error) \(error.localizedDescription)")
-                    caughtError = error
+                                 deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool) -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            clientFunction { (data: [Data], err: Error?) in
+                if let clientErr = err {
+                    reject(clientErr)
+                    return
                 }
-            }
-            
-            if let error = caughtError {
-                completion(nil, error)
-            } else {
-                completion(isNewData, nil)
+                
+                var isNewData = false
+                var caughtError: Error? = nil
+                // data is an array of Data, where each datum is a serialized array representing a page of results
+                // thus, think of data as an array of results pages
+                for jsonData in data {
+                    do {
+                        isNewData = try self.downloadModelsHandler(managedObjectContext: managedObjectContext,
+                                                       data: jsonData,
+                                                       deserializeFunc: deserializeFunc) || isNewData
+                    } catch {
+                        print("could not handle data: \(error) \(error.localizedDescription)")
+                        caughtError = error
+                    }
+                }
+                
+                if let error = caughtError {
+                    reject(error)
+                } else {
+                    fulfill(isNewData)
+                }
             }
         }
     }

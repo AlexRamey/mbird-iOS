@@ -241,6 +241,7 @@ class MBClient: NSObject {
         
         var dataTasks: [URLSessionDataTask] = []
         var results: [Data?] = [data]
+        let serialQueue = DispatchQueue(label: "syncpoint")
         for i in 2...numPages {
             let urlString = "\(url)\(i)"
             guard let url = URL(string: urlString) else {
@@ -249,7 +250,7 @@ class MBClient: NSObject {
             }
             
             dataTasks.append(self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
-                DispatchQueue.main.async {
+                serialQueue.async {
                     results.append(data)
                     // results starts with the data from the initial response, hence dataTasks.count + 1
                     if results.count == dataTasks.count + 1 {

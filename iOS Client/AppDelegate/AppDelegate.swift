@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import PromiseKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -55,19 +56,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
         
-        articlesStore.syncAllData(managedObjectContext: coreDataStack.privateQueueContext) { (isNewData: Bool?, syncErr: Error?) in
-            if syncErr != nil {
-                completionHandler(.failed)
-            } else {
+        let bgq = DispatchQueue.global(qos: .utility)
+        bgq.async {
+            self.articlesStore.syncAllData(managedObjectContext: self.coreDataStack.privateQueueContext).then { isNewData -> Void in
                 let timestamp: Double = Date().timeIntervalSinceReferenceDate
                 UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
                 UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
-                if let isNewDataUnwrapped = isNewData, isNewDataUnwrapped == true {
+                if isNewData {
                     // TODO: Run Data Cleanup Task
                     completionHandler(.newData)
                 } else {
                     completionHandler(.noData)
                 }
+            }.catch { _ in
+                completionHandler(.failed)
             }
         }
     }
