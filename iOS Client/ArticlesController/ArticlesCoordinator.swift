@@ -10,12 +10,14 @@ import Foundation
 import UIKit
 import ReSwift
 import SafariServices
+import CoreData
 
 class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationControllerDelegate, SFSafariViewControllerDelegate {
     var childCoordinators: [Coordinator] = []
     var route: [RouteComponent] = [.base]
     var tab: Tab = .articles
     var overlay: URL? = nil
+    let managedObjectContext: NSManagedObjectContext
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -25,9 +27,15 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
         return UINavigationController()
     }()
     
+    init(managedObjectContext: NSManagedObjectContext) {
+        self.managedObjectContext = managedObjectContext
+        super.init()
+    }
+    
     // MARK: - Coordinator
     func start() {
         let articlesController = MBArticlesViewController.instantiateFromStoryboard()
+        articlesController.managedObjectContext = self.managedObjectContext
         self.navigationController.pushViewController(articlesController, animated: true)
         MBStore.sharedStore.subscribe(self)
     }

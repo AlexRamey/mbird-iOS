@@ -8,4 +8,5 @@ target 'iOS Client' do
   # Pods for iOS Client
   pod 'ReSwift'
   pod 'SwiftLint'
+  pod 'PromiseKit', '~> 4.4'
 end

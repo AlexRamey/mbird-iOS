@@ -13,6 +13,7 @@ func appReducer(action: Action, state: MBAppState?) -> MBAppState {
         navigationState: navigationReducer(action: action, state: state?.navigationState),
         articleState: articleReducer(action: action, state: state?.articleState),
         devotionState: devotionReducer(action: action, state: state?.devotionState),
+        podcastsState: podcastsReducer(action: action, state: state?.podcastsState),
         settingsState: settingsReducer(action: action, state: state?.settingsState)
     )
 }
@@ -72,6 +73,18 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
         break
     }
     return nextState
+}
+
+func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
+    var nextState = state ?? MBPodcastsState()
+    switch action{
+    case let action as LoadedPodcasts:
+        nextState.podcasts = action.podcasts
+    default:
+        break
+    }
+    return nextState
+    
 }
 
 func settingsReducer(action: Action, state: SettingsState?) -> SettingsState {

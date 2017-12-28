@@ -11,12 +11,18 @@ import ReSwift
 import CoreData
 
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
+    // properties
     @IBOutlet weak var tableView: UITableView!
     var articlesByCategory = [String: [MBArticle]]()
     var topLevelCategories: [String] = []
-    let client = MBClient()
-    let articlesStore = MBArticlesStore()
+    
+    // constants
     let reuseIdentifier = "ArticleCellReuseIdentifier"
+    
+    // dependencies
+    let client: MBClient = MBClient()
+    let articlesStore: MBArticlesStore = MBArticlesStore()
+    var managedObjectContext: NSManagedObjectContext!
     
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -43,18 +49,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
         
-
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-              let persistentContainer = appDelegate.persistentContainer else {
-            print("Unable to get the persistent container!")
-            return
-        }
-        
         let oneWeekAgoTimestamp = Date().timeIntervalSinceReferenceDate - MBConstants.SECONDS_IN_A_WEEK
         let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
         
         if lastUpdateTimestamp > oneWeekAgoTimestamp {
-            let articles = articlesStore.getArticles(persistentContainer: persistentContainer)
+            let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
             
             if articles.count > 0 {
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
@@ -62,30 +61,24 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
-        downloadArticleData(persistentContainer: persistentContainer)
+        downloadArticleData()
     }
     
-    private func downloadArticleData(persistentContainer: NSPersistentContainer) {
-        articlesStore.syncAllData(persistentContainer: persistentContainer) { (isNewData: Bool?, err: Error?) in
-            if let syncErr = err {
-                print(syncErr)
-                DispatchQueue.main.async {
-                    // ReSwift recommends always dispatching from the main thread
-                    MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
-                }
-                return
-            }
-            
-            // TODO: Run Data Cleanup Task
-            // Update timestamp
-            let timestamp: Double = Date().timeIntervalSinceReferenceDate
-            UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-            print("IS NEW DATA? \(isNewData ?? false)")
-            
-            DispatchQueue.main.async {
-                // ReSwift recommends always dispatching from the main thread
-                let loadedArticles = self.articlesStore.getArticles(persistentContainer: persistentContainer)
+    private func downloadArticleData() {
+        let bgq = DispatchQueue.global(qos: .utility)
+        bgq.async {
+            self.articlesStore.syncAllData(managedObjectContext: self.managedObjectContext).then { isNewData -> Void in
+                // TODO: Run Data Cleanup Task
+                // Update timestamp
+                let timestamp: Double = Date().timeIntervalSinceReferenceDate
+                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
+                print("IS NEW DATA? \(isNewData)")
+                
+                let loadedArticles = self.articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
+            }.catch { syncErr in
+                print(syncErr)
+                MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
             }
         }
     }

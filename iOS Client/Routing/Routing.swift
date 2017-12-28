@@ -44,13 +44,17 @@ enum RouteComponent: Equatable {
             } else if case let .detail(detailItem) = self {
                 retVal = DevotionDetailViewController.instantiateFromStoryboard()
             }
+        case .podcasts:
+            if case .base = self {
+                retVal = MBPodcastsViewController.instantiateFromStoryboard()
+            }
         }
         return retVal
     }
 }
 
 enum Tab: Int {
-    case articles, bookmarks, devotions
+    case articles, bookmarks, devotions, podcasts
 }
 
 protocol Detailable {

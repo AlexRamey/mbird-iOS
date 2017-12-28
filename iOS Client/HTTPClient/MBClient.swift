@@ -13,11 +13,12 @@ class MBClient: NSObject {
     private let session: URLSession
     
     // Endpoints
-    private let baseURL = "https://www.mbird.com/wp-json/wp/v2"
+    private let baseURL = "http://www.mbird.com/wp-json/wp/v2"
     private let articlesEndpoint = "/posts"
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     private let mediaEndpoint = "/media"
+    private let mockingPulpitEndpoint = "http://www.mbird.com/feed/podcast/"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -108,6 +109,24 @@ class MBClient: NSObject {
         }.resume()
     }
     
+    func getPodcastsWithCompletion(completion: @escaping (Data?, Error?) -> Void ) {
+        guard let url = URL(string: mockingPulpitEndpoint) else {
+            completion(nil, NetworkRequestError.invalidURL(url: mockingPulpitEndpoint))
+            return
+        }
+        
+        print("firing get podcasts request")
+        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+            if let e = err {
+                completion(nil, e)
+            } else if let response = data {
+                completion(response, nil)
+            } else {
+                completion(nil, NetworkRequestError.networkError(msg: "did not receive a response"))
+            }
+        }.resume()
+    }
+    
     func getJSONFile(name: String, completion: @escaping (Data?, Error?) -> Void ) {
         do {
             if let file = Bundle.main.url(forResource: name, withExtension: "json") {
@@ -195,7 +214,16 @@ class MBClient: NSObject {
             return
         }
         
-        guard let wpTotalPages = httpResponse.allHeaderFields["x-wp-totalpages"] as? String, let numPages = Int(wpTotalPages) else {
+        var filteredKeys = httpResponse.allHeaderFields.keys.filter { (key) -> Bool in
+            guard let strKey = key as? String else {
+                return false
+            }
+            return strKey.lowercased() == "x-wp-totalpages"
+        }
+        
+        guard filteredKeys.count > 0,
+              let wpTotalPages = httpResponse.allHeaderFields[filteredKeys[0]] as? String,
+              let numPages = Int(wpTotalPages) else {
             completion([], NetworkRequestError.missingResponseHeaders(msg: "x-wp-totalpages header was missing"))
             return
         }
@@ -213,6 +241,7 @@ class MBClient: NSObject {
         
         var dataTasks: [URLSessionDataTask] = []
         var results: [Data?] = [data]
+        let serialQueue = DispatchQueue(label: "syncpoint")
         for i in 2...numPages {
             let urlString = "\(url)\(i)"
             guard let url = URL(string: urlString) else {
@@ -221,7 +250,7 @@ class MBClient: NSObject {
             }
             
             dataTasks.append(self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
-                DispatchQueue.main.async {
+                serialQueue.async {
                     results.append(data)
                     // results starts with the data from the initial response, hence dataTasks.count + 1
                     if results.count == dataTasks.count + 1 {
