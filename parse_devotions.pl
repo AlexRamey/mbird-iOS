@@ -76,8 +76,11 @@ foreach my $i (0 .. $#dates) {
     $verses[$i] =~ s/^\s+|\s+$//g;
     $verseTexts[$i] =~ s/"/'/g;
     $verseTexts[$i] =~ s/^\s+|\s+$//g;
+    $verseTexts[$i] =~ s/\n/\\n/g;
     $texts[$i] =~ s/"/'/g;
     $texts[$i] =~ s/^\s+|\s+$//g;
+    $texts[$i] =~ s/\t/\\t/g;
+    $texts[$i] =~ s/\n/\\n/g;
     print "\n\t{\n";
     print "\t\t\"date\": \"$dates[$i]\",\n";
     print "\t\t\"verse\": \"$verses[$i]\",\n";
