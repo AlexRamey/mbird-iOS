@@ -30,6 +30,7 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
         let podcastsController = MBPodcastsViewController.instantiateFromStoryboard()
         navigationController.pushViewController(podcastsController, animated: true)
         route = [.base]
+        MBStore.sharedStore.subscribe(self)
         podcastsStore.syncPodcasts { (podcasts: [MBPodcast]?, syncErr: Error?) in
             if syncErr == nil, let pods = podcasts {
                 DispatchQueue.main.async {

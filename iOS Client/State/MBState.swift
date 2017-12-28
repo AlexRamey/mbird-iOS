@@ -24,7 +24,7 @@ protocol NavigationState {
 }
 
 struct MBNavigationState: NavigationState {
-    var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base], .devotions: [.base]]
+    var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base], .devotions: [.base], .podcasts: [.base]]
     var selectedTab: Tab = .articles
     var safariOverlays: [Tab: URL?] = [.articles: nil, .bookmarks: nil]
 }
@@ -66,10 +66,12 @@ struct MBDevotionState: DevotionState {
 /********** Podcasts State *************/
 protocol PodcastsState {
     var podcasts: Loaded<[MBPodcast]> { get set }
+    var selectedPodcast: MBPodcast? { get set }
 }
 
 struct MBPodcastsState: PodcastsState {
     var podcasts: Loaded<[MBPodcast]> = .initial
+    var selectedPodcast: MBPodcast? = nil
 }
 
 /********** Settings State *************/

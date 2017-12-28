@@ -109,6 +109,39 @@
             </objects>
             <point key="canvasLocation" x="-546.39999999999998" y="1481.1094452773614"/>
         </scene>
+        <!--Podcast Detail View Controller-->
+        <scene sceneID="yaV-dU-zfi">
+            <objects>
+                <viewController storyboardIdentifier="PodcastDetailViewController" id="pqk-7Q-AGL" customClass="PodcastDetailViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zko-gL-Spm"/>
+                        <viewControllerLayoutGuide type="bottom" id="l8b-bd-aGw"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fim-Xm-Ik2">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OcV-hV-jij">
+                                <rect key="frame" x="166" y="323" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="OcV-hV-jij" firstAttribute="centerY" secondItem="fim-Xm-Ik2" secondAttribute="centerY" id="QB6-WW-ozH"/>
+                            <constraint firstItem="OcV-hV-jij" firstAttribute="centerX" secondItem="fim-Xm-Ik2" secondAttribute="centerX" id="yfm-el-q8x"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="titleLabel" destination="OcV-hV-jij" id="ZEE-mr-o17"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DbW-44-zIX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="342" y="1475"/>
+        </scene>
         <!--Devotion Detail View Controller-->
         <scene sceneID="d40-1k-nQD">
             <objects>
