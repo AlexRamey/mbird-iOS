@@ -24,7 +24,7 @@ protocol NavigationState {
 }
 
 struct MBNavigationState: NavigationState {
-    var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base], .devotions: [.base]]
+    var routes: [Tab: [RouteComponent]] = [.articles: [.base], .bookmarks: [.base], .devotions: [.base], .podcasts: [.base]]
     var selectedTab: Tab = .articles
     var safariOverlays: [Tab: URL?] = [.articles: nil, .bookmarks: nil]
 }

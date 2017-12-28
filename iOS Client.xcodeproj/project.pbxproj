@@ -81,6 +81,7 @@
 		23864DE11FA690D00061F212 /* NarrowArticleItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NarrowArticleItem.xib; sourceTree = "<group>"; };
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastDetailViewController.swift; sourceTree = "<group>"; };
+		239975D51FECB029003337EC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
 		23A278711FD10091003B2022 /* DevotionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionNotification.swift; sourceTree = "<group>"; };
 		23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -222,6 +223,7 @@
 		CFEA2464E4078B7D25F1B301 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				239975D51FECB029003337EC /* AVFoundation.framework */,
 				2359296C1F904E8D00FE4839 /* WebKit.framework */,
 				0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */,
 			);

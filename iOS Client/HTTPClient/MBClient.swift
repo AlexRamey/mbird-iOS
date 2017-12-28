@@ -18,7 +18,7 @@ class MBClient: NSObject {
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     private let mediaEndpoint = "/media"
-    private let mockingPulpitEndpoint = "https://www.mbird.com/feed/podcast/"
+    private let mockingPulpitEndpoint = "http://www.mbird.com/feed/podcast/"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -116,6 +116,23 @@ class MBClient: NSObject {
         }
         
         print("firing get podcasts request")
+        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+            if let e = err {
+                completion(nil, e)
+            } else if let response = data {
+                completion(response, nil)
+            } else {
+                completion(nil, NetworkRequestError.networkError(msg: "did not receive a response"))
+            }
+        }.resume()
+    }
+    
+    func getPodcastAudio(for podcast: MBPodcast, completion: @escaping (Data?, Error?) -> Void ) {
+        guard let guid = podcast.guid, let url = URL(string: guid) else {
+            completion(nil, NetworkRequestError.invalidURL(url: "Bad url for podcast"))
+            return
+        }
+        
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             if let e = err {
                 completion(nil, e)

@@ -8,16 +8,38 @@
 
 import UIKit
 import ReSwift
+import AVFoundation
 
 class PodcastDetailViewController: UIViewController, StoreSubscriber {
     
     var podcast: MBPodcast?
-
+    var player: AVPlayer?
+    
     @IBOutlet weak var titleLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureBackButton()
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        MBStore.sharedStore.subscribe(self)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        MBStore.sharedStore.unsubscribe(self)
+    }
+    
+    func configureBackButton() {
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backToPodcasts(sender:)))
+    }
+    
+    @objc func backToPodcasts(sender: AnyObject) {
+        player = nil
+        MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
 
     static func instantiateFromStoryboard() -> PodcastDetailViewController {
@@ -29,6 +51,10 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     func newState(state: MBAppState) {
         podcast = state.podcastsState.selectedPodcast
         titleLabel.text = podcast?.title
+        if let guid = podcast?.guid, let url = URL(string: guid) {
+            let item = AVPlayerItem(url: url)
+            player = AVPlayer(playerItem: item)
+            player?.play()
+        }
     }
-
 }
