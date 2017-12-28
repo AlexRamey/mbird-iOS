@@ -31,15 +31,14 @@ $devotionsText .= $_;
 ### . . .
 
 ## Build array of all date strings
-my $month;
-for $month (@months) {
-    my $dayCounter = 1;
-    while ($dayCounter <= $days_per_month{$month}) {
-        my $currentDate = "$month $dayCounter";
-        push @dates, $currentDate;
-        $dayCounter += 1;
+foreach my $monthIdx (0 .. $#months) {
+    my $day = 1;
+    while ($day <= $days_per_month{$months[$monthIdx]}) {
+        push @dates, sprintf("2017-%02d-%02d", $monthIdx+1, $day);
+        $day += 1;
     }
 }
+
 
 ## Split the text on dates
 my $regEx = join(" \\d+\\s|", @months) . " \\d+\\s";
