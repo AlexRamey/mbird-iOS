@@ -72,12 +72,12 @@ foreach my $i (0 .. $#dates) {
     # and trimming trailing/leading whitespace
     $dates[$i] =~ s/"/'/g;
     $dates[$i] =~ s/^\s+|\s+$//g;
-    $verses[$i] =~ s/"/'/g;
+    $verses[$i] =~ s/"/\\"/g;
     $verses[$i] =~ s/^\s+|\s+$//g;
-    $verseTexts[$i] =~ s/"/'/g;
+    $verseTexts[$i] =~ s/"/\\"/g;
     $verseTexts[$i] =~ s/^\s+|\s+$//g;
     $verseTexts[$i] =~ s/\n/\\n/g;
-    $texts[$i] =~ s/"/'/g;
+    $texts[$i] =~ s/"/\\"/g;
     $texts[$i] =~ s/^\s+|\s+$//g;
     $texts[$i] =~ s/\t/\\t/g;
     $texts[$i] =~ s/\n/\\n/g;
