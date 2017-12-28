@@ -9,7 +9,7 @@ my @months = ("January", "February", "March", "April", "May", "June", "July", "A
 my %days_per_month = ( $months[0] => 31, $months[1] => 29, $months[2] => 31,
                     $months[3] => 30, $months[4] => 31, $months[5] => 30, 
                     $months[6] => 31, $months[7] => 31, $months[8] => 30,
-                    $months[9] => 31, $months[10] => 30, $months[11] => 31,);
+                    $months[9] => 31, $months[10] => 30, $months[11] => 31);
 ## outputs
 my @dates = ();
 my @verses = ();
@@ -68,9 +68,9 @@ for $devotion (@devotions) {
 ## Step 3: Output JSON
 print "[";
 foreach my $i (0 .. $#dates) {
-    # Sanitize outputs by replacing double quotes with single quotes
-    # and trimming trailing/leading whitespace
-    $dates[$i] =~ s/"/'/g;
+    # Sanitize outputs by trimming whitespace and 
+    # escaping double quotes, newlines, and tabs
+    $dates[$i] =~ s/"/\\"/g;
     $dates[$i] =~ s/^\s+|\s+$//g;
     $verses[$i] =~ s/"/\\"/g;
     $verses[$i] =~ s/^\s+|\s+$//g;
