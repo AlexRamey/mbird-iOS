@@ -16,14 +16,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var articlesByCategory = [String: [MBArticle]]()
     var topLevelCategories: [String] = []
     
-    // constants
-    let reuseIdentifier = "ArticleCellReuseIdentifier"
-    
     // dependencies
     let client: MBClient = MBClient()
     let articlesStore: MBArticlesStore = MBArticlesStore()
     var managedObjectContext: NSManagedObjectContext!
     
+    // cell cache
+    var cache = [Int:ArticleTableViewCell]()
+
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
@@ -45,7 +45,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UINib(nibName: "ArticleTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
         
@@ -134,10 +133,15 @@ extension MBArticlesViewController {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = cache[indexPath.section] {
+            return cell
+        }
+        
         // swiftlint:disable force_cast
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as! ArticleTableViewCell
+        let cell = Bundle.main.loadNibNamed("ArticleTableViewCell", owner: self, options: nil)![0] as! ArticleTableViewCell
         // swiftlint:enable force_cast
         cell.configure(articles: articlesByCategory[topLevelCategories[indexPath.section]]!)
+        cache[indexPath.section] = cell
         return cell
     }
     
