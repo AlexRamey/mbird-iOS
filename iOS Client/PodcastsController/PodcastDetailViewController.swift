@@ -29,7 +29,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        super.viewWillDisappear(animated)
         MBStore.sharedStore.unsubscribe(self)
     }
     
@@ -38,7 +38,6 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     }
     
     @objc func backToPodcasts(sender: AnyObject) {
-        player = nil
         MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
 
