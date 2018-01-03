@@ -84,6 +84,11 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
         nextState.podcasts = action.podcasts
     case let action as SelectedPodcast:
         nextState.selectedPodcast = action.podcast
+        nextState.player = .playing
+    case let action as ResumePodcast:
+        nextState.player = .playing
+    case let action as PausePodcast:
+        nextState.player = .paused
     default:
         break
     }

@@ -50,10 +50,5 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     func newState(state: MBAppState) {
         podcast = state.podcastsState.selectedPodcast
         titleLabel.text = podcast?.title
-        if let guid = podcast?.guid, let url = URL(string: guid) {
-            let item = AVPlayerItem(url: url)
-            player = AVPlayer(playerItem: item)
-            player?.play()
-        }
     }
 }
