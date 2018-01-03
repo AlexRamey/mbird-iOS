@@ -14,6 +14,7 @@
 		23864DE31FA690D00061F212 /* NarrowArticleItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23864DE11FA690D00061F212 /* NarrowArticleItem.xib */; };
 		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
 		239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */; };
+		239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
 		23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */ = {isa = PBXBuildFile; };
@@ -79,6 +80,8 @@
 		237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionsCoordinator.swift; sourceTree = "<group>"; };
 		23864DE11FA690D00061F212 /* NarrowArticleItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NarrowArticleItem.xib; sourceTree = "<group>"; };
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastDetailViewController.swift; sourceTree = "<group>"; };
+		239975D51FECB029003337EC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
 		23A278711FD10091003B2022 /* DevotionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionNotification.swift; sourceTree = "<group>"; };
 		23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -195,6 +198,7 @@
 				23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */,
 				23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */,
 				23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */,
+				239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */,
 			);
 			path = PodcastsController;
 			sourceTree = "<group>";
@@ -219,6 +223,7 @@
 		CFEA2464E4078B7D25F1B301 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				239975D51FECB029003337EC /* AVFoundation.framework */,
 				2359296C1F904E8D00FE4839 /* WebKit.framework */,
 				0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */,
 			);
@@ -632,6 +637,7 @@
 				23864DE61FA6A1C10061F212 /* String.swift in Sources */,
 				D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */,
 				23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */,
+				239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */,
 				23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
 				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MBPodcast: Codable {
+struct MBPodcast: Codable, Detailable {
     let author: String?
     let duration: String?
     let guid: String?

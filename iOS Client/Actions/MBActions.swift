@@ -47,3 +47,7 @@ struct UnreadDevotion: Action {
 struct LoadedPodcasts: Action {
     var podcasts: Loaded<[MBPodcast]>
 }
+
+struct SelectedPodcast: Action {
+    var podcast: MBPodcast
+}
