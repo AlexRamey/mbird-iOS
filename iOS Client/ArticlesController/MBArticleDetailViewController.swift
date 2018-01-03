@@ -68,11 +68,8 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     // MARK: WKNavigationDelegate
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        
         if let dstURL = navigationAction.request.url,
-            dstURL.absoluteString.range(of: "http") != nil,
-            dstURL.absoluteString.range(of: "youtube.com/embed") == nil,
-            dstURL.absoluteString.range(of: "embed.vevo.com") == nil {
+            navigationAction.navigationType == .linkActivated {
             MBStore.sharedStore.dispatch(SelectedArticleLink(url: dstURL))
             decisionHandler(.cancel) // we're handling it manually
         } else {
