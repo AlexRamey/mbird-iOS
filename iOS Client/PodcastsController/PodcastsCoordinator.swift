@@ -14,6 +14,7 @@ import AVKit
 class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate {
     
     var childCoordinators: [Coordinator] = []
+    weak var playerDelegate: PodcastPlayerDelegate?
     
     var rootViewController: UIViewController {
         return navigationController
@@ -48,13 +49,14 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     }
     
     @objc func updateDuration(_ sender: Timer) {
-        let currentDuration = self.getCurrentDuration()
-        MBStore.sharedStore.dispatch(UpdateCurrentDuration(duration: currentDuration))
+//        let currentDuration = self.getCurrentDuration()
+//        MBStore.sharedStore.dispatch(UpdateCurrentDuration(duration: currentDuration))
+        playerDelegate?.updateCurrentDuration(with: getCurrentDuration())
     }
     
     // MARK: - StoreSubscriber
     func newState(state: MBAppState) {
-        
+        // Handle changes in the player state
         switch state.podcastsState.player {
         case .initialized:
             break
@@ -75,14 +77,19 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             timer?.invalidate()
             break
         }
-        
         playerState = state.podcastsState.player
         
+        // Handle changes in navigation state
         guard state.navigationState.selectedTab == .podcasts, let newRoute = state.navigationState.routes[.podcasts] else {
             return
         }
         build(newRoute: newRoute)
         route = newRoute
+        if let lastRoute = newRoute.last,
+            case .detail(_) = lastRoute,
+            let podcastDetail = navigationController.viewControllers.last as? PodcastDetailViewController {
+            playerDelegate = podcastDetail
+        }
     }
     
     func start(_ podcast: MBPodcast) {

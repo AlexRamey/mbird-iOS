@@ -10,8 +10,7 @@ import UIKit
 import ReSwift
 import AVKit
 
-class PodcastDetailViewController: UIViewController, StoreSubscriber {
-    
+class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPlayerDelegate {
     var podcast: MBPodcast?
     
     @IBOutlet weak var durationSlider: UISlider!
@@ -69,15 +68,24 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     }
     
     func newState(state: MBAppState) {
-        podcast = state.podcastsState.selectedPodcast
-        titleLabel.text = podcast?.title
         switch state.podcastsState.player {
         case .error, .initialized, .paused, .finished:
             playPauseButton.setImage(#imageLiteral(resourceName: "play"), for: .normal)
         case .playing:
             playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
         }
+        podcast = state.podcastsState.selectedPodcast
+        titleLabel.text = podcast?.title
+        
         playerState = state.podcastsState.player
-        durationLabel.text = formatter.string(from: NSNumber(value: state.podcastsState.currentDuration))
     }
+    
+    func updateCurrentDuration(with duration: Double) {
+        durationLabel.text = formatter.string(from: NSNumber(value:  duration))
+    }
+}
+
+protocol PodcastPlayerDelegate: class {
+    func updateCurrentDuration(with duration: Double)
+    
 }

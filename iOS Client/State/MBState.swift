@@ -68,14 +68,12 @@ protocol PodcastsState {
     var podcasts: Loaded<[MBPodcast]> { get set }
     var selectedPodcast: MBPodcast? { get set }
     var player: PlayerState { get set }
-    var currentDuration: Double { get set }
 }
 
 struct MBPodcastsState: PodcastsState {
     var podcasts: Loaded<[MBPodcast]> = .initial
     var selectedPodcast: MBPodcast?
     var player: PlayerState = .initialized
-    var currentDuration: Double = 0.0
 }
 
 /********** Settings State *************/
