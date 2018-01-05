@@ -11,7 +11,8 @@ import UIKit
 import ReSwift
 import AVKit
 
-class PodcastsCoordinator: Coordinator, StoreSubscriber {
+class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate {
+    
     var childCoordinators: [Coordinator] = []
     
     var rootViewController: UIViewController {
@@ -26,6 +27,7 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
     var player = AVPlayer()
     var currentPlayingPodcast: MBPodcast?
     var playerState: PlayerState = .initialized
+    var timer: Timer?
     
     private lazy var navigationController: UINavigationController = {
         return UINavigationController()
@@ -43,7 +45,11 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
                 }
             }
         }
-        
+    }
+    
+    @objc func updateDuration(_ sender: Timer) {
+        let currentDuration = self.getCurrentDuration()
+        MBStore.sharedStore.dispatch(UpdateCurrentDuration(duration: currentDuration))
     }
     
     // MARK: - StoreSubscriber
@@ -56,12 +62,17 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
             if let podcast = state.podcastsState.selectedPodcast, podcast.guid != currentPlayingPodcast?.guid {
                 start(podcast)
                 currentPlayingPodcast = state.podcastsState.selectedPodcast
+                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
+
             } else if case .paused = playerState {
                 player.play()
+                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
             }
         case .paused:
             player.pause()
-        case .error:
+            timer?.invalidate()
+        case .error, .finished:
+            timer?.invalidate()
             break
         }
         
@@ -82,11 +93,26 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
             player.play()
         }
     }
+    
+    func getCurrentDuration() -> Double {
+        let time = player.currentTime()
+        return time.seconds
+    }
+    
+    // MARK: - AVAudioPlayerDelegate
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        if flag {
+            MBStore.sharedStore.dispatch(FinishedPodcast())
+        } else {
+            MBStore.sharedStore.dispatch(PodcastError())
+        }
+    }
 }
 
 enum PlayerState {
     case initialized
     case playing
     case paused
+    case finished
     case error
 }

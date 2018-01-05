@@ -57,3 +57,11 @@ struct ResumePodcast: Action {
 
 struct PausePodcast: Action {
 }
+
+struct FinishedPodcast: Action { }
+
+struct PodcastError: Action { }
+
+struct UpdateCurrentDuration: Action {
+    var duration: Double
+}

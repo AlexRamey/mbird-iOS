@@ -78,15 +78,18 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     }
     
     func newState(state: MBAppState) {
-        if state.podcastsState.player != .initialized {
-            playPauseView?.isHidden = false
-        }
         
         switch state.podcastsState.player {
-        case .initialized, .paused, .error:
+        case .initialized:
+            break
+        case .paused, .error:
             playPauseButton.setTitle("Play", for: .normal)
+            playPauseView?.isHidden = false
         case .playing:
             playPauseButton.setTitle("Pause", for: .normal)
+            playPauseView?.isHidden = false
+        case .finished:
+            playPauseView?.isHidden = true
         }
         playerState = state.podcastsState.player
     }
