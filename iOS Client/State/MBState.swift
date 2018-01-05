@@ -128,3 +128,10 @@ enum Permission {
     case denied
 }
 
+enum PlayerState {
+    case initialized
+    case playing
+    case paused
+    case error
+}
+

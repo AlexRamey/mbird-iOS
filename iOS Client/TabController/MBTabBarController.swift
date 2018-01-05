@@ -42,14 +42,7 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     }
     
     @objc func togglePlayPause(_ sender: UIButton) {
-        let action: Action
-        if playerState == .paused || playerState == .initialized {
-            action = ResumePodcast()
-        } else {
-            playPauseButton.setTitle("Play", for: .normal)
-            action = PausePodcast()
-        }
-        MBStore.sharedStore.dispatch(action)
+        MBStore.sharedStore.dispatch(PlayPausePodcast())
     }
     
     override func viewDidLoad() {

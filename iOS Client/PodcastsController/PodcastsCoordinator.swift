@@ -53,8 +53,8 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
         case .initialized:
             break
         case .playing:
-            if let podcast = state.podcastsState.selectedPodcast, podcast.guid != currentPlayingPodcast?.guid {
-                start(podcast)
+            if let podcast = state.podcastsState.selectedPodcast, podcast.guid != currentPlayingPodcast?.guid, let guid = podcast.guid {
+                startPlaying(guid)
                 currentPlayingPodcast = state.podcastsState.selectedPodcast
             } else if case .paused = playerState {
                 player.play()
@@ -74,19 +74,11 @@ class PodcastsCoordinator: Coordinator, StoreSubscriber {
         route = newRoute
     }
     
-    func start(_ podcast: MBPodcast) {
-        if let guid = podcast.guid,
-        let url = URL(string:guid) {
+    func startPlaying(_ guid: String) {
+        if let url = URL(string: guid) {
             let item = AVPlayerItem(url: url)
             player.replaceCurrentItem(with: item)
             player.play()
         }
     }
-}
-
-enum PlayerState {
-    case initialized
-    case playing
-    case paused
-    case error
 }
