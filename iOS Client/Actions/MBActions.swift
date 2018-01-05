@@ -52,10 +52,7 @@ struct SelectedPodcast: Action {
     var podcast: MBPodcast
 }
 
-struct ResumePodcast: Action {
-}
-
-struct PausePodcast: Action {
+struct PlayPausePodcast: Action {
 }
 
 struct FinishedPodcast: Action { }

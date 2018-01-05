@@ -62,8 +62,8 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         case .initialized:
             break
         case .playing:
-            if let podcast = state.podcastsState.selectedPodcast, podcast.guid != currentPlayingPodcast?.guid {
-                start(podcast)
+            if let podcast = state.podcastsState.selectedPodcast, podcast.guid != currentPlayingPodcast?.guid, let guid = podcast.guid {
+                startPlaying(guid)
                 currentPlayingPodcast = state.podcastsState.selectedPodcast
                 timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
 
@@ -99,9 +99,8 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         }
     }
     
-    func start(_ podcast: MBPodcast) {
-        if let guid = podcast.guid,
-        let url = URL(string:guid) {
+    func startPlaying(_ guid: String) {
+        if let url = URL(string: guid) {
             let item = AVPlayerItem(url: url)
             player.replaceCurrentItem(with: item)
             player.play()
@@ -123,10 +122,3 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     }
 }
 
-enum PlayerState {
-    case initialized
-    case playing
-    case paused
-    case finished
-    case error
-}

@@ -53,14 +53,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
     }
 
     @IBAction func pressPlayPause(_ sender: Any) {
-        switch playerState {
-        case .playing:
-            MBStore.sharedStore.dispatch(PausePodcast())
-        case .paused, .initialized, .error:
-            MBStore.sharedStore.dispatch(ResumePodcast())
-        case .finished:
-            break
-        }
+        MBStore.sharedStore.dispatch(PlayPausePodcast())
     }
     
     @objc func onSeek(slider: UISlider, event: UIEvent) {
@@ -70,7 +63,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
             case .moved:
                 updateCurrentDuration(current: secondToSeekTo, total: totalDuration ?? 0.0)
                 if playerState != .paused {
-                    MBStore.sharedStore.dispatch(PausePodcast())
+                    MBStore.sharedStore.dispatch(PlayPausePodcast())
                 }
             case .ended:
                 MBStore.sharedStore.dispatch(SeekPodcast(toSecond: secondToSeekTo))
