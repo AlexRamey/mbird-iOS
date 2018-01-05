@@ -12,6 +12,7 @@ import AVKit
 
 class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPlayerDelegate {
     var podcast: MBPodcast?
+    var totalDuration: Double?
     
     @IBOutlet weak var durationSlider: UISlider!
     @IBOutlet weak var imageView: UIImageView!
@@ -29,7 +30,8 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackButton()
-        // Do any additional setup after loading the view.
+        durationSlider.addTarget(self, action: #selector(onSeek(slider:event:)), for: .valueChanged)
+        durationSlider.setValue(0.0, animated: false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,6 +63,23 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
         }
     }
     
+    @objc func onSeek(slider: UISlider, event: UIEvent) {
+        if let touchEvent = event.allTouches?.first {
+            let secondToSeekTo = Double(slider.value) * (totalDuration ?? 0.0)
+            switch touchEvent.phase {
+            case .moved:
+                updateCurrentDuration(current: secondToSeekTo, total: totalDuration ?? 0.0)
+                if playerState != .paused {
+                    MBStore.sharedStore.dispatch(PausePodcast())
+                }
+            case .ended:
+                MBStore.sharedStore.dispatch(SeekPodcast(toSecond: secondToSeekTo))
+            default:
+                break
+            }
+        }
+    }
+    
     static func instantiateFromStoryboard() -> PodcastDetailViewController {
         // swiftlint:disable force_cast
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
@@ -80,12 +99,14 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
         playerState = state.podcastsState.player
     }
     
-    func updateCurrentDuration(with duration: Double) {
-        durationLabel.text = formatter.string(from: NSNumber(value:  duration))
+    func updateCurrentDuration(current: Double, total: Double ) {
+        totalDuration = total
+        durationLabel.text = "\(formatter.string(from: NSNumber(value: current)) ?? "0") / \(formatter.string(from: NSNumber(value: total)) ?? "0")"
+        durationSlider.setValue(Float(current/(totalDuration ?? 0.0)), animated: true)
     }
 }
 
 protocol PodcastPlayerDelegate: class {
-    func updateCurrentDuration(with duration: Double)
+    func updateCurrentDuration(current: Double, total: Double )
     
 }

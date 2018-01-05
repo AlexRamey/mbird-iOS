@@ -61,3 +61,7 @@ struct PausePodcast: Action {
 struct FinishedPodcast: Action { }
 
 struct PodcastError: Action { }
+
+struct SeekPodcast: Action {
+    var toSecond: Double
+}

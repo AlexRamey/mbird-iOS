@@ -28,6 +28,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     var player = AVPlayer()
     var currentPlayingPodcast: MBPodcast?
     var playerState: PlayerState = .initialized
+    var lastSeek: Double = 0.0
     var timer: Timer?
     
     private lazy var navigationController: UINavigationController = {
@@ -49,9 +50,9 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     }
     
     @objc func updateDuration(_ sender: Timer) {
-//        let currentDuration = self.getCurrentDuration()
-//        MBStore.sharedStore.dispatch(UpdateCurrentDuration(duration: currentDuration))
-        playerDelegate?.updateCurrentDuration(with: getCurrentDuration())
+        if let totalDuration = player.currentItem?.duration.seconds {
+            playerDelegate?.updateCurrentDuration(current: getCurrentDuration(), total: totalDuration)
+        }
     }
     
     // MARK: - StoreSubscriber
@@ -78,6 +79,12 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             break
         }
         playerState = state.podcastsState.player
+        
+        if lastSeek != state.podcastsState.lastSeek {
+            let time = CMTime(seconds: state.podcastsState.lastSeek, preferredTimescale: 1)
+            player.seek(to: time)
+        }
+        lastSeek = state.podcastsState.lastSeek
         
         // Handle changes in navigation state
         guard state.navigationState.selectedTab == .podcasts, let newRoute = state.navigationState.routes[.podcasts] else {
