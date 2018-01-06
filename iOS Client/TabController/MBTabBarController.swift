@@ -9,21 +9,55 @@
 import ReSwift
 import UIKit
 
-class MBTabBarController: UITabBarController {
+class MBTabBarController: UITabBarController, StoreSubscriber {
+    
+    var playPauseView: UIView!
+    var playPauseButton: UIButton!
+    var playerState: PlayerState = .initialized
+    
     static func instantiateFromStoryboard() -> MBTabBarController {
         // swiftlint:disable force_cast
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BaseTabController") as! MBTabBarController
         // swiftlint:enable force_cast
     }
+    func configurePlayPauseView() {
+        let tabBar = self.tabBar
+        playPauseView = UIView()
+        playPauseView.translatesAutoresizingMaskIntoConstraints = false
+        playPauseView.backgroundColor = UIColor.gray
+        view.addSubview(playPauseView)
+        playPauseView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        playPauseView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        playPauseView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        playPauseView.bottomAnchor.constraint(equalTo: tabBar.topAnchor).isActive = true
+        playPauseView.isHidden = true
+        
+        playPauseButton = UIButton()
+        playPauseButton.setTitle("Play", for: .normal)
+        playPauseButton.addTarget(self, action: #selector(togglePlayPause(_:)), for: .touchUpInside)
+        playPauseButton.translatesAutoresizingMaskIntoConstraints = false
+        playPauseView.addSubview(playPauseButton)
+        playPauseButton.centerXAnchor.constraint(equalTo: playPauseView.centerXAnchor).isActive = true
+        playPauseButton.centerYAnchor.constraint(equalTo: playPauseView.centerYAnchor).isActive = true
+    }
+    
+    @objc func togglePlayPause(_ sender: UIButton) {
+        MBStore.sharedStore.dispatch(PlayPausePodcast())
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+         configurePlayPauseView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        MBStore.sharedStore.subscribe(self)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        MBStore.sharedStore.unsubscribe(self)
 
     }
 
@@ -35,15 +69,19 @@ class MBTabBarController: UITabBarController {
     func select(tab: Tab) {
         self.selectedIndex = tab.rawValue
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    func newState(state: MBAppState) {
+        if state.podcastsState.player != .initialized {
+            playPauseView?.isHidden = false
+        }
+        
+        switch state.podcastsState.player {
+        case .initialized, .paused, .error:
+            playPauseButton.setTitle("Play", for: .normal)
+        case .playing:
+            playPauseButton.setTitle("Pause", for: .normal)
+        }
+        playerState = state.podcastsState.player
     }
-    */
 
 }

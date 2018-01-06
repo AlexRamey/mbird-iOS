@@ -51,3 +51,6 @@ struct LoadedPodcasts: Action {
 struct SelectedPodcast: Action {
     var podcast: MBPodcast
 }
+
+struct PlayPausePodcast: Action {
+}
