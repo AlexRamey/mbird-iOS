@@ -11,7 +11,7 @@ import ReSwift
 import AVKit
 
 class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPlayerDelegate {
-    var podcast: MBPodcast?
+    
     var totalDuration: Double?
     
     @IBOutlet weak var durationSlider: UISlider!
@@ -26,7 +26,8 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
         return f
     }()
     
-    var playerState: PlayerState = .initialized
+    var handler: PodcastHandler?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackButton()
@@ -62,11 +63,8 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
             switch touchEvent.phase {
             case .moved:
                 updateCurrentDuration(current: secondToSeekTo, total: totalDuration ?? 0.0)
-                if playerState != .paused {
-                    MBStore.sharedStore.dispatch(PlayPausePodcast())
-                }
             case .ended:
-                MBStore.sharedStore.dispatch(SeekPodcast(toSecond: secondToSeekTo))
+                handler?.seek(to: secondToSeekTo)
             default:
                 break
             }
@@ -86,10 +84,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
         case .playing:
             playPauseButton.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
         }
-        podcast = state.podcastsState.selectedPodcast
-        titleLabel.text = podcast?.title
-        
-        playerState = state.podcastsState.player
+        titleLabel.text = state.podcastsState.selectedPodcast?.title
     }
     
     func updateCurrentDuration(current: Double, total: Double ) {
@@ -101,5 +96,5 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
 
 protocol PodcastPlayerDelegate: class {
     func updateCurrentDuration(current: Double, total: Double )
-    
+    var handler: PodcastHandler? { get set }
 }

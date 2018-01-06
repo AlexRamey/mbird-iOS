@@ -17,7 +17,7 @@
 		239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
-		23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		23ABE3C21FDDE6D200F4B36B /* (null) in Sources */ = {isa = PBXBuildFile; };
 		23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */; };
 		23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */; };
 		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
@@ -488,7 +488,7 @@
 				TargetAttributes = {
 					D08F55821F786DCD0071ED86 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = KP5XFBR489;
+						DevelopmentTeam = XA9HBUSBJ5;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -657,7 +657,7 @@
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D04093131FDC4969007989A1 /* ArticlePicture+CoreDataClass.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
-				23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */,
+				23ABE3C21FDDE6D200F4B36B /* (null) in Sources */,
 				239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,
 			);
@@ -795,7 +795,7 @@
 			baseConfigurationReference = 2251FCAEBD05DD222F6C84FD /* Pods-iOS Client.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = KP5XFBR489;
+				DEVELOPMENT_TEAM = XA9HBUSBJ5;
 				INFOPLIST_FILE = "iOS Client/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -811,7 +811,7 @@
 			baseConfigurationReference = 136BACE6A8C13A0F0360B527 /* Pods-iOS Client.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = KP5XFBR489;
+				DEVELOPMENT_TEAM = XA9HBUSBJ5;
 				INFOPLIST_FILE = "iOS Client/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

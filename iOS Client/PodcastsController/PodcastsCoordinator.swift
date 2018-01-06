@@ -11,10 +11,12 @@ import UIKit
 import ReSwift
 import AVKit
 
-class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate {
+class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastHandler {
     
     var childCoordinators: [Coordinator] = []
-    weak var playerDelegate: PodcastPlayerDelegate?
+    weak var playerDelegate: PodcastPlayerDelegate? {
+        return navigationController.viewControllers.last as? PodcastPlayerDelegate
+    }
     
     var rootViewController: UIViewController {
         return navigationController
@@ -27,8 +29,6 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     
     var player = AVPlayer()
     var currentPlayingPodcast: MBPodcast?
-    var playerState: PlayerState = .initialized
-    var lastSeek: Double = 0.0
     var timer: Timer?
     
     private lazy var navigationController: UINavigationController = {
@@ -62,14 +62,16 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         case .initialized:
             break
         case .playing:
-            if let podcast = state.podcastsState.selectedPodcast, podcast.guid != currentPlayingPodcast?.guid, let guid = podcast.guid {
-                startPlaying(guid)
-                currentPlayingPodcast = state.podcastsState.selectedPodcast
-                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
-
-            } else if case .paused = playerState {
+            if let podcast = state.podcastsState.selectedPodcast, let guid = podcast.guid, let url = URL(string: guid) {
+                if currentPlayingPodcast?.guid != guid {
+                    let item = AVPlayerItem(url: url)
+                    player.replaceCurrentItem(with: item)
+                }
                 player.play()
+                currentPlayingPodcast = state.podcastsState.selectedPodcast
+                timer?.invalidate()
                 timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
+                print("playing podcast")
             }
         case .paused:
             player.pause()
@@ -78,13 +80,6 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             timer?.invalidate()
             break
         }
-        playerState = state.podcastsState.player
-        
-        if lastSeek != state.podcastsState.lastSeek {
-            let time = CMTime(seconds: state.podcastsState.lastSeek, preferredTimescale: 1)
-            player.seek(to: time)
-        }
-        lastSeek = state.podcastsState.lastSeek
         
         // Handle changes in navigation state
         guard state.navigationState.selectedTab == .podcasts, let newRoute = state.navigationState.routes[.podcasts] else {
@@ -92,11 +87,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         }
         build(newRoute: newRoute)
         route = newRoute
-        if let lastRoute = newRoute.last,
-            case .detail(_) = lastRoute,
-            let podcastDetail = navigationController.viewControllers.last as? PodcastDetailViewController {
-            playerDelegate = podcastDetail
-        }
+        playerDelegate?.handler = self
     }
     
     func startPlaying(_ guid: String) {
@@ -120,5 +111,13 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             MBStore.sharedStore.dispatch(PodcastError())
         }
     }
+    
+    func seek(to second: Double) {
+        let time = CMTime(seconds: second, preferredTimescale: 1)
+        player.seek(to: time)
+    }
 }
 
+protocol PodcastHandler {
+    func seek(to second: Double)
+}
