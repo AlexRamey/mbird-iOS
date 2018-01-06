@@ -19,6 +19,14 @@ class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
         self.foundCharacters += string
     }
     
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        if elementName == "enclosure" {
+            if let url = attributeDict["url"] {
+                podcast["guid"] = url
+            }
+        }
+    }
+    
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if elementName == "title" {
             self.podcast["title"] = self.foundCharacters.trimmingCharacters(in: .whitespacesAndNewlines)

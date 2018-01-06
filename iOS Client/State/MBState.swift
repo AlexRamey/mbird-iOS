@@ -65,14 +65,14 @@ struct MBDevotionState: DevotionState {
 
 /********** Podcasts State *************/
 protocol PodcastsState {
-    var podcasts: Loaded<[MBPodcast]> { get set }
-    var selectedPodcast: MBPodcast? { get set }
+    var podcasts: Loaded<[DisplayablePodcast]> { get set }
+    var selectedPodcast: DisplayablePodcast? { get set }
     var player: PlayerState { get set }
 }
 
 struct MBPodcastsState: PodcastsState {
-    var podcasts: Loaded<[MBPodcast]> = .initial
-    var selectedPodcast: MBPodcast?
+    var podcasts: Loaded<[DisplayablePodcast]> = .initial
+    var selectedPodcast: DisplayablePodcast?
     var player: PlayerState = .initialized
 }
 

@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import UIKit
 
-struct MBPodcast: Codable, Detailable {
+struct MBPodcast: Codable {
     let author: String?
     let duration: String?
     let guid: String?
@@ -16,5 +17,16 @@ struct MBPodcast: Codable, Detailable {
     let keywords: String?
     let summary: String?
     let pubDate: String?
+    let title: String?
+}
+
+struct DisplayablePodcast: Detailable {
+    let author: String?
+    let duration: String?
+    let guid: String?
+    let image: UIImage
+    let keywords: String?
+    let summary: String?
+    let pubDate: Date
     let title: String?
 }

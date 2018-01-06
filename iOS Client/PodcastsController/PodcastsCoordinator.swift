@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import ReSwift
 import AVKit
+import PromiseKit
 
 class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastHandler {
     
@@ -28,7 +29,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     let podcastsStore = MBPodcastsStore()
     
     var player = AVPlayer()
-    var currentPlayingPodcast: MBPodcast?
+    var currentPlayingPodcast: DisplayablePodcast?
     var timer: Timer?
     
     private lazy var navigationController: UINavigationController = {
@@ -40,11 +41,17 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         navigationController.pushViewController(podcastsController, animated: true)
         route = [.base]
         MBStore.sharedStore.subscribe(self)
-        podcastsStore.syncPodcasts { (podcasts: [MBPodcast]?, syncErr: Error?) in
-            if syncErr == nil, let pods = podcasts {
-                DispatchQueue.main.async {
-                    MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: pods)))
-                }
+        
+        _ = firstly {
+            podcastsStore.syncPodcasts()
+        }.then { podcasts -> Void in
+            DispatchQueue.main.async {
+                MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
+            }
+        }.catch{ error in
+            print("error fetching podcasts: \(error)")
+            DispatchQueue.main.async {
+                MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .error))
             }
         }
     }

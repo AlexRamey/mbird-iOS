@@ -11,7 +11,7 @@ import ReSwift
 
 class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, StoreSubscriber {
 
-    var podcasts: [MBPodcast] = []
+    var podcasts: [DisplayablePodcast] = []
     let cellReuseIdentifier = "PodcastTableViewCell"
     
     @IBOutlet weak var tableView: UITableView!
@@ -48,9 +48,9 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         // swiftlint:enable force_cast
         if indexPath.row < podcasts.count {
             let podcast = podcasts[indexPath.row]
-            cell.configure(title: podcast.title ?? "")
+            cell.configure(title: podcast.title ?? "", image: podcast.image)
         } else {
-            cell.configure(title: "")
+            cell.configure(title: "", image: nil)
         }
         return cell
     }
