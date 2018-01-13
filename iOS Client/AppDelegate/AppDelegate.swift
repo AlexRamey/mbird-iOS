@@ -51,7 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: - Background App Refresh
-    
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
         UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
@@ -63,7 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
                 UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
                 if isNewData {
-                    // TODO: Run Data Cleanup Task
                     completionHandler(.newData)
                 } else {
                     completionHandler(.noData)

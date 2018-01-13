@@ -14,5 +14,6 @@ struct MBConstants {
     static let DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP = "DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP"
     static let SECONDS_IN_A_WEEK: Double = 7*24*3600
     static let SECONDS_IN_A_DAY: Double = 24*3600
+    static let MAX_ARTICLES_ON_DEVICE: Int = 200
     // swiftlint:enable identifier_name
 }
