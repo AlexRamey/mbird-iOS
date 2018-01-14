@@ -11,11 +11,11 @@ import UIKit
 import ReSwift
 import AVKit
 
-class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastHandler {
+class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastDetailViewControllerDelegate {
     
     var childCoordinators: [Coordinator] = []
-    weak var playerDelegate: PodcastPlayerDelegate? {
-        return navigationController.viewControllers.last as? PodcastPlayerDelegate
+    var podcastDetailViewController: PodcastDetailViewController? {
+        return navigationController.viewControllers.last as? PodcastDetailViewController
     }
     
     var rootViewController: UIViewController {
@@ -51,7 +51,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     
     @objc func updateDuration(_ sender: Timer) {
         if let totalDuration = player.currentItem?.duration.seconds {
-            playerDelegate?.updateCurrentDuration(current: getCurrentDuration(), total: totalDuration)
+            podcastDetailViewController?.updateCurrentDuration(current: getCurrentDuration(), total: totalDuration)
         }
     }
     
@@ -87,7 +87,9 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         }
         build(newRoute: newRoute)
         route = newRoute
-        playerDelegate?.handler = self
+        if let podcastDetailVC = navigationController.viewControllers.last as? PodcastDetailViewController {
+            podcastDetailVC.delegate = self
+        }
     }
     
     func startPlaying(_ guid: String) {
@@ -118,6 +120,6 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     }
 }
 
-protocol PodcastHandler {
+protocol PodcastDetailViewControllerDelegate {
     func seek(to second: Double)
 }
