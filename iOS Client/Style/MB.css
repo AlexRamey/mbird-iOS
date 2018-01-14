@@ -1,44 +1,53 @@
-body
-{
-    font-family: 'SinaNovaReg';
-    font-size: 60px;
+body{
+    font: '-apple-system-body';
     font-weight: normal;
     color: #090909;
     background-color: #ffffff;
 }
 
-@font-face {
-    font-family: 'SinaNovaReg';
-    src: url('SinaNovaReg-webfont.woff2') format('woff2'),
-    url('SinaNovaReg-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
 p.title {
+    font: '-apple-system-headline';
     margin: 0px;
-    font-weight: 200;
-    color: #eb615e
+    color: #eb615e;
 }
 
 p.author {
+    font: '-apple-system-subheadline';
     margin: 0px;
     font-style: italic;
-    color: #000000
+    color: #000000;
+}
+
+/*for size of embedded videos*/
+iframe{
+    width: 95%;
+    height: auto;
 }
 
 img.alignleft {
     float: left;
     margin: 12px;
+    width: 50%;
+    height: auto;
 }
 
 img.alignright {
     float: right;
     margin: 12px;
+    width: 50%;
+    height: auto;
 }
 
 img.aligncenter {
     display: block;
     margin: auto;
-    width: 80%;
+    width: 95%;
+    height: auto;
+}
+
+img.alignnone {
+    display: block;
+    margin: auto;
+    width: 95%;
+    height: auto;
 }
