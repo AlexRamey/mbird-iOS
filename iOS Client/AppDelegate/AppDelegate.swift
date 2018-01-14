@@ -53,14 +53,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Background App Refresh
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
-        UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_ATTEMPT_TIMESTAMP)
-        
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
             self.articlesStore.syncAllData(managedObjectContext: self.coreDataStack.privateQueueContext).then { isNewData -> Void in
-                let timestamp: Double = Date().timeIntervalSinceReferenceDate
-                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_BACKGROUND_APP_REFRESH_TIMESTAMP)
                 if isNewData {
                     completionHandler(.newData)
                 } else {

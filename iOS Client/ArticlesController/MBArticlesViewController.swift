@@ -54,15 +54,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         refreshControl.tintColor = UIColor(red:235.0/255.0, green:96.0/255.0, blue:93.0/255.0, alpha:1.0)
         refreshControl.attributedTitle = NSAttributedString(string: "Fetching Articles ...", attributes: nil)
         
-        let oneDayAgoTimestamp = Date().timeIntervalSinceReferenceDate - MBConstants.SECONDS_IN_A_DAY
-        let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-        
         let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
         MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
-        
-        if lastUpdateTimestamp < oneDayAgoTimestamp || articles.count == 0 {
-            MBStore.sharedStore.dispatch(RefreshArticles())
-        }
+        MBStore.sharedStore.dispatch(RefreshArticles())
     }
     
     @objc private func refreshTableView(_ sender: Any) {
@@ -75,11 +69,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
             self.articlesStore.syncAllData(managedObjectContext: self.managedObjectContext).then { isNewData -> Void in
-                // Update timestamp
-                let timestamp: Double = Date().timeIntervalSinceReferenceDate
-                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-                print("IS NEW DATA? \(isNewData)")
-                
                 self.articlesStore.deleteOldArticles(managedObjectContext: self.managedObjectContext, completion: { (numDeleted) in
                     print("Deleted \(numDeleted) old articles!!!")
                     let loadedArticles = self.articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
@@ -97,7 +86,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         case .initial:
             break
         case .loading:
-            if case Loaded<[MBArticle]>.loading = self.currentState.articles {
+            if case .loading = self.currentState.articles {
                 // do nothing
             } else {
                 self.refreshControl.beginRefreshing()
