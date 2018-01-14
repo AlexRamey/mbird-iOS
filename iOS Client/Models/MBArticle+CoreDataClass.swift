@@ -50,6 +50,7 @@ public class MBArticle: NSManagedObject {
         
         article.setValue(json.object(forKey: "id") as? Int32, forKey: "articleID")
         article.setValue(json.value(forKeyPath: "author") as? Int32, forKey: "authorID")
+        article.setValue(json.value(forKeyPath: "link") as? String, forKey: "link")
         article.setValue(json.value(forKeyPath: "featured_media") as? Int32, forKey: "imageID")
         article.setValue(json.value(forKeyPath: "title.rendered") as? String, forKey: "title")
         article.setValue(json.value(forKeyPath: "content.rendered") as? String, forKey: "content")

@@ -25,8 +25,10 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         configureWebView()
         configureBackButton()
+        configureShareButton()
     }
     
     func configureWebView() {
@@ -59,6 +61,34 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     @objc func backToArticles(sender: AnyObject) {
         MBStore.sharedStore.dispatch(PopCurrentNavigation())
+    }
+    
+    func configureShareButton() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
+    }
+    
+    @objc func shareArticle(sender: AnyObject) {
+        guard let linkToShare = self.selectedArticle?.link else {
+            return
+        }
+        
+        // set up activity view controller
+        let activityViewController = UIActivityViewController(activityItems: [ linkToShare ], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        // exclude some activity types from the list (optional)
+        activityViewController.excludedActivityTypes = [
+            .airDrop,
+            .assignToContact,
+            .openInIBooks,
+            .postToFlickr,
+            .postToVimeo,
+            .print,
+            .saveToCameraRoll
+        ]
+        
+        // present the view controller
+        self.present(activityViewController, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
