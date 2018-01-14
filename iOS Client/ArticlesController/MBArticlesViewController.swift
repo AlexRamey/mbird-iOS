@@ -22,7 +22,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var managedObjectContext: NSManagedObjectContext!
     
     // cell cache
-    var cache = [Int:ArticleTableViewCell]()
+    var cache = [Int: ArticleTableViewCell]()
 
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -51,6 +51,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         let oneWeekAgoTimestamp = Date().timeIntervalSinceReferenceDate - MBConstants.SECONDS_IN_A_WEEK
         let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(contentSizeDidChange(_:)),
+                                               name: NSNotification.Name.UIContentSizeCategoryDidChange,
+                                               object: nil)
+
         if lastUpdateTimestamp > oneWeekAgoTimestamp {
             let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
             
@@ -63,6 +68,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         downloadArticleData()
     }
     
+    @objc private func contentSizeDidChange(_ notification: Notification) {
+        // invalidate the cell-cache and reload the table view
+        self.cache = [Int: ArticleTableViewCell]()
+        tableView.reloadData()
+    }
+
     private func downloadArticleData() {
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
