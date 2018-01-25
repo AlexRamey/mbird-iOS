@@ -34,7 +34,7 @@ $devotionsText .= $_;
 foreach my $monthIdx (0 .. $#months) {
     my $day = 1;
     while ($day <= $days_per_month{$months[$monthIdx]}) {
-        push @dates, sprintf("2017-%02d-%02d", $monthIdx+1, $day);
+        push @dates, sprintf("2016-%02d-%02d", $monthIdx+1, $day);
         $day += 1;
     }
 }
