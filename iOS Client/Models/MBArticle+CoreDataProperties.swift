@@ -1,8 +1,9 @@
 //
 //  MBArticle+CoreDataProperties.swift
-//  
+//  iOS Client
 //
-//  Created by Alex Ramey on 12/9/17.
+//  Created by Alex Ramey on 1/14/18.
+//  Copyright © 2018 Mockingbird. All rights reserved.
 //
 //
 
@@ -22,6 +23,7 @@ extension MBArticle {
     @NSManaged public var date: NSDate?
     @NSManaged public var imageID: Int32
     @NSManaged public var title: String?
+    @NSManaged public var link: String?
     @NSManaged public var author: MBAuthor?
     @NSManaged public var categories: NSSet?
     @NSManaged public var image: ArticlePicture?
