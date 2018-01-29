@@ -13,8 +13,10 @@ import CoreData
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
     // properties
     @IBOutlet weak var tableView: UITableView!
+    private let refreshControl = UIRefreshControl()
     var articlesByCategory = [String: [MBArticle]]()
     var topLevelCategories: [String] = []
+    var currentState: ArticleState = MBArticleState()
     
     // dependencies
     let client: MBClient = MBClient()
@@ -47,34 +49,31 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
+        tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
+        refreshControl.tintColor = UIColor(red:235.0/255.0, green:96.0/255.0, blue:93.0/255.0, alpha:1.0)
+        refreshControl.attributedTitle = NSAttributedString(string: "Fetching Articles ...", attributes: nil)
         
-        let oneWeekAgoTimestamp = Date().timeIntervalSinceReferenceDate - MBConstants.SECONDS_IN_A_WEEK
-        let lastUpdateTimestamp = UserDefaults.standard.double(forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-        
-        if lastUpdateTimestamp > oneWeekAgoTimestamp {
-            let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
-            
-            if articles.count > 0 {
-                MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
-                return
-            }
+        let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
+        MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
+        MBStore.sharedStore.dispatch(RefreshArticles())
+    }
+    
+    @objc private func refreshTableView(_ sender: Any) {
+        if self.refreshControl.isRefreshing {
+            MBStore.sharedStore.dispatch(RefreshArticles())
         }
-        
-        downloadArticleData()
     }
     
     private func downloadArticleData() {
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
             self.articlesStore.syncAllData(managedObjectContext: self.managedObjectContext).then { isNewData -> Void in
-                // TODO: Run Data Cleanup Task
-                // Update timestamp
-                let timestamp: Double = Date().timeIntervalSinceReferenceDate
-                UserDefaults.standard.set(timestamp, forKey: MBConstants.DEFAULTS_KEY_ARTICLE_UPDATE_TIMESTAMP)
-                print("IS NEW DATA? \(isNewData)")
-                
-                let loadedArticles = self.articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
-                MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
+                self.articlesStore.deleteOldArticles(managedObjectContext: self.managedObjectContext, completion: { (numDeleted) in
+                    print("Deleted \(numDeleted) old articles!!!")
+                    let loadedArticles = self.articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
+                    MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
+                })
             }.catch { syncErr in
                 print(syncErr)
                 MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
@@ -85,17 +84,26 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     func newState(state: MBAppState) {
         switch state.articleState.articles {
         case .initial:
-            break //Do nothing if articles haven't tried to load
+            break
         case .loading:
-            break //Do something here to indicate loading
+            if case .loading = self.currentState.articles {
+                // do nothing
+            } else {
+                self.refreshControl.beginRefreshing()
+                self.downloadArticleData()
+            }
         case .error:
             print("Error: Loading articles")
+            self.refreshControl.endRefreshing()
         case .loaded(let data):
             print("New Data for table view")
             articlesByCategory = groupArticlesByTopLevelCategoryName(articles: data)
             topLevelCategories = Array(articlesByCategory.keys).sorted()
             tableView.reloadData()
+            self.refreshControl.endRefreshing()
         }
+        
+        self.currentState = state.articleState
     }
     
     private func groupArticlesByTopLevelCategoryName(articles: [MBArticle]) -> [String: [MBArticle]] {
