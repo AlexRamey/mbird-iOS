@@ -183,4 +183,42 @@ class MBArticlesStore: NSObject {
             throw MBDeserializationError.contractMismatch(msg: "unable to cast json object into an array of NSDictionary objects")
         }
     }
+    
+    /***** Data Cleanup Task *****/
+    func deleteOldArticles(managedObjectContext: NSManagedObjectContext, completion: @escaping (Int) -> Void) {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        managedObjectContext.perform {
+            guard let count = try? managedObjectContext.count(for: fetchRequest) else {
+                completion(0)
+                return
+            }
+            
+            let numToDelete = count - MBConstants.MAX_ARTICLES_ON_DEVICE
+            guard numToDelete > 0 else {
+                completion(0)
+                return
+            }
+            
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: true)]
+            fetchRequest.fetchLimit = numToDelete
+            guard let articlesToDelete = try? managedObjectContext.fetch(fetchRequest) else {
+                completion(0)
+                return
+            }
+            
+            
+            articlesToDelete.forEach({ (article) in
+                managedObjectContext.delete(article)
+            })
+            
+            do {
+                try managedObjectContext.save()
+                completion(articlesToDelete.count)
+            } catch let error as NSError {
+                print("Could not save context: \(error), \(error.userInfo)")
+                completion(0)
+            }
+        }
+    }
+    
 }
