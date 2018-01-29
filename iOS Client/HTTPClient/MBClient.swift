@@ -43,10 +43,18 @@ class MBClient: NSObject {
         case failedPagingRequest(msg: String)
     }
     
-    enum PodcastStream: String {
+    public enum PodcastStream: String {
         case pz = "http://pzspodcast.fireside.fm/rss"
         case mockingCast = "http://themockingcast.fireside.fm/rss"
         case mockingPulpit = "http://www.mbird.com/feed/podcast/"
+        
+        var image: UIImage {
+            switch self {
+            case .pz: return #imageLiteral(resourceName: "pzcast")
+            case .mockingPulpit: return #imageLiteral(resourceName: "mockingpulpit")
+            case .mockingCast: return #imageLiteral(resourceName: "mockingcast")
+            }
+        }
     }
     
     // getArticlesWithCompletion makes a single URL request for the 25 most recent posts

@@ -27,20 +27,13 @@ class MBPodcastsStore {
     }
     
     func syncPodcasts() -> Promise<[DisplayablePodcast]> {
-        
+        let streams: [MBClient.PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
+        let requests = streams.map{ self.client.getPodcasts(for: $0)}
         return firstly {
-            when(resolved: self.client.getPodcasts(for: .pz),
-                 self.client.getPodcasts(for: .mockingPulpit),
-                 self.client.getPodcasts(for: .mockingCast))
+            when(resolved: requests)
         }.then { responses -> Promise<[DisplayablePodcast]> in
             var podcasts: [DisplayablePodcast] = []
             for (indx, response) in responses.enumerated() {
-                let image: UIImage
-                switch indx {
-                case 0: image = #imageLiteral(resourceName: "pzcast")
-                case 1: image = #imageLiteral(resourceName: "mockingpulpit")
-                default: image = #imageLiteral(resourceName: "mockingcast")
-                }
                 if case .fulfilled(let newCasts) = response {
                     let displayCasts = newCasts.flatMap { podcast -> DisplayablePodcast? in
                         guard let dateString = podcast.pubDate, let date = self.dateFormatter.date(from: dateString) else {
@@ -49,7 +42,7 @@ class MBPodcastsStore {
                         return DisplayablePodcast(author: podcast.author,
                                                   duration: podcast.duration,
                                                   guid: podcast.guid,
-                                                  image: image,
+                                                  image: streams[indx].image,
                                                   keywords: podcast.keywords,
                                                   summary: podcast.summary,
                                                   pubDate: date,
