@@ -24,7 +24,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var managedObjectContext: NSManagedObjectContext!
     
     // cell cache
-    var cache = [Int:ArticleTableViewCell]()
+    var cache = [Int: ArticleTableViewCell]()
 
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -54,6 +54,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         refreshControl.tintColor = UIColor(red:235.0/255.0, green:96.0/255.0, blue:93.0/255.0, alpha:1.0)
         refreshControl.attributedTitle = NSAttributedString(string: "Fetching Articles ...", attributes: nil)
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(contentSizeDidChange(_:)),
+                                               name: NSNotification.Name.UIContentSizeCategoryDidChange,
+                                               object: nil)
+      
         let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
         MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
         MBStore.sharedStore.dispatch(RefreshArticles())
@@ -65,6 +70,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    @objc private func contentSizeDidChange(_ notification: Notification) {
+        // invalidate the cell-cache and reload the table view
+        self.cache = [Int: ArticleTableViewCell]()
+        tableView.reloadData()
+    }
+
     private func downloadArticleData() {
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
