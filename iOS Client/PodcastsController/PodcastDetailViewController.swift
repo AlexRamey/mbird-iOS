@@ -90,6 +90,9 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     func updateCurrentDuration(current: Double, total: Double ) {
         totalDuration = total
         durationLabel.text = "\(formatter.string(from: NSNumber(value: current)) ?? "0") / \(formatter.string(from: NSNumber(value: total)) ?? "0")"
-        durationSlider.setValue(Float(current/(totalDuration ?? 0.0)), animated: true)
+        guard let validTime = totalDuration, validTime > 0 else {
+            return
+        }
+        durationSlider.setValue(Float(current/validTime), animated: true)
     }
 }
