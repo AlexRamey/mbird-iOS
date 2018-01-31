@@ -19,9 +19,6 @@ class MBClient: NSObject {
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     private let mediaEndpoint = "/media"
-    private let mockingPulpitEndpoint = "http://www.mbird.com/feed/podcast/"
-    private let pzPodcastEndpoint = "http://pzspodcast.fireside.fm/rss"
-    private let mockingCastEndpoint = "https://themockingcast.fireside.fm/rss"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -44,15 +41,15 @@ class MBClient: NSObject {
     }
     
     public enum PodcastStream: String {
-        case pz = "http://pzspodcast.fireside.fm/rss"
-        case mockingCast = "http://themockingcast.fireside.fm/rss"
+        case pz = "https://pzspodcast.fireside.fm/rss"
+        case mockingCast = "https://themockingcast.fireside.fm/rss"
         case mockingPulpit = "http://www.mbird.com/feed/podcast/"
         
-        var image: UIImage {
+        var imageName: String {
             switch self {
-            case .pz: return #imageLiteral(resourceName: "pzcast")
-            case .mockingPulpit: return #imageLiteral(resourceName: "mockingpulpit")
-            case .mockingCast: return #imageLiteral(resourceName: "mockingcast")
+            case .pz: return "pzcast"
+            case .mockingPulpit: return "mockingpulpit"
+            case .mockingCast: return "mockingcast"
             }
         }
     }
@@ -128,7 +125,7 @@ class MBClient: NSObject {
     
     func getPodcasts(for stream: PodcastStream) -> Promise<[MBPodcast]> {
         guard let url = URL(string: stream.rawValue) else {
-            return Promise(error: NetworkRequestError.invalidURL(url: mockingPulpitEndpoint))
+            return Promise(error: NetworkRequestError.invalidURL(url: stream.rawValue))
         }
         
         print("firing get podcasts request")

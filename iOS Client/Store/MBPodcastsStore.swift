@@ -42,7 +42,7 @@ class MBPodcastsStore {
                         return DisplayablePodcast(author: podcast.author,
                                                   duration: podcast.duration,
                                                   guid: podcast.guid,
-                                                  image: streams[indx].image,
+                                                  image: streams[indx].imageName,
                                                   keywords: podcast.keywords,
                                                   summary: podcast.summary,
                                                   pubDate: date,

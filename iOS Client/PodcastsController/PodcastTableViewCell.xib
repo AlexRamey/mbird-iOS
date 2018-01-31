@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,29 +19,30 @@
                 <rect key="frame" x="0.0" y="0.0" width="325" height="113.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sIT-iU-gH4">
-                        <rect key="frame" x="16" y="31.5" width="50" height="50"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="50" id="5IH-bT-9ke"/>
-                            <constraint firstAttribute="height" constant="50" id="QHN-jy-CgC"/>
-                        </constraints>
-                    </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FcN-55-7e0">
-                        <rect key="frame" x="74" y="5" width="235" height="103.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jdy-Gd-y8Z">
+                        <rect key="frame" x="10" y="15" width="325" height="83.5"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sIT-iU-gH4">
+                                <rect key="frame" x="0.0" y="17" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="bc7-hA-Fmq"/>
+                                    <constraint firstAttribute="width" constant="50" id="jGj-Mo-Jay"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FcN-55-7e0">
+                                <rect key="frame" x="60" y="31.5" width="325" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="sIT-iU-gH4" firstAttribute="top" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="15" id="171-0o-D8n"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="FcN-55-7e0" secondAttribute="trailing" id="DC1-PC-dTa"/>
-                    <constraint firstItem="FcN-55-7e0" firstAttribute="centerY" secondItem="sIT-iU-gH4" secondAttribute="centerY" id="Ezj-US-dwm"/>
-                    <constraint firstItem="FcN-55-7e0" firstAttribute="leading" secondItem="sIT-iU-gH4" secondAttribute="trailing" constant="8" id="KeN-i0-4S1"/>
-                    <constraint firstAttribute="bottom" secondItem="FcN-55-7e0" secondAttribute="bottom" constant="5" id="OyP-S2-acN"/>
-                    <constraint firstItem="FcN-55-7e0" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="cKB-jJ-tNw"/>
-                    <constraint firstItem="sIT-iU-gH4" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="xDN-BT-Vth"/>
-                    <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="sIT-iU-gH4" secondAttribute="bottom" constant="15" id="xxT-qr-bim"/>
+                    <constraint firstAttribute="bottom" secondItem="jdy-Gd-y8Z" secondAttribute="bottom" constant="15" id="Wr2-HG-c3z"/>
+                    <constraint firstItem="jdy-Gd-y8Z" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="Xvp-bz-3lC"/>
+                    <constraint firstAttribute="trailing" secondItem="jdy-Gd-y8Z" secondAttribute="trailing" constant="10" id="fVI-x6-ydf"/>
+                    <constraint firstItem="jdy-Gd-y8Z" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="xsV-rO-zI9"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

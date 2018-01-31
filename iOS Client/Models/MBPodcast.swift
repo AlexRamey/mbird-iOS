@@ -24,7 +24,7 @@ struct DisplayablePodcast: Detailable {
     let author: String?
     let duration: String?
     let guid: String?
-    let image: UIImage
+    let image: String
     let keywords: String?
     let summary: String?
     let pubDate: Date
