@@ -23,17 +23,24 @@ struct LoadedDevotion: Codable, Detailable {
     var verseText: String
     var read: Bool
     
-    init(devotion: MBDevotion, read: Bool) {
-        date = devotion.date
-        text = devotion.text
-        verse = devotion.verse
-        verseText = devotion.verseText
-        self.read = read
+    static let calendar: NSCalendar? = {
+        return NSCalendar.init(calendarIdentifier: NSCalendar.Identifier.gregorian)
+    }()
+    
+    static let devotionDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+    
+    static func getMonth(fromInt: Int) -> String {
+        return LoadedDevotion.devotionDateFormatter.monthSymbols[fromInt-1]
     }
     
     var day: Date? {
         return LoadedDevotion.devotionDateFormatter.date(from: self.date)
     }
+    
     var formattedMonthDay: String? {
         if let date = self.day, let day = LoadedDevotion.calendar?.components(.day, from: date).day {
             return String(describing: day)
@@ -49,10 +56,6 @@ struct LoadedDevotion: Codable, Detailable {
         }
     }
     
-    static func getMonth(fromInt: Int) -> String {
-        return LoadedDevotion.devotionDateFormatter.monthSymbols[fromInt-1]
-    }
-    
     var dateComponentsForNotification: DateComponents? {
         guard let devotionDay = LoadedDevotion.devotionDateFormatter.date(from: self.date), let calendar = LoadedDevotion.calendar else {
             return nil
@@ -65,13 +68,15 @@ struct LoadedDevotion: Codable, Detailable {
         return dateComponents
     }
     
-    private static let calendar: NSCalendar? = {
-        return NSCalendar.init(calendarIdentifier: NSCalendar.Identifier.gregorian)
-    }()
+    var dateAsMMdd: String {
+        return String(self.date.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: true)[1])
+    }
     
-    static let devotionDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }()
+    init(devotion: MBDevotion, read: Bool) {
+        date = devotion.date
+        text = devotion.text
+        verse = devotion.verse
+        verseText = devotion.verseText
+        self.read = read
+    }
 }
