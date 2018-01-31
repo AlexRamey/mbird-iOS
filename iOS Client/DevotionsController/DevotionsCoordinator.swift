@@ -128,10 +128,14 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
 
 extension Date
 {
+    static let ddMMFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd"
+        return formatter
+    }()
+
     func toMMddString() -> String
     {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd"
-        return dateFormatter.string(from: self)
+        return Date.ddMMFormatter.string(from: self)
     }
 }
