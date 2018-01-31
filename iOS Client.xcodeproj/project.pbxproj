@@ -484,7 +484,7 @@
 				TargetAttributes = {
 					D08F55821F786DCD0071ED86 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = KP5XFBR489;
+						DevelopmentTeam = XA9HBUSBJ5;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -791,7 +791,7 @@
 			baseConfigurationReference = 2251FCAEBD05DD222F6C84FD /* Pods-iOS Client.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = KP5XFBR489;
+				DEVELOPMENT_TEAM = XA9HBUSBJ5;
 				INFOPLIST_FILE = "iOS Client/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -807,7 +807,7 @@
 			baseConfigurationReference = 136BACE6A8C13A0F0360B527 /* Pods-iOS Client.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = KP5XFBR489;
+				DEVELOPMENT_TEAM = XA9HBUSBJ5;
 				INFOPLIST_FILE = "iOS Client/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

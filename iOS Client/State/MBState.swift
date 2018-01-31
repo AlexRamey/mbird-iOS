@@ -72,7 +72,7 @@ protocol PodcastsState {
 
 struct MBPodcastsState: PodcastsState {
     var podcasts: Loaded<[MBPodcast]> = .initial
-    var selectedPodcast: MBPodcast? = nil
+    var selectedPodcast: MBPodcast?
     var player: PlayerState = .initialized
 }
 
@@ -133,5 +133,6 @@ enum PlayerState {
     case playing
     case paused
     case error
+    case finished
 }
 

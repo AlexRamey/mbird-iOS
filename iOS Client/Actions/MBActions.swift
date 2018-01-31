@@ -57,3 +57,7 @@ struct SelectedPodcast: Action {
 
 struct PlayPausePodcast: Action {
 }
+
+struct FinishedPodcast: Action { }
+
+struct PodcastError: Action { }
