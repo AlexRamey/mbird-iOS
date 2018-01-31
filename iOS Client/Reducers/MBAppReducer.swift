@@ -36,7 +36,11 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.selectedTab = .devotions
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))
     case let action as SelectedArticleLink:
-        nextState.safariOverlays[.articles] = action.url
+        if nextState.selectedTab == .articles {
+            nextState.safariOverlays[.articles] = action.url
+        } else if nextState.selectedTab == .bookmarks {
+            nextState.safariOverlays[.bookmarks] = action.url
+        }
     case let action as SelectedPodcast:
         nextState.routes[.podcasts]?.append(.detail(item: action.podcast))
     case _ as PopCurrentNavigation:

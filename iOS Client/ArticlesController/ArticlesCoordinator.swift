@@ -16,7 +16,7 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     var childCoordinators: [Coordinator] = []
     var route: [RouteComponent] = [.base]
     var tab: Tab = .articles
-    var overlay: URL? = nil
+    var overlay: URL?
     let managedObjectContext: NSManagedObjectContext
     
     var rootViewController: UIViewController {
@@ -64,6 +64,5 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     // MARK: - SafariViewControllerDelegate
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         MBStore.sharedStore.dispatch(SelectedArticleLink(url: nil))
-        self.overlay = nil
     }
 }
