@@ -44,6 +44,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Articles"
         tableView.delegate = self
         tableView.dataSource = self
         

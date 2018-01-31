@@ -33,7 +33,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         
         configureWebView()
         configureBackButton()
-        configureShareButton()
+        configureRightBarButtons()
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(contentSizeDidChange(_:)),
@@ -92,8 +92,18 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
     
-    func configureShareButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
+    func configureRightBarButtons() {
+        let bookmarkItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.bookmarks, target: self, action: #selector(self.bookmarkArticle(sender:)))
+        
+        let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
+        
+        var items = [shareItem]
+        if self.tabBarController?.selectedIndex != 1 {
+            // if not on bookmarks tab, show bookmark item
+            items.append(bookmarkItem)
+        }
+        
+        self.navigationItem.rightBarButtonItems = items
     }
     
     @objc func shareArticle(sender: AnyObject) {
@@ -118,6 +128,22 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         
         // present the view controller
         self.present(activityViewController, animated: true, completion: nil)
+    }
+    
+    @objc func bookmarkArticle(sender: AnyObject) {
+        self.selectedArticle?.isBookmarked = true
+        
+        var message = ""
+        do {
+            try self.selectedArticle?.managedObjectContext?.save()
+            message = "Bookmarked"
+        } catch {
+            message = error.localizedDescription
+        }
+        
+        let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {

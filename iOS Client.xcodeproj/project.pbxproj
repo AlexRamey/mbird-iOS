@@ -68,6 +68,7 @@
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
 		D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */; };
 		D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */ = {isa = PBXBuildFile; fileRef = D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */; };
+		D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F6A72120216DBC001C3AED /* BookmarkCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -137,6 +138,7 @@
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
 		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = MB.css; path = "iOS Client/Style/MB.css"; sourceTree = SOURCE_ROOT; };
+		D0F6A72120216DBC001C3AED /* BookmarkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -435,6 +437,7 @@
 			children = (
 				D02D36411F7FE8FA00D4E674 /* BookmarksCoordinator.swift */,
 				D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */,
+				D0F6A72120216DBC001C3AED /* BookmarkCell.swift */,
 			);
 			path = BookmarksController;
 			sourceTree = "<group>";
@@ -652,6 +655,7 @@
 				23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D04093131FDC4969007989A1 /* ArticlePicture+CoreDataClass.swift in Sources */,
+				D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
 				23ABE3C21FDDE6D200F4B36B /* (null) in Sources */,
 				239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */,
