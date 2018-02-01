@@ -98,7 +98,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
         
         var items = [shareItem]
-        if self.tabBarController?.selectedIndex != 1 {
+        if self.tabBarController?.selectedIndex != Tab.bookmarks.rawValue {
             // if not on bookmarks tab, show bookmark item
             items.append(bookmarkItem)
         }

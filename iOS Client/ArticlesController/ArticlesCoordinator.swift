@@ -12,7 +12,7 @@ import ReSwift
 import SafariServices
 import CoreData
 
-class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationControllerDelegate, SFSafariViewControllerDelegate {
+class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationControllerDelegate, SafariDisplayer {
     var childCoordinators: [Coordinator] = []
     var route: [RouteComponent] = [.base]
     var tab: Tab = .articles
@@ -23,7 +23,7 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
         return self.navigationController
     }
     
-    private lazy var navigationController: UINavigationController = {
+    lazy var navigationController: UINavigationController = {
         return UINavigationController()
     }()
     
@@ -49,20 +49,6 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
         build(newRoute: newRoute)
         route = newRoute
         
-        let articlesSafariOverlay: URL? = state.navigationState.safariOverlays[.articles]!
-        if self.overlay == nil, let overlay = articlesSafariOverlay {
-            self.overlay = overlay
-            let overlayVC = SFSafariViewController(url: overlay)
-            overlayVC.delegate = self
-            self.navigationController.present(overlayVC, animated: true, completion: nil)
-        } else if self.overlay != nil, articlesSafariOverlay == nil {
-            self.overlay = nil
-            self.navigationController.dismiss(animated: true, completion: nil)
-        }
-    }
-    
-    // MARK: - SafariViewControllerDelegate
-    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        MBStore.sharedStore.dispatch(SelectedArticleLink(url: nil))
+        self.displaySafariVC(forURL: state.navigationState.safariOverlays[.articles]!)
     }
 }
