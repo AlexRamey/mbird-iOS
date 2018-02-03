@@ -27,6 +27,8 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
+        
         tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
         
         menuView.delegate = self
@@ -54,6 +56,10 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         MBStore.sharedStore.unsubscribe(self)
+    }
+    
+    @objc private func selectToday(_ sender: Any) {
+        self.calendarView.toggleCurrentDayView()
     }
     
     static func instantiateFromStoryboard() -> MBDevotionsViewController {
@@ -115,15 +121,13 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if let cell = tableView.cellForRow(at: indexPath) as? DevotionTableViewCell {
-            cell.readNotifier.backgroundColor = .clear
-        }
-        
         if let selectedDate = devotions[indexPath.row].dateInCurrentYear {
             calendarView.toggleViewWithDate(selectedDate)
         }
         
         devotions[indexPath.row].read = true
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+        
         MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotions[indexPath.row]))
         do {
             try devotionsStore.replace(devotion: devotions[indexPath.row])

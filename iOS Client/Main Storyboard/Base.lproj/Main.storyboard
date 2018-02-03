@@ -123,7 +123,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="z76-D2-CzV">
-                                <rect key="frame" x="16" y="319.66666666666674" width="343" height="438.33333333333326"/>
+                                <rect key="frame" x="0.0" y="320" width="375" height="438"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C6E-hN-3x8" customClass="CVCalendarMenuView" customModule="CVCalendar">
@@ -142,10 +142,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="z76-D2-CzV" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leadingMargin" id="0hm-BK-wfp"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leadingMargin" constant="-16" id="0hm-BK-wfp"/>
                             <constraint firstAttribute="trailing" secondItem="C6E-hN-3x8" secondAttribute="trailing" id="BQR-hC-4A6"/>
                             <constraint firstItem="ylZ-M0-p3n" firstAttribute="top" secondItem="C6E-hN-3x8" secondAttribute="bottom" id="DOP-Dq-jFF"/>
-                            <constraint firstItem="z76-D2-CzV" firstAttribute="trailing" secondItem="4QY-mg-7u0" secondAttribute="trailingMargin" id="OGM-eO-TuW"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="trailing" secondItem="4QY-mg-7u0" secondAttribute="trailingMargin" constant="16" id="OGM-eO-TuW"/>
                             <constraint firstAttribute="trailing" secondItem="ylZ-M0-p3n" secondAttribute="trailing" id="P7z-Ni-ZyI"/>
                             <constraint firstItem="C6d-Hs-PKt" firstAttribute="top" secondItem="z76-D2-CzV" secondAttribute="bottom" constant="20" id="Y8T-Xg-YBb"/>
                             <constraint firstItem="C6E-hN-3x8" firstAttribute="top" secondItem="JkU-zA-RQa" secondAttribute="bottom" id="cdb-Er-bR1"/>
