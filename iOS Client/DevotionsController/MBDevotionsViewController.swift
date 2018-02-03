@@ -8,13 +8,19 @@
 
 import UIKit
 import ReSwift
+import CVCalendar
 
 class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var menuView: CVCalendarMenuView!
+    @IBOutlet weak var calendarView: CVCalendarView!
+    
     let devotionsStore = MBDevotionsStore()
     var devotions: [LoadedDevotion] = []
     var cellReusableId: String = "DevotionTableViewCell"
+    var latestSelectedDate: CVDate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -22,11 +28,27 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         tableView.rowHeight = UITableViewAutomaticDimension
         
         tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
+        
+        menuView.delegate = self
+        calendarView.delegate = self
+        calendarView.calendarAppearanceDelegate = self
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        menuView.commitMenuViewUpdate()
+        calendarView.commitCalendarViewUpdate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         MBStore.sharedStore.subscribe(self)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.scrollToSelectedDevotion(animated: false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -49,12 +71,30 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         case .loading:
             break
         case .loaded(let loadedDevotions):
-            self.devotions = loadedDevotions
-            tableView.reloadData()
+            if self.devotions.count == 0 {
+                self.devotions = loadedDevotions
+                tableView.reloadData()
+            }
         }
         
     }
     
+    func scrollToSelectedDevotion(animated: Bool) {
+        guard let selectedRow = devotions.index(where: { (devotion) -> Bool in
+            if let selectedDate = self.latestSelectedDate?.convertedDate(),
+                selectedDate.toMMddString() == devotion.dateAsMMdd {
+                return true
+            }
+            
+            return false
+        }) else {
+            return
+        }
+        
+        tableView.scrollToRow(at: IndexPath(row: selectedRow, section: 0), at: .top, animated: animated)
+    }
+    
+    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let devotion = devotions[indexPath.row]
         //swiftlint:disable force_cast
@@ -72,7 +112,9 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         return 1
     }
     
+    // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         var devotion = devotions[indexPath.row]
         devotion.read = true
         MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
@@ -84,5 +126,29 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
             devotions[indexPath.row].read = false
             MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotion))
         }
+    }
+}
+
+extension MBDevotionsViewController: CVCalendarViewDelegate, CVCalendarMenuViewDelegate, CVCalendarViewAppearanceDelegate {
+    func presentationMode() -> CalendarMode {
+        return CalendarMode.monthView
+    }
+    
+    func firstWeekday() -> Weekday {
+        return Weekday.monday
+    }
+    
+    func didSelectDayView(_ dayView: DayView, animationDidFinish: Bool) {
+        self.latestSelectedDate = dayView.date
+        self.scrollToSelectedDevotion(animated: true)
+    }
+    
+    // MARK: - CVCalendarViewAppearanceDelegate
+    func dayLabelPresentWeekdayHighlightedBackgroundColor() -> UIColor {
+        return UIColor.MBOrange
+    }
+    
+    func dayLabelPresentWeekdayHighlightedBackgroundAlpha() -> CGFloat {
+        return 1.0
     }
 }

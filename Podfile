@@ -9,4 +9,5 @@ target 'iOS Client' do
   pod 'ReSwift'
   pod 'SwiftLint'
   pod 'PromiseKit', '~> 4.4'
+  pod 'CVCalendar', '~> 1.6.0'
 end
