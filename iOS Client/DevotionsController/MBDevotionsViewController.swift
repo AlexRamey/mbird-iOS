@@ -76,7 +76,6 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
                 tableView.reloadData()
             }
         }
-        
     }
     
     func scrollToSelectedDevotion(animated: Bool) {
@@ -115,16 +114,24 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        var devotion = devotions[indexPath.row]
-        devotion.read = true
-        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
+        
+        if let cell = tableView.cellForRow(at: indexPath) as? DevotionTableViewCell {
+            cell.readNotifier.backgroundColor = .clear
+        }
+        
+        if let selectedDate = devotions[indexPath.row].dateInCurrentYear {
+            calendarView.toggleViewWithDate(selectedDate)
+        }
+        
+        devotions[indexPath.row].read = true
+        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotions[indexPath.row]))
         do {
-            try devotionsStore.replace(devotion: devotion)
+            try devotionsStore.replace(devotion: devotions[indexPath.row])
         } catch {
             // There was an error saving devotion as read so reverse
             print("Error marking devotion as read")
             devotions[indexPath.row].read = false
-            MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotion))
+            MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotions[indexPath.row]))
         }
     }
 }
