@@ -63,7 +63,7 @@ extension MBBookmarksViewController {
         let article = fetchedResultsController.object(at: indexPath)
         cell.titleLabel.attributedText = article.title?.convertHtml()
         cell.titleLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        cell.titleLabel.textColor = UIColor.ArticleTitle
+        cell.titleLabel.textColor = UIColor.MBOrange
         cell.titleLabel.sizeToFit()
         
         if let savedData = article.image?.image {
