@@ -123,25 +123,46 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="z76-D2-CzV">
-                                <rect key="frame" x="16" y="52" width="343" height="706"/>
+                                <rect key="frame" x="0.0" y="320" width="375" height="438"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C6E-hN-3x8" customClass="CVCalendarMenuView" customModule="CVCalendar">
+                                <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="02B-Aa-o2z"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ylZ-M0-p3n" customClass="CVCalendarView" customModule="CVCalendar">
+                                <rect key="frame" x="0.0" y="87.999999999999986" width="375" height="231.66666666666663"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" priority="250" constant="231.66999999999999" id="g2g-6z-59p"/>
+                                    <constraint firstAttribute="width" secondItem="ylZ-M0-p3n" secondAttribute="height" multiplier="1.618:1" id="vvY-aQ-Oc9"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="z76-D2-CzV" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leadingMargin" id="0hm-BK-wfp"/>
-                            <constraint firstItem="z76-D2-CzV" firstAttribute="top" secondItem="JkU-zA-RQa" secondAttribute="bottom" constant="8" id="Ck4-bb-T7J"/>
-                            <constraint firstItem="z76-D2-CzV" firstAttribute="trailing" secondItem="4QY-mg-7u0" secondAttribute="trailingMargin" id="OGM-eO-TuW"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leadingMargin" constant="-16" id="0hm-BK-wfp"/>
+                            <constraint firstAttribute="trailing" secondItem="C6E-hN-3x8" secondAttribute="trailing" id="BQR-hC-4A6"/>
+                            <constraint firstItem="ylZ-M0-p3n" firstAttribute="top" secondItem="C6E-hN-3x8" secondAttribute="bottom" id="DOP-Dq-jFF"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="trailing" secondItem="4QY-mg-7u0" secondAttribute="trailingMargin" constant="16" id="OGM-eO-TuW"/>
+                            <constraint firstAttribute="trailing" secondItem="ylZ-M0-p3n" secondAttribute="trailing" id="P7z-Ni-ZyI"/>
                             <constraint firstItem="C6d-Hs-PKt" firstAttribute="top" secondItem="z76-D2-CzV" secondAttribute="bottom" constant="20" id="Y8T-Xg-YBb"/>
+                            <constraint firstItem="C6E-hN-3x8" firstAttribute="top" secondItem="JkU-zA-RQa" secondAttribute="bottom" id="cdb-Er-bR1"/>
+                            <constraint firstItem="ylZ-M0-p3n" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leading" id="qtF-pJ-wqu"/>
+                            <constraint firstItem="C6E-hN-3x8" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leading" id="xYx-48-903"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="top" secondItem="ylZ-M0-p3n" secondAttribute="bottom" constant="1.1368683772161603e-13" id="xzm-il-Fay"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="calendarView" destination="ylZ-M0-p3n" id="ckN-Hb-MeI"/>
+                        <outlet property="menuView" destination="C6E-hN-3x8" id="73A-Ur-dUZ"/>
                         <outlet property="tableView" destination="z76-D2-CzV" id="WYH-ZT-gBb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="byN-QR-M0r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-538.39999999999998" y="672.41379310344837"/>
+            <point key="canvasLocation" x="-538.39999999999998" y="671.67487684729065"/>
         </scene>
         <!--Podcasts-->
         <scene sceneID="SI4-Vj-eXb">

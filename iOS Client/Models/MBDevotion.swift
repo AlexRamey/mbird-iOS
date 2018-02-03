@@ -72,6 +72,14 @@ struct LoadedDevotion: Codable, Detailable {
         return String(self.date.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: true)[1])
     }
     
+    var dateInCurrentYear: Date? {
+        let now = Date()
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: now)
+        let dateString = "\(year)-\(self.dateAsMMdd)"
+        return LoadedDevotion.devotionDateFormatter.date(from: dateString)
+    }
+    
     init(devotion: MBDevotion, read: Bool) {
         date = devotion.date
         text = devotion.text
