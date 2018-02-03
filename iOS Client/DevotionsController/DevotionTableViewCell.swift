@@ -21,7 +21,7 @@ class DevotionTableViewCell: UITableViewCell {
         monthLabel.text = devotion.formattedMonth
         verseLabel.text = devotion.verse
         readNotifier.layer.cornerRadius = readNotifier.bounds.width / 2
-        readNotifier.backgroundColor = devotion.read ? .clear : UIColor.ArticleTitle
+        readNotifier.backgroundColor = devotion.read ? .clear : UIColor.MBOrange
     }
     
 }

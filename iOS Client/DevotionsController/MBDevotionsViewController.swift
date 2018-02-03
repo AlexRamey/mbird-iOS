@@ -8,20 +8,39 @@
 
 import UIKit
 import ReSwift
+import CVCalendar
 
 class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var menuView: CVCalendarMenuView!
+    @IBOutlet weak var calendarView: CVCalendarView!
+    
     let devotionsStore = MBDevotionsStore()
     var devotions: [LoadedDevotion] = []
     var cellReusableId: String = "DevotionTableViewCell"
+    var latestSelectedDate: CVDate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
+        
         tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
+        
+        menuView.delegate = self
+        calendarView.delegate = self
+        calendarView.calendarAppearanceDelegate = self
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        menuView.commitMenuViewUpdate()
+        calendarView.commitCalendarViewUpdate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -29,9 +48,18 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         MBStore.sharedStore.subscribe(self)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.scrollToSelectedDevotion(animated: false)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         MBStore.sharedStore.unsubscribe(self)
+    }
+    
+    @objc private func selectToday(_ sender: Any) {
+        self.calendarView.toggleCurrentDayView()
     }
     
     static func instantiateFromStoryboard() -> MBDevotionsViewController {
@@ -49,12 +77,29 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         case .loading:
             break
         case .loaded(let loadedDevotions):
-            self.devotions = loadedDevotions
-            tableView.reloadData()
+            if self.devotions.count == 0 {
+                self.devotions = loadedDevotions
+                tableView.reloadData()
+            }
         }
-        
     }
     
+    func scrollToSelectedDevotion(animated: Bool) {
+        guard let selectedRow = devotions.index(where: { (devotion) -> Bool in
+            if let selectedDate = self.latestSelectedDate?.convertedDate(),
+                selectedDate.toMMddString() == devotion.dateAsMMdd {
+                return true
+            }
+            
+            return false
+        }) else {
+            return
+        }
+        
+        tableView.scrollToRow(at: IndexPath(row: selectedRow, section: 0), at: .top, animated: animated)
+    }
+    
+    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let devotion = devotions[indexPath.row]
         //swiftlint:disable force_cast
@@ -72,17 +117,49 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         return 1
     }
     
+    // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var devotion = devotions[indexPath.row]
-        devotion.read = true
-        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        if let selectedDate = devotions[indexPath.row].dateInCurrentYear {
+            calendarView.toggleViewWithDate(selectedDate)
+        }
+        
+        devotions[indexPath.row].read = true
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+        
+        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotions[indexPath.row]))
         do {
-            try devotionsStore.replace(devotion: devotion)
+            try devotionsStore.replace(devotion: devotions[indexPath.row])
         } catch {
             // There was an error saving devotion as read so reverse
             print("Error marking devotion as read")
             devotions[indexPath.row].read = false
-            MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotion))
+            MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotions[indexPath.row]))
         }
+    }
+}
+
+extension MBDevotionsViewController: CVCalendarViewDelegate, CVCalendarMenuViewDelegate, CVCalendarViewAppearanceDelegate {
+    func presentationMode() -> CalendarMode {
+        return CalendarMode.monthView
+    }
+    
+    func firstWeekday() -> Weekday {
+        return Weekday.monday
+    }
+    
+    func didSelectDayView(_ dayView: DayView, animationDidFinish: Bool) {
+        self.latestSelectedDate = dayView.date
+        self.scrollToSelectedDevotion(animated: true)
+    }
+    
+    // MARK: - CVCalendarViewAppearanceDelegate
+    func dayLabelPresentWeekdayHighlightedBackgroundColor() -> UIColor {
+        return UIColor.MBOrange
+    }
+    
+    func dayLabelPresentWeekdayHighlightedBackgroundAlpha() -> CGFloat {
+        return 1.0
     }
 }
