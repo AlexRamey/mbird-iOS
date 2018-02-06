@@ -56,18 +56,8 @@ class MBBookmarksViewController: UIViewController {
 // MARK: - Internal
 extension MBBookmarksViewController {
     func configure(cell: UITableViewCell, for indexPath: IndexPath) {
-        guard let cell = cell as? BookmarkCell else {
-            return
-        }
-        
-        let article = fetchedResultsController.object(at: indexPath)
-        cell.titleLabel.attributedText = article.title?.convertHtml()
-        cell.titleLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        cell.titleLabel.textColor = UIColor.ArticleTitle
-        cell.titleLabel.sizeToFit()
-        
-        if let savedData = article.image?.image {
-            cell.coverImageView.image = UIImage(data: savedData as Data)
+        if let bookmarkCell = cell as? BookmarkCell {
+            bookmarkCell.configure(article: fetchedResultsController.object(at: indexPath))
         }
     }
 }
