@@ -50,6 +50,8 @@ func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
     switch action {
     case _ as ReSwiftInit:
         break
+    case let action as RefreshArticles:
+        nextState.articles = Loaded<[MBArticle]>.loading
     case let action as LoadedArticles:
         nextState.articles = action.articles
     case let action as SelectedArticle:

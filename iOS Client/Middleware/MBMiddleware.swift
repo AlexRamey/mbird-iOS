@@ -15,7 +15,7 @@ struct MiddlewareFactory {
         return { next in
             return { action in
                 // perform middleware logic
-                print(action)
+                print("ACTION: \(type(of: action))")
                 
                 // call next middleware
                 return next(action)

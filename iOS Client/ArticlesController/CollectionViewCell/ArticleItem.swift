@@ -25,7 +25,7 @@ class ArticleItem: UICollectionViewCell {
         self.coverImage.image = nil
         
         titleLabel.attributedText = article.title?.convertHtml()
-        titleLabel.font = UIFont.systemFont(ofSize: 18)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         titleLabel.textColor = UIColor.ArticleTitle
         titleLabel.sizeToFit()
         

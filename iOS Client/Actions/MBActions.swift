@@ -16,6 +16,9 @@ struct PushRoute: Action {
     var route: RouteComponent
 }
 
+struct RefreshArticles: Action {
+}
+
 struct LoadedArticles: Action {
     var articles: Loaded<[MBArticle]>
 }

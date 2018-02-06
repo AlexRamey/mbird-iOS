@@ -10,7 +10,7 @@ import UIKit
 import ReSwift
 import AVKit
 
-class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPlayerDelegate {
+class PodcastDetailViewController: UIViewController, StoreSubscriber {
     
     var totalDuration: Double?
     
@@ -26,7 +26,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
         return f
     }()
     
-    var handler: PodcastHandler?
+    var delegate: PodcastDetailViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +64,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
             case .moved:
                 updateCurrentDuration(current: secondToSeekTo, total: totalDuration ?? 0.0)
             case .ended:
-                handler?.seek(to: secondToSeekTo)
+                delegate?.seek(to: secondToSeekTo)
             default:
                 break
             }
@@ -90,11 +90,9 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber, PodcastPla
     func updateCurrentDuration(current: Double, total: Double ) {
         totalDuration = total
         durationLabel.text = "\(formatter.string(from: NSNumber(value: current)) ?? "0") / \(formatter.string(from: NSNumber(value: total)) ?? "0")"
-        durationSlider.setValue(Float(current/(totalDuration ?? 0.0)), animated: true)
+        guard let validTime = totalDuration, validTime > 0 else {
+            return
+        }
+        durationSlider.setValue(Float(current/validTime), animated: true)
     }
-}
-
-protocol PodcastPlayerDelegate: class {
-    func updateCurrentDuration(current: Double, total: Double )
-    var handler: PodcastHandler? { get set }
 }

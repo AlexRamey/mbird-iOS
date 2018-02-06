@@ -137,8 +137,6 @@
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
 		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = MB.css; path = "iOS Client/Style/MB.css"; sourceTree = SOURCE_ROOT; };
-		D0ED48E01F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff"; sourceTree = "<group>"; };
-		D0ED48E11F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SinaNovaReg-webfont.woff2"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -445,8 +443,6 @@
 			isa = PBXGroup;
 			children = (
 				D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */,
-				D0ED48E11F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff2 */,
-				D0ED48E01F9D751E00FEDCC9 /* SinaNovaReg-webfont.woff */,
 				23D8F1F91FAECD0B004964AE /* Color.swift */,
 			);
 			path = Style;
