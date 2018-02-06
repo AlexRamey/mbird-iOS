@@ -8,38 +8,51 @@
 
 import Foundation
 import CoreData
+import PromiseKit
 
 
 class MBPodcastsStore {
     
     let client: MBClient
     let fileHelper: FileHelper
+    let dateFormatter: DateFormatter = {
+        let d = DateFormatter()
+        d.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+        return d
+    }()
     
     init() {
         client = MBClient()
         fileHelper = FileHelper()
     }
     
-    func syncPodcasts(completion: @escaping ([MBPodcast]?, Error?) -> Void) {
-        self.client.getPodcastsWithCompletion { data, error in
-            if error == nil, let data = data {
-                do {
-                    // We got some data now parse
-                    print("fetched podcasts from server")
-                    let parser = XMLParser(data: data)
-                    let xmlParserDelegate = PodcastXMLParsingDelegate()
-                    parser.delegate = xmlParserDelegate
-                    parser.parse()
-                    let podcasts = xmlParserDelegate.podcasts
-                    try self.fileHelper.save(podcasts, forPath: "podcasts")
-                    completion(podcasts, nil)
-                } catch let error {
-                    completion(nil, error)
+    func syncPodcasts() -> Promise<[Podcast]> {
+        let streams: [MBClient.PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
+        let requests = streams.map{ self.client.getPodcasts(for: $0)}
+        return firstly {
+            when(resolved: requests)
+        }.then { responses -> Promise<[Podcast]> in
+            var podcasts: [Podcast] = []
+            for (indx, response) in responses.enumerated() {
+                if case .fulfilled(let newCasts) = response {
+                    let displayCasts = newCasts.flatMap { podcast -> Podcast? in
+                        guard let dateString = podcast.pubDate, let date = self.dateFormatter.date(from: dateString) else {
+                            return nil
+                        }
+                        return Podcast(author: podcast.author,
+                                                  duration: podcast.duration,
+                                                  guid: podcast.guid,
+                                                  image: streams[indx].imageName,
+                                                  keywords: podcast.keywords,
+                                                  summary: podcast.summary,
+                                                  pubDate: date,
+                                                  title: podcast.title)
+                    }
+                    podcasts.append(contentsOf: displayCasts)
                 }
-            } else {
-                // Failed so complete with no podcasts
-                completion(nil, error)
             }
+            podcasts.sort(by: { $0.pubDate > $1.pubDate })
+            return Promise(value: podcasts)
         }
     }
 }

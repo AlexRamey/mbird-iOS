@@ -10,6 +10,8 @@ import UIKit
 
 class PodcastTableViewCell: UITableViewCell {
 
+
+    @IBOutlet weak var podcastImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,8 +24,9 @@ class PodcastTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: String) {
+    func configure(title: String, image: UIImage?) {
         titleLabel.text = title
+        podcastImage.image = image
     }
     
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PromiseKit
 
 class MBClient: NSObject {
     private let session: URLSession
@@ -18,7 +19,6 @@ class MBClient: NSObject {
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
     private let mediaEndpoint = "/media"
-    private let mockingPulpitEndpoint = "http://www.mbird.com/feed/podcast/"
     private let numResultsPerPage = 20
     private let urlArgs: String
     
@@ -38,6 +38,20 @@ class MBClient: NSObject {
         case badResponse(status: Int)
         case missingResponseHeaders(msg: String)
         case failedPagingRequest(msg: String)
+    }
+    
+    public enum PodcastStream: String {
+        case pz = "https://pzspodcast.fireside.fm/rss"
+        case mockingCast = "https://themockingcast.fireside.fm/rss"
+        case mockingPulpit = "http://www.mbird.com/feed/podcast/"
+        
+        var imageName: String {
+            switch self {
+            case .pz: return "pzcast"
+            case .mockingPulpit: return "mockingpulpit"
+            case .mockingCast: return "mockingcast"
+            }
+        }
     }
     
     // getArticlesWithCompletion makes a single URL request for the 25 most recent posts
@@ -109,22 +123,21 @@ class MBClient: NSObject {
         }.resume()
     }
     
-    func getPodcastsWithCompletion(completion: @escaping (Data?, Error?) -> Void ) {
-        guard let url = URL(string: mockingPulpitEndpoint) else {
-            completion(nil, NetworkRequestError.invalidURL(url: mockingPulpitEndpoint))
-            return
+    func getPodcasts(for stream: PodcastStream) -> Promise<[PodcastDTO]> {
+        guard let url = URL(string: stream.rawValue) else {
+            return Promise(error: NetworkRequestError.invalidURL(url: stream.rawValue))
         }
         
         print("firing get podcasts request")
-        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
-            if let e = err {
-                completion(nil, e)
-            } else if let response = data {
-                completion(response, nil)
-            } else {
-                completion(nil, NetworkRequestError.networkError(msg: "did not receive a response"))
-            }
-        }.resume()
+        let request = URLRequest(url: url)
+        
+        return self.session.dataTask(with: request).asDataAndResponse().then { (data: Data, resp: URLResponse?) -> [PodcastDTO] in
+            let parser = XMLParser(data: data)
+            let xmlParserDelegate = PodcastXMLParsingDelegate()
+            parser.delegate = xmlParserDelegate
+            parser.parse()
+            return xmlParserDelegate.podcasts
+        }
     }
     
     func getJSONFile(name: String, completion: @escaping (Data?, Error?) -> Void ) {

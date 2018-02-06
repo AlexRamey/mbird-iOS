@@ -12,11 +12,19 @@ import Foundation
 class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
     var podcast: [String: String] = [:]
     var items: [[String:String]] = []
-    var podcasts: [MBPodcast] = []
+    var podcasts: [PodcastDTO] = []
     var foundCharacters: String = ""
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         self.foundCharacters += string
+    }
+    
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        if elementName == "enclosure" {
+            if let url = attributeDict["url"] {
+                podcast["guid"] = url
+            }
+        }
     }
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
@@ -43,8 +51,8 @@ class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
         self.foundCharacters = ""
     }
     
-    private func dictToPod(dict: [String: String]) -> MBPodcast {
-       return MBPodcast(
+    private func dictToPod(dict: [String: String]) -> PodcastDTO {
+       return PodcastDTO(
         author: dict["author"],
         duration: dict["duration"],
         guid: dict["guid"],

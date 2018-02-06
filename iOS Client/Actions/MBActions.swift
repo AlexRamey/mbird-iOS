@@ -48,11 +48,11 @@ struct UnreadDevotion: Action {
 }
 
 struct LoadedPodcasts: Action {
-    var podcasts: Loaded<[MBPodcast]>
+    var podcasts: Loaded<[Podcast]>
 }
 
 struct SelectedPodcast: Action {
-    var podcast: MBPodcast
+    var podcast: Podcast
 }
 
 struct PlayPausePodcast: Action {
