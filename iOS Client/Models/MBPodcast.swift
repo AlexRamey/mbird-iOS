@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct MBPodcast: Codable {
+struct PodcastDTO: Codable {
     let author: String?
     let duration: String?
     let guid: String?
@@ -20,7 +20,7 @@ struct MBPodcast: Codable {
     let title: String?
 }
 
-struct DisplayablePodcast: Detailable {
+struct Podcast: Detailable {
     let author: String?
     let duration: String?
     let guid: String?

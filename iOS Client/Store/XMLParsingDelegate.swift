@@ -12,7 +12,7 @@ import Foundation
 class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
     var podcast: [String: String] = [:]
     var items: [[String:String]] = []
-    var podcasts: [MBPodcast] = []
+    var podcasts: [PodcastDTO] = []
     var foundCharacters: String = ""
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
@@ -51,8 +51,8 @@ class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
         self.foundCharacters = ""
     }
     
-    private func dictToPod(dict: [String: String]) -> MBPodcast {
-       return MBPodcast(
+    private func dictToPod(dict: [String: String]) -> PodcastDTO {
+       return PodcastDTO(
         author: dict["author"],
         duration: dict["duration"],
         guid: dict["guid"],

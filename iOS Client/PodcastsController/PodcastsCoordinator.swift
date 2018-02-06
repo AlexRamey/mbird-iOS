@@ -29,7 +29,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     let podcastsStore = MBPodcastsStore()
     
     var player = AVPlayer()
-    var currentPlayingPodcast: DisplayablePodcast?
+    var currentPlayingPodcast: Podcast?
     var timer: Timer?
     
     private lazy var navigationController: UINavigationController = {

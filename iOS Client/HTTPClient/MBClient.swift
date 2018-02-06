@@ -123,7 +123,7 @@ class MBClient: NSObject {
         }.resume()
     }
     
-    func getPodcasts(for stream: PodcastStream) -> Promise<[MBPodcast]> {
+    func getPodcasts(for stream: PodcastStream) -> Promise<[PodcastDTO]> {
         guard let url = URL(string: stream.rawValue) else {
             return Promise(error: NetworkRequestError.invalidURL(url: stream.rawValue))
         }
@@ -131,7 +131,7 @@ class MBClient: NSObject {
         print("firing get podcasts request")
         let request = URLRequest(url: url)
         
-        return self.session.dataTask(with: request).asDataAndResponse().then { (data: Data, resp: URLResponse?) -> [MBPodcast] in
+        return self.session.dataTask(with: request).asDataAndResponse().then { (data: Data, resp: URLResponse?) -> [PodcastDTO] in
             let parser = XMLParser(data: data)
             let xmlParserDelegate = PodcastXMLParsingDelegate()
             parser.delegate = xmlParserDelegate

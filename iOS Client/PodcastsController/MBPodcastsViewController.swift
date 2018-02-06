@@ -11,7 +11,7 @@ import ReSwift
 
 class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, StoreSubscriber {
 
-    var podcasts: [DisplayablePodcast] = []
+    var podcasts: [Podcast] = []
     let cellReuseIdentifier = "PodcastTableViewCell"
     
     @IBOutlet weak var tableView: UITableView!
