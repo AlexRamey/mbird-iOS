@@ -12,7 +12,7 @@ import ReSwift
 import SafariServices
 import CoreData
 
-class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationControllerDelegate, SafariDisplayer {
+class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationControllerDelegate, SafariDisplayer, SFSafariViewControllerDelegate {
     var childCoordinators: [Coordinator] = []
     var route: [RouteComponent] = [.base]
     var tab: Tab = .articles
@@ -49,6 +49,11 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
         build(newRoute: newRoute)
         route = newRoute
         
-        self.displaySafariVC(forURL: state.navigationState.safariOverlays[.articles]!)
+        self.displaySafariVC(forURL: state.navigationState.safariOverlays[.articles].flatMap {return $0}, withDelegate: self)
+    }
+    
+    // MARK: - SafariViewControllerDelegate
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        MBStore.sharedStore.dispatch(SelectedArticleLink(url: nil))
     }
 }
