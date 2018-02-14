@@ -61,6 +61,7 @@
 		D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496451F93DB5C004ACA4E /* DeserializationError.swift */; };
 		D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496471F93E79C004ACA4E /* MBConstants.swift */; };
 		D0CD7BB61F7875F7000E26B0 /* MBState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CD7BB51F7875F7000E26B0 /* MBState.swift */; };
+		D0D213E3202613CE00E5230A /* SafariDisplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D213E2202613CE00E5230A /* SafariDisplayer.swift */; };
 		D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC291F7B178C007822CB /* MBStore.swift */; };
 		D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC2B1F7B18A3007822CB /* MBAppReducer.swift */; };
 		D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC2D1F7B1B49007822CB /* MBActions.swift */; };
@@ -68,6 +69,7 @@
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
 		D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */; };
 		D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */ = {isa = PBXBuildFile; fileRef = D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */; };
+		D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F6A72120216DBC001C3AED /* BookmarkCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -130,6 +132,7 @@
 		D09496451F93DB5C004ACA4E /* DeserializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeserializationError.swift; sourceTree = "<group>"; };
 		D09496471F93E79C004ACA4E /* MBConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MBConstants.swift; path = "iOS Client/Constants/MBConstants.swift"; sourceTree = SOURCE_ROOT; };
 		D0CD7BB51F7875F7000E26B0 /* MBState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBState.swift; sourceTree = "<group>"; };
+		D0D213E2202613CE00E5230A /* SafariDisplayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SafariDisplayer.swift; sourceTree = "<group>"; };
 		D0DDEC291F7B178C007822CB /* MBStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBStore.swift; sourceTree = "<group>"; };
 		D0DDEC2B1F7B18A3007822CB /* MBAppReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBAppReducer.swift; sourceTree = "<group>"; };
 		D0DDEC2D1F7B1B49007822CB /* MBActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBActions.swift; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
 		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = MB.css; path = "iOS Client/Style/MB.css"; sourceTree = SOURCE_ROOT; };
+		D0F6A72120216DBC001C3AED /* BookmarkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -283,6 +287,7 @@
 		D02D363E1F7FE58600D4E674 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
+				D0D213E2202613CE00E5230A /* SafariDisplayer.swift */,
 				D02D363C1F7FE19400D4E674 /* Coordinator.swift */,
 			);
 			path = Coordinator;
@@ -435,6 +440,7 @@
 			children = (
 				D02D36411F7FE8FA00D4E674 /* BookmarksCoordinator.swift */,
 				D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */,
+				D0F6A72120216DBC001C3AED /* BookmarkCell.swift */,
 			);
 			path = BookmarksController;
 			sourceTree = "<group>";
@@ -484,7 +490,7 @@
 				TargetAttributes = {
 					D08F55821F786DCD0071ED86 = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = XA9HBUSBJ5;
+						DevelopmentTeam = KP5XFBR489;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -610,6 +616,7 @@
 				D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */,
 				23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */,
 				D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */,
+				D0D213E3202613CE00E5230A /* SafariDisplayer.swift in Sources */,
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
 				23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
@@ -652,6 +659,7 @@
 				23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D04093131FDC4969007989A1 /* ArticlePicture+CoreDataClass.swift in Sources */,
+				D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
 				23ABE3C21FDDE6D200F4B36B /* (null) in Sources */,
 				239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */,
@@ -791,7 +799,7 @@
 			baseConfigurationReference = 2251FCAEBD05DD222F6C84FD /* Pods-iOS Client.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = XA9HBUSBJ5;
+				DEVELOPMENT_TEAM = KP5XFBR489;
 				INFOPLIST_FILE = "iOS Client/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -807,7 +815,7 @@
 			baseConfigurationReference = 136BACE6A8C13A0F0360B527 /* Pods-iOS Client.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = XA9HBUSBJ5;
+				DEVELOPMENT_TEAM = KP5XFBR489;
 				INFOPLIST_FILE = "iOS Client/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
