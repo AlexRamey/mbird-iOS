@@ -77,9 +77,16 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         case .loading:
             break
         case .loaded(let loadedDevotions):
-            if self.devotions.count == 0 {
+            if self.devotions.count != loadedDevotions.count {
                 self.devotions = loadedDevotions
                 tableView.reloadData()
+            } else {
+                for (idx, loadedDevotion) in loadedDevotions.enumerated() {
+                    if self.devotions[idx] != loadedDevotion {
+                        self.devotions[idx] = loadedDevotion
+                        tableView.reloadRows(at: [IndexPath(row: idx, section: 0)], with: .automatic)
+                    }
+                }
             }
         }
     }
@@ -125,18 +132,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
             calendarView.toggleViewWithDate(selectedDate)
         }
         
-        devotions[indexPath.row].read = true
-        tableView.reloadRows(at: [indexPath], with: .automatic)
-        
         MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotions[indexPath.row]))
-        do {
-            try devotionsStore.replace(devotion: devotions[indexPath.row])
-        } catch {
-            // There was an error saving devotion as read so reverse
-            print("Error marking devotion as read")
-            devotions[indexPath.row].read = false
-            MBStore.sharedStore.dispatch(UnreadDevotion(devotion: devotions[indexPath.row]))
-        }
     }
 }
 

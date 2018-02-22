@@ -71,8 +71,6 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
     case let action as SelectedDevotion:
         nextState.selectedDevotion = action.devotion
         nextState.mark(devotion: action.devotion, asRead: true)
-    case let action as UnreadDevotion:
-        nextState.mark(devotion: action.devotion, asRead: false)
     default:
         break
     }
