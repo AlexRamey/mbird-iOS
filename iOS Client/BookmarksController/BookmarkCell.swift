@@ -25,7 +25,7 @@ class BookmarkCell: UITableViewCell {
     func configure(article: MBArticle) {
         self.titleLabel.attributedText = article.title?.convertHtml()
         self.titleLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        self.titleLabel.textColor = UIColor.ArticleTitle
+        self.titleLabel.textColor = UIColor.MBOrange
         self.titleLabel.sizeToFit()
         
         if let savedData = article.image?.image {
