@@ -35,7 +35,7 @@ struct MiddlewareFactory {
                         try MBDevotionsStore().replace(devotion: devotion)
                     } catch {
                         print("Error marking devotion as read")
-                        return // don't continue
+                        // don't return here, saving is just best-effort
                     }
                 }
                 return next(action)
