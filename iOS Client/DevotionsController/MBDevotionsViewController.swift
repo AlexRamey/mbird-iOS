@@ -81,12 +81,14 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
                 self.devotions = loadedDevotions
                 tableView.reloadData()
             } else {
+                var changedIndexPaths: [IndexPath] = []
                 for (idx, loadedDevotion) in loadedDevotions.enumerated() {
                     if self.devotions[idx] != loadedDevotion {
                         self.devotions[idx] = loadedDevotion
-                        tableView.reloadRows(at: [IndexPath(row: idx, section: 0)], with: .automatic)
+                        changedIndexPaths.append(IndexPath(row: idx, section: 0))
                     }
                 }
+                tableView.reloadRows(at: changedIndexPaths, with: .automatic)
             }
         }
     }
