@@ -16,12 +16,21 @@ struct MBDevotion: Codable, Detailable {
     var verseText: String
 }
 
-struct LoadedDevotion: Codable, Detailable {
+struct LoadedDevotion: Codable, Detailable, Equatable {
     var date: String
     var text: String
     var verse: String
     var verseText: String
     var read: Bool
+    
+    // MARK: - Equatable
+    static func ==(lhs: LoadedDevotion, rhs: LoadedDevotion) -> Bool {
+        return  lhs.date        == rhs.date         &&
+                lhs.text        == rhs.text         &&
+                lhs.verse       == rhs.verse        &&
+                lhs.verseText   == rhs.verseText    &&
+                lhs.read        == rhs.read
+    }
     
     static let calendar: NSCalendar? = {
         return NSCalendar.init(calendarIdentifier: NSCalendar.Identifier.gregorian)
@@ -70,6 +79,14 @@ struct LoadedDevotion: Codable, Detailable {
     
     var dateAsMMdd: String {
         return String(self.date.split(separator: "-", maxSplits: 1, omittingEmptySubsequences: true)[1])
+    }
+    
+    var dateInCurrentYear: Date? {
+        let now = Date()
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: now)
+        let dateString = "\(year)-\(self.dateAsMMdd)"
+        return LoadedDevotion.devotionDateFormatter.date(from: dateString)
     }
     
     init(devotion: MBDevotion, read: Bool) {
