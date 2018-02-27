@@ -46,7 +46,8 @@ class MBPodcastsStore {
                                                   keywords: podcast.keywords,
                                                   summary: podcast.summary,
                                                   pubDate: date,
-                                                  title: podcast.title)
+                                                  title: podcast.title,
+                                                  podTitle: streams[indx].title )
                     }
                     podcasts.append(contentsOf: displayCasts)
                 }

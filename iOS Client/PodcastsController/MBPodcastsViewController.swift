@@ -25,6 +25,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isTranslucent = false
         MBStore.sharedStore.subscribe(self)
     }
     

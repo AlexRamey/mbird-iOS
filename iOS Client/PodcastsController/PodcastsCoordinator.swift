@@ -57,8 +57,11 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     }
     
     @objc func updateDuration(_ sender: Timer) {
-        if let totalDuration = player.currentItem?.duration.seconds {
-            podcastDetailViewController?.updateCurrentDuration(current: getCurrentDuration(), total: totalDuration)
+        let current = getCurrentDuration()
+        if let totalDuration = player.currentItem?.duration.seconds, !totalDuration.isNaN, !current.isNaN  {
+            podcastDetailViewController?.updateCurrentDuration(current: current, total: totalDuration)
+        } else {
+            podcastDetailViewController?.updateCurrentDuration(current: 0, total: 0)
         }
     }
     

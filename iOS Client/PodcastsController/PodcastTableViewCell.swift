@@ -27,6 +27,8 @@ class PodcastTableViewCell: UITableViewCell {
     func configure(title: String, image: UIImage?) {
         titleLabel.text = title
         podcastImage.image = image
+        podcastImage.layer.masksToBounds = true
+        podcastImage.layer.cornerRadius = 5
     }
     
 }
