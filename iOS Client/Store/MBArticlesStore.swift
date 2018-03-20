@@ -187,6 +187,8 @@ class MBArticlesStore: NSObject {
     /***** Data Cleanup Task *****/
     func deleteOldArticles(managedObjectContext: NSManagedObjectContext, completion: @escaping (Int) -> Void) {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: false))
+        
         managedObjectContext.perform {
             guard let count = try? managedObjectContext.count(for: fetchRequest) else {
                 completion(0)
@@ -205,7 +207,6 @@ class MBArticlesStore: NSObject {
                 completion(0)
                 return
             }
-            
             
             articlesToDelete.forEach({ (article) in
                 managedObjectContext.delete(article)
