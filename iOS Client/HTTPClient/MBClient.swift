@@ -52,6 +52,14 @@ class MBClient: NSObject {
             case .mockingCast: return "mockingcast"
             }
         }
+        
+        var title: String {
+            switch self {
+            case .pz: return "PZ's Podcast"
+            case .mockingCast: return "The Mockingcast"
+            case .mockingPulpit: return "The Mockingpulpit"
+            }
+        }
     }
     
     // getArticlesWithCompletion makes a single URL request for the 25 most recent posts
