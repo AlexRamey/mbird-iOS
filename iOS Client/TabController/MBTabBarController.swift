@@ -13,6 +13,8 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     
     var playPauseView: UIView!
     var playPauseButton: UIButton!
+    var playPauseStackView: UIStackView!
+    var podcastTitleLabel: UILabel!
     var playerState: PlayerState = .initialized
     
     static func instantiateFromStoryboard() -> MBTabBarController {
@@ -24,21 +26,45 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         let tabBar = self.tabBar
         playPauseView = UIView()
         playPauseView.translatesAutoresizingMaskIntoConstraints = false
-        playPauseView.backgroundColor = UIColor.gray
+        playPauseView.backgroundColor = UIColor.white
+        playPauseView.layer.shadowOffset = CGSize(width: 0, height: -10)
+        playPauseView.layer.shadowRadius = 7
         view.addSubview(playPauseView)
-        playPauseView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         playPauseView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         playPauseView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         playPauseView.bottomAnchor.constraint(equalTo: tabBar.topAnchor).isActive = true
+        playPauseView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         playPauseView.isHidden = true
         
+        playPauseStackView = UIStackView()
+        playPauseStackView.translatesAutoresizingMaskIntoConstraints = false
+        playPauseView.addSubview(playPauseStackView)
+        playPauseStackView.leadingAnchor.constraint(equalTo: playPauseView.leadingAnchor).isActive = true
+        playPauseStackView.trailingAnchor.constraint(equalTo: playPauseView.trailingAnchor).isActive = true
+        playPauseStackView.topAnchor.constraint(equalTo: playPauseView.topAnchor).isActive = true
+        playPauseStackView.bottomAnchor.constraint(equalTo: playPauseView.bottomAnchor).isActive = true
+        
         playPauseButton = UIButton()
-        playPauseButton.setTitle("Play", for: .normal)
+        playPauseButton.setImage(UIImage(named: "play-arrow"), for: .normal)
         playPauseButton.addTarget(self, action: #selector(togglePlayPause(_:)), for: .touchUpInside)
         playPauseButton.translatesAutoresizingMaskIntoConstraints = false
-        playPauseView.addSubview(playPauseButton)
-        playPauseButton.centerXAnchor.constraint(equalTo: playPauseView.centerXAnchor).isActive = true
-        playPauseButton.centerYAnchor.constraint(equalTo: playPauseView.centerYAnchor).isActive = true
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(playPauseButton)
+        container.topAnchor.constraint(equalTo: playPauseButton.topAnchor, constant: 10).isActive = true
+        container.bottomAnchor.constraint(equalTo: playPauseButton.bottomAnchor, constant: 10).isActive = true
+        container.leadingAnchor.constraint(greaterThanOrEqualTo: playPauseButton.leadingAnchor, constant: 15).isActive = true
+        container.trailingAnchor.constraint(greaterThanOrEqualTo: playPauseButton.trailingAnchor, constant: -15).isActive = true
+        playPauseButton.centerXAnchor.constraint(equalTo: container.centerXAnchor).isActive = true
+        playPauseButton.widthAnchor.constraint(equalTo: playPauseButton.heightAnchor).isActive = true
+        container.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
+        playPauseStackView.addArrangedSubview(container)
+        
+        podcastTitleLabel = UILabel()
+        podcastTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        podcastTitleLabel.numberOfLines = 0
+        podcastTitleLabel.setContentHuggingPriority(UILayoutPriority(250), for: .horizontal)
+        playPauseStackView.addArrangedSubview(podcastTitleLabel)
     }
     
     @objc func togglePlayPause(_ sender: UIButton) {
@@ -76,10 +102,11 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         case .initialized:
             break
         case .paused, .error:
-            playPauseButton.setTitle("Play", for: .normal)
+            playPauseButton.setImage(UIImage(named: "play-arrow"), for: .normal)
             playPauseView?.isHidden = false
         case .playing:
-            playPauseButton.setTitle("Pause", for: .normal)
+            playPauseButton.setImage(UIImage(named: "pause-bars"), for: .normal)
+            podcastTitleLabel.text = state.podcastsState.selectedPodcast?.title
             playPauseView?.isHidden = false
         case .finished:
             playPauseView?.isHidden = true
