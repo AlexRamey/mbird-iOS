@@ -17,6 +17,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var articlesByCategory = [String: [MBArticle]]()
     var topLevelCategories: [String] = []
     var currentState: ArticleState = MBArticleState()
+    var isFirstAppearance = true
     
     // dependencies
     let client: MBClient = MBClient()
@@ -35,6 +36,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         MBStore.sharedStore.subscribe(self)
+
+        if isFirstAppearance {
+            MBStore.sharedStore.dispatch(RefreshArticles())
+            isFirstAppearance = false
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -59,10 +65,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                                                selector: #selector(contentSizeDidChange(_:)),
                                                name: NSNotification.Name.UIContentSizeCategoryDidChange,
                                                object: nil)
-      
+
         let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
         MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
-        MBStore.sharedStore.dispatch(RefreshArticles())
     }
     
     @objc private func refreshTableView(_ sender: Any) {

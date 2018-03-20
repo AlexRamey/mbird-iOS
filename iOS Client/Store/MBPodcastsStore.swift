@@ -36,7 +36,7 @@ class MBPodcastsStore {
             for (indx, response) in responses.enumerated() {
                 if case .fulfilled(let newCasts) = response {
                     let displayCasts = newCasts.flatMap { podcast -> Podcast? in
-                        guard let dateString = podcast.pubDate, let date = self.dateFormatter.date(from: dateString) else {
+                        guard let dateString = podcast.pubDate?.replacingOccurrences(of: "EDT", with: "-0500"), let date = self.dateFormatter.date(from: dateString) else {
                             return nil
                         }
                         return Podcast(author: podcast.author,
