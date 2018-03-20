@@ -29,5 +29,5 @@ struct Podcast: Detailable {
     let summary: String?
     let pubDate: Date
     let title: String?
-    let podTitle: String
+    let feedName: String
 }

@@ -55,9 +55,9 @@ class MBClient: NSObject {
         
         var title: String {
             switch self {
-            case .pz: return "PZ Podcast"
-            case .mockingCast: return "The MockingCast"
-            case .mockingPulpit: return "Mocking Pulpit"
+            case .pz: return "PZ's Podcast"
+            case .mockingCast: return "The Mockingcast"
+            case .mockingPulpit: return "The Mockingpulpit"
             }
         }
     }

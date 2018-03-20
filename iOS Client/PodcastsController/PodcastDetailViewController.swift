@@ -94,7 +94,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         var shadowRect = imageView.bounds
         var fromRect = CGRect(x: shadowRect.origin.x, y: shadowRect.origin.y, width: shadowRect.width + 10, height: shadowRect.height + 10)
         shadowRect.size = CGSize(width: size.width + 10, height: size.height + 10)
-        let shadowAnimation = CABasicAnimation(keyPath: "shadowPath")
+        let shadowAnimation = CABasicAnimation(keyPath:  #keyPath(CALayer.shadowPath))
         shadowAnimation.fromValue = UIBezierPath(rect: fromRect).cgPath
         shadowAnimation.toValue = UIBezierPath(rect: shadowRect).cgPath
         shadowAnimation.isRemovedOnCompletion = false
@@ -103,7 +103,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         shadowAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         self.imageWidthConstraint.constant = size.width
         self.imageHeightConstraint.constant = size.height
-        self.imageView.layer.add(shadowAnimation, forKey: "shadowPath")
+        self.imageView.layer.add(shadowAnimation, forKey: #keyPath(CALayer.shadowPath))
         UIView.animate(withDuration: duration) {
             self.view.layoutIfNeeded()
         }
@@ -130,7 +130,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
            imageView.image = UIImage(named: imageName)
             backgroundImageView.image = UIImage(named: imageName)
         }
-        self.navigationItem.title = state.podcastsState.selectedPodcast?.podTitle
+        self.navigationItem.title = state.podcastsState.selectedPodcast?.feedName
     }
     
     func updateCurrentDuration(current: Double, total: Double ) {
