@@ -65,7 +65,7 @@ class MBClient: NSObject {
     // getArticlesWithCompletion makes a single URL request for the 25 most recent posts
     // When the response is received, it calls the completion block with the resulting data and error
     func getArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=25"
+        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=60"
         guard let url = URL(string: urlString) else {
             completion([], NetworkRequestError.invalidURL(url: urlString))
             return
