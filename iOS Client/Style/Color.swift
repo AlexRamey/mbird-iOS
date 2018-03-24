@@ -10,5 +10,5 @@ import Foundation
 import UIKit
 
 extension UIColor {
-    static var ArticleTitle = UIColor(red: 253/255, green: 84/255, blue: 87/255, alpha: 1)
+    static var MBOrange = UIColor(red: 253/255, green: 84/255, blue: 87/255, alpha: 1)
 }

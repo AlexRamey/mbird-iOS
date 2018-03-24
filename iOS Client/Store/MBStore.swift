@@ -13,5 +13,8 @@ class MBStore: NSObject {
     static let sharedStore = Store(
         reducer: appReducer,
         state: nil,
-        middleware: [MiddlewareFactory.loggingMiddleware])      // Middlewares are optional
+        middleware: [
+                        MiddlewareFactory.loggingMiddleware,
+                        MiddlewareFactory.saveDevotionMiddleware
+                    ])  // Middlewares are optional
 }

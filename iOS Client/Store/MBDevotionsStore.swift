@@ -58,6 +58,4 @@ class MBDevotionsStore: NSObject {
         }
         try fileHelper.save(markedDevotions, forPath: "devotions")
     }
-    
-    
 }

@@ -27,12 +27,12 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
     case let action as NavigationActionSwitchTab:
         nextState.selectedTab = action.tab
     case let action as SelectedArticle:
-        nextState.routes[.articles]?.append(.detail(item: action.article))
+        nextState.routes[nextState.selectedTab]?.append(.detail(item: action.article))
     case let action as SelectedDevotion:
         nextState.selectedTab = .devotions
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))
     case let action as SelectedArticleLink:
-        nextState.safariOverlays[.articles] = action.url
+        nextState.safariOverlays[nextState.selectedTab] = action.url
     case let action as SelectedPodcast:
         nextState.routes[.podcasts]?.append(.detail(item: action.podcast))
     case _ as PopCurrentNavigation:
@@ -71,8 +71,6 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
     case let action as SelectedDevotion:
         nextState.selectedDevotion = action.devotion
         nextState.mark(devotion: action.devotion, asRead: true)
-    case let action as UnreadDevotion:
-        nextState.mark(devotion: action.devotion, asRead: false)
     default:
         break
     }

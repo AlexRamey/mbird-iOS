@@ -37,6 +37,8 @@ enum RouteComponent: Equatable {
         case .bookmarks:
             if case .base = self {
                 retVal = MBBookmarksViewController.instantiateFromStoryboard()
+            } else if case let .detail(detailItem) = self {
+                retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? MBArticle)
             }
         case .devotions:
             if case .base = self {

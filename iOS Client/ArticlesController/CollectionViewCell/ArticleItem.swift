@@ -26,7 +26,7 @@ class ArticleItem: UICollectionViewCell {
         
         titleLabel.attributedText = article.title?.convertHtml()
         titleLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        titleLabel.textColor = UIColor.ArticleTitle
+        titleLabel.textColor = UIColor.MBOrange
         titleLabel.sizeToFit()
         
         if let savedData = article.image?.image {
