@@ -9,6 +9,7 @@
 import UIKit
 import ReSwift
 import WebKit
+import Nuke
 
 class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
@@ -132,6 +133,38 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     @objc func bookmarkArticle(sender: AnyObject) {
         self.selectedArticle?.isBookmarked = true
+//                             if let context = article.managedObjectContext {    +                            article.imageLink = url
+//                                      do {    +                            try context.save()
+//                                                let imageObject = ArticlePicture(context: context)                            } catch {
+//                                                   imageObject.image = imageData as NSData                                print("😅 unable to save image url for \(article.articleID)")
+//                                                      article.image = imageObject
+//                                                        try context.save()
+//                                               } catch {
+//                                                        print("unable to save image data for \(article.articleID)")
+//                                                    }
+//        }
+        
+        
+        if let selectedArticle = self.selectedArticle,
+            let context = selectedArticle.managedObjectContext,
+            let imageLink = self.selectedArticle?.imageLink,
+            let imageURL = URL(string: imageLink)
+        {
+            Manager.shared.loadImage(with: imageURL, completion: { (result) in
+                if let image = result.value {
+                    context.perform {
+                        let imageObject = ArticlePicture(context: context)
+                        imageObject.image = UIImagePNGRepresentation(image) as NSData?
+                        selectedArticle.image = imageObject
+                        do {
+                            try context.save()
+                        } catch {
+                            print("heckin data error: 🙃")
+                        }
+                    }
+                }
+            })
+        }
         
         var message = ""
         do {
