@@ -19,6 +19,7 @@ class ArticleItem: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.coverImage.contentMode = .scaleAspectFill
     }
     
     func configure(article: MBArticle) {
@@ -43,7 +44,7 @@ class ArticleItem: UICollectionViewCell {
                             article.imageLink = url
                             try context.save()
                         } catch {
-                            print("unable to save image url for \(article.articleID)")
+                            print("😅 unable to save image url for \(article.articleID)")
                         }
                     }
                     if self.articleID == article.articleID, let imageLink = imageURL, let imageURL = URL(string: imageLink) {
