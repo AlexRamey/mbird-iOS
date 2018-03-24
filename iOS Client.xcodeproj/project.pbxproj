@@ -17,7 +17,7 @@
 		239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
-		23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		23ABE3C21FDDE6D200F4B36B /* (null) in Sources */ = {isa = PBXBuildFile; };
 		23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */; };
 		23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */; };
 		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
@@ -667,7 +667,7 @@
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
-				23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */,
+				23ABE3C21FDDE6D200F4B36B /* (null) in Sources */,
 				239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,
 			);
