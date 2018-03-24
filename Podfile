@@ -6,7 +6,9 @@ target 'iOS Client' do
   use_frameworks!
 
   # Pods for iOS Client
-  pod 'ReSwift'
+  pod 'Nuke', '~> 6.1'
+  pod "Preheat", '~> 4.0'
+  pod 'ReSwift', '~> 4.0.1'
   pod 'SwiftLint'
   pod 'PromiseKit', '~> 4.4'
   pod 'CVCalendar', '~> 1.6.0'

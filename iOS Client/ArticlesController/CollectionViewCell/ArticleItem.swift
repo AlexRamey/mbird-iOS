@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Nuke
 
 class ArticleItem: UICollectionViewCell {
     @IBOutlet weak var coverImage: UIImageView!
@@ -22,30 +23,31 @@ class ArticleItem: UICollectionViewCell {
     
     func configure(article: MBArticle) {
         self.articleID = article.articleID
-        self.coverImage.image = nil
         
         titleLabel.attributedText = article.title?.convertHtml()
         titleLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
         titleLabel.textColor = UIColor.MBOrange
         titleLabel.sizeToFit()
         
+        self.coverImage.image = nil
+        
         if let savedData = article.image?.image {
             self.coverImage.image = UIImage(data: savedData as Data)
+        } else if let imageLink = article.imageLink, let url = URL(string: imageLink) {
+            Manager.shared.loadImage(with: url, into: self.coverImage)
         } else if article.imageID != 0 {
-            self.client.getImageData(imageID: Int(article.imageID)) { data in
+            self.client.getImageURL(imageID: Int(article.imageID)) { imageURL in
                 DispatchQueue.main.async {
-                    if let imageData = data, self.articleID == article.articleID, article.image?.image == nil {
-                        self.coverImage.image = UIImage(data: imageData)
-                        if let context = article.managedObjectContext {
-                            do {
-                                let imageObject = ArticlePicture(context: context)
-                                imageObject.image = imageData as NSData
-                                article.image = imageObject
-                                try context.save()
-                            } catch {
-                                print("unable to save image data for \(article.articleID)")
-                            }
+                    if let url = imageURL, let context = article.managedObjectContext {
+                        do {
+                            article.imageLink = url
+                            try context.save()
+                        } catch {
+                            print("unable to save image url for \(article.articleID)")
                         }
+                    }
+                    if self.articleID == article.articleID, let imageLink = imageURL, let imageURL = URL(string: imageLink) {
+                        Manager.shared.loadImage(with: imageURL, into: self.coverImage)
                     }
                 }
             }
