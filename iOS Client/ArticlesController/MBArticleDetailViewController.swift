@@ -48,7 +48,6 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     func configureWebView() {
         if let content = self.selectedArticle?.content {
-            print(content)
             // <head>
             let contentTypeHead = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             let viewPortHead = "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
@@ -142,30 +141,28 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             let imageURL = URL(string: imageLink)
         {
             Manager.shared.loadImage(with: imageURL, completion: { (result) in
-                if let image = result.value {
-                    context.perform {
+                context.perform {
+                    if let image = result.value {
                         let imageObject = ArticlePicture(context: context)
                         imageObject.image = UIImagePNGRepresentation(image) as NSData?
                         selectedArticle.image = imageObject
-                        do {
-                            try context.save()
-                        } catch {
-                            print("heckin data error: 🙃")
-                        }
+                    }
+                    do {
+                        try context.save()
+                    } catch {
+                        print("heckin data error: 🙃 \(error as Any)")
                     }
                 }
             })
+        } else {
+            do {
+                try self.selectedArticle?.managedObjectContext?.save()
+            } catch {
+                print("could not bookmark article: \(error)")
+            }
         }
         
-        // save that the article was bookmarked
-        var message = ""
-        do {
-            try self.selectedArticle?.managedObjectContext?.save()
-            message = "Bookmarked"
-        } catch {
-            message = error.localizedDescription
-        }
-        
+        let message = "Bookmarked"
         let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)

@@ -82,19 +82,21 @@ class MBArticlesStore: NSObject {
     }
     
     private func resolveArticleImageURLs(managedObjectContext: NSManagedObjectContext) {
-        let articles = getArticles(managedObjectContext: managedObjectContext)
-        articles.forEach { (article) in
-            if (article.imageID > 0) && (article.imageLink == nil) {
-                client.getImageURL(imageID: Int(article.imageID), completion: { (link) in
-                    article.imageLink = link
-                    managedObjectContext.perform({
-                        do {
-                            try managedObjectContext.save()
-                        } catch {
-                            print("😅 wat")
+        let articles = self.getArticles(managedObjectContext: managedObjectContext)
+        managedObjectContext.perform {
+            articles.forEach { (article) in
+                if (article.imageID > 0) && (article.imageLink == nil) {
+                    self.client.getImageURL(imageID: Int(article.imageID), completion: { (link) in
+                        managedObjectContext.perform {
+                            article.imageLink = link
+                            do {
+                                try managedObjectContext.save()
+                            } catch {
+                                print("😅 wat \(error as Any)")
+                            }
                         }
                     })
-                })
+                }
             }
         }
     }

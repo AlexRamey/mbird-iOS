@@ -17,7 +17,9 @@ class BookmarkCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
         coverImageView.contentMode = .scaleAspectFill
+        coverImageView.clipsToBounds = true
     }
     
     // MARK: - View Life Cycle
