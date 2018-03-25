@@ -20,6 +20,7 @@ class ArticleItem: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
         self.coverImage.contentMode = .scaleAspectFill
+        self.coverImage.clipsToBounds = true
     }
     
     func configure(article: MBArticle) {

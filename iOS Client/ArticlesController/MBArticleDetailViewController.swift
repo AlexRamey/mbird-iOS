@@ -133,18 +133,9 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     @objc func bookmarkArticle(sender: AnyObject) {
         self.selectedArticle?.isBookmarked = true
-//                             if let context = article.managedObjectContext {    +                            article.imageLink = url
-//                                      do {    +                            try context.save()
-//                                                let imageObject = ArticlePicture(context: context)                            } catch {
-//                                                   imageObject.image = imageData as NSData                                print("😅 unable to save image url for \(article.articleID)")
-//                                                      article.image = imageObject
-//                                                        try context.save()
-//                                               } catch {
-//                                                        print("unable to save image data for \(article.articleID)")
-//                                                    }
-//        }
         
-        
+        // attempt to save this article's associated image
+        // to the device
         if let selectedArticle = self.selectedArticle,
             let context = selectedArticle.managedObjectContext,
             let imageLink = self.selectedArticle?.imageLink,
@@ -166,6 +157,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             })
         }
         
+        // save that the article was bookmarked
         var message = ""
         do {
             try self.selectedArticle?.managedObjectContext?.save()
