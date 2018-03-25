@@ -43,13 +43,13 @@ enum RouteComponent: Equatable {
         case .devotions:
             if case .base = self {
                 retVal = MBDevotionsViewController.instantiateFromStoryboard()
-            } else if case let .detail(detailItem) = self {
+            } else if case .detail(_) = self {
                 retVal = DevotionDetailViewController.instantiateFromStoryboard()
             }
         case .podcasts:
             if case .base = self {
                 retVal = MBPodcastsViewController.instantiateFromStoryboard()
-            } else if case let .detail(detailItem) = self {
+            } else if case .detail(_) = self {
                 retVal = PodcastDetailViewController.instantiateFromStoryboard()
             }
         }

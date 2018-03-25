@@ -28,7 +28,7 @@ class MBPodcastsStore {
     
     func syncPodcasts() -> Promise<[Podcast]> {
         let streams: [MBClient.PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
-        let requests = streams.map{ self.client.getPodcasts(for: $0)}
+        let requests = streams.map {self.client.getPodcasts(for: $0)}
         return firstly {
             when(resolved: requests)
         }.then { responses -> Promise<[Podcast]> in

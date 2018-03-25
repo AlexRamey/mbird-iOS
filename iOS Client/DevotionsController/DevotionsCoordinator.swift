@@ -53,7 +53,7 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
             if granted {
                 self.scheduleNotifications(withCenter: center, forDevotions: devotions)
             } else {
-                print(error)
+                print(error as Any)
             }
         }
     }
@@ -126,16 +126,14 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     }
 }
 
-extension Date
-{
+extension Date {
     static let ddMMFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd"
         return formatter
     }()
 
-    func toMMddString() -> String
-    {
+    func toMMddString() -> String {
         return Date.ddMMFormatter.string(from: self)
     }
 }

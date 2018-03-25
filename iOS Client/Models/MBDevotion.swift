@@ -24,7 +24,7 @@ struct LoadedDevotion: Codable, Detailable, Equatable {
     var read: Bool
     
     // MARK: - Equatable
-    static func ==(lhs: LoadedDevotion, rhs: LoadedDevotion) -> Bool {
+    static func == (lhs: LoadedDevotion, rhs: LoadedDevotion) -> Bool {
         return  lhs.date        == rhs.date         &&
                 lhs.text        == rhs.text         &&
                 lhs.verse       == rhs.verse        &&

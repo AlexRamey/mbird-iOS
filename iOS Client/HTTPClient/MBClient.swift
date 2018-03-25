@@ -139,7 +139,7 @@ class MBClient: NSObject {
         print("firing get podcasts request")
         let request = URLRequest(url: url)
         
-        return self.session.dataTask(with: request).asDataAndResponse().then { (data: Data, resp: URLResponse?) -> [PodcastDTO] in
+        return self.session.dataTask(with: request).asDataAndResponse().then { (data: Data, _: URLResponse?) -> [PodcastDTO] in
             let parser = XMLParser(data: data)
             let xmlParserDelegate = PodcastXMLParsingDelegate()
             parser.delegate = xmlParserDelegate
@@ -182,7 +182,7 @@ class MBClient: NSObject {
                 return
             }
             
-            var json : Any
+            var json: Any
             do {
                 json = try JSONSerialization.jsonObject(with: mediaData, options: .allowFragments)
             } catch let error as NSError {
@@ -270,7 +270,7 @@ class MBClient: NSObject {
                 return
             }
             
-            dataTasks.append(self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+            dataTasks.append(self.session.dataTask(with: url) { (data: Data?, _: URLResponse?, _: Error?) in
                 serialQueue.async {
                     results.append(data)
                     // results starts with the data from the initial response, hence dataTasks.count + 1

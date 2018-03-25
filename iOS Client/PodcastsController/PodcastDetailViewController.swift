@@ -27,7 +27,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     
     var timeFormatter: DateComponentsFormatter?
     
-    var delegate: PodcastDetailViewControllerDelegate?
+    weak var delegate: PodcastDetailViewControllerDelegate?
     var playerState: PlayerState?
     
     override func viewDidLoad() {
@@ -37,7 +37,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         durationSlider.addTarget(self, action: #selector(onSeek(slider:event:)), for: .valueChanged)
         durationSlider.setValue(0.0, animated: false)
         playerState = .initialized
-        self.imageView.layer.shadowPath = UIBezierPath(rect:self.imageView.bounds).cgPath
+        self.imageView.layer.shadowPath = UIBezierPath(rect: self.imageView.bounds).cgPath
         self.imageView.layer.shadowRadius = 20
         self.imageView.layer.shadowOpacity = 0.4
         self.imageView.layer.shadowOffset = CGSize(width: -5, height: -5)
@@ -92,9 +92,9 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     
     func animateImage(size: CGSize, duration: CFTimeInterval) {
         var shadowRect = imageView.bounds
-        var fromRect = CGRect(x: shadowRect.origin.x, y: shadowRect.origin.y, width: shadowRect.width + 10, height: shadowRect.height + 10)
+        let fromRect = CGRect(x: shadowRect.origin.x, y: shadowRect.origin.y, width: shadowRect.width + 10, height: shadowRect.height + 10)
         shadowRect.size = CGSize(width: size.width + 10, height: size.height + 10)
-        let shadowAnimation = CABasicAnimation(keyPath:  #keyPath(CALayer.shadowPath))
+        let shadowAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.shadowPath))
         shadowAnimation.fromValue = UIBezierPath(rect: fromRect).cgPath
         shadowAnimation.toValue = UIBezierPath(rect: shadowRect).cgPath
         shadowAnimation.isRemovedOnCompletion = false

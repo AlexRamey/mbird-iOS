@@ -58,7 +58,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.estimatedRowHeight = CGFloat(MBConstants.ARTICLE_TABLEVIEWCELL_HEIGHT)
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
-        refreshControl.tintColor = UIColor(red:235.0/255.0, green:96.0/255.0, blue:93.0/255.0, alpha:1.0)
+        refreshControl.tintColor = UIColor(red: 235.0/255.0, green: 96.0/255.0, blue: 93.0/255.0, alpha: 1.0)
         refreshControl.attributedTitle = NSAttributedString(string: "Fetching Articles ...", attributes: nil)
         
         NotificationCenter.default.addObserver(self,
@@ -85,7 +85,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     private func downloadArticleData() {
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
-            self.articlesStore.syncAllData(managedObjectContext: self.managedObjectContext).then { isNewData -> Void in
+            self.articlesStore.syncAllData(managedObjectContext: self.managedObjectContext).then { _ -> Void in
                 self.articlesStore.deleteOldArticles(managedObjectContext: self.managedObjectContext, completion: { (numDeleted) in
                     print("Deleted \(numDeleted) old articles!!!")
                     let loadedArticles = self.articlesStore.getArticles(managedObjectContext: self.managedObjectContext)

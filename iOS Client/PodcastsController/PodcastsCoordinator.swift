@@ -48,7 +48,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             DispatchQueue.main.async {
                 MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
             }
-        }.catch{ error in
+        }.catch { error in
             print("error fetching podcasts: \(error)")
             DispatchQueue.main.async {
                 MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .error))
@@ -58,7 +58,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     
     @objc func updateDuration(_ sender: Timer) {
         let current = getCurrentDuration()
-        if let totalDuration = player.currentItem?.duration.seconds, !totalDuration.isNaN, !current.isNaN  {
+        if let totalDuration = player.currentItem?.duration.seconds, !totalDuration.isNaN, !current.isNaN {
             podcastDetailViewController?.updateCurrentDuration(current: current, total: totalDuration)
         } else {
             podcastDetailViewController?.updateCurrentDuration(current: 0, total: 0)
@@ -88,7 +88,6 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             timer?.invalidate()
         case .error, .finished:
             timer?.invalidate()
-            break
         }
         
         // Handle changes in navigation state
@@ -130,6 +129,6 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     }
 }
 
-protocol PodcastDetailViewControllerDelegate {
+protocol PodcastDetailViewControllerDelegate: class {
     func seek(to second: Double)
 }
