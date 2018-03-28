@@ -14,6 +14,14 @@ class BookmarkCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var coverImageView: UIImageView!
     
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        coverImageView.contentMode = .scaleAspectFill
+        coverImageView.clipsToBounds = true
+    }
+    
     // MARK: - View Life Cycle
     override func prepareForReuse() {
         super.prepareForReuse()

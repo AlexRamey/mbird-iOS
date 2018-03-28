@@ -1,5 +1,7 @@
 PODS:
   - CVCalendar (1.6.0)
+  - Nuke (6.1)
+  - Preheat (4.0)
   - PromiseKit (4.4.0):
     - PromiseKit/Foundation (= 4.4.0)
     - PromiseKit/QuartzCore (= 4.4.0)
@@ -11,21 +13,25 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (4.4.0):
     - PromiseKit/CorePromise
-  - ReSwift (4.0.0)
+  - ReSwift (4.0.1)
   - SwiftLint (0.25.0)
 
 DEPENDENCIES:
   - CVCalendar (~> 1.6.0)
+  - Nuke (~> 6.1)
+  - Preheat (~> 4.0)
   - PromiseKit (~> 4.4)
-  - ReSwift
+  - ReSwift (~> 4.0.1)
   - SwiftLint (~> 0.25.0)
 
 SPEC CHECKSUMS:
   CVCalendar: d6da92b579dfc1e0939e324dfffd2e1045cf69b1
+  Nuke: 0513c8d156bd9a2adb15db70622c3527f44542c5
+  Preheat: 4a3ab1f050f4165b6a4d58481e84a0fd8ae8d999
   PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
-  ReSwift: f058ef13b46ae5f463f10605ccbbb7fb04424d8d
+  ReSwift: f4012c613e13da7398827fe5aebdb938eaed40a3
   SwiftLint: e14651157288e9e01d6e1a71db7014fb5744a8ea
 
-PODFILE CHECKSUM: d0ed8061e1587f76a9dcd5bed32128639d57cd9e
+PODFILE CHECKSUM: aa52882c7ce6056e05d7899d2843ba12605ffe9d
 
 COCOAPODS: 1.3.1

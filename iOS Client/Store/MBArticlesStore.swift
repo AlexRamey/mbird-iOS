@@ -67,12 +67,36 @@ class MBArticlesStore: NSObject {
                 return self.downloadArticles(managedObjectContext: managedObjectContext)
             }.then(on: bgq) { result -> Void in
                 results.append(result)
+                
+                // fire off requests to get the image urls
+                self.resolveArticleImageURLs(managedObjectContext: managedObjectContext)
+                
                 fulfill(results.reduce(false, { (accumulator, item) -> Bool in
                     return accumulator || item
                 }))
             }.catch { error in
                 print("There was an error downloading data! \(error)")
                 reject(error)
+            }
+        }
+    }
+    
+    private func resolveArticleImageURLs(managedObjectContext: NSManagedObjectContext) {
+        let articles = self.getArticles(managedObjectContext: managedObjectContext)
+        managedObjectContext.perform {
+            articles.forEach { (article) in
+                if (article.imageID > 0) && (article.imageLink == nil) {
+                    self.client.getImageURL(imageID: Int(article.imageID), completion: { (link) in
+                        managedObjectContext.perform {
+                            article.imageLink = link
+                            do {
+                                try managedObjectContext.save()
+                            } catch {
+                                print("😅 wat \(error as Any)")
+                            }
+                        }
+                    })
+                }
             }
         }
     }

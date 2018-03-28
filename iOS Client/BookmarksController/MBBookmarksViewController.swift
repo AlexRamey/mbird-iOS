@@ -75,10 +75,9 @@ extension MBBookmarksViewController: NSFetchedResultsControllerDelegate {
         case .delete:
             tableView.deleteRows(at: [indexPath!], with: .automatic)
         case .update:
-            // swiftlint:disable force_cast
-            let cell = tableView.cellForRow(at: indexPath!) as! BookmarkCell
-            // swiftlint:enable force_cast
-            configure(cell: cell, for: indexPath!)
+            if let cell = tableView.cellForRow(at: indexPath!) as? BookmarkCell {
+                configure(cell: cell, for: indexPath!)
+            }
         case .move:
             tableView.deleteRows(at: [indexPath!], with: .automatic)
             tableView.insertRows(at: [newIndexPath!], with: .automatic)
