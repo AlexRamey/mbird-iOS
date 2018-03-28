@@ -50,7 +50,7 @@ func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
     switch action {
     case _ as ReSwiftInit:
         break
-    case let action as RefreshArticles:
+    case _ as RefreshArticles:
         nextState.articles = Loaded<[MBArticle]>.loading
     case let action as LoadedArticles:
         nextState.articles = action.articles
@@ -79,17 +79,17 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
 
 func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
     var nextState = state ?? MBPodcastsState()
-    switch action{
+    switch action {
     case let action as LoadedPodcasts:
         nextState.podcasts = action.podcasts
     case let action as SelectedPodcast:
         nextState.selectedPodcast = action.podcast
         nextState.player = .playing
-    case let action as FinishedPodcast:
+    case _ as FinishedPodcast:
         nextState.player = .finished
-    case let action as PodcastError:
+    case _ as PodcastError:
         nextState.player = .error
-    case let action as PlayPausePodcast:
+    case _ as PlayPausePodcast:
         if nextState.player == .playing {
             nextState.player = .paused
         } else {
@@ -103,6 +103,6 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
 }
 
 func settingsReducer(action: Action, state: SettingsState?) -> SettingsState {
-    var nextState = state ?? MBSettingsState()
+    let nextState = state ?? MBSettingsState()
     return nextState
 }

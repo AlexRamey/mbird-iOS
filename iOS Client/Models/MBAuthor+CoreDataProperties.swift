@@ -39,4 +39,3 @@ extension MBAuthor {
     @NSManaged public func removeFromArticles(_ values: NSSet)
     
 }
-

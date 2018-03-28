@@ -11,7 +11,7 @@ import Foundation
 
 class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
     var podcast: [String: String] = [:]
-    var items: [[String:String]] = []
+    var items: [[String: String]] = []
     var podcasts: [PodcastDTO] = []
     var foundCharacters: String = ""
     
@@ -19,7 +19,7 @@ class PodcastXMLParsingDelegate: NSObject, XMLParserDelegate {
         self.foundCharacters += string
     }
     
-    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String: String]) {
         if elementName == "enclosure" {
             if let url = attributeDict["url"] {
                 podcast["guid"] = url

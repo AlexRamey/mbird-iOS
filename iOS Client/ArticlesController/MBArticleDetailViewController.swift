@@ -138,8 +138,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         if let selectedArticle = self.selectedArticle,
             let context = selectedArticle.managedObjectContext,
             let imageLink = self.selectedArticle?.imageLink,
-            let imageURL = URL(string: imageLink)
-        {
+            let imageURL = URL(string: imageLink) {
             Manager.shared.loadImage(with: imageURL, completion: { (result) in
                 context.perform {
                     if let image = result.value {
