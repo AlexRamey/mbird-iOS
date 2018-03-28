@@ -1,8 +1,9 @@
 //
 //  ArticlePicture+CoreDataProperties.swift
-//  
+//  iOS Client
 //
-//  Created by Alex Ramey on 12/9/17.
+//  Created by Alex Ramey on 3/24/18.
+//  Copyright © 2018 Mockingbird. All rights reserved.
 //
 //
 

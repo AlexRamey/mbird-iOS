@@ -65,7 +65,7 @@ class MBClient: NSObject {
     // getArticlesWithCompletion makes a single URL request for the 25 most recent posts
     // When the response is received, it calls the completion block with the resulting data and error
     func getArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=50"
+        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=60"
         guard let url = URL(string: urlString) else {
             completion([], NetworkRequestError.invalidURL(url: urlString))
             return
@@ -162,14 +162,14 @@ class MBClient: NSObject {
         }
     }
 
-    func getImageData(imageID: Int, completion: @escaping (Data?) -> Void) {
+    func getImageURL(imageID: Int, completion: @escaping (String?) -> Void) {
         let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
         guard let url = URL(string: urlString) else {
             completion(nil)
             return
         }
         
-        print("firing get media request: \(imageID)")
+        print("firing get media url request: \(imageID)")
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
                 completion(nil)
@@ -191,30 +191,28 @@ class MBClient: NSObject {
                 return
             }
             
-            if let arr = json as? NSDictionary, let imageLink = arr.value(forKeyPath: "media_details.sizes.thumbnail.source_url") as? String {
-                guard let imageUrl = URL(string: imageLink) else {
-                    completion(nil)
-                    return
-                }
-                print("firing get image request: \(imageID)")
-                self.session.dataTask(with: imageUrl) { (data: Data?, resp: URLResponse?, err: Error?) in
-                    guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
-                        completion(nil)
-                        return
-                    }
-                    
-                    // Process Data
-                    guard let imageData = data else {
-                        completion(nil)
-                        return
-                    }
-                    
-                    completion(imageData)
-                }.resume()
-            } else {
+            // a couple of possible keypaths for the image url,
+            // sorted highest preference first
+            let keyPaths: [String] = [
+                "media_details.sizes.full.source_url",
+                "media_details.sizes.thumbnail.source_url"
+            ]
+            
+            guard let arr = json as? NSDictionary else {
                 completion(nil)
+                return
             }
             
+            var imageLinks = keyPaths.flatMap({ (keyPath) -> String? in
+                return arr.value(forKeyPath: keyPath) as? String
+            })
+            
+            guard imageLinks.count > 0 else {
+                completion(nil)
+                return
+            }
+            
+            completion(imageLinks[0])
         }.resume()
     }
     

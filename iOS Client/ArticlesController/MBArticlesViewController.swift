@@ -113,7 +113,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             print("Error: Loading articles")
             self.refreshControl.endRefreshing()
         case .loaded(let data):
-            print("New Data for table view")
             articlesByCategory = groupArticlesByTopLevelCategoryName(articles: data)
             topLevelCategories = Array(articlesByCategory.keys).sorted()
             tableView.reloadData()

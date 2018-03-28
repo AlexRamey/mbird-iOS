@@ -9,6 +9,7 @@
 import UIKit
 import ReSwift
 import WebKit
+import Nuke
 
 class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
@@ -47,7 +48,6 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     func configureWebView() {
         if let content = self.selectedArticle?.content {
-            print(content)
             // <head>
             let contentTypeHead = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             let viewPortHead = "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
@@ -133,14 +133,36 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     @objc func bookmarkArticle(sender: AnyObject) {
         self.selectedArticle?.isBookmarked = true
         
-        var message = ""
-        do {
-            try self.selectedArticle?.managedObjectContext?.save()
-            message = "Bookmarked"
-        } catch {
-            message = error.localizedDescription
+        // attempt to save this article's associated image
+        // to the device
+        if let selectedArticle = self.selectedArticle,
+            let context = selectedArticle.managedObjectContext,
+            let imageLink = self.selectedArticle?.imageLink,
+            let imageURL = URL(string: imageLink)
+        {
+            Manager.shared.loadImage(with: imageURL, completion: { (result) in
+                context.perform {
+                    if let image = result.value {
+                        let imageObject = ArticlePicture(context: context)
+                        imageObject.image = UIImagePNGRepresentation(image) as NSData?
+                        selectedArticle.image = imageObject
+                    }
+                    do {
+                        try context.save()
+                    } catch {
+                        print("heckin data error: 🙃 \(error as Any)")
+                    }
+                }
+            })
+        } else {
+            do {
+                try self.selectedArticle?.managedObjectContext?.save()
+            } catch {
+                print("could not bookmark article: \(error)")
+            }
         }
         
+        let message = "Bookmarked"
         let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
