@@ -11,4 +11,5 @@ import UIKit
 
 extension UIColor {
     static var MBOrange = UIColor(red: 253/255, green: 84/255, blue: 87/255, alpha: 1)
+    static var MBBlue = UIColor(red: 93/255, green: 212/255, blue: 250/255, alpha: 1)
 }

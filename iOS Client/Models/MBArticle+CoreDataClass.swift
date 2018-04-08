@@ -7,11 +7,12 @@
 //
 //
 
-import Foundation
+import UIKit
 import CoreData
 
 public class MBArticle: NSManagedObject {
     static let entityName: String = "Article"
+    var uiimage: UIImage? = nil
     
     // deserialize accepts an NSDictionary and deserializes the object into the provided
     // managedObjectContext. It returns an error if something goes wrong.

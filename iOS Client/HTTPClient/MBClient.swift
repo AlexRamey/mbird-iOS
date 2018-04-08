@@ -62,16 +62,52 @@ class MBClient: NSObject {
         }
     }
     
-    // getArticlesWithCompletion makes a single URL request for the 25 most recent posts
-    // When the response is received, it calls the completion block with the resulting data and error
-    func getArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=60"
+    func getRecentArticles(inCategories categories: [Int],
+                           excludingArticlesWithIDs excluded: [Int],
+                           withCompletion completion: @escaping ([Data], Error?) -> Void)
+    {
+        var categoriesArg = ""
+        if categories.count > 0 {
+            categoriesArg = categories.reduce("categories=") { (result, elem) -> String in
+                return "\(result)\(elem),"
+            }
+            categoriesArg.removeLast()
+        }
+        
+        var excludedArg = ""
+        if excluded.count > 0 {
+            excludedArg = excluded.reduce("excluded=") { (result, elem) -> String in
+                return "\(result)\(elem),"
+            }
+            excludedArg.removeLast()
+        }
+        
+        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=20\(categoriesArg)\(excludedArg)"
+        print("URL: \(urlString)")
+        
         guard let url = URL(string: urlString) else {
             completion([], NetworkRequestError.invalidURL(url: urlString))
             return
         }
         
         print("firing getArticles request")
+        getDataFromURL(url, withCompletion: completion)
+    }
+    
+    // getRecentArticlesWithCompletion makes a single URL request for recent posts
+    // When the response is received, it calls the completion block with the resulting data and error
+    func getRecentArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
+        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=50"
+        guard let url = URL(string: urlString) else {
+            completion([], NetworkRequestError.invalidURL(url: urlString))
+            return
+        }
+        
+        print("firing getArticles request")
+        getDataFromURL(url, withCompletion: completion)
+    }
+    
+    private func getDataFromURL(_ url: URL, withCompletion completion: @escaping ([Data], Error?) -> Void ) {
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             if let httpResponse = resp as? HTTPURLResponse {
                 if httpResponse.statusCode != 200 {
@@ -85,8 +121,8 @@ class MBClient: NSObject {
                 return
             }
             
-            if let articleData = data {
-                completion([articleData], nil)
+            if let resourceData = data {
+                completion([resourceData], nil)
             } else {
                 completion([], nil)
             }
@@ -162,7 +198,7 @@ class MBClient: NSObject {
         }
     }
 
-    func getImageURL(imageID: Int, completion: @escaping (String?) -> Void) {
+    func getImageURLs(imageID: Int, completion: @escaping ([String?]?) -> Void) {
         let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
         guard let url = URL(string: urlString) else {
             completion(nil)
@@ -191,11 +227,10 @@ class MBClient: NSObject {
                 return
             }
             
-            // a couple of possible keypaths for the image url,
-            // sorted highest preference first
+            // keypaths for the image urls
             let keyPaths: [String] = [
-                "media_details.sizes.full.source_url",
-                "media_details.sizes.thumbnail.source_url"
+                "media_details.sizes.thumbnail.source_url",
+                "media_details.sizes.full.source_url"
             ]
             
             guard let arr = json as? NSDictionary else {
@@ -203,16 +238,11 @@ class MBClient: NSObject {
                 return
             }
             
-            var imageLinks = keyPaths.flatMap({ (keyPath) -> String? in
+            let imageLinks = keyPaths.map({ (keyPath) -> String? in
                 return arr.value(forKeyPath: keyPath) as? String
             })
             
-            guard imageLinks.count > 0 else {
-                completion(nil)
-                return
-            }
-            
-            completion(imageLinks[0])
+            completion(imageLinks)
         }.resume()
     }
     

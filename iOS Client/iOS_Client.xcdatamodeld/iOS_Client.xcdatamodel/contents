@@ -9,6 +9,7 @@
         <attribute name="imageLink" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isBookmarked" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="link" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbnailLink" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Author" inverseName="articles" inverseEntity="Author" syncable="YES"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Category" inverseName="articles" inverseEntity="Category" syncable="YES"/>
@@ -33,9 +34,9 @@
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="children" inverseEntity="Category" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Article" positionX="-450" positionY="-36" width="128" height="223"/>
+        <element name="Article" positionX="-450" positionY="-36" width="128" height="238"/>
+        <element name="ArticlePicture" positionX="-333" positionY="-153" width="128" height="75"/>
         <element name="Author" positionX="-218" positionY="167" width="128" height="103"/>
         <element name="Category" positionX="-236" positionY="-300" width="128" height="135"/>
-        <element name="ArticlePicture" positionX="-333" positionY="-153" width="128" height="75"/>
     </elements>
 </model>
