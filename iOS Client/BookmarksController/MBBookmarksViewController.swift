@@ -14,6 +14,11 @@ class MBBookmarksViewController: UIViewController {
     private let bookmarkCellIdentifier = "bookmarkCellReuseIdentifier"
     var managedObjectContext: NSManagedObjectContext!
     var fetchedResultsController: NSFetchedResultsController<MBArticle>!
+    lazy var imageMakerQueue: OperationQueue = {
+        var queue = OperationQueue()
+        queue.name = "Image Maker Queue"
+        return queue
+    }()
     
     // MARK: - IBOutlets
     @IBOutlet weak var tableView: UITableView!
@@ -57,7 +62,7 @@ class MBBookmarksViewController: UIViewController {
 extension MBBookmarksViewController {
     func configure(cell: UITableViewCell, for indexPath: IndexPath) {
         if let bookmarkCell = cell as? BookmarkCell {
-            bookmarkCell.configure(article: fetchedResultsController.object(at: indexPath))
+            bookmarkCell.configure(article: fetchedResultsController.object(at: indexPath), withQueue: imageMakerQueue)
         }
     }
 }

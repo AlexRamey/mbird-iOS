@@ -31,6 +31,8 @@ class MBArticlesStore: NSObject {
     
     func getArticles(managedObjectContext: NSManagedObjectContext) -> [MBArticle] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
+        fetchRequest.sortDescriptors = [sort]
         return performFetch(managedContext: managedObjectContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
@@ -86,9 +88,10 @@ class MBArticlesStore: NSObject {
         managedObjectContext.perform {
             articles.forEach { (article) in
                 if (article.imageID > 0) && (article.imageLink == nil) {
-                    self.client.getImageURL(imageID: Int(article.imageID), completion: { (link) in
+                    self.client.getImageURLs(imageID: Int(article.imageID), completion: { (links) in
                         managedObjectContext.perform {
-                            article.imageLink = link
+                            article.thumbnailLink = links?[0]
+                            article.imageLink = links?[1]
                             do {
                                 try managedObjectContext.save()
                             } catch {
@@ -135,7 +138,13 @@ class MBArticlesStore: NSObject {
     }
     
     private func downloadArticles(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
-        return performDownload(clientFunction: client.getArticlesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBArticle.deserialize)
+        return performDownload(clientFunction: client.getRecentArticlesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBArticle.deserialize)
+    }
+    
+    private func downloadCategoryArticles(categories: [Int], excluded: [Int], managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
+        return performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
+            client.getRecentArticles(inCategories: categories, excludingArticlesWithIDs: excluded, withCompletion: completion)
+        }, managedObjectContext: managedObjectContext, deserializeFunc: MBArticle.deserialize)
     }
     
     // An internal helper function to perform a download
