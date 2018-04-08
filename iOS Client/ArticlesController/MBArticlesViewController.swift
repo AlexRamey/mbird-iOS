@@ -450,11 +450,14 @@ extension MBArticlesViewController {
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return 500.0
+            return 500.0 // featured
         } else if indexPath.row == 0 {
-            return 80.0
+            return 80.0 // category header
+        } else if indexPath.row == self.tableView(tableView, numberOfRowsInSection: indexPath.section) - 1 {
+                // category footer
+                return 86.0
         } else {
-            return 200.0
+            return 200.0 // article cell
         }
     }
 }
