@@ -64,8 +64,7 @@ class MBClient: NSObject {
     
     func getRecentArticles(inCategories categories: [Int],
                            excludingArticlesWithIDs excluded: [Int],
-                           withCompletion completion: @escaping ([Data], Error?) -> Void)
-    {
+                           withCompletion completion: @escaping ([Data], Error?) -> Void) {
         var categoriesArg = ""
         if categories.count > 0 {
             categoriesArg = categories.reduce("categories=") { (result, elem) -> String in

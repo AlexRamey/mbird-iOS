@@ -11,7 +11,6 @@ import UIKit
 class CategoryArticleTableViewCell: UITableViewCell {
     @IBOutlet weak var thumbnailImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    var articleID: Int32 = -1
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,8 +21,12 @@ class CategoryArticleTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
+    func setTitle(_ title: NSAttributedString?) {
+        self.titleLabel.attributedText = title
+        self.titleLabel.textColor = UIColor.MBOrange
+        self.titleLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .heavy)
+        self.titleLabel.sizeToFit()
+    }
 }
