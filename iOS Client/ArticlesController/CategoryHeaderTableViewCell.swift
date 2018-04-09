@@ -14,13 +14,17 @@ class CategoryHeaderTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
+        self.backgroundColor = UIColor.black
+        self.categoryLabel.textColor = UIColor.MBBlue
+        self.categoryLabel.font = UIFont.systemFont(ofSize: 24.0, weight: .heavy)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    }
+    
+    func setCategory(cat: String?) {
+        self.categoryLabel.text = cat
     }
     
 }

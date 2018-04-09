@@ -12,6 +12,14 @@ import CoreData
 import Nuke
 import Preheat
 
+enum RowType {
+    case featured
+    case recent
+    case categoryHeader
+    case category
+    case categoryFooter
+}
+
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
     // properties
     @IBOutlet weak var tableView: UITableView!
@@ -92,7 +100,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
         refreshControl.tintColor = UIColor(red: 235.0/255.0, green: 96.0/255.0, blue: 93.0/255.0, alpha: 1.0)
-        refreshControl.attributedTitle = NSAttributedString(string: "Fetching Articles ...", attributes: nil)
+        refreshControl.attributedTitle = NSAttributedString(string: "Updating ...", attributes: nil)
 
         let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
         MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
@@ -106,42 +114,21 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     func preheat(added: [IndexPath], removed: [IndexPath]) {
         func requests(for indexPaths: [IndexPath]) -> [Request] {
             return indexPaths.flatMap {
-                if $0.section != 0 && $0.row == 0 {
-                    // category headers
-                    return nil
-                }
-                
-                if $0.section != 0 && $0.row == self.tableView(tableView, numberOfRowsInSection: $0.section) - 1 {
-                    // category footers
-                    return nil
-                }
-                
-                var a: MBArticle?
-                
-                if $0.section == 0 {
-                    // recent articles
-                    a = latestArticles[$0.row]
-                } else {
-                    // category articles
-                    let categoryName = topLevelCategories[$0.section - 1]
-                    if let articles = olderArticlesByCategory[categoryName] {
-                        a = articles[$0.row - 1]
+                var link: String?
+                switch rowTypeForPath($0) {
+                case .featured:
+                    let article = latestArticles[$0.row]
+                    link = article.imageLink ?? article.thumbnailLink
+                case .recent, .category:
+                    guard let article = articleForPath($0) else {
+                        return nil
                     }
+                    link = article.thumbnailLink ?? article.imageLink
+                default:
+                    break
                 }
                 
-                guard let article = a else {
-                    return nil
-                }
-                
-                var l: String?
-                
-                if $0.section == 0 && $0.row == 0 {
-                    l = article.imageLink ?? article.thumbnailLink
-                } else {
-                    l = article.thumbnailLink ?? article.imageLink
-                }
-                
-                guard let imageLink = l, let url = URL(string: imageLink) else {
+                guard let l = link, let url = URL(string: l) else {
                     return nil
                 }
                 
@@ -209,140 +196,72 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         return Array(articlesWithImages.prefix(numLatest))
     }
     
-    private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: MBArticle) {
-        cell.articleID = article.articleID
-        
-        cell.categoryLabel.textColor = UIColor.black
-        cell.categoryLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .semibold)
-        cell.categoryLabel.text = article.getTopLevelCategories().first ?? "mockingbird"
-        
-        cell.timeLabel.textColor = UIColor.black
-        cell.timeLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .semibold)
-        
-        if let date = article.date {
-            if date.timeIntervalSinceNow > -16 * 3600 {
-                // just show time if it was published recently
-                cell.timeLabel.text = DateFormatter.localizedString(from: date as Date, dateStyle: .none, timeStyle: .short)
-            } else {
-                // just show date otherwise
-                var longDate = DateFormatter.localizedString(from: date as Date, dateStyle: .long, timeStyle: .none)
-                if let idx = longDate.index(of: ",") {
-                    longDate = String(longDate.prefix(upTo: idx))
-                }
-                cell.timeLabel.text = longDate
-            }
-        } else {
-            cell.timeLabel.text = "recent"
-        }
-        
-        cell.titleLabel.attributedText = article.title?.convertHtml()
-        cell.titleLabel.textColor = UIColor.MBOrange
-        cell.titleLabel.font = UIFont.systemFont(ofSize: 24.0, weight: .heavy)
-        cell.titleLabel.sizeToFit()
+    private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
+        cell.setTitle(article.title?.convertHtml())
+        cell.setCategory(article.getTopLevelCategories().first)
+        cell.setDate(date: article.date as Date?)
         
         cell.featuredImage.image = nil
-        
         if let savedData = article.image?.image {
             cell.featuredImage.image = UIImage(data: savedData as Data)
-        } else if let imageLink = article.imageLink, let url = URL(string: imageLink) {
+        } else if let imageLink = article.imageLink ?? article.thumbnailLink,
+                  let url = URL(string: imageLink) {
             Manager.shared.loadImage(with: url, into: cell.featuredImage)
         } else if article.imageID != 0 {
-            self.client.getImageURLs(imageID: Int(article.imageID)) { links in
-                DispatchQueue.main.async {
-                    if let context = article.managedObjectContext {
-                        do {
-                            article.thumbnailLink = links?[0]
-                            article.imageLink = links?[1]
-                            try context.save()
-                        } catch {
-                            print("😅 unable to save image url for \(article.articleID)")
-                        }
-                    }
-                    if cell.articleID == article.articleID, let imageLink = article.imageLink ?? article.thumbnailLink, let imageURL = URL(string: imageLink) {
-                        Manager.shared.loadImage(with: imageURL, into: cell.featuredImage)
-                    }
-                }
-            }
+            self.downloadImageURLsForArticle(article, atIndexPath: indexPath)
         }
     }
 
-    private func configureRecentCell(_ cell: RecentArticleTableViewCell, withArticle article: MBArticle) {
-        cell.articleID = article.articleID
-        
-        cell.categoryLabel.textColor = UIColor.black
-        cell.categoryLabel.font = UIFont.systemFont(ofSize: 16.0, weight: .semibold)
-        cell.categoryLabel.text = article.getTopLevelCategories().first ?? "mockingbird"
-        
-        cell.titleLabel.attributedText = article.title?.convertHtml()
-        cell.titleLabel.textColor = UIColor.MBOrange
-        cell.titleLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .heavy)
-        cell.titleLabel.sizeToFit()
+    private func configureRecentCell(_ cell: RecentArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
+        cell.setTitle(article.title?.convertHtml())
+        cell.setCategory(article.getTopLevelCategories().first)
         
         cell.thumbnailImage.image = nil
-        
         if let savedData = article.image?.image {
             cell.thumbnailImage.image = UIImage(data: savedData as Data)
-        } else if let imageLink = article.thumbnailLink, let url = URL(string: imageLink) {
+        } else if let imageLink = article.thumbnailLink ?? article.imageLink, let url = URL(string: imageLink) {
             Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
         } else if article.imageID != 0 {
-            self.client.getImageURLs(imageID: Int(article.imageID)) { links in
-                DispatchQueue.main.async {
-                    if let context = article.managedObjectContext {
-                        do {
-                            article.thumbnailLink = links?[0]
-                            article.imageLink = links?[1]
-                            try context.save()
-                        } catch {
-                            print("😅 unable to save image url for \(article.articleID)")
+            self.downloadImageURLsForArticle(article, atIndexPath: indexPath)
+        }
+    }
+    
+    func configureCategoryHeaderCell(_ cell: CategoryHeaderTableViewCell, withCategory cat: String) {
+        cell.setCategory(cat: cat)
+    }
+    
+    private func configureCategoryArticleCell(_ cell: CategoryArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
+        cell.setTitle(article.title?.convertHtml())
+        
+        cell.thumbnailImage.image = nil
+        if let savedData = article.image?.image {
+            cell.thumbnailImage.image = UIImage(data: savedData as Data)
+        } else if let imageLink = article.thumbnailLink ?? article.imageLink,
+                  let url = URL(string: imageLink) {
+            Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
+        } else if article.imageID != 0 {
+            self.downloadImageURLsForArticle(article, atIndexPath: indexPath)
+        }
+    }
+    
+    private func downloadImageURLsForArticle(_ article: MBArticle, atIndexPath indexPath: IndexPath) {
+        self.client.getImageURLs(imageID: Int(article.imageID)) { links in
+            DispatchQueue.main.async {
+                if let context = article.managedObjectContext {
+                    do {
+                        article.thumbnailLink = links?[0]
+                        article.imageLink = links?[1]
+                        try context.save()
+                        if let imageLink = article.thumbnailLink ?? article.imageLink,
+                            URL(string: imageLink) != nil {
+                            self.tableView.reloadRows(at: [indexPath], with: .automatic)
                         }
-                    }
-                    if cell.articleID == article.articleID, let imageLink = article.thumbnailLink ?? article.imageLink, let imageURL = URL(string: imageLink) {
-                        Manager.shared.loadImage(with: imageURL, into: cell.thumbnailImage)
+                    } catch {
+                        print("😅 unable to save image url for \(article.articleID)")
                     }
                 }
             }
         }
-    }
-    
-    private func configureCategoryArticleCell(_ cell: CategoryArticleTableViewCell, withArticle article: MBArticle) {
-        cell.articleID = article.articleID
-        
-        cell.titleLabel.attributedText = article.title?.convertHtml()
-        cell.titleLabel.textColor = UIColor.MBOrange
-        cell.titleLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .heavy)
-        cell.titleLabel.sizeToFit()
-        
-        cell.thumbnailImage.image = nil
-        
-        if let savedData = article.image?.image {
-            cell.thumbnailImage.image = UIImage(data: savedData as Data)
-        } else if let imageLink = article.thumbnailLink, let url = URL(string: imageLink) {
-            Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
-        } else if article.imageID != 0 {
-            self.client.getImageURLs(imageID: Int(article.imageID)) { links in
-                DispatchQueue.main.async {
-                    if let context = article.managedObjectContext {
-                        do {
-                            article.thumbnailLink = links?[0]
-                            article.imageLink = links?[1]
-                            try context.save()
-                        } catch {
-                            print("😅 unable to save image url for \(article.articleID)")
-                        }
-                    }
-                    if cell.articleID == article.articleID, let imageLink = article.thumbnailLink ?? article.imageLink, let imageURL = URL(string: imageLink) {
-                        Manager.shared.loadImage(with: imageURL, into: cell.thumbnailImage)
-                    }
-                }
-            }
-        }
-    }
-    
-    func configureCategoryCell(_ cell: CategoryHeaderTableViewCell, withCategory cat: String) {
-        cell.backgroundColor = UIColor.black
-        cell.categoryLabel.textColor = UIColor.MBBlue
-        cell.categoryLabel.font = UIFont.systemFont(ofSize: 24.0, weight: .heavy)
-        cell.categoryLabel.text = cat
     }
     
     private func groupArticlesByTopLevelCategoryName(articles: [MBArticle]) -> [String: [MBArticle]] {
@@ -370,6 +289,36 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    private func rowTypeForPath(_ indexPath: IndexPath) -> RowType {
+        if indexPath.section == 0 && indexPath.row == 0 {
+            return .featured        // first overall row
+        } else if indexPath.section == 0 {
+            return .recent          // other rows in first section
+        } else if indexPath.row == 0 {
+            return .categoryHeader  // first row in other sections
+        } else if indexPath.row == self.tableView(tableView, numberOfRowsInSection: indexPath.section) - 1 {
+            return .categoryFooter  // last row in other sections
+        } else {
+            return .category        // middle rows in other sections
+        }
+    }
+    
+    private func articleForPath(_ indexPath: IndexPath) -> MBArticle? {
+        switch rowTypeForPath(indexPath) {
+        case .featured, .recent:
+            return self.latestArticles[indexPath.row]
+        case .category:
+            let categoryName = topLevelCategories[indexPath.section - 1]
+            if let articles = self.olderArticlesByCategory[categoryName] {
+                return articles[indexPath.row - 1]
+            }
+        default:
+            break
+        }
+        
+        return nil
+    }
 }
 
 extension MBArticlesViewController {
@@ -388,76 +337,62 @@ extension MBArticlesViewController {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 && indexPath.row == 0 {
+        switch rowTypeForPath(indexPath) {
+        case .featured:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: featuredReuseIdentifier, for: indexPath) as? FeaturedArticleTableViewCell else {
                 return UITableViewCell()
             }
-            
-            self.configureFeaturedCell(cell, withArticle: latestArticles[indexPath.row])
-            
+            self.configureFeaturedCell(cell, withArticle: latestArticles[indexPath.row], atIndexPath: indexPath)
             return cell
-        } else if indexPath.section == 0 {
+        case .recent:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: recentReuseIdentifier, for: indexPath) as? RecentArticleTableViewCell else {
                 return UITableViewCell()
             }
-            
-            self.configureRecentCell(cell, withArticle: latestArticles[indexPath.row])
-            
+            self.configureRecentCell(cell, withArticle: latestArticles[indexPath.row], atIndexPath: indexPath)
             return cell
-        } else if indexPath.row == 0 {
+        case .categoryHeader:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: categoryHeaderReuseIdentifier, for: indexPath) as? CategoryHeaderTableViewCell else {
                 return UITableViewCell()
             }
             let categoryName = topLevelCategories[indexPath.section - 1]
-            self.configureCategoryCell(cell, withCategory: categoryName)
+            self.configureCategoryHeaderCell(cell, withCategory: categoryName)
             return cell
-        } else if indexPath.row == self.tableView(tableView, numberOfRowsInSection: indexPath.section) - 1 {
+        case .categoryFooter:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: categoryFooterReuseIdentifier, for: indexPath) as? CategoryFooterTableViewCell else {
                 return UITableViewCell()
             }
             return cell
-        } else {
+        case .category:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: categoryArticleReuseIdentifier, for: indexPath) as? CategoryArticleTableViewCell else {
                 return UITableViewCell()
             }
-            
-            let categoryName = topLevelCategories[indexPath.section - 1]
-            if let articles = olderArticlesByCategory[categoryName] {
-                self.configureCategoryArticleCell(cell, withArticle: articles[indexPath.row - 1])
+            if let article = articleForPath(indexPath) {
+                self.configureCategoryArticleCell(cell, withArticle: article, atIndexPath: indexPath)
             }
-            
             return cell
         }
     }
     
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            let selectedArticle = self.latestArticles[indexPath.row]
-            let action = SelectedArticle(article: selectedArticle)
-            MBStore.sharedStore.dispatch(action)
-        } else if indexPath.row == self.tableView(tableView, numberOfRowsInSection: indexPath.section) - 1 {
+        if rowTypeForPath(indexPath) == .categoryFooter {
             print("Show More: \(indexPath.section)")
-        } else if indexPath.row != 0 {
-            let categoryName = topLevelCategories[indexPath.section - 1]
-            if let articles = olderArticlesByCategory[categoryName] {
-                let selectedArticle = articles[indexPath.row - 1]
-                let action = SelectedArticle(article: selectedArticle)
-                MBStore.sharedStore.dispatch(action)
-            }
+        } else if let article = articleForPath(indexPath) {
+            let action = SelectedArticle(article: article)
+            MBStore.sharedStore.dispatch(action)
         }
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 && indexPath.row == 0 {
-            return 500.0 // featured
-        } else if indexPath.row == 0 {
-            return 80.0 // category header
-        } else if indexPath.row == self.tableView(tableView, numberOfRowsInSection: indexPath.section) - 1 {
-                // category footer
-                return 86.0
-        } else {
-            return 200.0 // article cell
+        switch rowTypeForPath(indexPath) {
+        case .featured:
+            return 500.0
+        case .recent, .category:
+            return 200.0
+        case .categoryHeader:
+            return 80.0
+        case .categoryFooter:
+            return 86.0
         }
     }
 }
