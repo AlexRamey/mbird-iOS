@@ -11,8 +11,7 @@ import UIKit
 
 class MBTabBarController: UITabBarController, StoreSubscriber {
     
-    var playPauseView: UIView!
-    var playPauseButton: UIButton!
+    var playPauseView: PlayPauseView!
     var playerState: PlayerState = .initialized
     
     static func instantiateFromStoryboard() -> MBTabBarController {
@@ -22,23 +21,20 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     }
     func configurePlayPauseView() {
         let tabBar = self.tabBar
-        playPauseView = UIView()
+        playPauseView = PlayPauseView.loadInstance()
         playPauseView.translatesAutoresizingMaskIntoConstraints = false
-        playPauseView.backgroundColor = UIColor.gray
+        playPauseView.layer.shadowOffset = CGSize(width: 0, height: -10)
+        playPauseView.layer.shadowRadius = 7
         view.addSubview(playPauseView)
-        playPauseView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         playPauseView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         playPauseView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         playPauseView.bottomAnchor.constraint(equalTo: tabBar.topAnchor).isActive = true
+        playPauseView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         playPauseView.isHidden = true
         
-        playPauseButton = UIButton()
-        playPauseButton.setTitle("Play", for: .normal)
-        playPauseButton.addTarget(self, action: #selector(togglePlayPause(_:)), for: .touchUpInside)
-        playPauseButton.translatesAutoresizingMaskIntoConstraints = false
-        playPauseView.addSubview(playPauseButton)
-        playPauseButton.centerXAnchor.constraint(equalTo: playPauseView.centerXAnchor).isActive = true
-        playPauseButton.centerYAnchor.constraint(equalTo: playPauseView.centerYAnchor).isActive = true
+        
+        playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
+        playPauseView.toggleButton.addTarget(self, action: #selector(togglePlayPause(_:)), for: .touchUpInside)
     }
     
     @objc func togglePlayPause(_ sender: UIButton) {
@@ -71,15 +67,18 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     }
     
     func newState(state: MBAppState) {
-        
+        if let podImageName = state.podcastsState.selectedPodcast?.image {
+            playPauseView.image.image = UIImage(named: podImageName)
+        }
         switch state.podcastsState.player {
         case .initialized:
             break
         case .paused, .error:
-            playPauseButton.setTitle("Play", for: .normal)
+            playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
             playPauseView?.isHidden = false
         case .playing:
-            playPauseButton.setTitle("Pause", for: .normal)
+            playPauseView.toggleButton.setImage(UIImage(named: "pause-bars"), for: .normal)
+            playPauseView.titleLabel.text = state.podcastsState.selectedPodcast?.title
             playPauseView?.isHidden = false
         case .finished:
             playPauseView?.isHidden = true
