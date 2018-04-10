@@ -14,6 +14,13 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     var podcasts: [Podcast] = []
     let cellReuseIdentifier = "PodcastTableViewCell"
     
+    var podcastDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateStyle = .long
+        return formatter
+    }()
+    
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +28,9 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         tableView.dataSource = self
         tableView.register(UINib(nibName: cellReuseIdentifier, bundle: nil), forCellReuseIdentifier: cellReuseIdentifier)
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 110
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filter"), style: .done, target: self, action: #selector(MBPodcastsViewController.filter))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +42,10 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         MBStore.sharedStore.unsubscribe(self)
+    }
+    
+    @objc func filter() {
+        MBStore.sharedStore.dispatch(FilterPodcasts())
     }
     
     // MARK: - UITableViewDataSource
@@ -49,9 +63,9 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         // swiftlint:enable force_cast
         if indexPath.row < podcasts.count {
             let podcast = podcasts[indexPath.row]
-            cell.configure(title: podcast.title ?? "", image: UIImage(named: podcast.image))
+            cell.configure(title: podcast.feed.title ?? "", image: UIImage(named: podcast.image), date: podcastDateFormatter.string(from: podcast.pubDate))
         } else {
-            cell.configure(title: "", image: nil)
+            cell.configure(title: "", image: nil, date: nil)
         }
         return cell
     }
@@ -68,7 +82,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
             //TODO: Handle error and loading states
             break
         case .loaded(let data):
-            self.podcasts = data
+            self.podcasts = data.filter { state.podcastsState.visiblePodcasts.contains($0.feed) }
             self.tableView.reloadData()
         }
     }

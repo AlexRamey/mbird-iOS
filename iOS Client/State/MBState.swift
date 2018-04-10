@@ -68,12 +68,14 @@ protocol PodcastsState {
     var podcasts: Loaded<[Podcast]> { get set }
     var selectedPodcast: Podcast? { get set }
     var player: PlayerState { get set }
+    var visiblePodcasts: Set<PodcastStream> { get set }
 }
 
 struct MBPodcastsState: PodcastsState {
     var podcasts: Loaded<[Podcast]> = .initial
     var selectedPodcast: Podcast?
     var player: PlayerState = .initialized
+    var visiblePodcasts: Set<PodcastStream> = Set<PodcastStream>([.pz, .mockingPulpit, .mockingCast]) // start with all podcasts visible
 }
 
 /********** Settings State *************/

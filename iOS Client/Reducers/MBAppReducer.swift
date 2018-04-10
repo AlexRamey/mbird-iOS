@@ -37,6 +37,8 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.routes[.podcasts]?.append(.detail(item: action.podcast))
     case _ as PopCurrentNavigation:
         nextState.routes[nextState.selectedTab]?.removeLast()
+    case _ as FilterPodcasts:
+        nextState.routes[.podcasts]?.append(.action)
     default:
         break
     }
@@ -95,6 +97,13 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
         } else {
             nextState.player = .playing
         }
+    case let action as TogglePodcastFilter:
+        if action.visible {
+            nextState.visiblePodcasts.insert(action.podcastStream)
+        } else {
+            nextState.visiblePodcasts.remove(action.podcastStream)
+        }
+        
     default:
         break
     }

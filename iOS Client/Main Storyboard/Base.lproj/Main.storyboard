@@ -341,6 +341,39 @@
             </objects>
             <point key="canvasLocation" x="341.60000000000002" y="1474.8125937031487"/>
         </scene>
+        <!--Podcasts Filter View Controller-->
+        <scene sceneID="oQu-68-FzQ">
+            <objects>
+                <viewController storyboardIdentifier="PodcastFilterViewController" id="vR8-bj-3hW" customClass="PodcastsFilterViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zJ6-yh-2fr"/>
+                        <viewControllerLayoutGuide type="bottom" id="47L-Xn-VOf"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="cEc-vJ-QkI">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="P1L-Ap-o30">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="P1L-Ap-o30" secondAttribute="trailing" id="8Q0-d0-prB"/>
+                            <constraint firstItem="P1L-Ap-o30" firstAttribute="leading" secondItem="cEc-vJ-QkI" secondAttribute="leading" id="IR1-XE-s3m"/>
+                            <constraint firstItem="47L-Xn-VOf" firstAttribute="top" secondItem="P1L-Ap-o30" secondAttribute="bottom" id="M9r-4T-1Xz"/>
+                            <constraint firstItem="P1L-Ap-o30" firstAttribute="top" secondItem="cEc-vJ-QkI" secondAttribute="top" id="inW-Xl-s2G"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="P1L-Ap-o30" id="mwx-bz-giz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="k5H-VJ-JuK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1212" y="1465.8170914542729"/>
+        </scene>
         <!--Devotion Detail View Controller-->
         <scene sceneID="d40-1k-nQD">
             <objects>

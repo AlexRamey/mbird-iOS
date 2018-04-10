@@ -27,7 +27,7 @@ class MBPodcastsStore {
     }
     
     func syncPodcasts() -> Promise<[Podcast]> {
-        let streams: [MBClient.PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
+        let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
         let requests = streams.map {self.client.getPodcasts(for: $0)}
         return firstly {
             when(resolved: requests)
@@ -47,13 +47,35 @@ class MBPodcastsStore {
                                                   summary: podcast.summary,
                                                   pubDate: date,
                                                   title: podcast.title,
-                                                  feedName: streams[indx].title )
+                                                  feed: streams[indx] )
                     }
                     podcasts.append(contentsOf: displayCasts)
                 }
             }
             podcasts.sort(by: { $0.pubDate > $1.pubDate })
             return Promise(value: podcasts)
+        }
+    }
+}
+
+public enum PodcastStream: String {
+    case pz = "https://pzspodcast.fireside.fm/rss"
+    case mockingCast = "https://themockingcast.fireside.fm/rss"
+    case mockingPulpit = "http://www.mbird.com/feed/podcast/"
+    
+    var imageName: String {
+        switch self {
+        case .pz: return "pzcast"
+        case .mockingPulpit: return "mockingpulpit"
+        case .mockingCast: return "mockingcast"
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .pz: return "PZ's Podcast"
+        case .mockingCast: return "The Mockingcast"
+        case .mockingPulpit: return "The Mockingpulpit"
         }
     }
 }
