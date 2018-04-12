@@ -63,7 +63,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         // swiftlint:enable force_cast
         if indexPath.row < podcasts.count {
             let podcast = podcasts[indexPath.row]
-            cell.configure(title: podcast.feed.title ?? "", image: UIImage(named: podcast.image), date: podcastDateFormatter.string(from: podcast.pubDate))
+            cell.configure(title: podcast.title ?? "", image: UIImage(named: podcast.image), date: podcastDateFormatter.string(from: podcast.pubDate))
         } else {
             cell.configure(title: "", image: nil, date: nil)
         }
@@ -82,7 +82,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
             //TODO: Handle error and loading states
             break
         case .loaded(let data):
-            self.podcasts = data.filter { state.podcastsState.visiblePodcasts.contains($0.feed) }
+            self.podcasts = data.filter { state.podcastsState.visibleStreams.contains($0.feed) }
             self.tableView.reloadData()
         }
     }

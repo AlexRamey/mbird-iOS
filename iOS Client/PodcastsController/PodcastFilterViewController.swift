@@ -14,11 +14,12 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
     
     @IBOutlet weak var tableView: UITableView!
     var visibleStreams: Set<PodcastStream> = Set<PodcastStream>()
-    var streams: [PodcastStream] = [.pz, .mockingCast, .mockingPulpit]
+    var streams: [PodcastStream] = []
+    let filterReuseIdentifier: String = "PodcastFilterTableViewCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UINib(nibName: PodcastFilterTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: PodcastFilterTableViewCell.reuseIdentifier)
+        tableView.register(UINib(nibName: "PodcastFilterTableViewCell", bundle: nil), forCellReuseIdentifier: filterReuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -52,7 +53,8 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     func newState(state: MBAppState) {
-        visibleStreams = state.podcastsState.visiblePodcasts
+        streams = state.podcastsState.streams
+        visibleStreams = state.podcastsState.visibleStreams
         
         tableView.reloadData()
     }
@@ -61,12 +63,12 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PodcastFilterTableViewCell.reuseIdentifier) as? PodcastFilterTableViewCell,
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: filterReuseIdentifier) as? PodcastFilterTableViewCell,
             indexPath.row < streams.count else {
                 return UITableViewCell()
         }
         let stream = streams[indexPath.row]
-        cell.configure(image: UIImage(named: stream.imageName), podcast: stream, on: visibleStreams.contains(stream))
+        cell.configure(image: UIImage(named: stream.imageName), stream: stream, on: visibleStreams.contains(stream))
         return cell
     }
 }

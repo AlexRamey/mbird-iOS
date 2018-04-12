@@ -14,22 +14,21 @@ class PodcastFilterTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var podcastImage: UIImageView!
     
-    var podcast: PodcastStream?
+    var stream: PodcastStream?
     
-    static var reuseIdentifier: String = "PodcastFilterTableViewCell"
-    func configure(image: UIImage? = nil, podcast: PodcastStream, on: Bool = false) {
+    func configure(image: UIImage? = nil, stream: PodcastStream, on: Bool = false) {
         toggleSwitch.isOn = on
-        titleLabel.text = podcast.title
+        titleLabel.text = stream.title
         podcastImage.image = image
-        self.podcast = podcast
+        self.stream = stream
         podcastImage.layer.cornerRadius = 10
         self.selectionStyle = .none
     }
     @IBAction func toggled(_ sender: UISwitch) {
-        guard let podcast = podcast else {
+        guard let stream = stream else {
             return
         }
-        MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: podcast, visible: toggleSwitch.isOn))
+        MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: stream))
     }
     
 }

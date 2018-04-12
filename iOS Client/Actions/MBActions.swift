@@ -60,7 +60,10 @@ struct PodcastError: Action { }
 
 struct TogglePodcastFilter: Action {
     var podcastStream: PodcastStream
-    var visible: Bool
 }
 
 struct FilterPodcasts: Action { }
+
+struct SetPodcastStreams: Action {
+    var streams: [PodcastStream]
+}

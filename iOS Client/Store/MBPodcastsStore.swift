@@ -52,30 +52,9 @@ class MBPodcastsStore {
                     podcasts.append(contentsOf: displayCasts)
                 }
             }
+            MBStore.sharedStore.dispatch(SetPodcastStreams(streams: [.pz, .mockingPulpit, .mockingCast]))
             podcasts.sort(by: { $0.pubDate > $1.pubDate })
             return Promise(value: podcasts)
-        }
-    }
-}
-
-public enum PodcastStream: String {
-    case pz = "https://pzspodcast.fireside.fm/rss"
-    case mockingCast = "https://themockingcast.fireside.fm/rss"
-    case mockingPulpit = "http://www.mbird.com/feed/podcast/"
-    
-    var imageName: String {
-        switch self {
-        case .pz: return "pzcast"
-        case .mockingPulpit: return "mockingpulpit"
-        case .mockingCast: return "mockingcast"
-        }
-    }
-    
-    var title: String {
-        switch self {
-        case .pz: return "PZ's Podcast"
-        case .mockingCast: return "The Mockingcast"
-        case .mockingPulpit: return "The Mockingpulpit"
         }
     }
 }

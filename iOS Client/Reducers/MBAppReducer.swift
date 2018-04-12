@@ -98,12 +98,14 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
             nextState.player = .playing
         }
     case let action as TogglePodcastFilter:
-        if action.visible {
-            nextState.visiblePodcasts.insert(action.podcastStream)
+        if state?.visibleStreams.contains(action.podcastStream) ?? false {
+            nextState.visibleStreams.remove(action.podcastStream)
         } else {
-            nextState.visiblePodcasts.remove(action.podcastStream)
+            nextState.visibleStreams.insert(action.podcastStream)
         }
-        
+    case let action as SetPodcastStreams:
+        nextState.streams = action.streams
+        nextState.visibleStreams = Set<PodcastStream>(action.streams.map { $0 })
     default:
         break
     }
