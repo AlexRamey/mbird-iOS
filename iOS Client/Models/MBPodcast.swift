@@ -29,5 +29,28 @@ struct Podcast: Detailable {
     let summary: String?
     let pubDate: Date
     let title: String?
-    let feedName: String
+    let feed: PodcastStream
 }
+
+public enum PodcastStream: String {
+    case pz = "https://pzspodcast.fireside.fm/rss"
+    case mockingCast = "https://themockingcast.fireside.fm/rss"
+    case mockingPulpit = "http://www.mbird.com/feed/podcast/"
+    
+    var imageName: String {
+        switch self {
+        case .pz: return "pzcast"
+        case .mockingPulpit: return "mockingpulpit"
+        case .mockingCast: return "mockingcast"
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .pz: return "PZ's Podcast"
+        case .mockingCast: return "The Mockingcast"
+        case .mockingPulpit: return "The Mockingpulpit"
+        }
+    }
+}
+

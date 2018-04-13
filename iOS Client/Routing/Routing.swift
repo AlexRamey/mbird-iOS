@@ -12,11 +12,14 @@ import ReSwift
 enum RouteComponent: Equatable {
     case base
     case detail(item: Detailable)
+    case action
     
     static func == (lhs: RouteComponent, rhs: RouteComponent) -> Bool {
         if case .base = lhs, case .base = rhs {
             return true
         } else if case .detail = lhs, case .detail = rhs {
+            return true
+        } else if case .action = lhs, case .action = rhs {
             return true
         } else {
             return false
@@ -51,6 +54,8 @@ enum RouteComponent: Equatable {
                 retVal = MBPodcastsViewController.instantiateFromStoryboard()
             } else if case .detail(_) = self {
                 retVal = PodcastDetailViewController.instantiateFromStoryboard()
+            } else if case .action = self {
+                retVal = PodcastsFilterViewController.instantiateFromStoryboard()
             }
         }
         return retVal

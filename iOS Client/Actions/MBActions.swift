@@ -57,3 +57,13 @@ struct PlayPausePodcast: Action {
 struct FinishedPodcast: Action { }
 
 struct PodcastError: Action { }
+
+struct TogglePodcastFilter: Action {
+    var podcastStream: PodcastStream
+}
+
+struct FilterPodcasts: Action { }
+
+struct SetPodcastStreams: Action {
+    var streams: [PodcastStream]
+}

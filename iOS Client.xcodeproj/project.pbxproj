@@ -23,6 +23,9 @@
 		23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */; };
 		23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */; };
 		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
+		23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */; };
+		23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */; };
+		23D8BB42207C5C920057C9D5 /* PodcastFilterTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D8BB40207C5C920057C9D5 /* PodcastFilterTableViewCell.xib */; };
 		23D8BB44207EE3930057C9D5 /* FeaturedArticleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB43207EE3930057C9D5 /* FeaturedArticleTableViewCell.swift */; };
 		23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */ = {isa = PBXBuildFile; fileRef = 23D8F1EF1FAAB3A1004964AE /* devotions.json */; };
 		23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */; };
@@ -101,6 +104,9 @@
 		23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcastsStore.swift; sourceTree = "<group>"; };
 		23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
 		23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcast.swift; sourceTree = "<group>"; };
+		23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastFilterViewController.swift; sourceTree = "<group>"; };
+		23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastFilterTableViewCell.swift; sourceTree = "<group>"; };
+		23D8BB40207C5C920057C9D5 /* PodcastFilterTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastFilterTableViewCell.xib; sourceTree = "<group>"; };
 		23D8BB43207EE3930057C9D5 /* FeaturedArticleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeaturedArticleTableViewCell.swift; sourceTree = "<group>"; };
 		23D8F1EF1FAAB3A1004964AE /* devotions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = devotions.json; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		23D8F1F41FAE129D004964AE /* iOS_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_Client.xcdatamodel; sourceTree = "<group>"; };
@@ -222,6 +228,9 @@
 				239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */,
 				232F08312066FB5F0051CF71 /* PlayPauseView.xib */,
 				232F08332066FC3B0051CF71 /* PlayPauseView.swift */,
+				23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */,
+				23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */,
+				23D8BB40207C5C920057C9D5 /* PodcastFilterTableViewCell.xib */,
 			);
 			path = PodcastsController;
 			sourceTree = "<group>";
@@ -535,6 +544,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23D8BB42207C5C920057C9D5 /* PodcastFilterTableViewCell.xib in Resources */,
 				D0EA55FF2079AE63005EFA7E /* CategoryFooterTableViewCell.xib in Resources */,
 				D0EA55F720799FC6005EFA7E /* CategoryHeaderTableViewCell.xib in Resources */,
 				D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */,
@@ -647,6 +657,7 @@
 				D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */,
 				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,
 				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
+				23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */,
 				23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */,
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
 				D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */,
@@ -671,6 +682,7 @@
 				23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
 				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,
+				23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */,
 				D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				232F08342066FC3B0051CF71 /* PlayPauseView.swift in Sources */,
