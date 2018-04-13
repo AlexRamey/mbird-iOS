@@ -130,7 +130,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
            imageView.image = UIImage(named: imageName)
             backgroundImageView.image = UIImage(named: imageName)
         }
-        self.navigationItem.title = state.podcastsState.selectedPodcast?.feedName
+        self.navigationItem.title = state.podcastsState.selectedPodcast?.feed.title
     }
     
     func updateCurrentDuration(current: Double, total: Double ) {

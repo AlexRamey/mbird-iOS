@@ -27,7 +27,7 @@ class MBPodcastsStore {
     }
     
     func syncPodcasts() -> Promise<[Podcast]> {
-        let streams: [MBClient.PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
+        let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
         let requests = streams.map {self.client.getPodcasts(for: $0)}
         return firstly {
             when(resolved: requests)
@@ -47,11 +47,12 @@ class MBPodcastsStore {
                                                   summary: podcast.summary,
                                                   pubDate: date,
                                                   title: podcast.title,
-                                                  feedName: streams[indx].title )
+                                                  feed: streams[indx] )
                     }
                     podcasts.append(contentsOf: displayCasts)
                 }
             }
+            MBStore.sharedStore.dispatch(SetPodcastStreams(streams: [.pz, .mockingPulpit, .mockingCast]))
             podcasts.sort(by: { $0.pubDate > $1.pubDate })
             return Promise(value: podcasts)
         }
