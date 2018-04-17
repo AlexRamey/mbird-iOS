@@ -27,6 +27,10 @@ struct SelectedArticle: Action {
     var article: MBArticle
 }
 
+struct ShowMoreArticles: Action {
+    var topLevelCategory: String
+}
+
 struct PopCurrentNavigation: Action {
 }
 

@@ -376,7 +376,8 @@ extension MBArticlesViewController {
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if rowTypeForPath(indexPath) == .categoryFooter {
-            print("Show More: \(indexPath.section)")
+            let selectedCategory = topLevelCategories[indexPath.section - 1]
+            MBStore.sharedStore.dispatch(ShowMoreArticles(topLevelCategory: selectedCategory))
         } else if let article = articleForPath(indexPath) {
             let action = SelectedArticle(article: article)
             MBStore.sharedStore.dispatch(action)

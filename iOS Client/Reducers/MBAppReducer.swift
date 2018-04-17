@@ -28,6 +28,8 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.selectedTab = action.tab
     case let action as SelectedArticle:
         nextState.routes[nextState.selectedTab]?.append(.detail(item: action.article))
+    case _ as ShowMoreArticles:
+        nextState.routes[nextState.selectedTab]?.append(.action)
     case let action as SelectedDevotion:
         nextState.selectedTab = .devotions
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))
@@ -58,6 +60,8 @@ func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
         nextState.articles = action.articles
     case let action as SelectedArticle:
         nextState.selectedArticle = action.article
+    case let action as ShowMoreArticles:
+        nextState.selectedCategory = action.topLevelCategory
     default:
         break
     }
