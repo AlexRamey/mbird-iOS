@@ -13,6 +13,7 @@ enum RouteComponent: Equatable {
     case base
     case detail(item: Detailable)
     case action
+    case more
     
     static func == (lhs: RouteComponent, rhs: RouteComponent) -> Bool {
         if case .base = lhs, case .base = rhs {
@@ -36,7 +37,7 @@ enum RouteComponent: Equatable {
                 retVal = MBArticlesViewController.instantiateFromStoryboard()
             } else if case let .detail(detailItem) = self {
                 retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? MBArticle)
-            } else if case .action = self {
+            } else if case .more = self {
                 retVal = ShowMoreViewController.instantiateFromStoryboard()
             }
         case .bookmarks:

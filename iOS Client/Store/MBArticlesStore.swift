@@ -12,36 +12,56 @@ import PromiseKit
 
 class MBArticlesStore: NSObject {
     private let client: MBClient
+    private let managedObjectContext: NSManagedObjectContext
     
-    override init() {
+    init(context: NSManagedObjectContext) {
         client = MBClient()
+        self.managedObjectContext = context
+        
         super.init()
     }
     
     /***** Read from Core Data *****/
-    func getAuthors(managedObjectContext: NSManagedObjectContext) -> [MBAuthor] {
+    func getAuthors() -> [MBAuthor] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
-        return performFetch(managedContext: managedObjectContext, fetchRequest: fetchRequest) as? [MBAuthor] ?? []
+        return performFetch(fetchRequest: fetchRequest) as? [MBAuthor] ?? []
     }
     
-    func getCategories(managedObjectContext: NSManagedObjectContext) -> [MBCategory] {
+    func getCategories() -> [MBCategory] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
-        return performFetch(managedContext: managedObjectContext, fetchRequest: fetchRequest) as? [MBCategory] ?? []
+        return performFetch(fetchRequest: fetchRequest) as? [MBCategory] ?? []
     }
     
-    func getArticles(managedObjectContext: NSManagedObjectContext) -> [MBArticle] {
+    func getCategoryByName(_ name: String) -> MBCategory? {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
+        fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+        guard let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] else {
+            return nil
+        }
+        return results.first
+    }
+    
+    func getArticles() -> [MBArticle] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
         let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
         fetchRequest.sortDescriptors = [sort]
-        return performFetch(managedContext: managedObjectContext, fetchRequest: fetchRequest) as? [MBArticle] ?? []
+        return performFetch(fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
-    private func performFetch(managedContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<NSManagedObject>) -> [NSManagedObject] {
+    func getCategoryArticles() -> [MBArticle] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
+        fetchRequest.sortDescriptors = [sort]
+        fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+        return performFetch(fetchRequest: fetchRequest) as? [MBArticle] ?? []
+    }
+    
+    private func performFetch(fetchRequest: NSFetchRequest<NSManagedObject>) -> [NSManagedObject] {
         var retVal: [NSManagedObject] = []
         
-        managedContext.performAndWait {
+        self.managedObjectContext.performAndWait {
             do {
-                retVal = try managedContext.fetch(fetchRequest)
+                retVal = try managedObjectContext.fetch(fetchRequest)
             } catch let error as NSError {
                 print("Could not fetch. \(error), \(error.userInfo)")
                 retVal = []
@@ -52,26 +72,26 @@ class MBArticlesStore: NSObject {
     }
     
     /***** Download Data from Network *****/
-    func syncAllData(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
+    func syncAllData() -> Promise<Bool> {
         return Promise { fulfill, reject in
             var results: [Bool] = []
             let bgq = DispatchQueue.global(qos: .userInitiated)
             firstly {
-                downloadAuthors(managedObjectContext: managedObjectContext)
+                downloadAuthors()
             }.then(on: bgq) { result -> Promise<Bool> in
                 results.append(result)
-                return self.downloadCategories(managedObjectContext: managedObjectContext)
+                return self.downloadCategories()
             }.then(on: bgq) { result -> Promise<Bool> in
                 results.append(result)
-                if let linkErr = self.linkCategoriesTogether(managedObjectContext: managedObjectContext) {
+                if let linkErr = self.linkCategoriesTogether() {
                     reject(linkErr)
                 }
-                return self.downloadArticles(managedObjectContext: managedObjectContext)
+                return self.downloadArticles()
             }.then(on: bgq) { result -> Void in
                 results.append(result)
                 
                 // fire off requests to get the image urls
-                self.resolveArticleImageURLs(managedObjectContext: managedObjectContext)
+                self.resolveArticleImageURLs()
                 
                 fulfill(results.reduce(false, { (accumulator, item) -> Bool in
                     return accumulator || item
@@ -83,17 +103,17 @@ class MBArticlesStore: NSObject {
         }
     }
     
-    private func resolveArticleImageURLs(managedObjectContext: NSManagedObjectContext) {
-        let articles = self.getArticles(managedObjectContext: managedObjectContext)
-        managedObjectContext.perform {
+    private func resolveArticleImageURLs() {
+        let articles = self.getArticles()
+        self.managedObjectContext.perform {
             articles.forEach { (article) in
                 if (article.imageID > 0) && (article.imageLink == nil) {
                     self.client.getImageURLs(imageID: Int(article.imageID), completion: { (links) in
-                        managedObjectContext.perform {
+                        self.managedObjectContext.perform {
                             article.thumbnailLink = links?[0]
                             article.imageLink = links?[1]
                             do {
-                                try managedObjectContext.save()
+                                try self.managedObjectContext.save()
                             } catch {
                                 print("😅 wat \(error as Any)")
                             }
@@ -104,14 +124,14 @@ class MBArticlesStore: NSObject {
         }
     }
     
-    private func linkCategoriesTogether(managedObjectContext: NSManagedObjectContext) -> Error? {
+    private func linkCategoriesTogether() -> Error? {
         let fetchRequest: NSFetchRequest<MBCategory> = MBCategory.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "parentID", ascending: true)]
         
         var caughtError: Error? = nil
-        managedObjectContext.performAndWait {
+        self.managedObjectContext.performAndWait {
             do {
-                let fetchedCategories = try managedObjectContext.fetch(fetchRequest) as [MBCategory]
+                let fetchedCategories = try self.managedObjectContext.fetch(fetchRequest) as [MBCategory]
                 var categoriesByID = [Int32: MBCategory]()
                 fetchedCategories.forEach({ (category) in
                     categoriesByID[category.categoryID] = category
@@ -119,7 +139,7 @@ class MBArticlesStore: NSObject {
                 fetchedCategories.forEach({ (category) in
                     category.parent = categoriesByID[category.parentID]
                 })
-                try managedObjectContext.save()
+                try self.managedObjectContext.save()
             } catch {
                 print("Could not fetch. \(error) \(error.localizedDescription)")
                 caughtError = error
@@ -129,27 +149,26 @@ class MBArticlesStore: NSObject {
         return caughtError
     }
     
-    private func downloadAuthors(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
-        return performDownload(clientFunction: client.getAuthorsWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBAuthor.deserialize)
+    private func downloadAuthors() -> Promise<Bool> {
+        return performDownload(clientFunction: client.getAuthorsWithCompletion, deserializeFunc: MBAuthor.deserialize)
     }
     
-    private func downloadCategories(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
-        return performDownload(clientFunction: client.getCategoriesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBCategory.deserialize)
+    private func downloadCategories() -> Promise<Bool> {
+        return performDownload(clientFunction: client.getCategoriesWithCompletion, deserializeFunc: MBCategory.deserialize)
     }
     
-    private func downloadArticles(managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
-        return performDownload(clientFunction: client.getRecentArticlesWithCompletion, managedObjectContext: managedObjectContext, deserializeFunc: MBArticle.deserialize)
+    private func downloadArticles() -> Promise<Bool> {
+        return performDownload(clientFunction: client.getRecentArticlesWithCompletion, deserializeFunc: MBArticle.deserialize)
     }
     
-    private func downloadCategoryArticles(categories: [Int], excluded: [Int], managedObjectContext: NSManagedObjectContext) -> Promise<Bool> {
+    public func syncCategoryArticles(categories: [Int], excluded: [Int]) -> Promise<Bool> {
         return performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
             client.getRecentArticles(inCategories: categories, excludingArticlesWithIDs: excluded, withCompletion: completion)
-        }, managedObjectContext: managedObjectContext, deserializeFunc: MBArticle.deserialize)
+        }, deserializeFunc: MBArticle.deserialize)
     }
     
     // An internal helper function to perform a download
     private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> Void,
-                                 managedObjectContext: NSManagedObjectContext,
                                  deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool) -> Promise<Bool> {
         return Promise { fulfill, reject in
             clientFunction { (data: [Data], err: Error?) in
@@ -164,9 +183,7 @@ class MBArticlesStore: NSObject {
                 // thus, think of data as an array of results pages
                 for jsonData in data {
                     do {
-                        isNewData = try self.downloadModelsHandler(managedObjectContext: managedObjectContext,
-                                                       data: jsonData,
-                                                       deserializeFunc: deserializeFunc) || isNewData
+                        isNewData = try self.downloadModelsHandler(data: jsonData, deserializeFunc: deserializeFunc) || isNewData
                     } catch {
                         print("could not handle data: \(error) \(error.localizedDescription)")
                         caughtError = error
@@ -183,8 +200,7 @@ class MBArticlesStore: NSObject {
     }
     
     // An internal helper that returns a handler which saves the json array as a group of core data objects
-    private func downloadModelsHandler(managedObjectContext: NSManagedObjectContext,
-                                       data: Data,
+    private func downloadModelsHandler(data: Data,
                                        deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool) throws -> Bool {
         
         // deserialize data into the managed context and save it
@@ -193,15 +209,15 @@ class MBArticlesStore: NSObject {
             var isNewData: Bool = false
             var caughtError: Error? = nil
             
-            managedObjectContext.performAndWait {
+            self.managedObjectContext.performAndWait {
                 do {
                     try arr.forEach({ (json: NSDictionary) in
-                        if try deserializeFunc(json, managedObjectContext) {
+                        if try deserializeFunc(json, self.managedObjectContext) {
                             isNewData = true
                         }
                     })
                     
-                    try managedObjectContext.save()
+                    try self.managedObjectContext.save()
                 } catch {
                    caughtError = error
                 }
@@ -218,12 +234,12 @@ class MBArticlesStore: NSObject {
     }
     
     /***** Data Cleanup Task *****/
-    func deleteOldArticles(managedObjectContext: NSManagedObjectContext, completion: @escaping (Int) -> Void) {
+    func deleteOldArticles(completion: @escaping (Int) -> Void) {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
         fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: false))
         
-        managedObjectContext.perform {
-            guard let count = try? managedObjectContext.count(for: fetchRequest) else {
+        self.managedObjectContext.perform {
+            guard let count = try? self.managedObjectContext.count(for: fetchRequest) else {
                 completion(0)
                 return
             }
@@ -236,17 +252,17 @@ class MBArticlesStore: NSObject {
             
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: true)]
             fetchRequest.fetchLimit = numToDelete
-            guard let articlesToDelete = try? managedObjectContext.fetch(fetchRequest) else {
+            guard let articlesToDelete = try? self.managedObjectContext.fetch(fetchRequest) else {
                 completion(0)
                 return
             }
             
             articlesToDelete.forEach({ (article) in
-                managedObjectContext.delete(article)
+                self.managedObjectContext.delete(article)
             })
             
             do {
-                try managedObjectContext.save()
+                try self.managedObjectContext.save()
                 completion(articlesToDelete.count)
             } catch let error as NSError {
                 print("Could not save context: \(error), \(error.userInfo)")

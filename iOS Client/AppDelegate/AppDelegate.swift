@@ -15,8 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     lazy var coreDataStack = CoreDataStack(modelName: "iOS_Client")
     var appCoordinator: AppCoordinator!
-    let articlesStore = MBArticlesStore()
-
+    private lazy var articlesStore: MBArticlesStore = {
+        return MBArticlesStore(context: self.coreDataStack.privateQueueContext)
+    }()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.appCoordinator = AppCoordinator(window: self.window!, managedObjectContext: coreDataStack.managedContext)
@@ -55,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
-            self.articlesStore.syncAllData(managedObjectContext: self.coreDataStack.privateQueueContext).then { isNewData -> Void in
+            self.articlesStore.syncAllData().then { isNewData -> Void in
                 if isNewData {
                     completionHandler(.newData)
                 } else {

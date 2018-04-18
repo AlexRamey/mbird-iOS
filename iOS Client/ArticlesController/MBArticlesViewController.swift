@@ -45,8 +45,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // dependencies
     let client: MBClient = MBClient()
-    let articlesStore: MBArticlesStore = MBArticlesStore()
-    var managedObjectContext: NSManagedObjectContext!
+    var articlesStore: MBArticlesStore!
 
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -102,7 +101,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         refreshControl.tintColor = UIColor(red: 235.0/255.0, green: 96.0/255.0, blue: 93.0/255.0, alpha: 1.0)
         refreshControl.attributedTitle = NSAttributedString(string: "Updating ...", attributes: nil)
 
-        let articles = articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
+        let articles = articlesStore.getArticles()
         MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
         
         controller = Preheat.Controller(view: tableView)
@@ -151,10 +150,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     private func downloadArticleData() {
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
-            self.articlesStore.syncAllData(managedObjectContext: self.managedObjectContext).then { _ -> Void in
-                self.articlesStore.deleteOldArticles(managedObjectContext: self.managedObjectContext, completion: { (numDeleted) in
+            self.articlesStore.syncAllData().then { _ -> Void in
+                self.articlesStore.deleteOldArticles(completion: { (numDeleted) in
                     print("Deleted \(numDeleted) old articles!!!")
-                    let loadedArticles = self.articlesStore.getArticles(managedObjectContext: self.managedObjectContext)
+                    let loadedArticles = self.articlesStore.getArticles()
                     MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
                 })
             }.catch { syncErr in
