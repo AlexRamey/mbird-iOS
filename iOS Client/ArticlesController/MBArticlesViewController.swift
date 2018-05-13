@@ -49,8 +49,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
 
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
         // swiftlint:enable force_cast
+        vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-unselected"), selectedImage: UIImage(named: "home-selected"))
+        return vc
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -84,7 +86,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Articles"
+        self.title = "Home"
         tableView.delegate = self
         tableView.dataSource = self
         
