@@ -78,7 +78,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     func newState(state: MBAppState) {
         let podcastsState = state.podcastsState
         switch podcastsState.podcasts {
-        case .initial, .error, .loading:
+        case .initial, .error, .loading, .loadingFromDisk:
             //TODO: Handle error and loading states
             break
         case .loaded(let data):

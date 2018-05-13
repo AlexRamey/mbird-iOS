@@ -17,6 +17,7 @@ struct PushRoute: Action {
 }
 
 struct RefreshArticles: Action {
+    var shouldMakeNetworkCall: Bool
 }
 
 struct LoadedArticles: Action {

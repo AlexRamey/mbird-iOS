@@ -74,7 +74,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
             break
         case .initial:
             break
-        case .loading:
+        case .loading, .loadingFromDisk:
             break
         case .loaded(let loadedDevotions):
             if self.devotions.count != loadedDevotions.count {

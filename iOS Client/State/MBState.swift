@@ -123,6 +123,7 @@ struct MBAppState: AppState {
 enum Loaded<T> {
     case initial
     case loading
+    case loadingFromDisk
     case loaded(data: T)
     case error
 }

@@ -188,9 +188,20 @@ class MBArticlesStore: NSObject {
     }
     
     public func syncCategoryArticles(categories: [Int], excluded: [Int]) -> Promise<Bool> {
-        return performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
-            client.getRecentArticles(inCategories: categories, excludingArticlesWithIDs: excluded, withCompletion: completion)
-        }, deserializeFunc: MBArticle.deserialize)
+        return Promise { fulfill, reject in
+            firstly {
+                performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
+                    client.getRecentArticles(inCategories: categories, excludingArticlesWithIDs: excluded, withCompletion: completion)
+                }, deserializeFunc: MBArticle.deserialize)
+            }.then() { result -> Void in
+                    // fire off requests to get the image urls
+                    self.resolveArticleImageURLs()
+                    fulfill(result)
+            }.catch { error in
+                    print("There was an error downloading data! \(error)")
+                    reject(error)
+            }
+        }
     }
     
     // An internal helper function to perform a download
