@@ -32,7 +32,8 @@ extension Coordinator {
     func build(newRoute: [RouteComponent]) {
         guard let root = self.rootViewController as? UINavigationController else { return }
         var rootViewControllers = root.viewControllers
-        
+        print("Current Route: \(route)")
+        print("New Route: \(newRoute)")
         for (newRouteIndex, newComponent) in newRoute.enumerated() {
             if newRouteIndex > route.count - 1 { //case: more controllers in new route so push onto nav stack
                 root.pushViewController(newComponent.viewController(forTab: self.tab)!, animated: true)

@@ -38,6 +38,7 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
     case let action as SelectedPodcast:
         nextState.routes[.podcasts]?.append(.detail(item: action.podcast))
     case _ as PopCurrentNavigation:
+        print("Popping from \(nextState.selectedTab)")
         nextState.routes[nextState.selectedTab]?.removeLast()
     case _ as FilterPodcasts:
         nextState.routes[.podcasts]?.append(.action)

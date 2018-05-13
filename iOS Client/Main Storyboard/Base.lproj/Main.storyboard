@@ -520,22 +520,32 @@
             <point key="canvasLocation" x="-538.39999999999998" y="-779.46026986506752"/>
         </scene>
         <!--Show More View Controller-->
-        <scene sceneID="456-E7-bJH">
+        <scene sceneID="uig-Fd-k3e">
             <objects>
-                <viewController storyboardIdentifier="ShowMoreViewController" id="wLO-l3-uD1" customClass="ShowMoreViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="RJX-7f-0vX"/>
-                        <viewControllerLayoutGuide type="bottom" id="Isv-fx-Ma0"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="mfV-yD-wvO">
+                <tableViewController storyboardIdentifier="ShowMoreViewController" automaticallyAdjustsScrollViewInsets="NO" id="mRJ-NB-f9Q" customClass="ShowMoreViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="1jG-MX-SAT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="TmT-7c-i6j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="pyb-rB-qRV">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="pyb-rB-qRV" id="She-9e-0ux">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="mRJ-NB-f9Q" id="jIg-GW-RW4"/>
+                            <outlet property="delegate" destination="mRJ-NB-f9Q" id="8ku-LN-Z1f"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QBR-8H-UEx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="214" y="-1450"/>
+            <point key="canvasLocation" x="185" y="-1460"/>
         </scene>
         <!--Article Detail View Controller-->
         <scene sceneID="4g7-wD-qad">

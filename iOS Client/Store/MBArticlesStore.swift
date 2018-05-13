@@ -48,11 +48,12 @@ class MBArticlesStore: NSObject {
         return performFetch(fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
-    func getCategoryArticles() -> [MBArticle] {
+    func getCategoryArticles(categoryIDs: [Int], skip: Int) -> [MBArticle] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
         let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
         fetchRequest.sortDescriptors = [sort]
-        fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+        fetchRequest.fetchOffset = skip
+        fetchRequest.predicate = NSPredicate(format: "ANY categories.categoryID in %@", categoryIDs)
         return performFetch(fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
@@ -99,6 +100,31 @@ class MBArticlesStore: NSObject {
             }.catch { error in
                 print("There was an error downloading data! \(error)")
                 reject(error)
+            }
+        }
+    }
+    
+    func downloadImageURLsForArticle(_ article: MBArticle, withCompletion completion: @escaping (URL?) -> Void) {
+        self.client.getImageURLs(imageID: Int(article.imageID)) { links in
+            if let context = article.managedObjectContext {
+                context.perform {
+                    do {
+                        article.thumbnailLink = links?[0]
+                        article.imageLink = links?[1]
+                        try context.save()
+                        if let imageLink = article.thumbnailLink ?? article.imageLink,
+                            let url = URL(string: imageLink) {
+                             completion(url)
+                        } else {
+                            completion(nil)
+                        }
+                    } catch {
+                        print("😅 unable to save image url for \(article.articleID)")
+                        completion(nil)
+                    }
+                }
+            } else {
+                completion(nil)
             }
         }
     }

@@ -207,7 +207,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                   let url = URL(string: imageLink) {
             Manager.shared.loadImage(with: url, into: cell.featuredImage)
         } else if article.imageID != 0 {
-            self.downloadImageURLsForArticle(article, atIndexPath: indexPath)
+            self.downloadImageForArticle(article: article, atIndexPath: indexPath)
         }
     }
 
@@ -221,7 +221,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         } else if let imageLink = article.thumbnailLink ?? article.imageLink, let url = URL(string: imageLink) {
             Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
         } else if article.imageID != 0 {
-            self.downloadImageURLsForArticle(article, atIndexPath: indexPath)
+            self.downloadImageForArticle(article: article, atIndexPath: indexPath)
         }
     }
     
@@ -239,28 +239,18 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                   let url = URL(string: imageLink) {
             Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
         } else if article.imageID != 0 {
-            self.downloadImageURLsForArticle(article, atIndexPath: indexPath)
+            self.downloadImageForArticle(article: article, atIndexPath: indexPath)
         }
     }
     
-    private func downloadImageURLsForArticle(_ article: MBArticle, atIndexPath indexPath: IndexPath) {
-        self.client.getImageURLs(imageID: Int(article.imageID)) { links in
-            DispatchQueue.main.async {
-                if let context = article.managedObjectContext {
-                    do {
-                        article.thumbnailLink = links?[0]
-                        article.imageLink = links?[1]
-                        try context.save()
-                        if let imageLink = article.thumbnailLink ?? article.imageLink,
-                            URL(string: imageLink) != nil {
-                            self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                        }
-                    } catch {
-                        print("😅 unable to save image url for \(article.articleID)")
-                    }
+    private func downloadImageForArticle(article: MBArticle, atIndexPath indexPath: IndexPath) {
+        self.articlesStore.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
+            if url != nil {
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
             }
-        }
+        })
     }
     
     private func groupArticlesByTopLevelCategoryName(articles: [MBArticle]) -> [String: [MBArticle]] {

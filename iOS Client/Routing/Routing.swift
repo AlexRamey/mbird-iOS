@@ -22,6 +22,8 @@ enum RouteComponent: Equatable {
             return true
         } else if case .action = lhs, case .action = rhs {
             return true
+        } else if case .more = lhs, case .more = rhs {
+            return true
         } else {
             return false
         }

@@ -23,7 +23,7 @@
                         <rect key="frame" x="32" y="16" width="374" height="54.5"/>
                         <color key="backgroundColor" red="0.90196078431372551" green="0.70588235294117641" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="54" id="49S-ut-4gD"/>
+                            <constraint firstAttribute="height" priority="999" constant="54" id="49S-ut-4gD"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="18"/>
                         <nil key="textColor"/>

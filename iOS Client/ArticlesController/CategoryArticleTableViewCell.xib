@@ -29,7 +29,7 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="jCV-Dz-bcz">
                         <rect key="frame" x="182" y="16" width="122" height="122"/>
                         <constraints>
-                            <constraint firstAttribute="width" secondItem="jCV-Dz-bcz" secondAttribute="height" multiplier="1:1" id="5Bj-Hx-UFE"/>
+                            <constraint firstAttribute="width" secondItem="jCV-Dz-bcz" secondAttribute="height" multiplier="1:1" priority="999" id="5Bj-Hx-UFE"/>
                             <constraint firstAttribute="width" constant="122" id="wLX-bV-lm9"/>
                         </constraints>
                     </imageView>
