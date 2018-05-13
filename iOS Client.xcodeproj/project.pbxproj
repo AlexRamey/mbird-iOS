@@ -80,6 +80,7 @@
 		D0EA55FB2079A42C005EFA7E /* CategoryArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0EA55F92079A42C005EFA7E /* CategoryArticleTableViewCell.xib */; };
 		D0EA55FE2079AE63005EFA7E /* CategoryFooterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EA55FC2079AE63005EFA7E /* CategoryFooterTableViewCell.swift */; };
 		D0EA55FF2079AE63005EFA7E /* CategoryFooterTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0EA55FD2079AE63005EFA7E /* CategoryFooterTableViewCell.xib */; };
+		D0EA560120858F56005EFA7E /* ShowMoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EA560020858F56005EFA7E /* ShowMoreViewController.swift */; };
 		D0ED48DF1F9D6F4F00FEDCC9 /* MB.css in Resources */ = {isa = PBXBuildFile; fileRef = D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */; };
 		D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F6A72120216DBC001C3AED /* BookmarkCell.swift */; };
 /* End PBXBuildFile section */
@@ -163,6 +164,7 @@
 		D0EA55F92079A42C005EFA7E /* CategoryArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryArticleTableViewCell.xib; sourceTree = "<group>"; };
 		D0EA55FC2079AE63005EFA7E /* CategoryFooterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryFooterTableViewCell.swift; sourceTree = "<group>"; };
 		D0EA55FD2079AE63005EFA7E /* CategoryFooterTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryFooterTableViewCell.xib; sourceTree = "<group>"; };
+		D0EA560020858F56005EFA7E /* ShowMoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMoreViewController.swift; sourceTree = "<group>"; };
 		D0ED48DE1F9D6F4F00FEDCC9 /* MB.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = MB.css; path = "iOS Client/Style/MB.css"; sourceTree = SOURCE_ROOT; };
 		D0F6A72120216DBC001C3AED /* BookmarkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -450,6 +452,7 @@
 				D0EA55F120798F2A005EFA7E /* RecentArticleTableViewCell.xib */,
 				D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */,
 				2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */,
+				D0EA560020858F56005EFA7E /* ShowMoreViewController.swift */,
 			);
 			path = ArticlesController;
 			sourceTree = "<group>";
@@ -653,6 +656,7 @@
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
 				23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
+				D0EA560120858F56005EFA7E /* ShowMoreViewController.swift in Sources */,
 				23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */,
 				D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */,
 				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,

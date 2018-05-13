@@ -18,6 +18,9 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     var tab: Tab = .articles
     var overlay: URL?
     let managedObjectContext: NSManagedObjectContext
+    private lazy var articlesStore = {
+       return MBArticlesStore(context: self.managedObjectContext)
+    }()
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -35,7 +38,7 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     // MARK: - Coordinator
     func start() {
         let articlesController = MBArticlesViewController.instantiateFromStoryboard()
-        articlesController.managedObjectContext = self.managedObjectContext
+        articlesController.articlesStore = articlesStore
         self.navigationController.pushViewController(articlesController, animated: true)
         MBStore.sharedStore.subscribe(self)
     }

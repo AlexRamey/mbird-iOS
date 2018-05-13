@@ -28,6 +28,8 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.selectedTab = action.tab
     case let action as SelectedArticle:
         nextState.routes[nextState.selectedTab]?.append(.detail(item: action.article))
+    case _ as ShowMoreArticles:
+        nextState.routes[nextState.selectedTab]?.append(.more)
     case let action as SelectedDevotion:
         nextState.selectedTab = .devotions
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))
@@ -36,6 +38,7 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
     case let action as SelectedPodcast:
         nextState.routes[.podcasts]?.append(.detail(item: action.podcast))
     case _ as PopCurrentNavigation:
+        print("Popping from \(nextState.selectedTab)")
         nextState.routes[nextState.selectedTab]?.removeLast()
     case _ as FilterPodcasts:
         nextState.routes[.podcasts]?.append(.action)
@@ -58,6 +61,8 @@ func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
         nextState.articles = action.articles
     case let action as SelectedArticle:
         nextState.selectedArticle = action.article
+    case let action as ShowMoreArticles:
+        nextState.selectedCategory = action.topLevelCategory
     default:
         break
     }

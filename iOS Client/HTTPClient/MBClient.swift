@@ -45,7 +45,7 @@ class MBClient: NSObject {
                            withCompletion completion: @escaping ([Data], Error?) -> Void) {
         var categoriesArg = ""
         if categories.count > 0 {
-            categoriesArg = categories.reduce("categories=") { (result, elem) -> String in
+            categoriesArg = categories.reduce("&categories=") { (result, elem) -> String in
                 return "\(result)\(elem),"
             }
             categoriesArg.removeLast()
@@ -53,7 +53,7 @@ class MBClient: NSObject {
         
         var excludedArg = ""
         if excluded.count > 0 {
-            excludedArg = excluded.reduce("excluded=") { (result, elem) -> String in
+            excludedArg = excluded.reduce("&exclude=") { (result, elem) -> String in
                 return "\(result)\(elem),"
             }
             excludedArg.removeLast()
