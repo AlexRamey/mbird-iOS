@@ -25,8 +25,10 @@ class MBBookmarksViewController: UIViewController {
     
     static func instantiateFromStoryboard() -> MBBookmarksViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BookmarksController") as! MBBookmarksViewController
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BookmarksController") as! MBBookmarksViewController
         // swiftlint:enable force_cast
+        vc.tabBarItem = UITabBarItem(title: "Bookmarks", image: UIImage(named: "bookmark-unselected"), selectedImage: UIImage(named: "bookmark-selected"))
+        return vc
     }
 
     override func viewDidLoad() {

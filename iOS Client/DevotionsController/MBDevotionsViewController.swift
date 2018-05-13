@@ -64,8 +64,10 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     
     static func instantiateFromStoryboard() -> MBDevotionsViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DevotionsViewController") as! MBDevotionsViewController
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DevotionsViewController") as! MBDevotionsViewController
         // swiftlint:enable force_cast
+        vc.tabBarItem = UITabBarItem(title: "Devotions", image: UIImage(named: "bible-unselected"), selectedImage: UIImage(named: "bible-selected"))
+        return vc
     }
     
     func newState(state: MBAppState) {

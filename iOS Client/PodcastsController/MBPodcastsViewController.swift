@@ -89,8 +89,10 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     
     static func instantiateFromStoryboard() -> MBPodcastsViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
         // swiftlint:enable force_cast
+        vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-unselected"), selectedImage: UIImage(named: "headphones-selected"))
+        return vc
     }
 
 }
