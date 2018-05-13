@@ -111,6 +111,7 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
     }
     
     @objc func backToArticles(sender: AnyObject) {
+        MBStore.sharedStore.dispatch(RefreshArticles(shouldMakeNetworkCall: false))
         MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
     
@@ -141,7 +142,9 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
             self.articlesStore?.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
                 if url != nil {
                     DispatchQueue.main.async {
-                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                        if self.tableView.indexPathsForVisibleItems.contains(indexPath) {
+                            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                        }
                     }
                 }
             })
@@ -199,10 +202,12 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
     }
     
     private func addMoreArticles(_ newArticles: [MBArticle]) {
-        let existingArticles = Set<MBArticle>(self.articles)
-        let newSet = existingArticles.union(newArticles)
-        self.articles = sortedByDate(articles: newSet)
-        self.tableView.reloadData()
+        if newArticles.count > 0 {
+            let existingArticles = Set<MBArticle>(self.articles)
+            let newSet = existingArticles.union(newArticles)
+            self.articles = sortedByDate(articles: newSet)
+            self.tableView.reloadData()
+        }
     }
     
     private func sortedByDate(articles: Set<MBArticle>) -> [MBArticle] {

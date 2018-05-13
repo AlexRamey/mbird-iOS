@@ -58,7 +58,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         MBStore.sharedStore.subscribe(self)
 
         if isFirstAppearance {
-            MBStore.sharedStore.dispatch(RefreshArticles())
+            MBStore.sharedStore.dispatch(RefreshArticles(shouldMakeNetworkCall: true))
             isFirstAppearance = false
         }
     }
@@ -143,24 +143,33 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc private func refreshTableView(_ sender: Any) {
         if self.refreshControl.isRefreshing {
-            MBStore.sharedStore.dispatch(RefreshArticles())
+            MBStore.sharedStore.dispatch(RefreshArticles(shouldMakeNetworkCall: true))
         }
     }
 
-    private func downloadArticleData() {
+    private func loadArticleData(makeNetworkCall: Bool) {
         let bgq = DispatchQueue.global(qos: .utility)
         bgq.async {
-            self.articlesStore.syncAllData().then { _ -> Void in
-                self.articlesStore.deleteOldArticles(completion: { (numDeleted) in
-                    print("Deleted \(numDeleted) old articles!!!")
-                    let loadedArticles = self.articlesStore.getArticles()
-                    MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
-                })
-            }.catch { syncErr in
-                print(syncErr)
-                MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
+            if makeNetworkCall {
+                    self.articlesStore.syncAllData().then { _ -> Void in
+                        self.loadArticleDataFromDisk()
+                    }.catch { syncErr in
+                        print(syncErr)
+                        MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
+                    }
+                }
+            else {
+                self.loadArticleDataFromDisk()
             }
         }
+    }
+    
+    private func loadArticleDataFromDisk() {
+        self.articlesStore.deleteOldArticles(completion: { (numDeleted) in
+            print("Deleted \(numDeleted) old articles!!!")
+            let loadedArticles = self.articlesStore.getArticles()
+            MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
+        })
     }
 
     func newState(state: MBAppState) {
@@ -170,9 +179,20 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         case .loading:
             if case .loading = self.currentState.articles {
                 // do nothing
+            } else if case .loadingFromDisk = self.currentState.articles {
+                // do nothing
             } else {
                 self.refreshControl.beginRefreshing()
-                self.downloadArticleData()
+                self.loadArticleData(makeNetworkCall: true)
+            }
+        case .loadingFromDisk:
+            if case .loading = self.currentState.articles {
+                // do nothing
+            } else if case .loadingFromDisk = self.currentState.articles {
+                // do nothing
+            } else {
+                self.refreshControl.beginRefreshing()
+                self.loadArticleData(makeNetworkCall: false)
             }
         case .error:
             print("Error: Loading articles")
@@ -247,7 +267,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.articlesStore.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
             if url != nil {
                 DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    if self.tableView.indexPathsForVisibleItems.contains(indexPath) {
+                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    }
                 }
             }
         })
