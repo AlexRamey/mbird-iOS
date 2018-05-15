@@ -484,6 +484,80 @@
             </objects>
             <point key="canvasLocation" x="261.60000000000002" y="671.51424287856082"/>
         </scene>
+        <!--Schedule Daily Devotion View Controller-->
+        <scene sceneID="1aY-nt-dQS">
+            <objects>
+                <viewController storyboardIdentifier="ScheduleDailyDevotionVC" id="Cpp-h8-gQ7" customClass="ScheduleDailyDevotionViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="sEH-Jw-E0O"/>
+                        <viewControllerLayoutGuide type="bottom" id="4wf-lP-zA9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="P6h-9z-5Ty">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="5Ag-EJ-hZl">
+                                <rect key="frame" x="0.0" y="78.5" width="375" height="216"/>
+                                <date key="date" timeIntervalSinceReferenceDate="548038557.94627702">
+                                    <!--2018-05-15 00:55:57 +0000-->
+                                </date>
+                            </datePicker>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a71-gS-fEX">
+                                <rect key="frame" x="16" y="591" width="343" height="60"/>
+                                <color key="backgroundColor" red="1" green="0.34385690543512759" blue="0.63374333627146306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="kEN-vD-8Hh"/>
+                                </constraints>
+                                <state key="normal" title="Cancel Notifications"/>
+                                <connections>
+                                    <action selector="cancelNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="aeo-C8-QFq"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aiN-NV-Vco">
+                                <rect key="frame" x="16" y="523" width="343" height="60"/>
+                                <color key="backgroundColor" red="0.51538547237810794" green="1" blue="0.38414116194454473" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="IeM-5G-gBP"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="scheduleNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="23Z-RL-I7O"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" text="Status Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DqS-CJ-NbC">
+                                <rect key="frame" x="16" y="36" width="343" height="27"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="aiN-NV-Vco" secondAttribute="trailing" constant="16" id="05t-VC-rVD"/>
+                            <constraint firstItem="5Ag-EJ-hZl" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="2xJ-KF-C5k"/>
+                            <constraint firstAttribute="trailing" secondItem="5Ag-EJ-hZl" secondAttribute="trailing" id="5q3-Vy-eoa"/>
+                            <constraint firstItem="4wf-lP-zA9" firstAttribute="top" secondItem="a71-gS-fEX" secondAttribute="bottom" constant="16" id="Gqx-gS-Awx"/>
+                            <constraint firstItem="a71-gS-fEX" firstAttribute="top" secondItem="aiN-NV-Vco" secondAttribute="bottom" constant="8" id="UuN-i3-nwL"/>
+                            <constraint firstAttribute="trailing" secondItem="DqS-CJ-NbC" secondAttribute="trailing" constant="16" id="Vyq-Tn-EYv"/>
+                            <constraint firstItem="a71-gS-fEX" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="XES-Io-OlN"/>
+                            <constraint firstItem="DqS-CJ-NbC" firstAttribute="top" secondItem="sEH-Jw-E0O" secondAttribute="bottom" constant="16" id="Zgi-cB-XRf"/>
+                            <constraint firstItem="5Ag-EJ-hZl" firstAttribute="top" secondItem="DqS-CJ-NbC" secondAttribute="bottom" constant="16" id="blk-YQ-Q31"/>
+                            <constraint firstItem="DqS-CJ-NbC" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="ecu-pZ-sGJ"/>
+                            <constraint firstItem="aiN-NV-Vco" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="kAv-7d-B3k"/>
+                            <constraint firstAttribute="trailing" secondItem="a71-gS-fEX" secondAttribute="trailing" constant="16" id="qkg-tu-XET"/>
+                            <constraint firstItem="aiN-NV-Vco" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5Ag-EJ-hZl" secondAttribute="bottom" constant="8" id="yR6-id-Loe"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="a71-gS-fEX" id="5Vr-M8-ik8"/>
+                        <outlet property="statusLabel" destination="DqS-CJ-NbC" id="pEe-F1-NWj"/>
+                        <outlet property="timePicker" destination="5Ag-EJ-hZl" id="cpi-3X-WkM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2zs-wN-svg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1056.8" y="671.51424287856082"/>
+        </scene>
         <!--Articles-->
         <scene sceneID="tne-QT-ifu">
             <objects>

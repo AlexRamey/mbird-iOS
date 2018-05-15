@@ -37,56 +37,11 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
                         MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.error))
                     } else if let newDevotions = syncedDevotions {
                         MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: newDevotions)))
-                        self.promptForNotifications(withDevotions: newDevotions)
                     }
                 }
             }
         } else {
             MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: devotions)))
-            self.promptForNotifications(withDevotions: devotions)
-        }
-    }
-    
-    func promptForNotifications(withDevotions devotions: [LoadedDevotion]) {
-        let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
-            if granted {
-                self.scheduleNotifications(withCenter: center, forDevotions: devotions)
-            } else {
-                print(error as Any)
-            }
-        }
-    }
-    
-    func scheduleNotifications(withCenter center: UNUserNotificationCenter, forDevotions devotions: [LoadedDevotion]) {
-        print("scheduling notifications")
-
-        center.getPendingNotificationRequests { (requests) in
-            let startDate = Date().toMMddString()
-            let sortedDevotions = devotions.sorted {$0.date < $1.date}
-            guard let startIndex = (sortedDevotions.index { $0.dateAsMMdd == startDate }) else {
-                return
-            }
-            
-            var i = startIndex
-            var outstandingNotifications: Int = 0
-            
-            while outstandingNotifications < MBConstants.DEVOTION_NOTIFICATION_WINDOW_SIZE {
-                outstandingNotifications += 1
-                
-                let devotion = sortedDevotions[i]
-                let notificationId = "daily-devotion-\(devotion.dateAsMMdd)"
-                
-                if let dateComponents = devotion.dateComponentsForNotification,
-                    !requests.contains(where: {$0.identifier == notificationId}) {
-                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-                    let content = DevotionNotificationContent(devotion: devotion)
-                    let request = UNNotificationRequest(identifier: notificationId, content: content, trigger: trigger)
-                    center.add(request)
-                }
-                
-                i = (i + 1) % sortedDevotions.count
-            }
         }
     }
     
@@ -123,17 +78,5 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
         if let devotion = devotions.first(where: {$0.dateAsMMdd == Date().toMMddString()}) {
             MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
         }
-    }
-}
-
-extension Date {
-    static let ddMMFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd"
-        return formatter
-    }()
-
-    func toMMddString() -> String {
-        return Date.ddMMFormatter.string(from: self)
     }
 }

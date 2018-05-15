@@ -65,13 +65,13 @@ struct LoadedDevotion: Codable, Detailable, Equatable {
         }
     }
     
-    var dateComponentsForNotification: DateComponents? {
+    func dateComponentsForNotification(hour: Int, minute: Int) -> DateComponents? {
         guard let devotionDay = LoadedDevotion.devotionDateFormatter.date(from: self.date), let calendar = LoadedDevotion.calendar else {
             return nil
         }
         var dateComponents = DateComponents()
-        dateComponents.hour = 12
-        dateComponents.minute = 30
+        dateComponents.hour = hour
+        dateComponents.minute = minute
         dateComponents.month = calendar.component(NSCalendar.Unit.month, from: devotionDay)
         dateComponents.day = calendar.component(NSCalendar.Unit.day, from: devotionDay)
         return dateComponents

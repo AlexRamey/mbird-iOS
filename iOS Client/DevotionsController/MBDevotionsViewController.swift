@@ -27,13 +27,19 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "schedule"), style: .plain, target: self, action: #selector(self.scheduleNotifications(sender:)))
         
         tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
         
         menuView.delegate = self
         calendarView.delegate = self
         calendarView.calendarAppearanceDelegate = self
+    }
+    
+    @objc func scheduleNotifications(sender: UIBarButtonItem) {
+        MBStore.sharedStore.dispatch(ScheduleDailyDevotional())
     }
     
     override func viewDidLayoutSubviews() {

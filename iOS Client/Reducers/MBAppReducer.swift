@@ -42,6 +42,8 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.routes[nextState.selectedTab]?.removeLast()
     case _ as FilterPodcasts:
         nextState.routes[.podcasts]?.append(.action)
+    case _ as ScheduleDailyDevotional:
+        nextState.routes[.devotions]?.append(.action)
     default:
         break
     }
