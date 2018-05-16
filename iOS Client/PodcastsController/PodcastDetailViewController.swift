@@ -29,6 +29,7 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     
     weak var delegate: PodcastDetailViewControllerDelegate?
     var playerState: PlayerState?
+    var fullImageSize: CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,19 +38,23 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         durationSlider.addTarget(self, action: #selector(onSeek(slider:event:)), for: .valueChanged)
         durationSlider.setValue(0.0, animated: false)
         playerState = .initialized
-        self.imageView.layer.shadowPath = UIBezierPath(rect: self.imageView.bounds).cgPath
-        self.imageView.layer.shadowRadius = 20
-        self.imageView.layer.shadowOpacity = 0.4
-        self.imageView.layer.shadowOffset = CGSize(width: -5, height: -5)
         // Sets the nav bar to be transparent
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
+        fullImageSize = view.bounds.height * 0.25
+        self.imageWidthConstraint.constant = fullImageSize
+        self.imageHeightConstraint.constant = fullImageSize
+        self.view.layoutIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         MBStore.sharedStore.subscribe(self)
+        self.imageView.layer.shadowPath = UIBezierPath(rect: self.imageView.bounds).cgPath
+        self.imageView.layer.shadowRadius = 20
+        self.imageView.layer.shadowOpacity = 0.4
+        self.imageView.layer.shadowOffset = CGSize(width: -5, height: -5)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -119,10 +124,14 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         switch state.podcastsState.player {
         case .initialized, .error, .paused, .finished:
             playPauseButton.setImage(#imageLiteral(resourceName: "play-arrow"), for: .normal)
-            if playerState == .playing, playerState != .initialized { animateImage(size: CGSize(width: 150, height: 150), duration: 0.6)}
+            if playerState == .playing, playerState != .initialized {
+                animateImage(size: CGSize(width: fullImageSize * 0.75, height: fullImageSize * 0.75), duration: 0.6)
+            }
         case .playing:
             playPauseButton.setImage(#imageLiteral(resourceName: "pause-bars"), for: .normal)
-            if playerState != .playing, playerState != .initialized { animateImage(size: CGSize(width: 200, height: 200), duration: 0.6)}
+            if playerState != .playing, playerState != .initialized {
+                animateImage(size: CGSize(width: fullImageSize, height: fullImageSize), duration: 0.6)
+            }
         }
         playerState = state.podcastsState.player
         titleLabel.text = state.podcastsState.selectedPodcast?.title
