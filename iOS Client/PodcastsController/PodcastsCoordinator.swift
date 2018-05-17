@@ -88,6 +88,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             timer?.invalidate()
         case .error, .finished:
             timer?.invalidate()
+            player.pause()
         }
         
         // Handle changes in navigation state

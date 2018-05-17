@@ -23,22 +23,30 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         let tabBar = self.tabBar
         playPauseView = PlayPauseView.loadInstance()
         playPauseView.translatesAutoresizingMaskIntoConstraints = false
-        playPauseView.layer.shadowOffset = CGSize(width: 0, height: -10)
-        playPauseView.layer.shadowRadius = 7
+        playPauseView.layer.masksToBounds = false
+        playPauseView.clipsToBounds = false
         view.addSubview(playPauseView)
         playPauseView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         playPauseView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         playPauseView.bottomAnchor.constraint(equalTo: tabBar.topAnchor).isActive = true
         playPauseView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         playPauseView.isHidden = true
-        
+        playPauseView.layer.shadowOffset = CGSize(width: 0, height: -10)
+        playPauseView.layer.shadowRadius = 10
+        playPauseView.layer.shadowOpacity = 0.2
+        playPauseView.layer.shadowColor = UIColor.black.cgColor
         
         playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
         playPauseView.toggleButton.addTarget(self, action: #selector(togglePlayPause(_:)), for: .touchUpInside)
+        playPauseView.cancelButton.addTarget(self, action: #selector(cancelPodcast(_:)), for: .touchUpInside)
     }
     
     @objc func togglePlayPause(_ sender: UIButton) {
         MBStore.sharedStore.dispatch(PlayPausePodcast())
+    }
+    
+    @objc func cancelPodcast(_ sender: UIButton) {
+        MBStore.sharedStore.dispatch(FinishedPodcast())
     }
     
     override func viewDidLoad() {
@@ -70,20 +78,31 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         if let podImageName = state.podcastsState.selectedPodcast?.image {
             playPauseView.image.image = UIImage(named: podImageName)
         }
+        var shouldShowPlayPause = false
         switch state.podcastsState.player {
         case .initialized:
             break
         case .paused, .error:
             playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
-            playPauseView?.isHidden = false
+            shouldShowPlayPause = true
         case .playing:
             playPauseView.toggleButton.setImage(UIImage(named: "pause-bars"), for: .normal)
             playPauseView.titleLabel.text = state.podcastsState.selectedPodcast?.title
-            playPauseView?.isHidden = false
+            shouldShowPlayPause = true
         case .finished:
-            playPauseView?.isHidden = true
+            shouldShowPlayPause = false
         }
         playerState = state.podcastsState.player
+        if state.navigationState.selectedTab == .podcasts,
+            let routes = state.navigationState.routes[.podcasts],
+            let topRoute = routes.last,
+            case .detail = topRoute {
+            playPauseView?.isHidden = true
+        } else if shouldShowPlayPause {
+            playPauseView?.isHidden = false
+        } else {
+            playPauseView?.isHidden = true
+        }
     }
 
 }
