@@ -9,6 +9,10 @@
 import UIKit
 import UserNotifications
 
+enum NotificationPermission {
+    case allowed, denied, error
+}
+
 class ScheduleDailyDevotionViewController: UIViewController {
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var cancelButton: UIButton!
@@ -41,7 +45,7 @@ class ScheduleDailyDevotionViewController: UIViewController {
         var currentSetting: Int = defaultTimeInMinutes
         if let val = UserDefaults.standard.value(forKey: MBConstants.DEFAULTS_DAILY_DEVOTION_TIME_KEY) as? Int {
             currentSetting = val
-            statusLabel.text = "Currently scheduled for \(minutesToTimeString(min: val))"
+            statusLabel.text = "Scheduled for \(minutesToTimeString(min: val))"
         } else {
             self.cancelButton.isEnabled = false
             statusLabel.text = "Schedule a time:"
@@ -92,28 +96,73 @@ class ScheduleDailyDevotionViewController: UIViewController {
     }
     
     @IBAction func scheduleNotifications(sender: UIBarButtonItem) {
+        sender.isEnabled = false
         let components = NSCalendar.current.dateComponents(Set<Calendar.Component>([.hour, .minute]), from: self.timePicker.date)
         
         if let hour = components.hour, let minute = components.minute {
-            self.promptForNotifications(withDevotions: self.devotions, atHour: hour, minute: minute)
-            // todo: 1. add completion handlers to promptForNotification call chain
-            // 2. prompt user to go to settings if they don't have permission
-            // 3. report an error via alert if one occurs; update to new state only on success
-            // 4. Create a lock so only one scheduling operation can occur at a time
-            // enter scheduled state
-            cancelButton.isEnabled = true
-            let totalMin = hour * 60 + minute
-            UserDefaults.standard.set(totalMin, forKey: MBConstants.DEFAULTS_DAILY_DEVOTION_TIME_KEY)
-            statusLabel.text = "Currently scheduled for \(minutesToTimeString(min: totalMin))"
+            self.promptForNotifications(withDevotions: self.devotions, atHour: hour, minute: minute) { permission in
+                DispatchQueue.main.async {
+                    switch permission {
+                    case .allowed:
+                        self.cancelButton.isEnabled = true
+                        let totalMin = hour * 60 + minute
+                        UserDefaults.standard.set(totalMin, forKey: MBConstants.DEFAULTS_DAILY_DEVOTION_TIME_KEY)
+                        self.statusLabel.text = "Scheduled for \(self.minutesToTimeString(min: totalMin))"
+                    case .denied:
+                        self.promptForSettings()
+                    case .error:
+                        self.errorAlert()
+                    }
+                    sender.isEnabled = true
+                }
+            }
+        } else {
+            sender.isEnabled = true
         }
     }
+
+    private func promptForSettings() {
+        let settingsButton = NSLocalizedString("Settings", comment: "")
+        let cancelButton = NSLocalizedString("Cancel", comment: "")
+        let message = NSLocalizedString("Please give Mockingbird permission to alert you with daily devotionals by updating your notification settings.", comment: "")
+        let goToSettingsAlert = UIAlertController(title: "", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        
+        goToSettingsAlert.addAction(UIAlertAction(title: settingsButton, style: .destructive, handler: { (action: UIAlertAction) in
+            DispatchQueue.main.async {
+                guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                    return
+                }
+                
+                if UIApplication.shared.canOpenURL(settingsUrl) {
+                    if #available(iOS 10.0, *) {
+                        UIApplication.shared.open(settingsUrl)
+                    } else {
+                        UIApplication.shared.openURL(settingsUrl as URL)
+                    }
+                }
+            }
+        }))
+        
+        goToSettingsAlert.addAction(UIAlertAction(title: cancelButton, style: .cancel, handler: nil))
+        self.present(goToSettingsAlert, animated: true, completion: nil)
+    }
     
-    func promptForNotifications(withDevotions devotions: [LoadedDevotion], atHour hour: Int, minute: Int) {
-        center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+    private func errorAlert() {
+        let message = "An unexpected error occurred. Unable to schedule daily notifications."
+        let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func promptForNotifications(withDevotions devotions: [LoadedDevotion], atHour hour: Int, minute: Int, completion: @escaping (NotificationPermission) -> Void) {
+        center.requestAuthorization(options: [.alert, .sound]) { granted, error in
             if granted {
                 self.scheduleNotifications(withCenter: self.center, forDevotions: devotions, atHour: hour, minute: minute)
+                completion(.allowed)
+            } else if error != nil {
+                completion(.error)
             } else {
-                print(error as Any)
+                completion(.denied)
             }
         }
     }

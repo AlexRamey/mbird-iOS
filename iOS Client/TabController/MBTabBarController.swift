@@ -43,7 +43,8 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         configurePlayPauseView()
+        configurePlayPauseView()
+        self.tabBar.tintColor = UIColor.MBSalmon
     }
     
     override func viewWillAppear(_ animated: Bool) {
