@@ -36,12 +36,14 @@ public enum PodcastStream: String {
     case pz = "https://pzspodcast.fireside.fm/rss"
     case mockingCast = "https://themockingcast.fireside.fm/rss"
     case mockingPulpit = "http://www.mbird.com/feed/podcast/"
+    case talkingbird = "https://talkingbird.fireside.fm/rss"
     
     var imageName: String {
         switch self {
         case .pz: return "pzcast"
         case .mockingPulpit: return "mockingpulpit"
         case .mockingCast: return "mockingcast"
+        case .talkingbird: return "talkingbird"
         }
     }
     
@@ -50,6 +52,7 @@ public enum PodcastStream: String {
         case .pz: return "PZ's Podcast"
         case .mockingCast: return "The Mockingcast"
         case .mockingPulpit: return "The Mockingpulpit"
+        case .talkingbird: return "Talkingbird"
         }
     }
 }

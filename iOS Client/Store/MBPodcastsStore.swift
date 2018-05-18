@@ -21,13 +21,14 @@ class MBPodcastsStore {
         return d
     }()
     
+    let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast, .talkingbird]
+    
     init() {
         client = MBClient()
         fileHelper = FileHelper()
     }
     
     func syncPodcasts() -> Promise<[Podcast]> {
-        let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast]
         let requests = streams.map {self.client.getPodcasts(for: $0)}
         return firstly {
             when(resolved: requests)
@@ -42,19 +43,27 @@ class MBPodcastsStore {
                         return Podcast(author: podcast.author,
                                                   duration: podcast.duration,
                                                   guid: podcast.guid,
-                                                  image: streams[indx].imageName,
+                                                  image: self.streams[indx].imageName,
                                                   keywords: podcast.keywords,
                                                   summary: podcast.summary,
                                                   pubDate: date,
                                                   title: podcast.title,
-                                                  feed: streams[indx] )
+                                                  feed: self.streams[indx] )
                     }
                     podcasts.append(contentsOf: displayCasts)
                 }
             }
-            MBStore.sharedStore.dispatch(SetPodcastStreams(streams: [.pz, .mockingPulpit, .mockingCast]))
+            MBStore.sharedStore.dispatch(SetPodcastStreams(streams: [.pz, .mockingPulpit, .mockingCast, .talkingbird]))
             podcasts.sort(by: { $0.pubDate > $1.pubDate })
             return Promise(value: podcasts)
+        }
+    }
+    
+    func readPodcastFilterSettings() {
+        streams.forEach {
+            let streamSetting = UserDefaults.standard.bool(forKey: $0.title)
+            print(streamSetting)
+            MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: $0, toggle: streamSetting))
         }
     }
 }
