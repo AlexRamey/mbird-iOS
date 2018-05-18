@@ -41,7 +41,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     @objc func scheduleNotifications(sender: UIBarButtonItem) {
         let vc = ScheduleDailyDevotionViewController.instantiateFromStoryboard()
         vc.modalPresentationStyle = .popover
-        let dim = self.view.bounds.width
+        let dim = self.view.bounds.width * 0.75
         vc.preferredContentSize = CGSize(width: dim, height: dim)
         vc.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
         vc.popoverPresentationController?.delegate = self
