@@ -12,5 +12,6 @@ struct MBConstants {
     static let SECONDS_IN_A_DAY: Double = 24*3600
     static let MAX_ARTICLES_ON_DEVICE: Int = 200
     static let DEVOTION_NOTIFICATION_WINDOW_SIZE = 50
+    static let DEFAULTS_DAILY_DEVOTION_TIME_KEY = "DAILY_DEVOTION_TIME_KEY"
     // swiftlint:enable identifier_name
 }

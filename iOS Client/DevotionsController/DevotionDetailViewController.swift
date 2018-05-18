@@ -57,6 +57,4 @@ class DevotionDetailViewController: UIViewController, StoreSubscriber {
     @objc func backToDevotions(sender: UIBarButtonItem) {
         MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
-    
-
 }

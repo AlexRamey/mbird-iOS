@@ -27,13 +27,25 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "schedule"), style: .plain, target: self, action: #selector(self.scheduleNotifications(sender:)))
         
         tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
         
         menuView.delegate = self
         calendarView.delegate = self
         calendarView.calendarAppearanceDelegate = self
+    }
+    
+    @objc func scheduleNotifications(sender: UIBarButtonItem) {
+        let vc = ScheduleDailyDevotionViewController.instantiateFromStoryboard()
+        vc.modalPresentationStyle = .popover
+        let dim = self.view.bounds.width
+        vc.preferredContentSize = CGSize(width: dim, height: dim)
+        vc.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+        vc.popoverPresentationController?.delegate = self
+        self.present(vc, animated: true) {}
     }
     
     override func viewDidLayoutSubviews() {
@@ -161,4 +173,15 @@ extension MBDevotionsViewController: CVCalendarViewDelegate, CVCalendarMenuViewD
     func dayLabelPresentWeekdayHighlightedBackgroundAlpha() -> CGFloat {
         return 1.0
     }
+}
+
+extension MBDevotionsViewController: UIPopoverPresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.none
+    }
+    
+    func prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
+        popoverPresentationController.permittedArrowDirections = .any
+    }
+    
 }

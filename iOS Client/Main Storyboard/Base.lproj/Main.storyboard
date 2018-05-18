@@ -10,6 +10,11 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="VerdanaBold.ttf">
+            <string>Verdana-Bold</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--BaseTabController-->
         <scene sceneID="xao-Fa-KUH">
@@ -486,6 +491,93 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nDv-vR-taW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="261.60000000000002" y="671.51424287856082"/>
+        </scene>
+        <!--Schedule Daily Devotion View Controller-->
+        <scene sceneID="1aY-nt-dQS">
+            <objects>
+                <viewController storyboardIdentifier="ScheduleDailyDevotionVC" id="Cpp-h8-gQ7" customClass="ScheduleDailyDevotionViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="sEH-Jw-E0O"/>
+                        <viewControllerLayoutGuide type="bottom" id="4wf-lP-zA9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="P6h-9z-5Ty">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="5Ag-EJ-hZl">
+                                <rect key="frame" x="0.0" y="81" width="375" height="216"/>
+                                <date key="date" timeIntervalSinceReferenceDate="548038557.94627702">
+                                    <!--2018-05-15 00:55:57 +0000-->
+                                </date>
+                            </datePicker>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" text="Daily Notification" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DqS-CJ-NbC">
+                                <rect key="frame" x="16" y="36" width="343" height="29.5"/>
+                                <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="04V-lZ-tOo">
+                                <rect key="frame" x="0.0" y="607" width="375" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aiN-NV-Vco">
+                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="60"/>
+                                        <color key="backgroundColor" red="0.3209987915805359" green="1" blue="0.51172461931123359" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="38"/>
+                                        <state key="normal" title="Set">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="scheduleNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="23Z-RL-I7O"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a71-gS-fEX">
+                                        <rect key="frame" x="187.5" y="0.0" width="187.5" height="60"/>
+                                        <color key="backgroundColor" red="0.99215686270000003" green="0.3294117647" blue="0.3411764706" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="44"/>
+                                        <state key="normal" title="X">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="cancelPopoverWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="kkn-FK-cWE"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="ON2-M3-YJK"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="5Ag-EJ-hZl" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="2xJ-KF-C5k"/>
+                            <constraint firstAttribute="trailing" secondItem="5Ag-EJ-hZl" secondAttribute="trailing" id="5q3-Vy-eoa"/>
+                            <constraint firstItem="04V-lZ-tOo" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="EyM-6n-4ea"/>
+                            <constraint firstItem="04V-lZ-tOo" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5Ag-EJ-hZl" secondAttribute="bottom" constant="8" id="GPF-rv-KQY"/>
+                            <constraint firstAttribute="trailing" secondItem="04V-lZ-tOo" secondAttribute="trailing" id="Izx-zB-Ztz"/>
+                            <constraint firstAttribute="trailing" secondItem="DqS-CJ-NbC" secondAttribute="trailing" constant="16" id="Vyq-Tn-EYv"/>
+                            <constraint firstItem="DqS-CJ-NbC" firstAttribute="top" secondItem="sEH-Jw-E0O" secondAttribute="bottom" constant="16" id="Zgi-cB-XRf"/>
+                            <constraint firstItem="5Ag-EJ-hZl" firstAttribute="top" secondItem="DqS-CJ-NbC" secondAttribute="bottom" constant="16" id="blk-YQ-Q31"/>
+                            <constraint firstItem="DqS-CJ-NbC" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="ecu-pZ-sGJ"/>
+                            <constraint firstItem="4wf-lP-zA9" firstAttribute="top" secondItem="04V-lZ-tOo" secondAttribute="bottom" id="okf-Un-8X6"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="timePicker" destination="5Ag-EJ-hZl" id="cpi-3X-WkM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2zs-wN-svg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1056.8" y="671.51424287856082"/>
         </scene>
         <!--Articles-->
         <scene sceneID="tne-QT-ifu">
