@@ -66,10 +66,6 @@ class ScheduleDailyDevotionViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func cancelPopover(sender: UIBarButtonItem) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     @IBAction func scheduleNotifications(sender: UIBarButtonItem) {
         sender.isEnabled = false
         let components = NSCalendar.current.dateComponents(Set<Calendar.Component>([.hour, .minute]), from: self.timePicker.date)
@@ -81,6 +77,8 @@ class ScheduleDailyDevotionViewController: UIViewController {
                     case .allowed:
                         let totalMin = hour * 60 + minute
                         UserDefaults.standard.set(totalMin, forKey: MBConstants.DEFAULTS_DAILY_DEVOTION_TIME_KEY)
+                        self.dismiss(animated: true, completion: nil)
+                        return
                     case .denied:
                         self.promptForSettings()
                     case .error:
