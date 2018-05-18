@@ -41,13 +41,14 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         navigationController.pushViewController(podcastsController, animated: true)
         route = [.base]
         MBStore.sharedStore.subscribe(self)
-        
         _ = firstly {
             podcastsStore.syncPodcasts()
         }.then { podcasts -> Void in
             DispatchQueue.main.async {
                 MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
             }
+        }.always { () -> Void in
+            self.podcastsStore.readPodcastFilterSettings()
         }.catch { error in
             print("error fetching podcasts: \(error)")
             DispatchQueue.main.async {

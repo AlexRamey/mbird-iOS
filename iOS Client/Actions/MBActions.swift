@@ -65,6 +65,7 @@ struct PodcastError: Action { }
 
 struct TogglePodcastFilter: Action {
     var podcastStream: PodcastStream
+    var toggle: Bool
 }
 
 struct FilterPodcasts: Action { }

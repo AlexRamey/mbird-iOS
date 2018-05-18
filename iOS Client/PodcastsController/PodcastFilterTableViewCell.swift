@@ -28,7 +28,8 @@ class PodcastFilterTableViewCell: UITableViewCell {
         guard let stream = stream else {
             return
         }
-        MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: stream))
+        UserDefaults.standard.set(!sender.isOn, forKey: stream.title)
+        MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: stream, toggle: !sender.isOn))
     }
     
 }
