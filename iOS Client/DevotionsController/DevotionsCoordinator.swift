@@ -15,6 +15,7 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     var tab: Tab = .devotions
     var childCoordinators: [Coordinator] = []
     var devotionsStore = MBDevotionsStore()
+    let scheduler: DevotionScheduler = Scheduler()
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -37,11 +38,30 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
                         MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.error))
                     } else if let newDevotions = syncedDevotions {
                         MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: newDevotions)))
+                        self.scheduleDevotionsIfNecessary(devotions: newDevotions)
                     }
                 }
             }
         } else {
             MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: devotions)))
+            self.scheduleDevotionsIfNecessary(devotions: devotions)
+        }
+    }
+    
+    private func scheduleDevotionsIfNecessary(devotions: [LoadedDevotion]) {
+        guard let min = UserDefaults.standard.value(forKey: MBConstants.DEFAULTS_DAILY_DEVOTION_TIME_KEY) as? Int else {
+            return // user hasn't set up daily reminders
+        }
+        
+        self.scheduler.promptForNotifications(withDevotions: devotions, atHour: min/60, minute: min%60) { permission in
+            DispatchQueue.main.async {
+                switch permission {
+                case .allowed:
+                    print("success!")
+                default:
+                    print("unable to schedule notifications")
+                }
+            }
         }
     }
     

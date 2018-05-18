@@ -54,6 +54,7 @@
 		D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */; };
 		D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */; };
 		D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */; };
+		D075154820AE80DF00CAEBCA /* DevotionScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D075154720AE80DF00CAEBCA /* DevotionScheduler.swift */; };
 		D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55861F786DCD0071ED86 /* AppDelegate.swift */; };
 		D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */; };
 		D08F558C1F786DCD0071ED86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08F558A1F786DCD0071ED86 /* Main.storyboard */; };
@@ -137,6 +138,7 @@
 		D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTabBarController.swift; sourceTree = "<group>"; };
+		D075154720AE80DF00CAEBCA /* DevotionScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionScheduler.swift; sourceTree = "<group>"; };
 		D08F55831F786DCD0071ED86 /* iOS Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D08F55861F786DCD0071ED86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticlesViewController.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				D01C330220AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift */,
+				D075154720AE80DF00CAEBCA /* DevotionScheduler.swift */,
 				237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */,
 				237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */,
 				239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */,
@@ -654,6 +657,7 @@
 				23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */,
 				D0EA55FA2079A42C005EFA7E /* CategoryArticleTableViewCell.swift in Sources */,
 				D0EA55F220798F2A005EFA7E /* RecentArticleTableViewCell.swift in Sources */,
+				D075154820AE80DF00CAEBCA /* DevotionScheduler.swift in Sources */,
 				D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */,
 				D0D213E3202613CE00E5230A /* SafariDisplayer.swift in Sources */,
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,

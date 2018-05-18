@@ -39,7 +39,13 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     }
     
     @objc func scheduleNotifications(sender: UIBarButtonItem) {
-        MBStore.sharedStore.dispatch(ScheduleDailyDevotional())
+        let vc = ScheduleDailyDevotionViewController.instantiateFromStoryboard()
+        vc.modalPresentationStyle = .popover
+        let dim = self.view.bounds.width
+        vc.preferredContentSize = CGSize(width: dim, height: dim)
+        vc.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+        vc.popoverPresentationController?.delegate = self
+        self.present(vc, animated: true) {}
     }
     
     override func viewDidLayoutSubviews() {
@@ -167,4 +173,15 @@ extension MBDevotionsViewController: CVCalendarViewDelegate, CVCalendarMenuViewD
     func dayLabelPresentWeekdayHighlightedBackgroundAlpha() -> CGFloat {
         return 1.0
     }
+}
+
+extension MBDevotionsViewController: UIPopoverPresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.none
+    }
+    
+    func prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
+        popoverPresentationController.permittedArrowDirections = .any
+    }
+    
 }

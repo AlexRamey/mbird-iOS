@@ -53,8 +53,6 @@ enum RouteComponent: Equatable {
                 retVal = MBDevotionsViewController.instantiateFromStoryboard()
             } else if case .detail(_) = self {
                 retVal = DevotionDetailViewController.instantiateFromStoryboard()
-            } else if case .action = self {
-                retVal = ScheduleDailyDevotionViewController.instantiateFromStoryboard()
             }
         case .podcasts:
             if case .base = self {

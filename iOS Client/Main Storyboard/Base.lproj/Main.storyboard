@@ -10,6 +10,11 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="VerdanaBold.ttf">
+            <string>Verdana-Bold</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--BaseTabController-->
         <scene sceneID="xao-Fa-KUH">
@@ -496,81 +501,74 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="5Ag-EJ-hZl">
-                                <rect key="frame" x="0.0" y="78.5" width="375" height="216"/>
+                            <datePicker contentMode="scaleToFill" verticalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="5Ag-EJ-hZl">
+                                <rect key="frame" x="0.0" y="81" width="375" height="216"/>
                                 <date key="date" timeIntervalSinceReferenceDate="548038557.94627702">
                                     <!--2018-05-15 00:55:57 +0000-->
                                 </date>
                             </datePicker>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a71-gS-fEX">
-                                <rect key="frame" x="16" y="591" width="343" height="60"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="kEN-vD-8Hh"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="26"/>
-                                <state key="normal" title="Stop Notifications"/>
-                                <connections>
-                                    <action selector="cancelNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="aeo-C8-QFq"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aiN-NV-Vco">
-                                <rect key="frame" x="16" y="514" width="343" height="60"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="IeM-5G-gBP"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="26"/>
-                                <state key="normal" title="Schedule"/>
-                                <connections>
-                                    <action selector="scheduleNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="23Z-RL-I7O"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" text="Status Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DqS-CJ-NbC">
-                                <rect key="frame" x="16" y="36" width="343" height="27"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" text="Daily Notification" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DqS-CJ-NbC">
+                                <rect key="frame" x="16" y="36" width="343" height="29.5"/>
+                                <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="24"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="20J-CF-z4Z">
-                                <rect key="frame" x="16" y="505" width="343" height="1"/>
-                                <color key="backgroundColor" red="0.74117647060000003" green="0.74117647060000003" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="04V-lZ-tOo">
+                                <rect key="frame" x="0.0" y="607" width="375" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aiN-NV-Vco">
+                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="60"/>
+                                        <color key="backgroundColor" red="0.3209987915805359" green="1" blue="0.51172461931123359" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="38"/>
+                                        <state key="normal" title="Set">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="scheduleNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="23Z-RL-I7O"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a71-gS-fEX">
+                                        <rect key="frame" x="187.5" y="0.0" width="187.5" height="60"/>
+                                        <color key="backgroundColor" red="0.99215686270000003" green="0.3294117647" blue="0.3411764706" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="44"/>
+                                        <state key="normal" title="X">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="cancelPopoverWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="kkn-FK-cWE"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="9yj-tZ-jnq"/>
+                                    <constraint firstAttribute="height" constant="60" id="ON2-M3-YJK"/>
                                 </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="31Z-s3-a9R">
-                                <rect key="frame" x="16" y="582" width="343" height="1"/>
-                                <color key="backgroundColor" red="0.74117647060000003" green="0.74117647060000003" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="xEY-fT-5xm"/>
-                                </constraints>
-                            </view>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="aiN-NV-Vco" secondAttribute="trailing" constant="16" id="05t-VC-rVD"/>
                             <constraint firstItem="5Ag-EJ-hZl" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="2xJ-KF-C5k"/>
                             <constraint firstAttribute="trailing" secondItem="5Ag-EJ-hZl" secondAttribute="trailing" id="5q3-Vy-eoa"/>
-                            <constraint firstItem="4wf-lP-zA9" firstAttribute="top" secondItem="a71-gS-fEX" secondAttribute="bottom" constant="16" id="Gqx-gS-Awx"/>
-                            <constraint firstItem="20J-CF-z4Z" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="RfS-yx-788"/>
-                            <constraint firstItem="20J-CF-z4Z" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5Ag-EJ-hZl" secondAttribute="bottom" constant="8" id="Vv4-ox-PiZ"/>
+                            <constraint firstItem="04V-lZ-tOo" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="EyM-6n-4ea"/>
+                            <constraint firstItem="04V-lZ-tOo" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5Ag-EJ-hZl" secondAttribute="bottom" constant="8" id="GPF-rv-KQY"/>
+                            <constraint firstAttribute="trailing" secondItem="04V-lZ-tOo" secondAttribute="trailing" id="Izx-zB-Ztz"/>
                             <constraint firstAttribute="trailing" secondItem="DqS-CJ-NbC" secondAttribute="trailing" constant="16" id="Vyq-Tn-EYv"/>
-                            <constraint firstItem="a71-gS-fEX" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="XES-Io-OlN"/>
-                            <constraint firstItem="31Z-s3-a9R" firstAttribute="top" secondItem="aiN-NV-Vco" secondAttribute="bottom" constant="8" id="ZMk-Z8-7KI"/>
                             <constraint firstItem="DqS-CJ-NbC" firstAttribute="top" secondItem="sEH-Jw-E0O" secondAttribute="bottom" constant="16" id="Zgi-cB-XRf"/>
                             <constraint firstItem="5Ag-EJ-hZl" firstAttribute="top" secondItem="DqS-CJ-NbC" secondAttribute="bottom" constant="16" id="blk-YQ-Q31"/>
-                            <constraint firstAttribute="trailing" secondItem="31Z-s3-a9R" secondAttribute="trailing" constant="16" id="c7C-nj-29p"/>
                             <constraint firstItem="DqS-CJ-NbC" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="ecu-pZ-sGJ"/>
-                            <constraint firstAttribute="trailing" secondItem="20J-CF-z4Z" secondAttribute="trailing" constant="16" id="fwa-vM-RLY"/>
-                            <constraint firstItem="a71-gS-fEX" firstAttribute="top" secondItem="31Z-s3-a9R" secondAttribute="bottom" constant="8" id="gUh-vX-ZEq"/>
-                            <constraint firstItem="aiN-NV-Vco" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="kAv-7d-B3k"/>
-                            <constraint firstItem="aiN-NV-Vco" firstAttribute="top" secondItem="20J-CF-z4Z" secondAttribute="bottom" constant="8" id="qgl-ft-1RD"/>
-                            <constraint firstAttribute="trailing" secondItem="a71-gS-fEX" secondAttribute="trailing" constant="16" id="qkg-tu-XET"/>
-                            <constraint firstItem="31Z-s3-a9R" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="vO5-VG-O5x"/>
+                            <constraint firstItem="4wf-lP-zA9" firstAttribute="top" secondItem="04V-lZ-tOo" secondAttribute="bottom" id="okf-Un-8X6"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="cancelButton" destination="a71-gS-fEX" id="5Vr-M8-ik8"/>
-                        <outlet property="statusLabel" destination="DqS-CJ-NbC" id="pEe-F1-NWj"/>
                         <outlet property="timePicker" destination="5Ag-EJ-hZl" id="cpi-3X-WkM"/>
                     </connections>
                 </viewController>

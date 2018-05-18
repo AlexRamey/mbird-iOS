@@ -72,5 +72,3 @@ struct FilterPodcasts: Action { }
 struct SetPodcastStreams: Action {
     var streams: [PodcastStream]
 }
-
-struct ScheduleDailyDevotional: Action { }
