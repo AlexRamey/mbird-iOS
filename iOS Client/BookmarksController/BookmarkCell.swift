@@ -37,7 +37,7 @@ class BookmarkCell: UITableViewCell {
     func configure(article: MBArticle, withQueue queue: OperationQueue) {
         self.titleLabel.attributedText = article.title?.convertHtml()
         self.objectId = article.objectID
-        self.titleLabel.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        self.titleLabel.font = UIFont.systemFont(ofSize: 16.0, weight: .regular)
         self.titleLabel.textColor = UIColor.MBOrange
         self.titleLabel.sizeToFit()
 
