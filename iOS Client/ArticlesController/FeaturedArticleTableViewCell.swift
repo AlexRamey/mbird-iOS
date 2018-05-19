@@ -43,17 +43,12 @@ class FeaturedArticleTableViewCell: UITableViewCell {
     
     func setDate(date: Date?) {
         if let date = date {
-            if date.timeIntervalSinceNow > -16 * 3600 {
-                // just show time if it was published recently
-                self.timeLabel.text = DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: .short)
-            } else {
-                // just show date otherwise
-                var longDate = DateFormatter.localizedString(from: date, dateStyle: .long, timeStyle: .none)
-                if let idx = longDate.index(of: ",") {
-                    longDate = String(longDate.prefix(upTo: idx))
-                }
-                self.timeLabel.text = longDate
+            // show the date
+            var longDate = DateFormatter.localizedString(from: date, dateStyle: .long, timeStyle: .none)
+            if let idx = longDate.index(of: ",") {
+                longDate = String(longDate.prefix(upTo: idx))
             }
+            self.timeLabel.text = longDate
         } else {
             self.timeLabel.text = "recent"
         }

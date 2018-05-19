@@ -34,8 +34,8 @@ class MBBookmarksViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Bookmarks"
-        self.isEditing = false
-        self.navigationItem.leftBarButtonItem = editButtonItem
+        self.isEditing = true
+        self.tableView.rowHeight = UITableViewAutomaticDimension
         
         let fetchRequest: NSFetchRequest<MBArticle> = MBArticle.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: true))
@@ -126,7 +126,7 @@ extension MBBookmarksViewController: UITableViewDataSource {
             do {
                 try article.managedObjectContext?.save()
             } catch {
-                print("Error bookmarking article: \(error.localizedDescription)")
+                print("Error un-bookmarking article: \(error.localizedDescription)")
             }
         }
     }
@@ -134,6 +134,10 @@ extension MBBookmarksViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 extension MBBookmarksViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 200.0
+    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = fetchedResultsController.object(at: indexPath)
