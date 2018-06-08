@@ -51,7 +51,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         // swiftlint:disable force_cast
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
         // swiftlint:enable force_cast
-        vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-unselected"), selectedImage: UIImage(named: "home-selected"))
+        vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
         return vc
     }
     
