@@ -19,11 +19,11 @@ class FeaturedArticleTableViewCell: UITableViewCell {
         self.featuredImage.contentMode = .scaleAspectFill
         self.featuredImage.clipsToBounds = true
         
-        self.categoryLabel.textColor = UIColor.black
-        self.categoryLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .semibold)
+        self.categoryLabel.textColor = UIColor.MBOrange
+        self.categoryLabel.font = UIFont(name: "AvenirNext-Bold", size: 13.0)
         
-        self.timeLabel.textColor = UIColor.black
-        self.timeLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .semibold)
+        self.timeLabel.textColor = UIColor.MBOrange
+        self.timeLabel.font = UIFont(name: "AvenirNext-Bold", size: 13.0)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -32,13 +32,13 @@ class FeaturedArticleTableViewCell: UITableViewCell {
     
     func setTitle(_ title: NSAttributedString?) {
         self.titleLabel.attributedText = title
-        self.titleLabel.textColor = UIColor.MBOrange
-        self.titleLabel.font = UIFont.systemFont(ofSize: 24.0, weight: .heavy)
+        self.titleLabel.textColor = UIColor.black
+        self.titleLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 22.0)
         self.titleLabel.sizeToFit()
     }
     
     func setCategory(_ cat: String?) {
-        self.categoryLabel.text = cat ?? "mockingbird"
+        self.categoryLabel.text = (cat ?? "mockingbird").uppercased()
     }
     
     func setDate(date: Date?) {

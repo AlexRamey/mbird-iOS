@@ -21,13 +21,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="760" text="category" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pVM-aB-5V2">
-                        <rect key="frame" x="16" y="8" width="288" height="19.5"/>
+                        <rect key="frame" x="16" y="8" width="68" height="20"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g7S-71-ETt">
-                        <rect key="frame" x="16" y="35" width="150" height="21"/>
+                        <rect key="frame" x="16" y="36" width="150" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -39,16 +39,25 @@
                             <constraint firstAttribute="width" secondItem="kcz-Ka-g5l" secondAttribute="height" multiplier="1:1" id="oF2-23-pdY"/>
                         </constraints>
                     </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="254" verticalHuggingPriority="251" text="time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3BW-kX-InW">
+                        <rect key="frame" x="270.5" y="8" width="33.5" height="19.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="kcz-Ka-g5l" secondAttribute="bottom" constant="8" id="3MF-4F-xL5"/>
                     <constraint firstAttribute="trailing" secondItem="kcz-Ka-g5l" secondAttribute="trailing" constant="16" id="Em2-gl-uMw"/>
                     <constraint firstItem="kcz-Ka-g5l" firstAttribute="leading" secondItem="g7S-71-ETt" secondAttribute="trailing" constant="16" id="Ijx-fp-cME"/>
                     <constraint firstItem="pVM-aB-5V2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="N0h-Ua-d0B"/>
+                    <constraint firstAttribute="trailing" secondItem="3BW-kX-InW" secondAttribute="trailing" constant="16" id="OgQ-p3-frV"/>
                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="g7S-71-ETt" secondAttribute="bottom" constant="8" id="PRF-Gk-8DI"/>
-                    <constraint firstAttribute="trailing" secondItem="pVM-aB-5V2" secondAttribute="trailing" constant="16" id="aCU-3R-zXM"/>
                     <constraint firstItem="g7S-71-ETt" firstAttribute="top" secondItem="pVM-aB-5V2" secondAttribute="bottom" constant="8" id="egi-S7-PrZ"/>
+                    <constraint firstItem="3BW-kX-InW" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pVM-aB-5V2" secondAttribute="trailing" constant="16" id="fS0-qg-etQ"/>
+                    <constraint firstItem="3BW-kX-InW" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="l9a-A5-pgP"/>
                     <constraint firstItem="kcz-Ka-g5l" firstAttribute="top" secondItem="pVM-aB-5V2" secondAttribute="bottom" constant="8" id="n1z-Rf-rSQ"/>
+                    <constraint firstItem="kcz-Ka-g5l" firstAttribute="top" secondItem="3BW-kX-InW" secondAttribute="bottom" constant="8" id="pFV-Rc-pQ2"/>
                     <constraint firstItem="g7S-71-ETt" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="qiD-FX-Gxm"/>
                     <constraint firstItem="pVM-aB-5V2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="uvN-qH-O3b"/>
                 </constraints>
@@ -57,6 +66,7 @@
             <connections>
                 <outlet property="categoryLabel" destination="pVM-aB-5V2" id="IM2-tV-3PH"/>
                 <outlet property="thumbnailImage" destination="kcz-Ka-g5l" id="tzf-9w-bMS"/>
+                <outlet property="timeLabel" destination="3BW-kX-InW" id="SUt-aR-wqz"/>
                 <outlet property="titleLabel" destination="g7S-71-ETt" id="dfd-dJ-RQ4"/>
             </connections>
             <point key="canvasLocation" x="-33" y="115"/>

@@ -236,6 +236,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     private func configureRecentCell(_ cell: RecentArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
         cell.setTitle(article.title?.convertHtml())
         cell.setCategory(article.getTopLevelCategories().first)
+        cell.setDate(date: article.date as Date?)
         
         cell.thumbnailImage.image = nil
         if let savedData = article.image?.image {
