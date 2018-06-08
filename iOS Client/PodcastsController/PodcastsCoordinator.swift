@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import ReSwift
 import AVKit
+import MediaPlayer
 import PromiseKit
 
 class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastDetailViewControllerDelegate {
@@ -40,6 +41,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         let podcastsController = MBPodcastsViewController.instantiateFromStoryboard()
         navigationController.pushViewController(podcastsController, animated: true)
         route = [.base]
+        self.configureRemoteCommandHandling()
         MBStore.sharedStore.subscribe(self)
         _ = firstly {
             podcastsStore.syncPodcasts()
@@ -55,6 +57,40 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
                 MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .error))
             }
         }
+    }
+    
+    private func setAudioSessionIsActive(_ active: Bool) {
+        do {
+            try AVAudioSession.sharedInstance().setActive(active)
+        } catch {
+            print("Activating Audio Session failed.")
+        }
+    }
+    
+    private func configureRemoteCommandHandling() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        commandCenter.togglePlayPauseCommand.addTarget { (_) -> MPRemoteCommandHandlerStatus in
+            MBStore.sharedStore.dispatch(PlayPausePodcast())
+            return .success
+        }
+    }
+    
+    private func configureNowPlayingInfo(podcast: Podcast) {
+        let center = MPNowPlayingInfoCenter.default()
+        var nowPlayingInfo = [
+            MPMediaItemPropertyTitle: podcast.title ?? "Mbird Podcast",
+            MPMediaItemPropertyArtist: podcast.author ?? "Mockingbird"
+            ] as [String: Any]
+        if let image = UIImage(named: podcast.image) {
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size , requestHandler: { (newSize) -> UIImage in
+                UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+                image.draw(in: CGRect(origin: CGPoint.zero, size: CGSize(width: newSize.width, height: newSize.height)))
+                let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                UIGraphicsEndImageContext()
+                return newImage
+            })
+        }
+        center.nowPlayingInfo = nowPlayingInfo
     }
     
     @objc func updateDuration(_ sender: Timer) {
@@ -78,18 +114,17 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
                     let item = AVPlayerItem(url: url)
                     player.replaceCurrentItem(with: item)
                 }
+                self.setAudioSessionIsActive(true)
                 player.play()
+                self.configureNowPlayingInfo(podcast: podcast)
                 currentPlayingPodcast = state.podcastsState.selectedPodcast
                 timer?.invalidate()
                 timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
-                print("playing podcast")
             }
-        case .paused:
-            player.pause()
-            timer?.invalidate()
-        case .error, .finished:
+        case .paused, .error, .finished:
             timer?.invalidate()
             player.pause()
+            self.setAudioSessionIsActive(false)
         }
         
         // Handle changes in navigation state
@@ -103,26 +138,9 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         }
     }
     
-    func startPlaying(_ guid: String) {
-        if let url = URL(string: guid) {
-            let item = AVPlayerItem(url: url)
-            player.replaceCurrentItem(with: item)
-            player.play()
-        }
-    }
-    
     func getCurrentDuration() -> Double {
         let time = player.currentTime()
         return time.seconds
-    }
-    
-    // MARK: - AVAudioPlayerDelegate
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        if flag {
-            MBStore.sharedStore.dispatch(FinishedPodcast())
-        } else {
-            MBStore.sharedStore.dispatch(PodcastError())
-        }
     }
     
     func seek(to second: Double) {
