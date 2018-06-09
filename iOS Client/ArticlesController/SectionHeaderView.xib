@@ -26,24 +26,41 @@
                     <rect key="frame" x="0.0" y="62" width="449" height="1"/>
                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uR7-eV-5x2">
+                    <rect key="frame" x="418" y="20.5" width="23" height="23"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="23" id="DIU-HT-lBf"/>
+                        <constraint firstAttribute="width" constant="23" id="juT-bl-WJy"/>
+                    </constraints>
+                    <state key="normal" title="Button" image="search-glass"/>
+                    <connections>
+                        <action selector="searchArticles:" destination="iN0-l3-epB" eventType="touchUpInside" id="Vd8-Uy-fbB"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="PfY-aT-NR3" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="1Vc-vE-Y2g"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="PfY-aT-NR3" secondAttribute="trailing" id="AVI-o8-0LY"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="PfY-aT-NR3" secondAttribute="trailing" id="H4i-aU-Aks"/>
                 <constraint firstItem="9sj-1A-5yV" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="P9L-vM-Xni"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="9sj-1A-5yV" secondAttribute="trailing" id="Waq-ed-iCm"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="uR7-eV-5x2" secondAttribute="trailing" constant="8" id="lVW-r3-dKe"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="PfY-aT-NR3" secondAttribute="bottom" constant="1" id="rrl-az-qVT"/>
                 <constraint firstItem="9sj-1A-5yV" firstAttribute="top" secondItem="PfY-aT-NR3" secondAttribute="bottom" id="tIj-sw-TyA"/>
                 <constraint firstItem="9sj-1A-5yV" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="u2l-8x-XuH"/>
+                <constraint firstItem="uR7-eV-5x2" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="wbf-ec-yZ4"/>
                 <constraint firstItem="PfY-aT-NR3" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="ycS-RL-Zh5"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="searchGlass" destination="uR7-eV-5x2" id="gQO-FB-V4o"/>
                 <outlet property="sectionTitle" destination="PfY-aT-NR3" id="754-e9-hu0"/>
             </connections>
             <point key="canvasLocation" x="71.5" y="355.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="search-glass" width="25" height="25"/>
+    </resources>
 </document>

@@ -41,6 +41,8 @@ enum RouteComponent: Equatable {
                 retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? MBArticle)
             } else if case .more = self {
                 retVal = ShowMoreViewController.instantiateFromStoryboard()
+            } else if case .action = self {
+                retVal = SearchViewController.instantiateFromStoryboard()
             }
         case .bookmarks:
             if case .base = self {

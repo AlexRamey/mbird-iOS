@@ -10,6 +10,7 @@ import UIKit
 
 class SectionHeaderView: UITableViewHeaderFooterView {
     @IBOutlet weak var sectionTitle: UILabel!
+    @IBOutlet weak var searchGlass: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,5 +23,14 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     
     func setText(_ text: String) {
         self.sectionTitle.text = "\u{00B7}\u{00B7}\u{00B7}   \(text.uppercased())   \u{00B7}\u{00B7}\u{00B7}"
+    }
+    
+    func setSearchVisible(isVisible: Bool) {
+        self.searchGlass.isHidden = !isVisible
+        self.searchGlass.isEnabled = isVisible
+    }
+    
+    @IBAction func searchArticles(_ sender: UIButton) {
+        MBStore.sharedStore.dispatch(SearchArticles())
     }
 }

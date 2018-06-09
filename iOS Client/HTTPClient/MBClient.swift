@@ -84,6 +84,18 @@ class MBClient: NSObject {
         getDataFromURL(url, withCompletion: completion)
     }
     
+    // todo: leverage this to support search
+    func searchArticlesWithCompletion(query: String, completion: @escaping ([Data], Error?) -> Void ) {
+        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=10&search=\(query)"
+        guard let url = URL(string: urlString) else {
+            completion([], NetworkRequestError.invalidURL(url: urlString))
+            return
+        }
+        
+        print("firing getArticles request")
+        getDataFromURL(url, withCompletion: completion)
+    }
+    
     private func getDataFromURL(_ url: URL, withCompletion completion: @escaping ([Data], Error?) -> Void ) {
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             if let httpResponse = resp as? HTTPURLResponse {

@@ -353,8 +353,10 @@ extension MBArticlesViewController {
             return nil
         }
         if section == 0 {
+            header.setSearchVisible(isVisible: true)
             header.setText("Mockingbird")
         } else {
+            header.setSearchVisible(isVisible: false)
             header.setText(self.topLevelCategories[section - 1])
         }
         
