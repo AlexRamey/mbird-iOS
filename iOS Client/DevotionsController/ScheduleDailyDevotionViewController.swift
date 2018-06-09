@@ -38,9 +38,13 @@ class ScheduleDailyDevotionViewController: UIViewController {
             currentSetting = val
         }
         
+        rollPickerToTime(totalMinutes: currentSetting)
+    }
+    
+    private func rollPickerToTime(totalMinutes: Int) {
         var components = DateComponents()
-        components.hour = currentSetting / 60
-        components.minute = currentSetting % 60
+        components.hour = totalMinutes / 60
+        components.minute = totalMinutes % 60
         if let date = NSCalendar.current.date(from: components) {
             self.timePicker.setDate(date, animated: true)
         }
@@ -66,7 +70,7 @@ class ScheduleDailyDevotionViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func scheduleNotifications(sender: UIBarButtonItem) {
+    @IBAction func scheduleNotifications(sender: UIButton) {
         sender.isEnabled = false
         let components = NSCalendar.current.dateComponents(Set<Calendar.Component>([.hour, .minute]), from: self.timePicker.date)
         
@@ -90,6 +94,15 @@ class ScheduleDailyDevotionViewController: UIViewController {
         } else {
             sender.isEnabled = true
         }
+    }
+    
+    @IBAction func cancelNotifications(sender: UIButton) {
+        sender.isEnabled = false
+        self.scheduler.cancelNotifications()
+        UserDefaults.standard.removeObject(forKey: MBConstants.DEFAULTS_DAILY_DEVOTION_TIME_KEY)
+        rollPickerToTime(totalMinutes: defaultTimeInMinutes)
+        self.cancelAlert()
+        sender.isEnabled = true
     }
 
     private func promptForSettings() {
@@ -121,4 +134,10 @@ class ScheduleDailyDevotionViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
 
+    private func cancelAlert() {
+        let message = "Removed pending notifications."
+        let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
