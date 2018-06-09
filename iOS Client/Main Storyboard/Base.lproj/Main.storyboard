@@ -513,40 +513,51 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sIb-Ln-dU8">
-                                <rect key="frame" x="0.0" y="603" width="375" height="1"/>
+                                <rect key="frame" x="0.0" y="609" width="375" height="1"/>
                                 <color key="backgroundColor" red="0.71372549019607845" green="0.71372549019607845" blue="0.71372549019607845" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="dAN-h2-Ody"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aiN-NV-Vco">
-                                <rect key="frame" x="8" y="604" width="359" height="55"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="55" id="iLi-ho-BXg"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="Schedule"/>
-                                <connections>
-                                    <action selector="scheduleNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="23Z-RL-I7O"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Nxe-K5-xIh">
+                                <rect key="frame" x="0.0" y="618" width="375" height="41"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uyf-gS-DbQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="183.5" height="41"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <color key="tintColor" red="0.84313725490000002" green="0.33725490200000002" blue="0.34509803919999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <action selector="cancelNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="bQg-ww-shf"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aiN-NV-Vco">
+                                        <rect key="frame" x="191.5" y="0.0" width="183.5" height="41"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <state key="normal" title="Schedule"/>
+                                        <connections>
+                                            <action selector="scheduleNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="23Z-RL-I7O"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="5Ag-EJ-hZl" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="2xJ-KF-C5k"/>
                             <constraint firstAttribute="trailing" secondItem="5Ag-EJ-hZl" secondAttribute="trailing" id="5q3-Vy-eoa"/>
-                            <constraint firstItem="aiN-NV-Vco" firstAttribute="top" secondItem="sIb-Ln-dU8" secondAttribute="bottom" id="6rG-nT-hWP"/>
-                            <constraint firstItem="4wf-lP-zA9" firstAttribute="top" secondItem="aiN-NV-Vco" secondAttribute="bottom" constant="8" id="7VT-j0-jik"/>
-                            <constraint firstItem="aiN-NV-Vco" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="8" id="BPZ-Qb-GAK"/>
                             <constraint firstItem="sIb-Ln-dU8" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="P8K-FH-vyA"/>
+                            <constraint firstItem="Nxe-K5-xIh" firstAttribute="top" secondItem="sIb-Ln-dU8" secondAttribute="bottom" constant="8" id="S4P-nr-p03"/>
                             <constraint firstItem="sIb-Ln-dU8" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5Ag-EJ-hZl" secondAttribute="bottom" constant="8" id="VTR-vF-sIh"/>
                             <constraint firstAttribute="trailing" secondItem="DqS-CJ-NbC" secondAttribute="trailing" constant="16" id="Vyq-Tn-EYv"/>
                             <constraint firstAttribute="trailing" secondItem="sIb-Ln-dU8" secondAttribute="trailing" id="WGe-eH-Gs5"/>
                             <constraint firstItem="DqS-CJ-NbC" firstAttribute="top" secondItem="sEH-Jw-E0O" secondAttribute="bottom" constant="16" id="Zgi-cB-XRf"/>
                             <constraint firstItem="5Ag-EJ-hZl" firstAttribute="top" secondItem="DqS-CJ-NbC" secondAttribute="bottom" constant="16" id="blk-YQ-Q31"/>
-                            <constraint firstAttribute="trailing" secondItem="aiN-NV-Vco" secondAttribute="trailing" constant="8" id="dhe-ZG-29m"/>
                             <constraint firstItem="DqS-CJ-NbC" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" constant="16" id="ecu-pZ-sGJ"/>
+                            <constraint firstItem="Nxe-K5-xIh" firstAttribute="leading" secondItem="P6h-9z-5Ty" secondAttribute="leading" id="fNA-cM-ER9"/>
+                            <constraint firstItem="4wf-lP-zA9" firstAttribute="top" secondItem="Nxe-K5-xIh" secondAttribute="bottom" constant="8" id="neE-ks-lEi"/>
+                            <constraint firstAttribute="trailing" secondItem="Nxe-K5-xIh" secondAttribute="trailing" id="s3c-DG-E86"/>
                         </constraints>
                     </view>
                     <connections>
@@ -570,15 +581,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Vfm-0u-6pl">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Vfm-0u-6pl" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="SHx-QM-Yjj"/>
                             <constraint firstAttribute="trailing" secondItem="Vfm-0u-6pl" secondAttribute="trailing" id="YzW-Nk-Vfb"/>
                             <constraint firstItem="Vfm-0u-6pl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gvK-Ei-Am1"/>
+                            <constraint firstItem="Vfm-0u-6pl" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="rGf-By-wpG"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Vfm-0u-6pl" secondAttribute="bottom" id="yEh-14-Vac"/>
                         </constraints>
                     </view>

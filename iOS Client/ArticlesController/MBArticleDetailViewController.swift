@@ -55,9 +55,9 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             let head = "<head>\n\(contentTypeHead)\n\(viewPortHead)\n\(cssHead)\n</head>"
             
             // <style>
-            let titleFontSize = UIFont.preferredFont(forTextStyle: .headline).pointSize
-            let authorFontSize = UIFont.preferredFont(forTextStyle: .subheadline).pointSize
-            let bodyFontSize = UIFont.preferredFont(forTextStyle: .body).pointSize
+            let titleFontSize = UIFont.preferredFont(forTextStyle: .headline).pointSize * 0.80
+            let authorFontSize = UIFont.preferredFont(forTextStyle: .subheadline).pointSize * 0.80
+            let bodyFontSize = UIFont.preferredFont(forTextStyle: .body).pointSize * 0.80
             let style = ""
                 + "<style>\n"
                 + "p.title{font-size: \(titleFontSize)pt;}\n"
@@ -69,9 +69,13 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             // <body>
             let title: String = self.selectedArticle?.title ?? "Untitled 👀"
             let author: String = self.selectedArticle?.author?.name ?? "Mockingbird Staff"
-            let articleHeader = "<p class=\"title\">\(title)</p><p class=\"author\">By \(author)</p>"
+            let articleHeader = """
+                <p class="title">\(title)</p>
+                <p class="author">by \(author)</p>
+                <p class="dots">.....................</p>
+            """
             let body = "<body>" + articleHeader + content + "</body>"
-            
+
             // full page
             let fullContent = head + style + body
             
@@ -93,7 +97,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     }
     
     func configureRightBarButtons() {
-        let bookmarkItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.bookmarks, target: self, action: #selector(self.bookmarkArticle(sender:)))
+        let bookmarkItem = UIBarButtonItem(image: UIImage(named: "bookmark-item"), style: .plain, target: self, action: #selector(self.bookmarkArticle(sender:)))
         
         let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
         

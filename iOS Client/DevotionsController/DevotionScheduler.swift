@@ -14,11 +14,17 @@ enum NotificationPermission {
 }
 
 protocol DevotionScheduler {
+    func cancelNotifications()
     func promptForNotifications(withDevotions devotions: [LoadedDevotion], atHour hour: Int, minute: Int, completion: @escaping (NotificationPermission) -> Void)
 }
 
 class Scheduler: DevotionScheduler {
     let center = UNUserNotificationCenter.current()
+    
+    func cancelNotifications() {
+        self.center.removeAllPendingNotificationRequests()
+    }
+    
     func promptForNotifications(withDevotions devotions: [LoadedDevotion], atHour hour: Int, minute: Int, completion: @escaping (NotificationPermission) -> Void) {
         center.requestAuthorization(options: [.alert, .sound]) { granted, error in
             if granted {

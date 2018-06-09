@@ -91,7 +91,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         // swiftlint:disable force_cast
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
         // swiftlint:enable force_cast
-        vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-unselected"), selectedImage: UIImage(named: "headphones-selected"))
+        vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-gray"), selectedImage: UIImage(named: "headphones-selected"))
         return vc
     }
 

@@ -20,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show More" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zS3-cl-Xxa">
-                        <rect key="frame" x="32" y="16" width="374" height="54.5"/>
+                        <rect key="frame" x="32" y="16" width="374" height="46.5"/>
                         <color key="backgroundColor" red="0.90196078431372551" green="0.70588235294117641" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstAttribute="height" priority="999" constant="54" id="49S-ut-4gD"/>
@@ -33,7 +33,7 @@
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="zS3-cl-Xxa" secondAttribute="trailing" constant="32" id="8PM-h5-egk"/>
                     <constraint firstItem="zS3-cl-Xxa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="Nrf-tV-mio"/>
-                    <constraint firstAttribute="bottom" secondItem="zS3-cl-Xxa" secondAttribute="bottom" constant="16" id="aML-Tj-dgC"/>
+                    <constraint firstAttribute="bottom" secondItem="zS3-cl-Xxa" secondAttribute="bottom" constant="24" id="aML-Tj-dgC"/>
                     <constraint firstItem="zS3-cl-Xxa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="32" id="kca-EO-Hhf"/>
                 </constraints>
             </tableViewCellContentView>

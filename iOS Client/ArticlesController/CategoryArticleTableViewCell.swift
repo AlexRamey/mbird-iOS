@@ -25,8 +25,8 @@ class CategoryArticleTableViewCell: UITableViewCell {
     
     func setTitle(_ title: NSAttributedString?) {
         self.titleLabel.attributedText = title
-        self.titleLabel.textColor = UIColor.MBOrange
-        self.titleLabel.font = UIFont.systemFont(ofSize: 20.0, weight: .heavy)
+        self.titleLabel.textColor = UIColor.black
+        self.titleLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 22.0)
         self.titleLabel.sizeToFit()
     }
 }

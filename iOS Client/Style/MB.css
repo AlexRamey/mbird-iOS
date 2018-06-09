@@ -1,21 +1,34 @@
 body{
-    font: '-apple-system-body';
+    font: "Iowan Old Style", -apple-system-body;
     font-weight: normal;
+    padding-left: 8px;
+    padding-right: 8px;
     color: #090909;
     background-color: #ffffff;
 }
 
 p.title {
-    font: '-apple-system-headline';
+    font-family: Georgia, -apple-system-headline;
+    text-align: center;
+    margin: 0px;
+    color: #090909;
+}
+
+p.author {
+    font-family: "Iowan Old Style", -apple-system-subheadline;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 8px;
     margin: 0px;
     color: #eb615e;
 }
 
-p.author {
-    font: '-apple-system-subheadline';
+p.dots{
+    font-family: "Iowan Old Style", -apple-system-subheadline;
+    text-align: center;
+    font-weight: bold;
     margin: 0px;
-    font-style: italic;
-    color: #000000;
+    color: #090909;
 }
 
 /*for size of embedded videos*/
