@@ -6,6 +6,7 @@
 //  Copyright © 2017 Mockingbird. All rights reserved.
 //
 
+import AVKit
 import UIKit
 import CoreData
 import PromiseKit
@@ -20,10 +21,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
         self.window = UIWindow(frame: UIScreen.main.bounds)
+        
         self.appCoordinator = AppCoordinator(window: self.window!, managedObjectContext: coreDataStack.managedContext)
         self.appCoordinator.start()
+        
         application.setMinimumBackgroundFetchInterval(MBConstants.SECONDS_IN_A_DAY)
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSessionCategoryPlayback)
+        } catch {
+            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
+        
         return true
     }
 
