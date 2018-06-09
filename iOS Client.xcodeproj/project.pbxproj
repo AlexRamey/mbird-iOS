@@ -54,6 +54,8 @@
 		D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */; };
 		D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */; };
 		D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */; };
+		D048E7F820CC115700240462 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D048E7F720CC115700240462 /* SectionHeaderView.swift */; };
+		D048E7FA20CC11ED00240462 /* SectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D048E7F920CC11ED00240462 /* SectionHeaderView.xib */; };
 		D075154820AE80DF00CAEBCA /* DevotionScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D075154720AE80DF00CAEBCA /* DevotionScheduler.swift */; };
 		D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55861F786DCD0071ED86 /* AppDelegate.swift */; };
 		D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */; };
@@ -138,6 +140,8 @@
 		D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTabBarController.swift; sourceTree = "<group>"; };
+		D048E7F720CC115700240462 /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
+		D048E7F920CC11ED00240462 /* SectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeaderView.xib; sourceTree = "<group>"; };
 		D075154720AE80DF00CAEBCA /* DevotionScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionScheduler.swift; sourceTree = "<group>"; };
 		D08F55831F786DCD0071ED86 /* iOS Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D08F55861F786DCD0071ED86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -457,6 +461,8 @@
 				D0EA55F020798F2A005EFA7E /* RecentArticleTableViewCell.swift */,
 				D0EA55F120798F2A005EFA7E /* RecentArticleTableViewCell.xib */,
 				D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */,
+				D048E7F720CC115700240462 /* SectionHeaderView.swift */,
+				D048E7F920CC11ED00240462 /* SectionHeaderView.xib */,
 				2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */,
 				D0EA560020858F56005EFA7E /* ShowMoreViewController.swift */,
 			);
@@ -560,6 +566,7 @@
 				D0EA55EF20797E40005EFA7E /* FeaturedArticleTableViewCell.xib in Resources */,
 				D0EA55FB2079A42C005EFA7E /* CategoryArticleTableViewCell.xib in Resources */,
 				D0EA55F320798F2A005EFA7E /* RecentArticleTableViewCell.xib in Resources */,
+				D048E7FA20CC11ED00240462 /* SectionHeaderView.xib in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
@@ -701,6 +708,7 @@
 				23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */,
 				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
+				D048E7F820CC115700240462 /* SectionHeaderView.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
 				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
@@ -848,7 +856,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2251FCAEBD05DD222F6C84FD /* Pods-iOS Client.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CFABJ26A2K;
@@ -867,7 +875,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 136BACE6A8C13A0F0360B527 /* Pods-iOS Client.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon2;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CFABJ26A2K;

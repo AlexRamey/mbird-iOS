@@ -15,7 +15,6 @@ import Preheat
 enum RowType {
     case featured
     case recent
-    case categoryHeader
     case category
     case categoryFooter
 }
@@ -33,7 +32,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     let numOlderPerCategory = 5
     let featuredReuseIdentifier = "featuredReuseIdentifier"
     let recentReuseIdentifier = "recentReuseIdentifier"
-    let categoryHeaderReuseIdentifier = "categoryHeaderReuseIdentifier"
+    let sectionHeaderReuseIdentifier = "sectionHeaderReuseIdentifier"
     let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
     let categoryFooterReuseIdentifier = "categoryFooterReuseIdentifier"
     
@@ -57,6 +56,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         MBStore.sharedStore.subscribe(self)
 
         if isFirstAppearance {
@@ -81,12 +81,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         MBStore.sharedStore.unsubscribe(self)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Home"
+        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -94,7 +96,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         tableView.register(UINib(nibName: "FeaturedArticleTableViewCell", bundle: nil), forCellReuseIdentifier: featuredReuseIdentifier)
         tableView.register(UINib(nibName: "RecentArticleTableViewCell", bundle: nil), forCellReuseIdentifier: recentReuseIdentifier)
-        tableView.register(UINib(nibName: "CategoryHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: categoryHeaderReuseIdentifier)
+        tableView.register(UINib(nibName: "SectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: sectionHeaderReuseIdentifier)
         tableView.register(UINib(nibName: "CategoryArticleTableViewCell", bundle: nil), forCellReuseIdentifier: categoryArticleReuseIdentifier)
         tableView.register(UINib(nibName: "CategoryFooterTableViewCell", bundle: nil), forCellReuseIdentifier: categoryFooterReuseIdentifier)
         
@@ -118,7 +120,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 var link: String?
                 switch rowTypeForPath($0) {
                 case .featured:
-                    let article = latestArticles[$0.row]
+                    guard let article = articleForPath($0) else {
+                        return nil
+                    }
                     link = article.imageLink ?? article.thumbnailLink
                 case .recent, .category:
                     guard let article = articleForPath($0) else {
@@ -248,10 +252,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    func configureCategoryHeaderCell(_ cell: CategoryHeaderTableViewCell, withCategory cat: String) {
-        cell.setCategory(cat: cat)
-    }
-    
     private func configureCategoryArticleCell(_ cell: CategoryArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
         cell.setTitle(article.title?.convertHtml())
         
@@ -309,8 +309,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             return .featured        // first overall row
         } else if indexPath.section == 0 {
             return .recent          // other rows in first section
-        } else if indexPath.row == 0 {
-            return .categoryHeader  // first row in other sections
         } else if indexPath.row == self.tableView(tableView, numberOfRowsInSection: indexPath.section) - 1 {
             return .categoryFooter  // last row in other sections
         } else {
@@ -325,7 +323,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         case .category:
             let categoryName = topLevelCategories[indexPath.section - 1]
             if let articles = self.olderArticlesByCategory[categoryName] {
-                return articles[indexPath.row - 1]
+                return articles[indexPath.row]
             }
         default:
             break
@@ -343,11 +341,28 @@ extension MBArticlesViewController {
         }
         
         let categoryName = topLevelCategories[section - 1]
-        return 2 + (olderArticlesByCategory[categoryName]?.count ?? 0)
+        return 1 + (olderArticlesByCategory[categoryName]?.count ?? 0)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return topLevelCategories.count + 1
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: sectionHeaderReuseIdentifier) as? SectionHeaderView else {
+            return nil
+        }
+        if section == 0 {
+            header.setText("Mockingbird")
+        } else {
+            header.setText(self.topLevelCategories[section - 1])
+        }
+        
+        return header
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50.0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -363,13 +378,6 @@ extension MBArticlesViewController {
                 return UITableViewCell()
             }
             self.configureRecentCell(cell, withArticle: latestArticles[indexPath.row], atIndexPath: indexPath)
-            return cell
-        case .categoryHeader:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: categoryHeaderReuseIdentifier, for: indexPath) as? CategoryHeaderTableViewCell else {
-                return UITableViewCell()
-            }
-            let categoryName = topLevelCategories[indexPath.section - 1]
-            self.configureCategoryHeaderCell(cell, withCategory: categoryName)
             return cell
         case .categoryFooter:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: categoryFooterReuseIdentifier, for: indexPath) as? CategoryFooterTableViewCell else {
@@ -404,8 +412,6 @@ extension MBArticlesViewController {
             return 500.0
         case .recent, .category:
             return 200.0
-        case .categoryHeader:
-            return 80.0
         case .categoryFooter:
             return 86.0
         }
