@@ -81,7 +81,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         MBStore.sharedStore.unsubscribe(self)
     }
     
