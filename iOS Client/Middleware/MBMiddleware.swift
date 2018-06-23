@@ -11,7 +11,7 @@ import ReSwift
 struct MiddlewareFactory {
     
     // Logging Middleware
-    static let loggingMiddleware: Middleware<Any> = { dispatch, getState in
+    static let loggingMiddleware: Middleware<MBAppState> = { dispatch, getState in
         return { next in
             return { action in
                 // perform middleware logic
@@ -24,7 +24,7 @@ struct MiddlewareFactory {
     }
     
     // Next Middleware . . .
-    static let saveDevotionMiddleware: Middleware<Any> = { dispatch, getState in
+    static let saveDevotionMiddleware: Middleware<MBAppState> = { dispatch, getState in
         return { next in
             return { action in
                 if let selectedDevotionAction = action as? SelectedDevotion {

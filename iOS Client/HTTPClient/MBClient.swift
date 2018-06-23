@@ -268,8 +268,8 @@ class MBClient: NSObject {
         
         if numPages == 1 {
             // we are done
-            if let d = data {
-                completion([d], nil)
+            if let data = data {
+                completion([data], nil)
                 return
             } else {
                 completion([], NetworkRequestError.networkError(msg: "an unknown error occurred"))
@@ -280,8 +280,8 @@ class MBClient: NSObject {
         var dataTasks: [URLSessionDataTask] = []
         var results: [Data?] = [data]
         let serialQueue = DispatchQueue(label: "syncpoint")
-        for i in 2...numPages {
-            let urlString = "\(url)\(i)"
+        for index in 2...numPages {
+            let urlString = "\(url)\(index)"
             guard let url = URL(string: urlString) else {
                 completion([], NetworkRequestError.invalidURL(url: urlString))
                 return
@@ -304,8 +304,8 @@ class MBClient: NSObject {
         var retVal: [Data] = []
         print("processing batch results")
         for result in results {
-            if let d = result {
-                retVal.append(d)
+            if let data = result {
+                retVal.append(data)
             }
         }
         

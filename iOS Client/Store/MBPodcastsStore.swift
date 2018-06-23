@@ -16,16 +16,19 @@ class MBPodcastsStore {
     let client: MBClient
     let fileHelper: FileHelper
     let dateFormatter: DateFormatter = {
-        let d = DateFormatter()
-        d.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-        return d
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+        return formatter
     }()
     
     let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast, .talkingbird]
+    var podcastsPath: String = "podcasts"
     
     init() {
         client = MBClient()
         fileHelper = FileHelper()
+        initializeFiles()
+        MBStore.sharedStore.dispatch(SetPodcastStreams(streams: streams))
     }
     
     func syncPodcasts() -> Promise<[Podcast]> {
@@ -53,9 +56,36 @@ class MBPodcastsStore {
                     podcasts.append(contentsOf: displayCasts)
                 }
             }
-            MBStore.sharedStore.dispatch(SetPodcastStreams(streams: [.pz, .mockingPulpit, .mockingCast, .talkingbird]))
             podcasts.sort(by: { $0.pubDate > $1.pubDate })
             return Promise(value: podcasts)
+        }.then { podcasts -> Promise<[Podcast]> in
+            self.savePodcasts(podcasts: podcasts).then { return Promise(value: podcasts) }
+        }
+    }
+    
+    func savePodcasts(podcasts: [Podcast]) -> Promise<Void> {
+        return firstly {
+           try fileHelper.save(podcasts, forPath: podcastsPath)
+            return Promise()
+        }
+    }
+    
+    func getSavedPodcasts() -> Promise<[Podcast]> {
+        return firstly {
+            let podcasts = try fileHelper.read(fromPath: podcastsPath, [Podcast].self)
+            return Promise(value: podcasts)
+        }
+    }
+    
+    func initializeFiles() {
+        do {
+            let hasData = try fileHelper.fileExists(at: podcastsPath)
+            if !hasData {
+                let empty: [Podcast] = []
+                try fileHelper.save(empty, forPath: podcastsPath)
+            }
+        } catch {
+            print("could not initialize podcasts files")
         }
     }
     

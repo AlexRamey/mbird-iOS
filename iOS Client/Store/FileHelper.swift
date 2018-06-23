@@ -59,4 +59,13 @@ class FileHelper {
         }
     }
     
+    func fileExists(at path: String) throws -> Bool {
+        do {
+            let (manager, path, _) = try urlPackage(forPath: path)
+            return manager.fileExists(atPath: path)
+        } catch {
+            throw FileHelperError.readError(msg: "Could not check if a file exists at path \(path)")
+        }
+    }
+    
 }

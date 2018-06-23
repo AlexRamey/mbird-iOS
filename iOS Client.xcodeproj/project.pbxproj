@@ -11,6 +11,7 @@
 		232F08342066FC3B0051CF71 /* PlayPauseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F08332066FC3B0051CF71 /* PlayPauseView.swift */; };
 		232F08362066FDA50051CF71 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F08352066FDA50051CF71 /* UIView.swift */; };
 		2359296D1F904E8D00FE4839 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2359296C1F904E8D00FE4839 /* WebKit.framework */; };
+		2362417220DEE359002711D7 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2362417120DEE359002711D7 /* SearchViewController.swift */; };
 		2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */; };
 		237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */; };
 		237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */; };
@@ -40,7 +41,6 @@
 		23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */; };
 		23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23FFB0231F85CC0E006A0AC8 /* Routing.swift */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
-		D01BA8FA20CC4B8E00A5ED2E /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01BA8F920CC4B8E00A5ED2E /* SearchViewController.swift */; };
 		D01C330320AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01C330220AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift */; };
 		D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */; };
 		D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */; };
@@ -98,6 +98,7 @@
 		232F08332066FC3B0051CF71 /* PlayPauseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPauseView.swift; sourceTree = "<group>"; };
 		232F08352066FDA50051CF71 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		2359296C1F904E8D00FE4839 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		2362417120DEE359002711D7 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticleDetailViewController.swift; sourceTree = "<group>"; };
 		237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsViewController.swift; sourceTree = "<group>"; };
 		237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionsCoordinator.swift; sourceTree = "<group>"; };
@@ -126,7 +127,6 @@
 		23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastTableViewCell.swift; sourceTree = "<group>"; };
 		23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastTableViewCell.xib; sourceTree = "<group>"; };
 		23FFB0231F85CC0E006A0AC8 /* Routing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routing.swift; sourceTree = "<group>"; };
-		D01BA8F920CC4B8E00A5ED2E /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SearchViewController.swift; path = "iOS Client/Search/SearchViewController.swift"; sourceTree = SOURCE_ROOT; };
 		D01C330220AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDailyDevotionViewController.swift; sourceTree = "<group>"; };
 		D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticlesStore.swift; sourceTree = "<group>"; };
 		D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsStore.swift; sourceTree = "<group>"; };
@@ -192,6 +192,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2362417020DEE359002711D7 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				2362417120DEE359002711D7 /* SearchViewController.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		237815501FA7FEF7000555B6 /* DevotionsController */ = {
 			isa = PBXGroup;
 			children = (
@@ -292,15 +300,6 @@
 			path = HTTPClient;
 			sourceTree = "<group>";
 		};
-		D01BA8F820CC4B5E00A5ED2E /* Search */ = {
-			isa = PBXGroup;
-			children = (
-				D01BA8F920CC4B8E00A5ED2E /* SearchViewController.swift */,
-			);
-			name = Search;
-			path = "New Group";
-			sourceTree = "<group>";
-		};
 		D02C22951FDE14E40024D0F6 /* CoreDataStack */ = {
 			isa = PBXGroup;
 			children = (
@@ -367,7 +366,7 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
-				D01BA8F820CC4B5E00A5ED2E /* Search */,
+				2362417020DEE359002711D7 /* Search */,
 				23F2CB451FDC91D100B80856 /* PodcastsController */,
 				23864DE41FA6A0930061F212 /* Utilities */,
 				23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */,
@@ -681,7 +680,7 @@
 				D0D213E3202613CE00E5230A /* SafariDisplayer.swift in Sources */,
 				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
 				23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */,
-				D01BA8FA20CC4B8E00A5ED2E /* SearchViewController.swift in Sources */,
+				2362417220DEE359002711D7 /* SearchViewController.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
 				D0EA560120858F56005EFA7E /* ShowMoreViewController.swift in Sources */,
 				23FFB0241F85CC0E006A0AC8 /* Routing.swift in Sources */,

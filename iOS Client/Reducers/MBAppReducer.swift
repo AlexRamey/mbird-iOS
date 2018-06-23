@@ -20,28 +20,29 @@ func appReducer(action: Action, state: MBAppState?) -> MBAppState {
 
 func navigationReducer(action: Action, state: NavigationState?) -> NavigationState {
     var nextState = state ?? MBNavigationState()
-    
+    let selectedTab = nextState.selectedTab
     switch action {
     case _ as ReSwiftInit:
         break
     case let action as NavigationActionSwitchTab:
         nextState.selectedTab = action.tab
     case let action as SelectedArticle:
-        nextState.routes[nextState.selectedTab]?.append(.detail(item: action.article))
+        let selectedTab = nextState.selectedTab
+        nextState.routes[selectedTab]?.append(.detail(item: action.article))
     case _ as ShowMoreArticles:
-        nextState.routes[nextState.selectedTab]?.append(.more)
+        nextState.routes[selectedTab]?.append(.more)
     case _ as SearchArticles:
-        nextState.routes[nextState.selectedTab]?.append(.action)
+        nextState.routes[selectedTab]?.append(.action)
     case let action as SelectedDevotion:
         nextState.selectedTab = .devotions
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))
     case let action as SelectedArticleLink:
-        nextState.safariOverlays[nextState.selectedTab] = action.url
+        nextState.safariOverlays[selectedTab] = action.url
     case let action as SelectedPodcast:
         nextState.routes[.podcasts]?.append(.detail(item: action.podcast))
     case _ as PopCurrentNavigation:
         print("Popping from \(nextState.selectedTab)")
-        nextState.routes[nextState.selectedTab]?.removeLast()
+        nextState.routes[selectedTab]?.removeLast()
     case _ as FilterPodcasts:
         nextState.routes[.podcasts]?.append(.action)
     default:

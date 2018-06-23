@@ -20,7 +20,7 @@ struct PodcastDTO: Codable {
     let title: String?
 }
 
-struct Podcast: Detailable {
+struct Podcast: Detailable, Codable {
     let author: String?
     let duration: String?
     let guid: String?
@@ -32,7 +32,7 @@ struct Podcast: Detailable {
     let feed: PodcastStream
 }
 
-public enum PodcastStream: String {
+public enum PodcastStream: String, Codable {
     case pz = "https://pzspodcast.fireside.fm/rss"
     case mockingCast = "https://themockingcast.fireside.fm/rss"
     case mockingPulpit = "http://www.mbird.com/feed/podcast/"

@@ -43,11 +43,16 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         route = [.base]
         self.configureRemoteCommandHandling()
         MBStore.sharedStore.subscribe(self)
-        _ = firstly {
-            podcastsStore.syncPodcasts()
-        }.then { podcasts -> Void in
+        _ = firstly { () -> Promise<[Podcast]> in
+            podcastsStore.getSavedPodcasts()
+        }.then { podcasts -> Promise<[Podcast]> in
             DispatchQueue.main.async {
                 MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
+            }
+            return self.podcastsStore.syncPodcasts()
+        }.then { podcasts -> Void in
+            DispatchQueue.main.async {
+                //MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
             }
         }.always { () -> Void in
             self.podcastsStore.readPodcastFilterSettings()
