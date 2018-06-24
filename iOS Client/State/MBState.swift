@@ -72,6 +72,8 @@ protocol PodcastsState {
     var player: PlayerState { get set }
     var streams: [PodcastStream] { get set }
     var visibleStreams: Set<PodcastStream> { get set }
+    var downloadingPodcasts: Set<String> { get set }
+    var downloadedPodcasts: Set<String> { get set }
 }
 
 struct MBPodcastsState: PodcastsState {
@@ -80,6 +82,8 @@ struct MBPodcastsState: PodcastsState {
     var player: PlayerState = .initialized
     var visibleStreams: Set<PodcastStream> = Set<PodcastStream>()
     var streams: [PodcastStream] = []
+    var downloadingPodcasts: Set<String> = Set<String>()
+    var downloadedPodcasts: Set<String> = Set<String>()
 }
 
 /********** Settings State *************/

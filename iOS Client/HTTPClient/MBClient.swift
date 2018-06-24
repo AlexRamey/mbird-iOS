@@ -71,6 +71,20 @@ class MBClient: NSObject {
         getDataFromURL(url, withCompletion: completion)
     }
     
+    func getPodcast(url: URL) -> Promise<Data> {
+        return Promise { fulfill, reject in
+            getDataFromURL(url) { data, error in
+                if let err = error {
+                    reject(err)
+                } else if let data = data.first {
+                    fulfill(data)
+                } else {
+                    reject(NetworkRequestError.networkError(msg: "Did not receive any valid data"))
+                }
+            }
+        }
+    }
+    
     // getRecentArticlesWithCompletion makes a single URL request for recent posts
     // When the response is received, it calls the completion block with the resulting data and error
     func getRecentArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {

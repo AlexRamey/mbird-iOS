@@ -43,6 +43,8 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         route = [.base]
         self.configureRemoteCommandHandling()
         MBStore.sharedStore.subscribe(self)
+        let saved = podcastsStore.getSavedPodcastsTitles()
+        MBStore.sharedStore.dispatch(SetDownloadedPodcasts(titles: saved))
         _ = firstly { () -> Promise<[Podcast]> in
             podcastsStore.getSavedPodcasts()
         }.then { podcasts -> Promise<[Podcast]> in
@@ -52,15 +54,12 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             return self.podcastsStore.syncPodcasts()
         }.then { podcasts -> Void in
             DispatchQueue.main.async {
-                //MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
+                MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .loaded(data: podcasts)))
             }
         }.always { () -> Void in
             self.podcastsStore.readPodcastFilterSettings()
         }.catch { error in
             print("error fetching podcasts: \(error)")
-            DispatchQueue.main.async {
-                MBStore.sharedStore.dispatch(LoadedPodcasts(podcasts: .error))
-            }
         }
     }
     
@@ -114,8 +113,18 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         case .initialized:
             break
         case .playing:
-            if let podcast = state.podcastsState.selectedPodcast, let guid = podcast.guid, let url = URL(string: guid) {
-                if currentPlayingPodcast?.guid != guid {
+            if let podcast = state.podcastsState.selectedPodcast,
+                let guid = podcast.guid {
+                
+                // Play if stored to disk, else fetch from network
+                if currentPlayingPodcast?.guid != guid,
+                    podcastsStore.conatainsSavedPodcast(podcast),
+                    let url = podcastsStore.getUrlFor(podcast: podcast) {
+                    let item = AVPlayerItem(url: url)
+                    player.replaceCurrentItem(with: item)
+                } else if currentPlayingPodcast?.guid != guid,
+                    let guid = podcast.guid,
+                    let url = URL(string: guid) {
                     let item = AVPlayerItem(url: url)
                     player.replaceCurrentItem(with: item)
                 }

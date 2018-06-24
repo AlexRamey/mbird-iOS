@@ -118,6 +118,13 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
     case let action as SetPodcastStreams:
         nextState.streams = action.streams
         nextState.visibleStreams = Set<PodcastStream>(action.streams.map { $0 })
+    case let action as DownloadPodcast:
+        nextState.downloadingPodcasts.insert(action.title)
+    case let action as FinishedDownloadingPodcast:
+        nextState.downloadingPodcasts.remove(action.title)
+        nextState.downloadedPodcasts.insert(action.title)
+    case let action as SetDownloadedPodcasts:
+        nextState.downloadedPodcasts = Set<String>(action.titles.map { $0 })
     default:
         break
     }

@@ -48,16 +48,22 @@ class FileHelper {
         }
     }
     
-    func save<T: Encodable>(_ data: T, forPath path: String) throws {
+    func saveJSON<T: Encodable>(_ data: T, forPath path: String) throws {
         do {
             let (_, _, pathUrl) = try self.urlPackage(forPath: path)
             let encoder = JSONEncoder()
             let encodedData = try encoder.encode(data)
-            try encodedData.write(to: pathUrl, options: [.atomic])
+            try save(encodedData, url: pathUrl, options: [.atomic])
         } catch {
             throw FileHelperError.writeError(msg: "Could not save devotions to documents directory")
         }
     }
+    
+    func save(_ data: Data, url: URL, options: Data.WritingOptions) throws {
+        try data.write(to: url, options: options)
+    }
+    
+    
     
     func fileExists(at path: String) throws -> Bool {
         do {
@@ -68,4 +74,22 @@ class FileHelper {
         }
     }
     
+    func createDirectory(at path: String) throws {
+        do {
+            let (manager, path, url) = try urlPackage(forPath: path)
+            try manager.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
+        } catch {
+            throw FileHelperError.readError(msg: "Could not check if a file exists at path \(path)")
+        }
+    }
+    
+    func getPathsAtDirectory(directory: String) -> [String] {
+        do {
+            let (manager, filePath, _) = try urlPackage(forPath: directory)
+            let paths = try manager.subpathsOfDirectory(atPath: filePath)
+            return paths
+        } catch {
+            return []
+        }
+    }
 }
