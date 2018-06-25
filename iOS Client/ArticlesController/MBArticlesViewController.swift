@@ -19,7 +19,7 @@ enum RowType {
     case categoryFooter
 }
 
-class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
+class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber, HeaderViewDelegate {
     // properties
     @IBOutlet weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
@@ -45,6 +45,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     // dependencies
     let client: MBClient = MBClient()
     var articlesStore: MBArticlesStore!
+    var searchController: UISearchController?
+    var searchResultsController: SearchResultsTableViewController?
 
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -112,6 +114,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
+        
+        self.searchResultsController = SearchResultsTableViewController()
+        self.searchController = UISearchController(searchResultsController: self.searchResultsController)
+        self.searchController?.searchResultsUpdater = self.searchResultsController
     }
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
@@ -355,6 +361,8 @@ extension MBArticlesViewController {
         if section == 0 {
             header.setSearchVisible(isVisible: true)
             header.setText("Mockingbird")
+            header.delegate = self
+            self.searchResultsController?.searchBarHolder = header
         } else {
             header.setSearchVisible(isVisible: false)
             header.setText(self.topLevelCategories[section - 1])
@@ -417,5 +425,10 @@ extension MBArticlesViewController {
         case .categoryFooter:
             return 86.0
         }
+    }
+    
+    // MARK: HeaderViewDelegate
+    func searchTapped(sender: SectionHeaderView) -> UISearchBar? {
+        return self.searchController?.searchBar
     }
 }

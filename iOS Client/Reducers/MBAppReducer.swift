@@ -31,8 +31,6 @@ func navigationReducer(action: Action, state: NavigationState?) -> NavigationSta
         nextState.routes[selectedTab]?.append(.detail(item: action.article))
     case _ as ShowMoreArticles:
         nextState.routes[selectedTab]?.append(.more)
-    case _ as SearchArticles:
-        nextState.routes[selectedTab]?.append(.action)
     case let action as SelectedDevotion:
         nextState.selectedTab = .devotions
         nextState.routes[.devotions]?.append(.detail(item: action.devotion))

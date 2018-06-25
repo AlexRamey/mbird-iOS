@@ -12,6 +12,7 @@ import PromiseKit
 
 class MBClient: NSObject {
     private let session: URLSession
+    private let decoder = JSONDecoder()
     
     // Endpoints
     private let baseURL = "http://www.mbird.com/wp-json/wp/v2"
@@ -98,16 +99,45 @@ class MBClient: NSObject {
         getDataFromURL(url, withCompletion: completion)
     }
     
-    // todo: leverage this to support search
-    func searchArticlesWithCompletion(query: String, completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=10&search=\(query)"
-        guard let url = URL(string: urlString) else {
-            completion([], NetworkRequestError.invalidURL(url: urlString))
+    func searchArticlesWithCompletion(query: String, completion: @escaping ([Article], Error?) -> Void ) {
+        let scheme = "http"
+        let host = "www.mbird.com"
+        let path = "/wp-json/wp/v2/posts"
+        let queryItemPerPage = URLQueryItem(name: "per_page", value: "10")
+        let queryItemSearch = URLQueryItem(name: "search", value: query)
+        
+        var urlComponents = URLComponents()
+        urlComponents.scheme = scheme
+        urlComponents.host = host
+        urlComponents.path = path
+        urlComponents.queryItems = [queryItemPerPage, queryItemSearch]
+        
+        guard let url = urlComponents.url else {
+            completion([], NetworkRequestError.invalidURL(url: urlComponents.string ?? ""))
             return
         }
         
-        print("firing getArticles request")
-        getDataFromURL(url, withCompletion: completion)
+        getDataFromURL(url) { (data, err) in
+            guard let payload = data.first, err == nil else {
+                completion([], err)
+                return
+            }
+            
+            var articles: [ArticleDTO] = []
+            do {
+                articles = try self.decoder.decode([ArticleDTO].self, from: payload)
+            } catch {
+                print(error)
+                completion([], error)
+                return
+            }
+            
+            let domainArticles = articles.map({ (dto) -> Article in
+                return dto.toDomain()
+            })
+            
+            completion(domainArticles, nil)
+        }
     }
     
     private func getDataFromURL(_ url: URL, withCompletion completion: @escaping ([Data], Error?) -> Void ) {

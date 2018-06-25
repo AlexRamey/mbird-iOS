@@ -32,8 +32,6 @@ struct ShowMoreArticles: Action {
     var topLevelCategory: String
 }
 
-struct SearchArticles: Action {}
-
 struct PopCurrentNavigation: Action {
 }
 

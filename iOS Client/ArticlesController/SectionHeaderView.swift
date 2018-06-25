@@ -8,9 +8,11 @@
 
 import UIKit
 
-class SectionHeaderView: UITableViewHeaderFooterView {
+class SectionHeaderView: UITableViewHeaderFooterView, SearchBarHolder {
     @IBOutlet weak var sectionTitle: UILabel!
     @IBOutlet weak var searchGlass: UIButton!
+    weak var delegate: HeaderViewDelegate?
+    weak var searchBar: UISearchBar?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,6 +33,33 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     }
     
     @IBAction func searchArticles(_ sender: UIButton) {
-        MBStore.sharedStore.dispatch(SearchArticles())
+        guard let delegate = self.delegate else {
+            return
+        }
+        
+        if let searchBar = delegate.searchTapped(sender: self) {
+            searchBar.frame = CGRect(x: self.frame.width, y: 0.0, width: searchBar.bounds.width, height: searchBar.bounds.height)
+            self.addSubview(searchBar)
+            UIView.animate(withDuration: 0.5, animations: {
+                // reveal the search bar
+                searchBar.frame = CGRect(x: 0.0, y: 0.0, width: searchBar.bounds.width, height: searchBar.bounds.height)
+            }) { (_) in
+                searchBar.becomeFirstResponder()
+            }
+            self.searchBar = searchBar
+        }
     }
+    
+    // MARK: SearchBarHolder
+    func removeSearchBar() {
+        self.searchBar?.removeFromSuperview()
+    }
+}
+
+protocol HeaderViewDelegate: class {
+    func searchTapped(sender: SectionHeaderView) -> UISearchBar?
+}
+
+protocol SearchBarHolder {
+    func removeSearchBar()
 }
