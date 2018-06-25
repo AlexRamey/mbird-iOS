@@ -75,3 +75,15 @@ struct FilterPodcasts: Action { }
 struct SetPodcastStreams: Action {
     var streams: [PodcastStream]
 }
+
+struct DownloadPodcast: Action {
+    var title: String
+}
+
+struct FinishedDownloadingPodcast: Action {
+    var title: String
+}
+
+struct SetDownloadedPodcasts: Action {
+    var titles: [String]
+}

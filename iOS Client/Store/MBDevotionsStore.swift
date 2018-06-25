@@ -35,7 +35,7 @@ class MBDevotionsStore: NSObject {
                     print("fetched devotions from bundle")
                     let devotions = try self.fileHelper.parse(data, [MBDevotion].self)
                     let loadedDevotions = devotions.map {LoadedDevotion(devotion: $0, read: false)}
-                    try self.fileHelper.save(loadedDevotions, forPath: "devotions")
+                    try self.fileHelper.saveJSON(loadedDevotions, forPath: "devotions")
                     completion(loadedDevotions, nil)
                 } catch let error {
                     completion(nil, error)
@@ -48,7 +48,7 @@ class MBDevotionsStore: NSObject {
     }
     
     func saveDevotions(devotions: [LoadedDevotion]) throws {
-        try fileHelper.save(devotions, forPath: "devotions")
+        try fileHelper.saveJSON(devotions, forPath: "devotions")
     }
 
     func replace(devotion: LoadedDevotion) throws {
@@ -56,6 +56,6 @@ class MBDevotionsStore: NSObject {
         let markedDevotions = devotions.map { oldDevotion in
             oldDevotion.date == devotion.date ? devotion : oldDevotion
         }
-        try fileHelper.save(markedDevotions, forPath: "devotions")
+        try fileHelper.saveJSON(markedDevotions, forPath: "devotions")
     }
 }

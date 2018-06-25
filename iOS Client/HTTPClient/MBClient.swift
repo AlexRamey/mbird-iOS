@@ -71,6 +71,20 @@ class MBClient: NSObject {
         getDataFromURL(url, withCompletion: completion)
     }
     
+    func getPodcast(url: URL) -> Promise<Data> {
+        return Promise { fulfill, reject in
+            getDataFromURL(url) { data, error in
+                if let err = error {
+                    reject(err)
+                } else if let data = data.first {
+                    fulfill(data)
+                } else {
+                    reject(NetworkRequestError.networkError(msg: "Did not receive any valid data"))
+                }
+            }
+        }
+    }
+    
     // getRecentArticlesWithCompletion makes a single URL request for recent posts
     // When the response is received, it calls the completion block with the resulting data and error
     func getRecentArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
@@ -268,8 +282,8 @@ class MBClient: NSObject {
         
         if numPages == 1 {
             // we are done
-            if let d = data {
-                completion([d], nil)
+            if let data = data {
+                completion([data], nil)
                 return
             } else {
                 completion([], NetworkRequestError.networkError(msg: "an unknown error occurred"))
@@ -280,8 +294,8 @@ class MBClient: NSObject {
         var dataTasks: [URLSessionDataTask] = []
         var results: [Data?] = [data]
         let serialQueue = DispatchQueue(label: "syncpoint")
-        for i in 2...numPages {
-            let urlString = "\(url)\(i)"
+        for index in 2...numPages {
+            let urlString = "\(url)\(index)"
             guard let url = URL(string: urlString) else {
                 completion([], NetworkRequestError.invalidURL(url: urlString))
                 return
@@ -304,8 +318,8 @@ class MBClient: NSObject {
         var retVal: [Data] = []
         print("processing batch results")
         for result in results {
-            if let d = result {
-                retVal.append(d)
+            if let data = result {
+                retVal.append(data)
             }
         }
         

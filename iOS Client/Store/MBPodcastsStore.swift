@@ -16,16 +16,20 @@ class MBPodcastsStore {
     let client: MBClient
     let fileHelper: FileHelper
     let dateFormatter: DateFormatter = {
-        let d = DateFormatter()
-        d.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-        return d
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+        return formatter
     }()
     
     let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast, .talkingbird]
+    var podcastsPath: String = "podcasts.json"
+    var podcastsDirectory: String = "podcasts"
     
     init() {
         client = MBClient()
         fileHelper = FileHelper()
+        initializeFiles()
+        MBStore.sharedStore.dispatch(SetPodcastStreams(streams: streams))
     }
     
     func syncPodcasts() -> Promise<[Podcast]> {
@@ -34,9 +38,11 @@ class MBPodcastsStore {
             when(resolved: requests)
         }.then { responses -> Promise<[Podcast]> in
             var podcasts: [Podcast] = []
+            var successfulResponses = 0
             for (indx, response) in responses.enumerated() {
                 if case .fulfilled(let newCasts) = response {
-                    let displayCasts = newCasts.flatMap { podcast -> Podcast? in
+                    successfulResponses += 1
+                    let displayCasts = newCasts.compactMap { podcast -> Podcast? in
                         guard let dateString = podcast.pubDate?.replacingOccurrences(of: "EDT", with: "-0500"), let date = self.dateFormatter.date(from: dateString) else {
                             return nil
                         }
@@ -53,9 +59,43 @@ class MBPodcastsStore {
                     podcasts.append(contentsOf: displayCasts)
                 }
             }
-            MBStore.sharedStore.dispatch(SetPodcastStreams(streams: [.pz, .mockingPulpit, .mockingCast, .talkingbird]))
+            guard successfulResponses > 0 else {
+                throw PodcastStoreError.networkError
+            }
             podcasts.sort(by: { $0.pubDate > $1.pubDate })
             return Promise(value: podcasts)
+        }.then { podcasts -> Promise<[Podcast]> in
+            self.savePodcasts(podcasts: podcasts).then { return Promise(value: podcasts) }
+        }
+    }
+    
+    func savePodcasts(podcasts: [Podcast]) -> Promise<Void> {
+        return firstly {
+           try fileHelper.saveJSON(podcasts, forPath: podcastsPath)
+            return Promise()
+        }
+    }
+    
+    func getSavedPodcasts() -> Promise<[Podcast]> {
+        return firstly {
+            let podcasts = try fileHelper.read(fromPath: podcastsPath, [Podcast].self)
+            return Promise(value: podcasts)
+        }
+    }
+    
+    func initializeFiles() {
+        do {
+            let hasData = try fileHelper.fileExists(at: podcastsPath)
+            if !hasData {
+                let empty: [Podcast] = []
+                try fileHelper.saveJSON(empty, forPath: podcastsPath)
+            }
+            let hasPodcastDirectory = try fileHelper.fileExists(at: podcastsDirectory)
+            if !hasPodcastDirectory {
+                try fileHelper.createDirectory(at: podcastsDirectory)
+            }
+        } catch {
+            print("could not initialize podcasts files")
         }
     }
     
@@ -66,4 +106,43 @@ class MBPodcastsStore {
             MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: $0, toggle: streamSetting))
         }
     }
+    
+    func conatainsSavedPodcast(_ podcast: Podcast) -> Bool {
+        guard let title = podcast.title else { return false }
+        do {
+            let isFilePresent = try fileHelper.fileExists(at: "podcasts/\(title).mp3")
+            return isFilePresent
+        } catch { }
+        return false
+    }
+    
+    func getUrlFor(podcast: Podcast) -> URL? {
+        do {
+            if let title = podcast.title {
+                let (_, _, url) = try fileHelper.urlPackage(forPath: "podcasts/\(title).mp3")
+                return url
+            }
+        } catch { }
+        return nil
+        
+    }
+    
+    func savePodcastData(data: Data, path: String) {
+        do {
+            let (_, _, url) = try fileHelper.urlPackage(forPath: "podcasts/\(path).mp3")
+            try fileHelper.save(data, url: url, options: [.atomic])
+        } catch let error {
+            print("error saving podcast data")
+        }
+    }
+    
+    func getSavedPodcastsTitles() -> [String] {
+        return fileHelper.getPathsAtDirectory(directory: podcastsDirectory).compactMap {
+            return String($0.prefix($0.count-4))
+        }
+    }
+}
+
+enum PodcastStoreError: Error {
+    case networkError
 }

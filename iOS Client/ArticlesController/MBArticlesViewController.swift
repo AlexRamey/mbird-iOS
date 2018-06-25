@@ -133,7 +133,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                     break
                 }
                 
-                guard let l = link, let url = URL(string: l) else {
+                guard let imageLink = link, let url = URL(string: imageLink) else {
                     return nil
                 }
                 

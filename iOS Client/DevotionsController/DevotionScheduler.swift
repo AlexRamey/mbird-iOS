@@ -46,13 +46,13 @@ class Scheduler: DevotionScheduler {
             return
         }
         
-        var i = startIndex
+        var index = startIndex
         var outstandingNotifications: Int = 0
         
         while outstandingNotifications < MBConstants.DEVOTION_NOTIFICATION_WINDOW_SIZE {
             outstandingNotifications += 1
             
-            let devotion = sortedDevotions[i]
+            let devotion = sortedDevotions[index]
             let notificationId = "daily-devotion-\(devotion.dateAsMMdd)"
             
             if let dateComponents = devotion.dateComponentsForNotification(hour: hour, minute: minute) {
@@ -62,7 +62,7 @@ class Scheduler: DevotionScheduler {
                 center.add(request)
             }
             
-            i = (i + 1) % sortedDevotions.count
+            index = (index + 1) % sortedDevotions.count
         }
     }
 }

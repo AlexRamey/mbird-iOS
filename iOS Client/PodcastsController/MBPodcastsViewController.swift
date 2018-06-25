@@ -22,6 +22,10 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     }()
     
     @IBOutlet weak var tableView: UITableView!
+    let podcastStore = MBPodcastsStore()
+    var savedPodcastTitles: Set<String>?
+    var currentlyDownloadingTitles: Set<String>?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -63,10 +67,18 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         // swiftlint:enable force_cast
         if indexPath.row < podcasts.count {
             let podcast = podcasts[indexPath.row]
-            cell.configure(title: podcast.title ?? "", image: UIImage(named: podcast.image), date: podcastDateFormatter.string(from: podcast.pubDate))
+            let saved = savedPodcastTitles?.contains(podcast.title ?? "") ?? false
+            let downloading = currentlyDownloadingTitles?.contains(podcast.title ?? "") ?? false
+            cell.configure(title: podcast.title ?? "",
+                           image: UIImage(named: podcast.image),
+                           date: podcastDateFormatter.string(from: podcast.pubDate),
+                           guid: podcast.guid ?? "",
+                           saved: saved,
+                           downloading: downloading)
         } else {
-            cell.configure(title: "", image: nil, date: nil)
+            cell.configure(title: "", image: nil, date: nil, guid: "", saved: false, downloading: false)
         }
+        cell.delegate = self
         return cell
     }
     
@@ -83,6 +95,8 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
             break
         case .loaded(let data):
             self.podcasts = data.filter { state.podcastsState.visibleStreams.contains($0.feed) }
+            self.savedPodcastTitles = state.podcastsState.downloadedPodcasts
+            self.currentlyDownloadingTitles = state.podcastsState.downloadingPodcasts
             self.tableView.reloadData()
         }
     }
@@ -94,5 +108,20 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-gray"), selectedImage: UIImage(named: "headphones-selected"))
         return vc
     }
+}
 
+extension MBPodcastsViewController: PodcastDownloadingDelegate {
+    func downloadPodcast(url: String, title: String) {
+        print("download podcast at url: \(url)")
+        guard let url = URL(string: url) else { return }
+        MBStore.sharedStore.dispatch(DownloadPodcast(title: title))
+        let _ = MBClient().getPodcast(url: url).then { data -> Void in
+            self.podcastStore.savePodcastData(data: data, path: title)
+            MBStore.sharedStore.dispatch(FinishedDownloadingPodcast(title: title))
+        }
+    }
+}
+
+protocol PodcastDownloadingDelegate {
+    func downloadPodcast(url: String, title: String)
 }
