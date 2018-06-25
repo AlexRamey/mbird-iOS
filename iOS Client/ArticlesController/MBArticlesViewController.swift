@@ -19,7 +19,7 @@ enum RowType {
     case categoryFooter
 }
 
-class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber, HeaderViewDelegate {
+class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber, HeaderViewDelegate, UISearchControllerDelegate {
     // properties
     @IBOutlet weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
@@ -41,12 +41,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
+    var searchBarHolder: SearchBarHolder?
     
     // dependencies
     let client: MBClient = MBClient()
     var articlesStore: MBArticlesStore!
     var searchController: UISearchController?
-    var searchResultsController: SearchResultsTableViewController?
 
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -115,9 +115,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
         
-        self.searchResultsController = SearchResultsTableViewController()
-        self.searchController = UISearchController(searchResultsController: self.searchResultsController)
-        self.searchController?.searchResultsUpdater = self.searchResultsController
+        let searchResultsController = SearchResultsTableViewController()
+        self.searchController = UISearchController(searchResultsController: searchResultsController)
+        self.searchController?.searchResultsUpdater = searchResultsController
+        self.searchController?.delegate = self
+        self.definesPresentationContext = true
     }
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
@@ -362,7 +364,7 @@ extension MBArticlesViewController {
             header.setSearchVisible(isVisible: true)
             header.setText("Mockingbird")
             header.delegate = self
-            self.searchResultsController?.searchBarHolder = header
+            self.searchBarHolder = header
         } else {
             header.setSearchVisible(isVisible: false)
             header.setText(self.topLevelCategories[section - 1])
@@ -403,6 +405,12 @@ extension MBArticlesViewController {
             }
             return cell
         }
+    }
+    
+    // MARK: - UISearchControllerDelegate
+    func didDismissSearchController(_ searchController: UISearchController) {
+        print("DID DISMISS")
+        self.searchBarHolder?.removeSearchBar()
     }
     
     // MARK: - UITableViewDelegate

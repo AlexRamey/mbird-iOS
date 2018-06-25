@@ -9,7 +9,6 @@
 import UIKit
 
 class SearchResultsTableViewController: UITableViewController, UISearchResultsUpdating {
-    var searchBarHolder: SearchBarHolder?
     let reuseIdentifier = "searchResultCellReuseIdentifier"
     
     enum SearchOperation {
@@ -19,8 +18,6 @@ class SearchResultsTableViewController: UITableViewController, UISearchResultsUp
     
     var results: [Article] = []
     var resultsCache: [String: SearchOperation] = [:]
-    
-    var firstResponderFlag: Bool = true
     
     // dependencies
     let client = MBClient()
@@ -39,21 +36,11 @@ class SearchResultsTableViewController: UITableViewController, UISearchResultsUp
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        if !self.firstResponderFlag {
-            self.searchBarHolder?.removeSearchBar()
-        }
     }
     
     // MARK: - UI Search Results Updating
     
     func updateSearchResults(for searchController: UISearchController) {
-        guard searchController.searchBar.isFirstResponder else {
-            print("NOT FIRST RESPONDER")
-            self.firstResponderFlag = false
-            return
-        }
-        
-        self.firstResponderFlag = true
         guard let query = searchController.searchBar.text, query != "" else {
             self.results = []
             self.tableView.reloadData()
