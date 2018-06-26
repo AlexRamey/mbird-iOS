@@ -12,9 +12,12 @@ import CVCalendar
 
 class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
 
-    @IBOutlet weak var tableView: UITableView!
+
     @IBOutlet weak var menuView: CVCalendarMenuView!
+    @IBOutlet weak var monthLabel: UILabel!
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var calendarView: CVCalendarView!
+    @IBOutlet weak var stackView: UIStackView!
     
     let devotionsStore = MBDevotionsStore()
     var devotions: [LoadedDevotion] = []
@@ -26,13 +29,12 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
+        monthLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 24.0)
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "schedule"), style: .plain, target: self, action: #selector(self.scheduleNotifications(sender:)))
-        
         tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
-        
         menuView.delegate = self
         calendarView.delegate = self
         calendarView.calendarAppearanceDelegate = self
@@ -163,6 +165,13 @@ extension MBDevotionsViewController: CVCalendarViewDelegate, CVCalendarMenuViewD
     func didSelectDayView(_ dayView: DayView, animationDidFinish: Bool) {
         self.latestSelectedDate = dayView.date
         self.scrollToSelectedDevotion(animated: true)
+        let monthIndex = dayView.date.month - 1
+        guard monthIndex < Calendar.current.monthSymbols.count else {
+            return
+        }
+        let month = Calendar.current.monthSymbols[monthIndex]
+        self.monthLabel.text = month
+        
     }
     
     // MARK: - CVCalendarViewAppearanceDelegate
@@ -172,6 +181,18 @@ extension MBDevotionsViewController: CVCalendarViewDelegate, CVCalendarMenuViewD
     
     func dayLabelPresentWeekdayHighlightedBackgroundAlpha() -> CGFloat {
         return 1.0
+    }
+    
+    func dayLabelFont(by weekDay: Weekday, status: CVStatus, present: CVPresent) -> UIFont {
+        return UIFont(name: "IowanOldStyle-Roman", size: 14) ?? UIFont.systemFont(ofSize: 14)
+    }
+    
+    func dayLabelWeekdaySelectedBackgroundColor() -> UIColor {
+        return UIColor.MBOrange.withAlphaComponent(0.75)
+    }
+    
+    func dayOfWeekFont() -> UIFont {
+        return UIFont(name: "IowanOldStyle-Roman", size: 12) ?? UIFont.systemFont(ofSize: 12)
     }
 }
 
