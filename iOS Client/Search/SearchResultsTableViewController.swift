@@ -8,8 +8,11 @@
 
 import UIKit
 
-class SearchResultsTableViewController: UITableViewController, UISearchResultsUpdating {
+class SearchResultsTableViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
+    
+    @IBOutlet weak var tableView: UITableView!
     let reuseIdentifier = "searchResultCellReuseIdentifier"
+    var searchBar: UISearchBar?
     
     enum SearchOperation {
         case inProgress
@@ -22,11 +25,22 @@ class SearchResultsTableViewController: UITableViewController, UISearchResultsUp
     // dependencies
     let client = MBClient()
     
+    static func instantiateFromStoryboard() -> SearchResultsTableViewController {
+        // swiftlint:disable force_cast
+        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleSearchResultsVC") as! SearchResultsTableViewController
+        // swiftlint:enable force_cast
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.clear
-        
+        self.view.backgroundColor = UIColor.white
+        self.tableView.tableFooterView = UIView()
         self.tableView.register(UINib(nibName: "SearchResultTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
+        
+        if let searchBar = self.searchBar {
+            self.automaticallyAdjustsScrollViewInsets = false
+            self.tableView.contentInset = UIEdgeInsets(top: searchBar.frame.size.height, left: 0.0, bottom: 0.0, right: 0.0)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -78,15 +92,15 @@ class SearchResultsTableViewController: UITableViewController, UISearchResultsUp
     }
 
     // MARK: - Table view data source
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.results.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
 
         // Configure the cell...

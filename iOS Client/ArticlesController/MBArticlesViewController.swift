@@ -115,8 +115,15 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
         
-        let searchResultsController = SearchResultsTableViewController()
+        let searchResultsController = SearchResultsTableViewController.instantiateFromStoryboard()
         self.searchController = UISearchController(searchResultsController: searchResultsController)
+        self.searchController?.hidesNavigationBarDuringPresentation = false
+        self.searchController?.dimsBackgroundDuringPresentation = false
+        if let searchBar = self.searchController?.searchBar {
+            searchResultsController.searchBar = searchBar
+            searchBar.backgroundImage = UIImage()
+            searchBar.isTranslucent = false
+        }
         self.searchController?.searchResultsUpdater = searchResultsController
         self.searchController?.delegate = self
         self.definesPresentationContext = true
