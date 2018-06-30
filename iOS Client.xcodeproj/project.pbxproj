@@ -48,6 +48,7 @@
 		D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363C1F7FE19400D4E674 /* Coordinator.swift */; };
 		D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */; };
 		D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D36411F7FE8FA00D4E674 /* BookmarksCoordinator.swift */; };
+		D02FCCAC20E83C0900F40454 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02FCCAB20E83C0900F40454 /* Image.swift */; };
 		D032F1641F81695500E78333 /* MBClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F1631F81695500E78333 /* MBClient.swift */; };
 		D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */; };
 		D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */; };
@@ -140,6 +141,7 @@
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		D02D363F1F7FE5A800D4E674 /* ArticlesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ArticlesCoordinator.swift; path = "iOS Client/ArticlesController/ArticlesCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D36411F7FE8FA00D4E674 /* BookmarksCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BookmarksCoordinator.swift; path = "iOS Client/BookmarksController/BookmarksCoordinator.swift"; sourceTree = SOURCE_ROOT; };
+		D02FCCAB20E83C0900F40454 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		D032F1631F81695500E78333 /* MBClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MBClient.swift; path = "iOS Client/HTTPClient/MBClient.swift"; sourceTree = SOURCE_ROOT; };
 		D032F19A1F8728B700E78333 /* MBCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D032F19B1F8728B700E78333 /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -345,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				D05EF18020E080470066BA3E /* Article.swift */,
+				D02FCCAB20E83C0900F40454 /* Image.swift */,
 				D05EF18220E0827E0066BA3E /* Author.swift */,
 				D05EF18420E0828F0066BA3E /* Category.swift */,
 				D05EF18620E082D40066BA3E /* Core Data */,
@@ -717,6 +720,7 @@
 				D05EF17F20E07BA00066BA3E /* ArticleDTO.swift in Sources */,
 				23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */,
 				23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */,
+				D02FCCAC20E83C0900F40454 /* Image.swift in Sources */,
 				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
 				D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */,
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,

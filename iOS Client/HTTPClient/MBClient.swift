@@ -230,54 +230,6 @@ class MBClient: NSObject {
             completion(nil, NetworkRequestError.badResponse(status: 404))
         }
     }
-
-    func getImageURLs(imageID: Int, completion: @escaping ([String?]?) -> Void) {
-        let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
-        guard let url = URL(string: urlString) else {
-            completion(nil)
-            return
-        }
-        
-        print("firing get media url request: \(imageID)")
-        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
-            guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
-                completion(nil)
-                return
-            }
-            
-            // Process Data
-            guard let mediaData = data else {
-                completion(nil)
-                return
-            }
-            
-            var json: Any
-            do {
-                json = try JSONSerialization.jsonObject(with: mediaData, options: .allowFragments)
-            } catch let error as NSError {
-                print("Could not get media object. \(error), \(error.userInfo)")
-                completion(nil)
-                return
-            }
-            
-            // keypaths for the image urls
-            let keyPaths: [String] = [
-                "media_details.sizes.thumbnail.source_url",
-                "media_details.sizes.full.source_url"
-            ]
-            
-            guard let arr = json as? NSDictionary else {
-                completion(nil)
-                return
-            }
-            
-            let imageLinks = keyPaths.map({ (keyPath) -> String? in
-                return arr.value(forKeyPath: keyPath) as? String
-            })
-            
-            completion(imageLinks)
-        }.resume()
-    }
     
     private func pagingHandler(url: String, data: Data?, resp: URLResponse?, err: Error?, completion: @escaping ([Data], Error?) -> Void) {
         
@@ -377,5 +329,81 @@ class MBClient: NSObject {
         }
         
         return true
+    }
+}
+
+extension MBClient: ImageDAO {
+    func getImagesById(_ ids: [Int], completion: @escaping ([Image]) -> Void) {
+        let serialQueue = DispatchQueue(label: "imageProcessor")
+        
+        var jobCount = ids.count
+        var results: [Image] = []
+        
+        ids.forEach { (id) in
+            self.getImageById(id, completion: { (image) in
+                serialQueue.async {
+                    if let image = image {
+                        results.append(image)
+                    }
+                    jobCount -= 1
+                    if jobCount == 0 {
+                        completion(results)
+                    }
+                }
+            })
+        }
+    }
+    
+    func getImageById(_ id: Int, completion: @escaping (Image?) -> Void) {
+        let urlString = "\(baseURL)\(mediaEndpoint)/\(id)"
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
+        print("firing get media url request: \(id)")
+        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+            guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
+                completion(nil)
+                return
+            }
+            
+            // Process Data
+            guard let mediaData = data else {
+                completion(nil)
+                return
+            }
+            
+            var json: Any
+            do {
+                json = try JSONSerialization.jsonObject(with: mediaData, options: .allowFragments)
+            } catch let error as NSError {
+                print("Could not get media object. \(error), \(error.userInfo)")
+                completion(nil)
+                return
+            }
+            
+            // keypaths for the image urls
+            let keyPaths: [String] = [
+                "media_details.sizes.thumbnail.source_url",
+                "media_details.sizes.full.source_url"
+            ]
+            
+            guard let arr = json as? NSDictionary else {
+                completion(nil)
+                return
+            }
+            var thumbnailURL: URL? = nil
+            if let thumbURL = arr.value(forKeyPath: keyPaths[0]) as? String {
+                thumbnailURL = URL(string: thumbURL)
+            }
+            
+            var imageURL: URL? = nil
+            if let imgURL = arr.value(forKeyPath: keyPaths[1]) as? String {
+                imageURL = URL(string: imgURL)
+            }
+            
+            completion(Image(id: id, thumbnailUrl: thumbnailURL , imageUrl: imageURL))
+            }.resume()
     }
 }

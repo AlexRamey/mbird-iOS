@@ -16,7 +16,7 @@ struct Article {
     var authorId: Int
     var author: Author?
     var imageId: Int
-    var imageUrl: String?
+    var image: Image?
     var content: String
     var categoryIds: [Int]
     var categories: [Category]

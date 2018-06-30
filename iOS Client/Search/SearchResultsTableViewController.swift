@@ -81,20 +81,29 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                 print("SEARCH ERROR: \(err.localizedDescription)")
             }
             
-            DispatchQueue.main.async {
-                var results = articles
+            var results = articles
+            for index in 0..<results.count {
+                results[index].resolveAuthor(dao: self.store)
+                results[index].resolveCategories(dao: self.store)
+            }
+            
+            self.client.getImagesById(results.map {$0.imageId}, completion: { (images) in
+                // note n^2 performance improvement opportunity if we need it
                 for index in 0..<results.count {
-                    results[index].resolveAuthor(dao: self.store)
-                    results[index].resolveCategories(dao: self.store)
+                    results[index].image = images.first(where: { (image) -> Bool in
+                        results[index].imageId == image.id
+                    })
                 }
                 
-                self.resultsCache[query] = .finished(results: results)
-                if searchController.searchBar.text == query {
-                    // these results are relevant now!
-                    self.results = results
-                    self.tableView.reloadData()
+                DispatchQueue.main.async {
+                    self.resultsCache[query] = .finished(results: results)
+                    if searchController.searchBar.text == query {
+                        // these results are relevant now!
+                        self.results = results
+                        self.tableView.reloadData()
+                    }
                 }
-            }
+            })
         }
     }
 
@@ -112,7 +121,6 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
 
         // Configure the cell...
         cell.textLabel?.text = self.results[indexPath.row].title
-        
         return cell
     }
 }

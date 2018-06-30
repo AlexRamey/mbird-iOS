@@ -30,7 +30,7 @@ struct ArticleDTO: Codable {
     }
     
     func toDomain() -> Article {
-        return Article(id: self.articleId, date: self.date, link: self.link, title: self.title.rendered, authorId: self.authorId, author: nil, imageId: self.imageId, imageUrl: nil, content: self.content.rendered, categoryIds: self.categoryIds, categories: [])
+        return Article(id: self.articleId, date: self.date, link: self.link, title: self.title.rendered, authorId: self.authorId, author: nil, imageId: self.imageId, image: nil, content: self.content.rendered, categoryIds: self.categoryIds, categories: [])
     }
 }
 

@@ -125,12 +125,12 @@ class MBArticlesStore: NSObject, AuthorDAO, CategoryDAO {
     }
     
     func downloadImageURLsForArticle(_ article: MBArticle, withCompletion completion: @escaping (URL?) -> Void) {
-        self.client.getImageURLs(imageID: Int(article.imageID)) { links in
+        self.client.getImageById(Int(article.imageID)) { image in
             if let context = article.managedObjectContext {
                 context.perform {
                     do {
-                        article.thumbnailLink = links?[0]
-                        article.imageLink = links?[1]
+                        article.thumbnailLink = image?.thumbnailUrl?.absoluteString
+                        article.imageLink = image?.thumbnailUrl?.absoluteString
                         try context.save()
                         if let imageLink = article.thumbnailLink ?? article.imageLink,
                             let url = URL(string: imageLink) {
@@ -154,10 +154,10 @@ class MBArticlesStore: NSObject, AuthorDAO, CategoryDAO {
         self.managedObjectContext.perform {
             articles.forEach { (article) in
                 if (article.imageID > 0) && (article.imageLink == nil) {
-                    self.client.getImageURLs(imageID: Int(article.imageID), completion: { (links) in
+                    self.client.getImageById(Int(article.imageID), completion: { (image) in
                         self.managedObjectContext.perform {
-                            article.thumbnailLink = links?[0]
-                            article.imageLink = links?[1]
+                            article.thumbnailLink = image?.thumbnailUrl?.absoluteString
+                            article.imageLink = image?.thumbnailUrl?.absoluteString
                             do {
                                 try self.managedObjectContext.save()
                             } catch {
