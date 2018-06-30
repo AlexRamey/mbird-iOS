@@ -20,4 +20,12 @@ struct Article {
     var content: String
     var categoryIds: [Int]
     var categories: [Category]
+    
+    mutating func resolveAuthor(dao: AuthorDAO) {
+        self.author  = dao.getAuthorById(authorId)
+    }
+    
+    mutating func resolveCategories(dao: CategoryDAO) {
+        self.categories = dao.getCategoriesById(self.categoryIds)
+    }
 }

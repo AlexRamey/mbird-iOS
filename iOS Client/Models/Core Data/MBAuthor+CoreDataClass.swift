@@ -55,4 +55,8 @@ public class MBAuthor: NSManagedObject {
         
         return isNewData
     }
+    
+    func toDomain() -> Author {
+        return Author(id: Int(self.authorID), name: self.name ?? "mockingbird", info: self.info ?? "")
+    }
 }

@@ -124,6 +124,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             searchBar.backgroundImage = UIImage()
             searchBar.isTranslucent = false
         }
+        searchResultsController.store = self.articlesStore
         self.searchController?.searchResultsUpdater = searchResultsController
         self.searchController?.delegate = self
         self.definesPresentationContext = true

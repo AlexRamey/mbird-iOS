@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import PromiseKit
 
-class MBArticlesStore: NSObject {
+class MBArticlesStore: NSObject, AuthorDAO, CategoryDAO {
     private let client: MBClient
     private let managedObjectContext: NSManagedObjectContext
     
@@ -19,6 +19,26 @@ class MBArticlesStore: NSObject {
         self.managedObjectContext = context
         
         super.init()
+    }
+    
+    /***** Author DAO *****/
+    func getAuthorById(_ id: Int) -> Author? {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
+        fetchRequest.predicate = NSPredicate(format: "authorID == %d", id)
+        if let results = performFetch(fetchRequest: fetchRequest) as? [MBAuthor] {
+            return results.first?.toDomain()
+        }
+        return nil
+    }
+    
+    /***** Category DAO *****/
+    func getCategoriesById(_ ids: [Int]) -> [Category] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
+        fetchRequest.predicate = NSPredicate(format: "ANY categoryID in %@", ids)
+        if let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] {
+            return results.map { $0.toDomain() }
+        }
+        return []
     }
     
     /***** Read from Core Data *****/

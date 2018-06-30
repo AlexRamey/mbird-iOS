@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol CategoryDAO {
+    func getCategoriesById(_ ids: [Int]) -> [Category]
+}
+
 struct Category {
     var id: Int
     var name: String

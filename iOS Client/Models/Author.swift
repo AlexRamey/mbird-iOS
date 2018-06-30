@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol AuthorDAO {
+    func getAuthorById(_ id: Int) -> Author?
+}
+
 struct Author {
     var id: Int
     var name: String

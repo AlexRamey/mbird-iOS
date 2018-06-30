@@ -13,6 +13,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     @IBOutlet weak var tableView: UITableView!
     let reuseIdentifier = "searchResultCellReuseIdentifier"
     var searchBar: UISearchBar?
+    var store: MBArticlesStore!
     
     enum SearchOperation {
         case inProgress
@@ -81,10 +82,16 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
             }
             
             DispatchQueue.main.async {
-                self.resultsCache[query] = .finished(results: articles)
+                var results = articles
+                for index in 0..<results.count {
+                    results[index].resolveAuthor(dao: self.store)
+                    results[index].resolveCategories(dao: self.store)
+                }
+                
+                self.resultsCache[query] = .finished(results: results)
                 if searchController.searchBar.text == query {
                     // these results are relevant now!
-                    self.results = articles
+                    self.results = results
                     self.tableView.reloadData()
                 }
             }
@@ -105,7 +112,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
 
         // Configure the cell...
         cell.textLabel?.text = self.results[indexPath.row].title
-
+        
         return cell
     }
 }
