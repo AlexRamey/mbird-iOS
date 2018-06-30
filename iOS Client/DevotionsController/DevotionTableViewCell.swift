@@ -17,9 +17,12 @@ class DevotionTableViewCell: UITableViewCell {
     
     
     func configure(devotion: LoadedDevotion) {
+        dayLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 32)
         dayLabel.text = devotion.formattedMonthDay
         monthLabel.text = devotion.formattedMonth
+        monthLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 16)
         verseLabel.text = devotion.verse
+        verseLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 16)
         readNotifier.layer.cornerRadius = readNotifier.bounds.width / 2
         readNotifier.backgroundColor = devotion.read ? .clear : UIColor.MBOrange
     }
