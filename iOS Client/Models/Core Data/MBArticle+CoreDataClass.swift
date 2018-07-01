@@ -130,7 +130,7 @@ public class MBArticle: NSManagedObject {
               let managedContext = article.managedObjectContext else {
                 return
         }
-        let predicate = NSPredicate(format: "ANY categoryID in %@", catIds)
+        let predicate = NSPredicate(format: "categoryID in %@", catIds)
         let fetchRequest = NSFetchRequest<MBCategory>(entityName: MBCategory.entityName)
         fetchRequest.predicate = predicate
         
