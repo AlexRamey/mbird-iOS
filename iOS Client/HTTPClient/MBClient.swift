@@ -334,6 +334,11 @@ class MBClient: NSObject {
 
 extension MBClient: ImageDAO {
     func getImagesById(_ ids: [Int], completion: @escaping ([Image]) -> Void) {
+        guard ids.count > 0 else {
+            completion([])
+            return
+        }
+        
         let serialQueue = DispatchQueue(label: "imageProcessor")
         
         var jobCount = ids.count

@@ -13,6 +13,7 @@ import Preheat
 class SearchResultsTableViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
     let reuseIdentifier = "searchResultCellReuseIdentifier"
     var searchBar: UISearchBar?
     var store: MBArticlesStore!
@@ -95,6 +96,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text, query != "" else {
+            self.spinner.stopAnimating()
             self.results = []
             self.tableView.reloadData()
             return
@@ -107,16 +109,25 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                 // don't issue a request if one is currently outstanding
                 return
             case .finished(let articles):
+                self.spinner.stopAnimating()
                 self.results = articles
                 self.tableView.reloadData()
                 return
             }
         }
         
+        self.spinner.startAnimating()
         // issue a query to the search API
         self.client.searchArticlesWithCompletion(query: query) { (articles, err) in
             if let err = err {
-                print("SEARCH ERROR: \(err.localizedDescription)")
+                DispatchQueue.main.async {
+                    print("SEARCH ERROR: \(err.localizedDescription)")
+                    if searchController.searchBar.text == query {
+                        // these results are relevant now!
+                        self.spinner.stopAnimating()
+                    }
+                }
+                return
             }
             
             var results = articles
@@ -137,6 +148,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                     self.resultsCache[query] = .finished(results: results)
                     if searchController.searchBar.text == query {
                         // these results are relevant now!
+                        self.spinner.stopAnimating()
                         self.results = results
                         self.tableView.reloadData()
                     }

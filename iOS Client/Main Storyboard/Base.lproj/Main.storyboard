@@ -682,16 +682,22 @@
                                     <outlet property="delegate" destination="mAv-vf-sJM" id="Ere-A7-P8v"/>
                                 </connections>
                             </tableView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="9dN-T4-PJ8">
+                                <rect key="frame" x="178" y="323" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="SJq-0r-Si1" firstAttribute="leading" secondItem="QpO-AY-x8s" secondAttribute="leading" id="830-NS-AT8"/>
                             <constraint firstAttribute="trailing" secondItem="SJq-0r-Si1" secondAttribute="trailing" id="GJ6-Ua-62O"/>
                             <constraint firstItem="SJq-0r-Si1" firstAttribute="top" secondItem="QAw-Hl-rVo" secondAttribute="bottom" id="LSz-vR-vET"/>
+                            <constraint firstItem="9dN-T4-PJ8" firstAttribute="centerY" secondItem="QpO-AY-x8s" secondAttribute="centerY" id="m3R-F6-lcB"/>
+                            <constraint firstItem="9dN-T4-PJ8" firstAttribute="centerX" secondItem="QpO-AY-x8s" secondAttribute="centerX" id="nmY-KH-hUV"/>
                             <constraint firstItem="mZ4-rR-zx9" firstAttribute="top" secondItem="SJq-0r-Si1" secondAttribute="bottom" id="vIt-5a-DmS"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="spinner" destination="9dN-T4-PJ8" id="kRo-C0-bzH"/>
                         <outlet property="tableView" destination="SJq-0r-Si1" id="Dc5-jn-IZf"/>
                     </connections>
                 </viewController>
