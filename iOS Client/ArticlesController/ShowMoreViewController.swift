@@ -252,7 +252,7 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
     
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let action = SelectedArticle(article: articles[indexPath.row])
+        let action = SelectedArticle(article: articles[indexPath.row].toDomain())
         MBStore.sharedStore.dispatch(action)
     }
     

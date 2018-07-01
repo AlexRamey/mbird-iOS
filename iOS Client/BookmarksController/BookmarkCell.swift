@@ -16,7 +16,6 @@ class BookmarkCell: UITableViewCell {
     @IBOutlet weak var coverImageView: UIImageView!
     
     var objectId: NSManagedObjectID?
-    var lastOperation: Operation?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,32 +28,14 @@ class BookmarkCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        lastOperation?.cancel()
         titleLabel.text = nil
         coverImageView.image = nil
     }
     
-    func configure(article: MBArticle, withQueue queue: OperationQueue) {
-        self.objectId = article.objectID
+    func configure(article: MBArticle) {
         self.titleLabel.attributedText = article.title?.convertHtml()
         self.titleLabel.textColor = UIColor.MBOrange
         self.titleLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 16.0)
         self.titleLabel.sizeToFit()
-
-        let imageMaker = ImageMakerOperation(article: article)
-        imageMaker.completionBlock = {
-            if imageMaker.isCancelled {
-                return
-            }
-            DispatchQueue.main.async {
-                if self.objectId != article.objectID {
-                    return
-                }
-
-                self.coverImageView.image = article.uiimage
-            }
-        }
-        queue.addOperation(imageMaker)
-        lastOperation = imageMaker
     }
 }

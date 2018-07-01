@@ -20,7 +20,7 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
     var rootViewController: UIViewController {
         return self.tabBarController
     }
-    
+    var articleDAO: ArticleDAO?
     let window: UIWindow
     let managedObjectContext: NSManagedObjectContext
     

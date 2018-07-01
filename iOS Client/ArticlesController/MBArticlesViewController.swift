@@ -19,7 +19,7 @@ enum RowType {
     case categoryFooter
 }
 
-class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber {
+class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber, HeaderViewDelegate, UISearchControllerDelegate {
     // properties
     @IBOutlet weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
@@ -41,10 +41,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
+    var searchBarHolder: SearchBarHolder?
     
     // dependencies
     let client: MBClient = MBClient()
     var articlesStore: MBArticlesStore!
+    var searchController: UISearchController?
 
     static func instantiateFromStoryboard() -> MBArticlesViewController {
         // swiftlint:disable force_cast
@@ -112,6 +114,20 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
+        
+        let searchResultsController = SearchResultsTableViewController.instantiateFromStoryboard()
+        self.searchController = UISearchController(searchResultsController: searchResultsController)
+        self.searchController?.hidesNavigationBarDuringPresentation = false
+        self.searchController?.dimsBackgroundDuringPresentation = false
+        if let searchBar = self.searchController?.searchBar {
+            searchResultsController.searchBar = searchBar
+            searchBar.backgroundImage = UIImage()
+            searchBar.isTranslucent = false
+        }
+        searchResultsController.store = self.articlesStore
+        self.searchController?.searchResultsUpdater = searchResultsController
+        self.searchController?.delegate = self
+        self.definesPresentationContext = true
     }
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
@@ -355,6 +371,8 @@ extension MBArticlesViewController {
         if section == 0 {
             header.setSearchVisible(isVisible: true)
             header.setText("Mockingbird")
+            header.delegate = self
+            self.searchBarHolder = header
         } else {
             header.setSearchVisible(isVisible: false)
             header.setText(self.topLevelCategories[section - 1])
@@ -397,13 +415,19 @@ extension MBArticlesViewController {
         }
     }
     
+    // MARK: - UISearchControllerDelegate
+    func didDismissSearchController(_ searchController: UISearchController) {
+        print("DID DISMISS")
+        self.searchBarHolder?.removeSearchBar()
+    }
+    
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if rowTypeForPath(indexPath) == .categoryFooter {
             let selectedCategory = topLevelCategories[indexPath.section - 1]
             MBStore.sharedStore.dispatch(ShowMoreArticles(topLevelCategory: selectedCategory))
         } else if let article = articleForPath(indexPath) {
-            let action = SelectedArticle(article: article)
+            let action = SelectedArticle(article: article.toDomain())
             MBStore.sharedStore.dispatch(action)
         }
     }
@@ -417,5 +441,10 @@ extension MBArticlesViewController {
         case .categoryFooter:
             return 86.0
         }
+    }
+    
+    // MARK: HeaderViewDelegate
+    func searchTapped(sender: SectionHeaderView) -> UISearchBar? {
+        return self.searchController?.searchBar
     }
 }

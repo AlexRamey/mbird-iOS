@@ -66,4 +66,8 @@ public class MBCategory: NSManagedObject {
             return self.parent?.getTopLevelCategory() ?? nil
         }
     }
+    
+    func toDomain() -> Category {
+        return Category(id: Int(self.categoryID), name: self.name ?? "", parentId: Int(self.parentID))
+    }
 }

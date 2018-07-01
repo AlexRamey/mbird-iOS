@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import PromiseKit
 
-class MBArticlesStore: NSObject {
+class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     private let client: MBClient
     private let managedObjectContext: NSManagedObjectContext
     
@@ -19,6 +19,43 @@ class MBArticlesStore: NSObject {
         self.managedObjectContext = context
         
         super.init()
+    }
+    
+    /***** Author DAO *****/
+    func getAuthorById(_ id: Int) -> Author? {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
+        fetchRequest.predicate = NSPredicate(format: "authorID == %d", id)
+        if let results = performFetch(fetchRequest: fetchRequest) as? [MBAuthor] {
+            return results.first?.toDomain()
+        }
+        return nil
+    }
+    
+    /***** Category DAO *****/
+    func getCategoriesById(_ ids: [Int]) -> [Category] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
+        fetchRequest.predicate = NSPredicate(format: "ANY categoryID in %@", ids)
+        if let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] {
+            return results.map { $0.toDomain() }
+        }
+        return []
+    }
+    
+    /***** Article DAO *****/
+    func saveArticle(_ article: Article) -> Error? {
+        guard let _ = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
+            return NSError(domain: "CD Adapter", code: 0, userInfo: nil)
+        }
+        
+        var err: Error?
+        self.managedObjectContext.performAndWait {
+            do {
+                try self.managedObjectContext.save()
+            } catch {
+                err = error
+            }
+        }
+        return err
     }
     
     /***** Read from Core Data *****/
@@ -105,12 +142,12 @@ class MBArticlesStore: NSObject {
     }
     
     func downloadImageURLsForArticle(_ article: MBArticle, withCompletion completion: @escaping (URL?) -> Void) {
-        self.client.getImageURLs(imageID: Int(article.imageID)) { links in
+        self.client.getImageById(Int(article.imageID)) { image in
             if let context = article.managedObjectContext {
                 context.perform {
                     do {
-                        article.thumbnailLink = links?[0]
-                        article.imageLink = links?[1]
+                        article.thumbnailLink = image?.thumbnailUrl?.absoluteString
+                        article.imageLink = image?.thumbnailUrl?.absoluteString
                         try context.save()
                         if let imageLink = article.thumbnailLink ?? article.imageLink,
                             let url = URL(string: imageLink) {
@@ -134,10 +171,10 @@ class MBArticlesStore: NSObject {
         self.managedObjectContext.perform {
             articles.forEach { (article) in
                 if (article.imageID > 0) && (article.imageLink == nil) {
-                    self.client.getImageURLs(imageID: Int(article.imageID), completion: { (links) in
+                    self.client.getImageById(Int(article.imageID), completion: { (image) in
                         self.managedObjectContext.perform {
-                            article.thumbnailLink = links?[0]
-                            article.imageLink = links?[1]
+                            article.thumbnailLink = image?.thumbnailUrl?.absoluteString
+                            article.imageLink = image?.thumbnailUrl?.absoluteString
                             do {
                                 try self.managedObjectContext.save()
                             } catch {

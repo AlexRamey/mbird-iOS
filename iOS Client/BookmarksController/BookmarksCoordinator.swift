@@ -17,6 +17,7 @@ class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber, SafariDispla
     var tab: Tab = .bookmarks
     var overlay: URL?
     let managedObjectContext: NSManagedObjectContext
+    var articleDAO: ArticleDAO?
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -28,6 +29,7 @@ class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber, SafariDispla
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
+        self.articleDAO = MBArticlesStore(context: managedObjectContext)
         super.init()
     }
     

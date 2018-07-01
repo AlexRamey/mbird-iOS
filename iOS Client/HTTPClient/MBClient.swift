@@ -12,6 +12,7 @@ import PromiseKit
 
 class MBClient: NSObject {
     private let session: URLSession
+    private let decoder = JSONDecoder()
     
     // Endpoints
     private let baseURL = "http://www.mbird.com/wp-json/wp/v2"
@@ -98,16 +99,45 @@ class MBClient: NSObject {
         getDataFromURL(url, withCompletion: completion)
     }
     
-    // todo: leverage this to support search
-    func searchArticlesWithCompletion(query: String, completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=10&search=\(query)"
-        guard let url = URL(string: urlString) else {
-            completion([], NetworkRequestError.invalidURL(url: urlString))
+    func searchArticlesWithCompletion(query: String, completion: @escaping ([Article], Error?) -> Void ) {
+        let scheme = "http"
+        let host = "www.mbird.com"
+        let path = "/wp-json/wp/v2/posts"
+        let queryItemPerPage = URLQueryItem(name: "per_page", value: "10")
+        let queryItemSearch = URLQueryItem(name: "search", value: query)
+        
+        var urlComponents = URLComponents()
+        urlComponents.scheme = scheme
+        urlComponents.host = host
+        urlComponents.path = path
+        urlComponents.queryItems = [queryItemPerPage, queryItemSearch]
+        
+        guard let url = urlComponents.url else {
+            completion([], NetworkRequestError.invalidURL(url: urlComponents.string ?? ""))
             return
         }
         
-        print("firing getArticles request")
-        getDataFromURL(url, withCompletion: completion)
+        getDataFromURL(url) { (data, err) in
+            guard let payload = data.first, err == nil else {
+                completion([], err)
+                return
+            }
+            
+            var articles: [ArticleDTO] = []
+            do {
+                articles = try self.decoder.decode([ArticleDTO].self, from: payload)
+            } catch {
+                print(error)
+                completion([], error)
+                return
+            }
+            
+            let domainArticles = articles.map({ (dto) -> Article in
+                return dto.toDomain()
+            })
+            
+            completion(domainArticles, nil)
+        }
     }
     
     private func getDataFromURL(_ url: URL, withCompletion completion: @escaping ([Data], Error?) -> Void ) {
@@ -199,54 +229,6 @@ class MBClient: NSObject {
             print(error.localizedDescription)
             completion(nil, NetworkRequestError.badResponse(status: 404))
         }
-    }
-
-    func getImageURLs(imageID: Int, completion: @escaping ([String?]?) -> Void) {
-        let urlString = "\(baseURL)\(mediaEndpoint)/\(imageID)"
-        guard let url = URL(string: urlString) else {
-            completion(nil)
-            return
-        }
-        
-        print("firing get media url request: \(imageID)")
-        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
-            guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
-                completion(nil)
-                return
-            }
-            
-            // Process Data
-            guard let mediaData = data else {
-                completion(nil)
-                return
-            }
-            
-            var json: Any
-            do {
-                json = try JSONSerialization.jsonObject(with: mediaData, options: .allowFragments)
-            } catch let error as NSError {
-                print("Could not get media object. \(error), \(error.userInfo)")
-                completion(nil)
-                return
-            }
-            
-            // keypaths for the image urls
-            let keyPaths: [String] = [
-                "media_details.sizes.thumbnail.source_url",
-                "media_details.sizes.full.source_url"
-            ]
-            
-            guard let arr = json as? NSDictionary else {
-                completion(nil)
-                return
-            }
-            
-            let imageLinks = keyPaths.map({ (keyPath) -> String? in
-                return arr.value(forKeyPath: keyPath) as? String
-            })
-            
-            completion(imageLinks)
-        }.resume()
     }
     
     private func pagingHandler(url: String, data: Data?, resp: URLResponse?, err: Error?, completion: @escaping ([Data], Error?) -> Void) {
@@ -347,5 +329,86 @@ class MBClient: NSObject {
         }
         
         return true
+    }
+}
+
+extension MBClient: ImageDAO {
+    func getImagesById(_ ids: [Int], completion: @escaping ([Image]) -> Void) {
+        guard ids.count > 0 else {
+            completion([])
+            return
+        }
+        
+        let serialQueue = DispatchQueue(label: "imageProcessor")
+        
+        var jobCount = ids.count
+        var results: [Image] = []
+        
+        ids.forEach { (id) in
+            self.getImageById(id, completion: { (image) in
+                serialQueue.async {
+                    if let image = image {
+                        results.append(image)
+                    }
+                    jobCount -= 1
+                    if jobCount == 0 {
+                        completion(results)
+                    }
+                }
+            })
+        }
+    }
+    
+    func getImageById(_ id: Int, completion: @escaping (Image?) -> Void) {
+        let urlString = "\(baseURL)\(mediaEndpoint)/\(id)"
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
+        print("firing get media url request: \(id)")
+        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+            guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
+                completion(nil)
+                return
+            }
+            
+            // Process Data
+            guard let mediaData = data else {
+                completion(nil)
+                return
+            }
+            
+            var json: Any
+            do {
+                json = try JSONSerialization.jsonObject(with: mediaData, options: .allowFragments)
+            } catch let error as NSError {
+                print("Could not get media object. \(error), \(error.userInfo)")
+                completion(nil)
+                return
+            }
+            
+            // keypaths for the image urls
+            let keyPaths: [String] = [
+                "media_details.sizes.thumbnail.source_url",
+                "media_details.sizes.full.source_url"
+            ]
+            
+            guard let arr = json as? NSDictionary else {
+                completion(nil)
+                return
+            }
+            var thumbnailURL: URL? = nil
+            if let thumbURL = arr.value(forKeyPath: keyPaths[0]) as? String {
+                thumbnailURL = URL(string: thumbURL)
+            }
+            
+            var imageURL: URL? = nil
+            if let imgURL = arr.value(forKeyPath: keyPaths[1]) as? String {
+                imageURL = URL(string: imgURL)
+            }
+            
+            completion(Image(id: id, thumbnailUrl: thumbnailURL , imageUrl: imageURL))
+            }.resume()
     }
 }

@@ -25,14 +25,12 @@ struct LoadedArticles: Action {
 }
 
 struct SelectedArticle: Action {
-    var article: MBArticle
+    var article: Article
 }
 
 struct ShowMoreArticles: Action {
     var topLevelCategory: String
 }
-
-struct SearchArticles: Action {}
 
 struct PopCurrentNavigation: Action {
 }

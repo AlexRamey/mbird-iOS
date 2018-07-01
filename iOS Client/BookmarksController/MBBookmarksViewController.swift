@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import Nuke
 
 class MBBookmarksViewController: UIViewController {
     
@@ -64,7 +65,11 @@ class MBBookmarksViewController: UIViewController {
 extension MBBookmarksViewController {
     func configure(cell: UITableViewCell, for indexPath: IndexPath) {
         if let bookmarkCell = cell as? BookmarkCell {
-            bookmarkCell.configure(article: fetchedResultsController.object(at: indexPath), withQueue: imageMakerQueue)
+            let article = fetchedResultsController.object(at: indexPath)
+            bookmarkCell.configure(article: article)
+            if let link = article.imageLink, let url = URL(string: link) {
+                Manager.shared.loadImage(with: url, into: bookmarkCell.coverImageView)
+            }
         }
     }
 }
@@ -141,7 +146,7 @@ extension MBBookmarksViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = fetchedResultsController.object(at: indexPath)
-        let action = SelectedArticle(article: selectedArticle)
+        let action = SelectedArticle(article: selectedArticle.toDomain())
         MBStore.sharedStore.dispatch(action)
     }
 }

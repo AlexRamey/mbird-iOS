@@ -18,6 +18,8 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     var tab: Tab = .articles
     var overlay: URL?
     let managedObjectContext: NSManagedObjectContext
+    var articleDAO: ArticleDAO?
+    
     private lazy var articlesStore = {
        return MBArticlesStore(context: self.managedObjectContext)
     }()
@@ -32,6 +34,7 @@ class ArticlesCoordinator: NSObject, Coordinator, StoreSubscriber, UINavigationC
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
+        self.articleDAO = MBArticlesStore(context: managedObjectContext)
         super.init()
     }
     

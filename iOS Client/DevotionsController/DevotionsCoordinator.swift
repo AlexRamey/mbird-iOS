@@ -16,6 +16,7 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     var childCoordinators: [Coordinator] = []
     var devotionsStore = MBDevotionsStore()
     let scheduler: DevotionScheduler = Scheduler()
+    var articleDAO: ArticleDAO?
     
     var rootViewController: UIViewController {
         return self.navigationController
