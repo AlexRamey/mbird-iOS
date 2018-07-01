@@ -96,9 +96,8 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text, query != "" else {
-            self.spinner.stopAnimating()
-            self.results = []
-            self.tableView.reloadData()
+            self.setResults([])
+            self.tableView.backgroundView = nil
             return
         }
         
@@ -109,9 +108,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                 // don't issue a request if one is currently outstanding
                 return
             case .finished(let articles):
-                self.spinner.stopAnimating()
-                self.results = articles
-                self.tableView.reloadData()
+                self.setResults(articles)
                 return
             }
         }
@@ -123,8 +120,8 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                 DispatchQueue.main.async {
                     print("SEARCH ERROR: \(err.localizedDescription)")
                     if searchController.searchBar.text == query {
-                        // these results are relevant now!
-                        self.spinner.stopAnimating()
+                        // these are the relevant results
+                        self.setResults([])
                     }
                 }
                 return
@@ -148,12 +145,26 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                     self.resultsCache[query] = .finished(results: results)
                     if searchController.searchBar.text == query {
                         // these results are relevant now!
-                        self.spinner.stopAnimating()
-                        self.results = results
-                        self.tableView.reloadData()
+                        self.setResults(results)
                     }
                 }
             })
+        }
+    }
+    
+    private func setResults(_ results: [Article]) {
+        self.spinner.stopAnimating()
+        self.results = results
+        self.tableView.reloadData()
+        if self.results.count == 0 {
+            let screenWidth = UIScreen.main.bounds.width
+            let noResultsLabel = UILabel()
+            noResultsLabel.textAlignment = .center
+            noResultsLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 24.0)
+            noResultsLabel.text = "no search results"
+            self.tableView.backgroundView = noResultsLabel
+        } else {
+            self.tableView.backgroundView = nil
         }
     }
 
