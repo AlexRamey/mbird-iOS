@@ -34,7 +34,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     /***** Category DAO *****/
     func getCategoriesById(_ ids: [Int]) -> [Category] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
-        fetchRequest.predicate = NSPredicate(format: "ANY categoryID in %@", ids)
+        fetchRequest.predicate = NSPredicate(format: "categoryID in %@", ids)
         if let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] {
             return results.map { $0.toDomain() }
         }
