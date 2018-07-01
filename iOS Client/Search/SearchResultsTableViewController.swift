@@ -195,4 +195,10 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200.0
     }
+    
+    // MARK: - Table view delegate
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let action = SelectedArticle(article: self.results[indexPath.row])
+        MBStore.sharedStore.dispatch(action)
+    }
 }

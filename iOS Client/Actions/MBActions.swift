@@ -25,7 +25,7 @@ struct LoadedArticles: Action {
 }
 
 struct SelectedArticle: Action {
-    var article: MBArticle
+    var article: Article
 }
 
 struct ShowMoreArticles: Action {

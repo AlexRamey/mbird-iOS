@@ -30,7 +30,7 @@ enum RouteComponent: Equatable {
     }
  
     
-    func viewController(forTab tab: Tab) -> UIViewController? {
+    func viewController(forTab tab: Tab, dependency: ArticleDAO?) -> UIViewController? {
         var retVal: UIViewController?
         
         switch tab {
@@ -38,7 +38,7 @@ enum RouteComponent: Equatable {
             if case .base = self {
                 retVal = MBArticlesViewController.instantiateFromStoryboard()
             } else if case let .detail(detailItem) = self {
-                retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? MBArticle)
+                retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? Article, dao: dependency)
             } else if case .more = self {
                 retVal = ShowMoreViewController.instantiateFromStoryboard()
             }
@@ -46,7 +46,7 @@ enum RouteComponent: Equatable {
             if case .base = self {
                 retVal = MBBookmarksViewController.instantiateFromStoryboard()
             } else if case let .detail(detailItem) = self {
-                retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? MBArticle)
+                retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? Article, dao: dependency)
             }
         case .devotions:
             if case .base = self {

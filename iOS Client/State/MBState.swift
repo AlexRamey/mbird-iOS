@@ -33,12 +33,12 @@ struct MBNavigationState: NavigationState {
 /********** Article State *************/
 protocol ArticleState {
     var articles: Loaded<[MBArticle]> { get set }
-    var selectedArticle: MBArticle? { get set }
+    var selectedArticle: Article? { get set }
     var selectedCategory: String? { get set }
 }
 struct MBArticleState: ArticleState {
     var articles: Loaded<[MBArticle]> = .initial
-    var selectedArticle: MBArticle?
+    var selectedArticle: Article?
     var selectedCategory: String?
     
 }

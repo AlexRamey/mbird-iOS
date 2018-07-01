@@ -14,7 +14,7 @@ import MediaPlayer
 import PromiseKit
 
 class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastDetailViewControllerDelegate {
-    
+    var articleDAO: ArticleDAO?
     var childCoordinators: [Coordinator] = []
     var podcastDetailViewController: PodcastDetailViewController? {
         return navigationController.viewControllers.last as? PodcastDetailViewController

@@ -427,7 +427,7 @@ extension MBArticlesViewController {
             let selectedCategory = topLevelCategories[indexPath.section - 1]
             MBStore.sharedStore.dispatch(ShowMoreArticles(topLevelCategory: selectedCategory))
         } else if let article = articleForPath(indexPath) {
-            let action = SelectedArticle(article: article)
+            let action = SelectedArticle(article: article.toDomain())
             MBStore.sharedStore.dispatch(action)
         }
     }

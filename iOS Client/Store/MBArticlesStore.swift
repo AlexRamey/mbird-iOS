@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import PromiseKit
 
-class MBArticlesStore: NSObject, AuthorDAO, CategoryDAO {
+class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     private let client: MBClient
     private let managedObjectContext: NSManagedObjectContext
     
@@ -39,6 +39,23 @@ class MBArticlesStore: NSObject, AuthorDAO, CategoryDAO {
             return results.map { $0.toDomain() }
         }
         return []
+    }
+    
+    /***** Article DAO *****/
+    func saveArticle(_ article: Article) -> Error? {
+        guard let _ = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
+            return NSError(domain: "CD Adapter", code: 0, userInfo: nil)
+        }
+        
+        var err: Error?
+        self.managedObjectContext.performAndWait {
+            do {
+                try self.managedObjectContext.save()
+            } catch {
+                err = error
+            }
+        }
+        return err
     }
     
     /***** Read from Core Data *****/

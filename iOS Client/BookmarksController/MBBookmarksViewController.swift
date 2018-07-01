@@ -141,7 +141,7 @@ extension MBBookmarksViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = fetchedResultsController.object(at: indexPath)
-        let action = SelectedArticle(article: selectedArticle)
+        let action = SelectedArticle(article: selectedArticle.toDomain())
         MBStore.sharedStore.dispatch(action)
     }
 }

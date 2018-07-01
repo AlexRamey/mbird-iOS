@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Article {
+struct Article: Detailable {
     var id: Int
     var date: String
     var link: String
@@ -20,6 +20,7 @@ struct Article {
     var content: String
     var categoryIds: [Int]
     var categories: [Category]
+    var isBookmarked: Bool
     
     mutating func resolveAuthor(dao: AuthorDAO) {
         self.author  = dao.getAuthorById(authorId)
@@ -28,4 +29,8 @@ struct Article {
     mutating func resolveCategories(dao: CategoryDAO) {
         self.categories = dao.getCategoriesById(self.categoryIds)
     }
+}
+
+protocol ArticleDAO {
+    func saveArticle(_ article: Article) -> Error?
 }
