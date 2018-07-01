@@ -17,6 +17,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     let reuseIdentifier = "searchResultCellReuseIdentifier"
     var searchBar: UISearchBar?
     var store: MBArticlesStore!
+    var debouncedSearch: Debouncer!
     
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
@@ -34,7 +35,13 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     
     static func instantiateFromStoryboard() -> SearchResultsTableViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleSearchResultsVC") as! SearchResultsTableViewController
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleSearchResultsVC") as! SearchResultsTableViewController
+        vc.debouncedSearch = Debouncer(delay: 1.0, callback: { (searchController) in
+            DispatchQueue.main.async {
+                vc.doSearch(for: searchController)
+            }
+        })
+        return vc
         // swiftlint:enable force_cast
     }
     
@@ -43,7 +50,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         self.view.backgroundColor = UIColor.white
         self.tableView.tableFooterView = UIView()
         self.tableView.rowHeight = UITableViewAutomaticDimension
-        
+
         self.tableView.register(UINib(nibName: "SearchResultTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
         
         if let searchBar = self.searchBar {
@@ -92,9 +99,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         controller?.enabled = false
     }
     
-    // MARK: - UI Search Results Updating
-    
-    func updateSearchResults(for searchController: UISearchController) {
+    func doSearch(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text, query != "" else {
             self.setResults([])
             self.tableView.backgroundView = nil
@@ -166,6 +171,11 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         } else {
             self.tableView.backgroundView = nil
         }
+    }
+    
+    // MARK: - UI Search Results Updating
+    func updateSearchResults(for searchController: UISearchController) {
+        self.debouncedSearch.call(searchController: searchController)
     }
 
     // MARK: - Table view data source
