@@ -17,7 +17,6 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var calendarView: CVCalendarView!
-    @IBOutlet weak var stackView: UIStackView!
     
     let devotionsStore = MBDevotionsStore()
     var devotions: [LoadedDevotion] = []
