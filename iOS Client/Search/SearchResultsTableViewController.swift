@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Nuke
+import Preheat
 
 class SearchResultsTableViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
     
@@ -14,6 +16,9 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     let reuseIdentifier = "searchResultCellReuseIdentifier"
     var searchBar: UISearchBar?
     var store: MBArticlesStore!
+    
+    let preheater = Nuke.Preheater()
+    var controller: Preheat.Controller<UITableView>?
     
     enum SearchOperation {
         case inProgress
@@ -36,12 +41,39 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         self.tableView.tableFooterView = UIView()
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        
         self.tableView.register(UINib(nibName: "SearchResultTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
         
         if let searchBar = self.searchBar {
             self.automaticallyAdjustsScrollViewInsets = false
             self.tableView.contentInset = UIEdgeInsets(top: searchBar.frame.size.height, left: 0.0, bottom: 0.0, right: 0.0)
         }
+        
+        controller = Preheat.Controller(view: self.tableView)
+        controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
+            self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
+        }
+    }
+    
+    func preheat(added: [IndexPath], removed: [IndexPath]) {
+        func requests(for indexPaths: [IndexPath]) -> [Request] {
+            return indexPaths.compactMap({ (indexPath) -> Request? in
+                guard self.results.count > indexPath.row else {
+                    return nil
+                }
+                let article = self.results[indexPath.row]
+                if let url = article.image?.thumbnailUrl ?? article.image?.imageUrl {
+                    var request = Request(url: url)
+                    request.priority = .low
+                    return request
+                }
+                return nil
+            })
+        }
+        
+        preheater.startPreheating(with: requests(for: added))
+        preheater.stopPreheating(with: requests(for: removed))
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,8 +81,14 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        controller?.enabled = true
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        controller?.enabled = false
     }
     
     // MARK: - UI Search Results Updating
@@ -117,10 +155,21 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as? SearchResultTableViewCell else {
+            return UITableViewCell()
+        }
 
         // Configure the cell...
-        cell.textLabel?.text = self.results[indexPath.row].title
+        let article = self.results[indexPath.row]
+        cell.setTitle(article.title.convertHtml())
+        cell.thumbnailImage.image = nil
+        if let url = article.image?.thumbnailUrl ?? article.image?.imageUrl {
+            Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
+        }
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 200.0
     }
 }
