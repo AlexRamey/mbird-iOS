@@ -62,6 +62,25 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: Notification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: Notification.Name.UIKeyboardWillShow, object: nil)
+    }
+    
+    @objc func keyboardWillAppear(_ notification: Notification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            self.tableView.contentInset.bottom = keyboardFrame.cgRectValue.height
+        }
+    }
+    
+    @objc func keyboardWillDisappear() {
+        UIView.animate(withDuration: 0.5) {
+            self.tableView.contentInset.bottom = 0.0
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
