@@ -51,3 +51,7 @@ class PodcastTableViewCell: UITableViewCell {
         delegate?.downloadPodcast(url: guid, title: title)
     }
 }
+
+protocol PodcastDownloadingDelegate: class {
+    func downloadPodcast(url: String, title: String)
+}

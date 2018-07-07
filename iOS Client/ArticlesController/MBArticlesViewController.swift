@@ -42,6 +42,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
     var searchBarHolder: SearchBarHolder?
+    weak var delegate: ArticlesTableViewDelegate?
+    weak var showMoreDelegate: ShowMoreArticlesDelegate?
     
     // dependencies
     let client: MBClient = MBClient()
@@ -116,6 +118,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         let searchResultsController = SearchResultsTableViewController.instantiateFromStoryboard()
+        searchResultsController.delegate = self.delegate
         self.searchController = UISearchController(searchResultsController: searchResultsController)
         self.searchController?.hidesNavigationBarDuringPresentation = false
         self.searchController?.dimsBackgroundDuringPresentation = false
@@ -424,11 +427,14 @@ extension MBArticlesViewController {
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if rowTypeForPath(indexPath) == .categoryFooter {
-            let selectedCategory = topLevelCategories[indexPath.section - 1]
-            MBStore.sharedStore.dispatch(ShowMoreArticles(topLevelCategory: selectedCategory))
+            if let showMoreDelegate = self.showMoreDelegate {
+                let selectedCategory = topLevelCategories[indexPath.section - 1]
+                showMoreDelegate.showMoreArticlesForCategory(selectedCategory)
+            }
         } else if let article = articleForPath(indexPath) {
-            let action = SelectedArticle(article: article.toDomain())
-            MBStore.sharedStore.dispatch(action)
+            if let delegate = self.delegate {
+                delegate.selectedArticle(article.toDomain())
+            }
         }
     }
     
@@ -447,4 +453,12 @@ extension MBArticlesViewController {
     func searchTapped(sender: SectionHeaderView) -> UISearchBar? {
         return self.searchController?.searchBar
     }
+}
+
+protocol ArticlesTableViewDelegate: class {
+    func selectedArticle(_ article: Article)
+}
+
+protocol ShowMoreArticlesDelegate: class {
+    func showMoreArticlesForCategory(_ category: String)
 }

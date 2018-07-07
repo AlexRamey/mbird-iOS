@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Article: Detailable {
+struct Article {
     var id: Int
     var date: String
     var link: String

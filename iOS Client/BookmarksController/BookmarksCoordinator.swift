@@ -11,10 +11,8 @@ import CoreData
 import ReSwift
 import SafariServices
 
-class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber, SafariDisplayer, SFSafariViewControllerDelegate {
+class BookmarksCoordinator: NSObject, Coordinator, ArticlesTableViewDelegate, ArticleDetailDelegate, SFSafariViewControllerDelegate {
     var childCoordinators: [Coordinator] = []
-    var route: [RouteComponent] = [.base]
-    var tab: Tab = .bookmarks
     var overlay: URL?
     let managedObjectContext: NSManagedObjectContext
     var articleDAO: ArticleDAO?
@@ -37,24 +35,26 @@ class BookmarksCoordinator: NSObject, Coordinator, StoreSubscriber, SafariDispla
     func start() {
         let bookmarksController = MBBookmarksViewController.instantiateFromStoryboard()
         bookmarksController.managedObjectContext = self.managedObjectContext
+        bookmarksController.delegate = self
         self.navigationController.pushViewController(bookmarksController, animated: true)
-        MBStore.sharedStore.subscribe(self)
     }
     
-    // MARK: - StoreSubscriber
-    
-    func newState(state: MBAppState) {
-        guard state.navigationState.selectedTab == .bookmarks, let newRoute = state.navigationState.routes[.bookmarks] else {
-            return
-        }
-        build(newRoute: newRoute)
-        route = newRoute
-        
-        self.displaySafariVC(forURL: state.navigationState.safariOverlays[.bookmarks].flatMap {return $0}, withDelegate: self)
+    // MARK: - Bookmarks Table View Delegate
+    func selectedArticle(_ article: Article) {
+        let articleDetailVC = MBArticleDetailViewController.instantiateFromStoryboard(article: article, dao: self.articleDAO)
+        articleDetailVC.delegate = self
+        self.navigationController.pushViewController(articleDetailVC, animated: true)
     }
     
-    // MARK: - SafariViewControllerDelegate
+    // MARK: - Article Detail Delegate
+    func selectedURL(url: URL) {
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.delegate = self
+        self.navigationController.pushViewController(safariVC, animated: true)
+    }
+    
+    // MARK: = SF Safari View Controller Delegate
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        MBStore.sharedStore.dispatch(SelectedArticleLink(url: nil))
+        self.navigationController.dismiss(animated: true, completion: nil)
     }
 }

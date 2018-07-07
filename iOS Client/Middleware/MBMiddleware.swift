@@ -9,7 +9,6 @@
 import ReSwift
 
 struct MiddlewareFactory {
-    
     // Logging Middleware
     static let loggingMiddleware: Middleware<MBAppState> = { dispatch, getState in
         return { next in
@@ -18,26 +17,6 @@ struct MiddlewareFactory {
                 print("ACTION: \(type(of: action))")
                 
                 // call next middleware
-                return next(action)
-            }
-        }
-    }
-    
-    // Next Middleware . . .
-    static let saveDevotionMiddleware: Middleware<MBAppState> = { dispatch, getState in
-        return { next in
-            return { action in
-                if let selectedDevotionAction = action as? SelectedDevotion {
-                    do {
-                        print("saving devotion!")
-                        var devotion = selectedDevotionAction.devotion
-                        devotion.read = true
-                        try MBDevotionsStore().replace(devotion: devotion)
-                    } catch {
-                        print("Error marking devotion as read")
-                        // don't return here, saving is just best-effort
-                    }
-                }
                 return next(action)
             }
         }

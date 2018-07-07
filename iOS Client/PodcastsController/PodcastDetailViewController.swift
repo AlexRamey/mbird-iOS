@@ -153,3 +153,8 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         durationSlider.setValue(Float(current/validTime), animated: true)
     }
 }
+
+
+protocol PodcastDetailViewControllerDelegate: class {
+    func seek(to second: Double)
+}

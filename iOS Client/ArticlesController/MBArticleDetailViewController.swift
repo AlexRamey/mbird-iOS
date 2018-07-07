@@ -15,6 +15,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
     var selectedArticle: Article?
     var articleDAO: ArticleDAO?
+    weak var delegate: ArticleDetailDelegate?
     
     static func instantiateFromStoryboard(article: Article?, dao: ArticleDAO?) -> MBArticleDetailViewController {
         // swiftlint:disable force_cast
@@ -34,7 +35,6 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         view = webView
         
         configureWebView()
-        configureBackButton()
         configureRightBarButtons()
         
         NotificationCenter.default.addObserver(self,
@@ -89,21 +89,13 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         }
     }
     
-    func configureBackButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backToArticles(sender:)))
-    }
-    
-    @objc func backToArticles(sender: AnyObject) {
-        MBStore.sharedStore.dispatch(PopCurrentNavigation())
-    }
-    
     func configureRightBarButtons() {
         let bookmarkItem = UIBarButtonItem(image: UIImage(named: "bookmark-item"), style: .plain, target: self, action: #selector(self.bookmarkArticle(sender:)))
         
         let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
         
         var items = [shareItem]
-        if self.tabBarController?.selectedIndex != Tab.bookmarks.rawValue {
+        if self.tabBarController?.selectedIndex != 1 {
             // if not on bookmarks tab, show bookmark item
             items.append(bookmarkItem)
         }
@@ -171,10 +163,16 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let dstURL = navigationAction.request.url,
             navigationAction.navigationType == .linkActivated {
-            MBStore.sharedStore.dispatch(SelectedArticleLink(url: dstURL))
             decisionHandler(.cancel) // we're handling it manually
+            if let delegate = self.delegate {
+                delegate.selectedURL(url: dstURL)
+            }
         } else {
             decisionHandler(.allow)
         }
     }
+}
+
+protocol ArticleDetailDelegate: class {
+    func selectedURL(url: URL)
 }

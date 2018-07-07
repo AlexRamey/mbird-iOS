@@ -31,10 +31,6 @@ func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
         }
     case let action as LoadedArticles:
         nextState.articles = action.articles
-    case let action as SelectedArticle:
-        nextState.selectedArticle = action.article
-    case let action as ShowMoreArticles:
-        nextState.selectedCategory = action.topLevelCategory
     default:
         break
     }
@@ -47,9 +43,6 @@ func devotionReducer(action: Action, state: DevotionState?) -> DevotionState {
     switch action {
     case let action as LoadedDevotions:
         nextState.devotions = action.devotions
-    case let action as SelectedDevotion:
-        nextState.selectedDevotion = action.devotion
-        nextState.mark(devotion: action.devotion, asRead: true)
     default:
         break
     }
@@ -61,9 +54,6 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
     switch action {
     case let action as LoadedPodcasts:
         nextState.podcasts = action.podcasts
-    case let action as SelectedPodcast:
-        nextState.selectedPodcast = action.podcast
-        nextState.player = .playing
     case _ as FinishedPodcast:
         nextState.player = .finished
     case _ as PodcastError:

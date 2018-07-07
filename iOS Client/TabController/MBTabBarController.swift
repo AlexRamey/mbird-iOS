@@ -9,8 +9,7 @@
 import ReSwift
 import UIKit
 
-class MBTabBarController: UITabBarController, StoreSubscriber {
-    
+class MBTabBarController: UITabBarController, StoreSubscriber, PodcastTableViewDelegate {
     var playPauseView: PlayPauseView!
     var playerState: PlayerState = .initialized
     
@@ -71,14 +70,7 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         // Dispose of any resources that can be recreated.
     }
     
-    func select(tab: Tab) {
-        self.selectedIndex = tab.rawValue
-    }
-    
     func newState(state: MBAppState) {
-        if let podImageName = state.podcastsState.selectedPodcast?.image {
-            playPauseView.image.image = UIImage(named: podImageName)
-        }
         var shouldShowPlayPause = false
         switch state.podcastsState.player {
         case .initialized:
@@ -88,16 +80,15 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
             shouldShowPlayPause = true
         case .playing:
             playPauseView.toggleButton.setImage(UIImage(named: "pause-bars"), for: .normal)
-            playPauseView.titleLabel.text = state.podcastsState.selectedPodcast?.title
             shouldShowPlayPause = true
         case .finished:
             shouldShowPlayPause = false
         }
         playerState = state.podcastsState.player
-        if state.navigationState.selectedTab == .podcasts,
-            let routes = state.navigationState.routes[.podcasts],
-            let topRoute = routes.last,
-            case .detail = topRoute {
+        
+        if self.selectedIndex == 3,
+            let navigationController = self.viewControllers?.last as? UINavigationController,
+            let _ = navigationController.topViewController as? PodcastDetailViewController {
             playPauseView?.isHidden = true
         } else if shouldShowPlayPause {
             playPauseView?.isHidden = false
@@ -105,5 +96,14 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
             playPauseView?.isHidden = true
         }
     }
-
+    
+    // MARK: PodcastTableViewDelegate
+    func didSelectPodcast(_ podcast: Podcast) {
+        playPauseView.image.image = UIImage(named: podcast.image)
+        playPauseView.titleLabel.text = podcast.title
+    }
+    
+    func filterPodcasts() {
+        // do nothing
+    }
 }

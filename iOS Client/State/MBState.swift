@@ -11,13 +11,9 @@ import ReSwift
 /********** Article State *************/
 protocol ArticleState {
     var articles: Loaded<[MBArticle]> { get set }
-    var selectedArticle: Article? { get set }
-    var selectedCategory: String? { get set }
 }
 struct MBArticleState: ArticleState {
     var articles: Loaded<[MBArticle]> = .initial
-    var selectedArticle: Article?
-    var selectedCategory: String?
     
 }
 /**************************************/
@@ -25,28 +21,15 @@ struct MBArticleState: ArticleState {
 /********** Devotion State *************/
 protocol DevotionState {
     var devotions: Loaded<[LoadedDevotion]> { get set }
-    var selectedDevotion: LoadedDevotion? { get set }
-    mutating func mark(devotion: LoadedDevotion, asRead read: Bool)
 }
 struct MBDevotionState: DevotionState {
     var devotions: Loaded<[LoadedDevotion]> = .initial
-    var selectedDevotion: LoadedDevotion?
-    
-    mutating func mark(devotion: LoadedDevotion, asRead read: Bool) {
-        if case Loaded.loaded(data: var devotions) = self.devotions,
-        let index = devotions.index(where: { $0.date == devotion.date }) {
-            devotions[index].read = read
-            self.devotions = .loaded(data: devotions)
-        }
-    }
 }
 /**************************************/
-
 
 /********** Podcasts State *************/
 protocol PodcastsState {
     var podcasts: Loaded<[Podcast]> { get set }
-    var selectedPodcast: Podcast? { get set }
     var player: PlayerState { get set }
     var streams: [PodcastStream] { get set }
     var visibleStreams: Set<PodcastStream> { get set }
@@ -56,7 +39,6 @@ protocol PodcastsState {
 
 struct MBPodcastsState: PodcastsState {
     var podcasts: Loaded<[Podcast]> = .initial
-    var selectedPodcast: Podcast?
     var player: PlayerState = .initialized
     var visibleStreams: Set<PodcastStream> = Set<PodcastStream>()
     var streams: [PodcastStream] = []

@@ -127,6 +127,7 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
     }
 }
 
-protocol PodcastDownloadingDelegate: class {
-    func downloadPodcast(url: String, title: String)
+protocol PodcastTableViewDelegate: class {
+    func didSelectPodcast(_ podcast: Podcast)
+    func filterPodcasts()
 }

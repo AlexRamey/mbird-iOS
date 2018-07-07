@@ -19,6 +19,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     var podcastDetailViewController: PodcastDetailViewController? {
         return navigationController.viewControllers.last as? PodcastDetailViewController
     }
+    weak var delegate: PodcastTableViewDelegate?
     
     var rootViewController: UIViewController {
         return navigationController
@@ -33,6 +34,11 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     private lazy var navigationController: UINavigationController = {
         return UINavigationController()
     }()
+    
+    init(delegate: PodcastTableViewDelegate?){
+        self.delegate = delegate
+        super.init()
+    }
     
     func start() {
         let podcastsController = MBPodcastsViewController.instantiateFromStoryboard()
@@ -111,28 +117,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         case .initialized:
             break
         case .playing:
-            if let podcast = state.podcastsState.selectedPodcast,
-                let guid = podcast.guid {
-                
-                // Play if stored to disk, else fetch from network
-                if currentPlayingPodcast?.guid != guid,
-                    podcastsStore.conatainsSavedPodcast(podcast),
-                    let url = podcastsStore.getUrlFor(podcast: podcast) {
-                    let item = AVPlayerItem(url: url)
-                    player.replaceCurrentItem(with: item)
-                } else if currentPlayingPodcast?.guid != guid,
-                    let guid = podcast.guid,
-                    let url = URL(string: guid) {
-                    let item = AVPlayerItem(url: url)
-                    player.replaceCurrentItem(with: item)
-                }
-                self.setAudioSessionIsActive(true)
-                player.play()
-                self.configureNowPlayingInfo(podcast: podcast)
-                currentPlayingPodcast = state.podcastsState.selectedPodcast
-                timer?.invalidate()
-                timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
-            }
+            break
         case .paused, .error, .finished:
             timer?.invalidate()
             player.pause()
@@ -145,6 +130,29 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         return time.seconds
     }
     
+    private func playPodcast(_ podcast: Podcast) {
+        if let guid = podcast.guid {
+            // Play if stored to disk, else fetch from network
+            if currentPlayingPodcast?.guid != guid,
+                podcastsStore.conatainsSavedPodcast(podcast),
+                let url = podcastsStore.getUrlFor(podcast: podcast) {
+                let item = AVPlayerItem(url: url)
+                player.replaceCurrentItem(with: item)
+            } else if currentPlayingPodcast?.guid != guid,
+                let guid = podcast.guid,
+                let url = URL(string: guid) {
+                let item = AVPlayerItem(url: url)
+                player.replaceCurrentItem(with: item)
+            }
+            self.setAudioSessionIsActive(true)
+            player.play()
+            self.configureNowPlayingInfo(podcast: podcast)
+            currentPlayingPodcast = podcast
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateDuration(_:)), userInfo: nil, repeats: true)
+        }
+    }
+    
     // MARK: - PodcastDetailViewControllerDelegate
     func seek(to second: Double) {
         let time = CMTime(seconds: second, preferredTimescale: 1)
@@ -153,6 +161,10 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     
     // MARK: - PodcastTableViewDelegate
     func didSelectPodcast(_ podcast: Podcast) {
+        self.playPodcast(podcast)
+        if let delegate = self.delegate {
+            self.delegate?.didSelectPodcast(podcast)
+        }
         let detailViewController = PodcastDetailViewController.instantiateFromStoryboard(podcast: podcast)
         detailViewController.delegate = self
         self.navigationController.pushViewController(detailViewController, animated: true)
@@ -162,13 +174,4 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         let filterViewController = PodcastsFilterViewController.instantiateFromStoryboard()
         self.navigationController.pushViewController(filterViewController, animated: true)
     }
-}
-
-protocol PodcastDetailViewControllerDelegate: class {
-    func seek(to second: Double)
-}
-
-protocol PodcastTableViewDelegate: class {
-    func didSelectPodcast(_ podcast: Podcast)
-    func filterPodcasts()
 }

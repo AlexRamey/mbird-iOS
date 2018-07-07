@@ -9,14 +9,14 @@
 import Foundation
 
 
-struct MBDevotion: Codable, Detailable {
+struct MBDevotion: Codable {
     var date: String
     var text: String
     var verse: String
     var verseText: String
 }
 
-struct LoadedDevotion: Codable, Detailable, Equatable {
+struct LoadedDevotion: Codable, Equatable {
     var date: String
     var text: String
     var verse: String

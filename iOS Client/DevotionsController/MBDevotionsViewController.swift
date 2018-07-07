@@ -22,6 +22,7 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
     var devotions: [LoadedDevotion] = []
     var cellReusableId: String = "DevotionTableViewCell"
     var latestSelectedDate: CVDate?
+    weak var delegate: DevotionTableViewDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,7 +149,12 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
             calendarView.toggleViewWithDate(selectedDate)
         }
         
-        MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotions[indexPath.row]))
+        if let delegate = self.delegate {
+            devotions[indexPath.row].read = true
+            let devotion = devotions[indexPath.row]
+            try? self.devotionsStore.replace(devotion: devotion)
+            delegate.selectedDevotion(devotion)
+        }
     }
 }
 
@@ -203,5 +209,8 @@ extension MBDevotionsViewController: UIPopoverPresentationControllerDelegate {
     func prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
         popoverPresentationController.permittedArrowDirections = .any
     }
-    
+}
+
+protocol DevotionTableViewDelegate: class {
+    func selectedDevotion(_ devotion: LoadedDevotion)
 }
