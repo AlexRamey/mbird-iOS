@@ -34,14 +34,6 @@ enum RouteComponent: Equatable {
         var retVal: UIViewController?
         
         switch tab {
-        case .articles:
-            if case .base = self {
-                retVal = MBArticlesViewController.instantiateFromStoryboard()
-            } else if case let .detail(detailItem) = self {
-                retVal = MBArticleDetailViewController.instantiateFromStoryboard(article: detailItem as? Article, dao: dependency)
-            } else if case .more = self {
-                retVal = ShowMoreViewController.instantiateFromStoryboard()
-            }
         case .bookmarks:
             if case .base = self {
                 retVal = MBBookmarksViewController.instantiateFromStoryboard()
@@ -68,7 +60,7 @@ enum RouteComponent: Equatable {
 }
 
 enum Tab: Int {
-    case articles, bookmarks, devotions, podcasts
+    case bookmarks, devotions, podcasts
 }
 
 protocol Detailable {

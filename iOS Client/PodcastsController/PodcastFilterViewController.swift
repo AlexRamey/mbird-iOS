@@ -26,7 +26,6 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         tableView.estimatedRowHeight = 110
         tableView.tableFooterView = nil
         navigationItem.title = "Filter"
-        configureBackButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,13 +43,6 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastFilterViewController") as! PodcastsFilterViewController
         // swiftlint:enable force_cast
     }
-    func configureBackButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backToPodcasts(sender:)))
-    }
-    
-    @objc func backToPodcasts(sender: AnyObject) {
-        MBStore.sharedStore.dispatch(PopCurrentNavigation())
-    }
     
     func newState(state: MBAppState) {
         streams = state.podcastsState.streams
@@ -58,6 +50,7 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         
         tableView.reloadData()
     }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return streams.count
     }

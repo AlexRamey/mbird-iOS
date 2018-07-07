@@ -13,7 +13,7 @@ import AVKit
 import MediaPlayer
 import PromiseKit
 
-class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastDetailViewControllerDelegate {
+class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayerDelegate, PodcastDetailViewControllerDelegate, PodcastTableViewDelegate {
     var articleDAO: ArticleDAO?
     var childCoordinators: [Coordinator] = []
     var podcastDetailViewController: PodcastDetailViewController? {
@@ -23,9 +23,6 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     var rootViewController: UIViewController {
         return navigationController
     }
-    var route: [RouteComponent] = []
-    
-    var tab: Tab = .podcasts
     
     let podcastsStore = MBPodcastsStore()
     
@@ -39,8 +36,9 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
     
     func start() {
         let podcastsController = MBPodcastsViewController.instantiateFromStoryboard()
+        podcastsController.delegate = self
         navigationController.pushViewController(podcastsController, animated: true)
-        route = [.base]
+        
         self.configureRemoteCommandHandling()
         MBStore.sharedStore.subscribe(self)
         let saved = podcastsStore.getSavedPodcastsTitles()
@@ -140,16 +138,6 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
             player.pause()
             self.setAudioSessionIsActive(false)
         }
-        
-        // Handle changes in navigation state
-        guard state.navigationState.selectedTab == .podcasts, let newRoute = state.navigationState.routes[.podcasts] else {
-            return
-        }
-        build(newRoute: newRoute)
-        route = newRoute
-        if let podcastDetailVC = navigationController.viewControllers.last as? PodcastDetailViewController {
-            podcastDetailVC.delegate = self
-        }
     }
     
     func getCurrentDuration() -> Double {
@@ -157,12 +145,30 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         return time.seconds
     }
     
+    // MARK: - PodcastDetailViewControllerDelegate
     func seek(to second: Double) {
         let time = CMTime(seconds: second, preferredTimescale: 1)
         player.seek(to: time)
+    }
+    
+    // MARK: - PodcastTableViewDelegate
+    func didSelectPodcast(_ podcast: Podcast) {
+        let detailViewController = PodcastDetailViewController.instantiateFromStoryboard(podcast: podcast)
+        detailViewController.delegate = self
+        self.navigationController.pushViewController(detailViewController, animated: true)
+    }
+    
+    func filterPodcasts() {
+        let filterViewController = PodcastsFilterViewController.instantiateFromStoryboard()
+        self.navigationController.pushViewController(filterViewController, animated: true)
     }
 }
 
 protocol PodcastDetailViewControllerDelegate: class {
     func seek(to second: Double)
+}
+
+protocol PodcastTableViewDelegate: class {
+    func didSelectPodcast(_ podcast: Podcast)
+    func filterPodcasts()
 }

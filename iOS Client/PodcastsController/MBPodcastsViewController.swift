@@ -25,6 +25,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     let podcastStore = MBPodcastsStore()
     var savedPodcastTitles: Set<String>?
     var currentlyDownloadingTitles: Set<String>?
+    weak var delegate: PodcastTableViewDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +50,9 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     @objc func filter() {
-        MBStore.sharedStore.dispatch(FilterPodcasts())
+        if let delegate = self.delegate {
+            delegate.filterPodcasts()
+        }
     }
     
     // MARK: - UITableViewDataSource
@@ -83,7 +86,9 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        MBStore.sharedStore.dispatch(SelectedPodcast(podcast: podcasts[indexPath.row]))
+        if let delegate = self.delegate {
+            delegate.didSelectPodcast(podcasts[indexPath.row])
+        }
     }
     
     // MARK: - StoreSubscriber
@@ -122,6 +127,6 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
     }
 }
 
-protocol PodcastDownloadingDelegate {
+protocol PodcastDownloadingDelegate: class {
     func downloadPodcast(url: String, title: String)
 }

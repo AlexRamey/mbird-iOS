@@ -29,22 +29,34 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     
     weak var delegate: PodcastDetailViewControllerDelegate?
     var playerState: PlayerState?
+    var selectedPodcast: Podcast!
     var fullImageSize: CGFloat = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureBackButton()
+        
+        titleLabel.text = self.selectedPodcast.title
+        let imageName = self.selectedPodcast.image
+        imageView.image = UIImage(named: imageName)
+        backgroundImageView.image = UIImage(named: imageName)
+        self.navigationItem.title = selectedPodcast.feed.title
+        
         configureFormatter()
+        
         durationSlider.addTarget(self, action: #selector(onSeek(slider:event:)), for: .valueChanged)
         durationSlider.setValue(0.0, animated: false)
+        
         playerState = .initialized
+        
         // Sets the nav bar to be transparent
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
+        
         fullImageSize = view.bounds.height * 0.25
         self.imageWidthConstraint.constant = fullImageSize
         self.imageHeightConstraint.constant = fullImageSize
+        
         self.view.layoutIfNeeded()
     }
     
@@ -62,19 +74,11 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         MBStore.sharedStore.unsubscribe(self)
     }
     
-    func configureBackButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backToPodcasts(sender:)))
-    }
-    
     func configureFormatter() {
         timeFormatter = DateComponentsFormatter()
         timeFormatter?.unitsStyle = .positional
         timeFormatter?.allowedUnits = [ .hour, .minute, .second ]
         timeFormatter?.zeroFormattingBehavior = [ .pad ]
-    }
-    
-    @objc func backToPodcasts(sender: AnyObject) {
-        MBStore.sharedStore.dispatch(PopCurrentNavigation())
     }
 
     @IBAction func pressPlayPause(_ sender: Any) {
@@ -114,10 +118,12 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         }
     }
     
-    static func instantiateFromStoryboard() -> PodcastDetailViewController {
+    static func instantiateFromStoryboard(podcast: Podcast) -> PodcastDetailViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
+        let detailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
         // swiftlint:enable force_cast
+        detailVC.selectedPodcast = podcast
+        return detailVC
     }
     
     func newState(state: MBAppState) {
@@ -134,12 +140,6 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
             }
         }
         playerState = state.podcastsState.player
-        titleLabel.text = state.podcastsState.selectedPodcast?.title
-        if let imageName = state.podcastsState.selectedPodcast?.image {
-           imageView.image = UIImage(named: imageName)
-            backgroundImageView.image = UIImage(named: imageName)
-        }
-        self.navigationItem.title = state.podcastsState.selectedPodcast?.feed.title
     }
     
     func updateCurrentDuration(current: Double, total: Double ) {
