@@ -7,7 +7,7 @@ target 'iOS Client' do
 
   # Pods for iOS Client
   pod 'Nuke', '~> 6.1.0'
-  pod "Preheat", '~> 4.0.0'
+  pod 'Preheat', '~> 4.0.0'
   pod 'SwiftLint', '~> 0.25.0'
   pod 'PromiseKit', '~> 4.4.0'
   pod 'CVCalendar', '~> 1.6.0'

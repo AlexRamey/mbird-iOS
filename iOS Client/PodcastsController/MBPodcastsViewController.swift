@@ -43,6 +43,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 110
         
+        self.navigationController?.navigationBar.isTranslucent = true
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filter"), style: .done, target: self, action: #selector(MBPodcastsViewController.filter))
         
         self.savedPodcastTitles = self.podcastStore.getSavedPodcastsTitles()
@@ -74,7 +75,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         self.showPodcasts()
     }
     
@@ -132,6 +133,7 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
             }) {
                 self.currentlyDownloadingTitles.remove(at: idx)
             }
+            self.tableView.reloadData()
         }
     }
 }
