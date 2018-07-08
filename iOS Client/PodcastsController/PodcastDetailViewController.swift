@@ -46,6 +46,8 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clear
         
         fullImageSize = view.bounds.height * 0.25
         self.imageWidthConstraint.constant = fullImageSize
