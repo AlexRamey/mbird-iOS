@@ -132,6 +132,7 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
             }) {
                 self.currentlyDownloadingTitles.remove(at: idx)
             }
+            self.tableView.reloadData()
         }
     }
 }

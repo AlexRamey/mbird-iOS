@@ -48,6 +48,8 @@ class PodcastTableViewCell: UITableViewCell {
         guard let guid = self.guid, let title = title else {
             return
         }
+        self.activityIndicator.startAnimating()
+        self.addButton.isHidden = true
         delegate?.downloadPodcast(url: guid, title: title)
     }
 }
