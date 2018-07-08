@@ -34,7 +34,7 @@ class AppCoordinator: NSObject, Coordinator {
     
     // MARK: - Coordinator
     func start() {
-        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(managedObjectContext: self.managedObjectContext), DevotionsCoordinator(), PodcastsCoordinator(delegate: self.tabBarController)].map({(coord: Coordinator) -> UIViewController in
+        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(managedObjectContext: self.managedObjectContext), DevotionsCoordinator(), PodcastsCoordinator()].map({(coord: Coordinator) -> UIViewController in
             coord.start()
             self.addChildCoordinator(childCoordinator: coord)
             return coord.rootViewController

@@ -9,9 +9,8 @@
 import ReSwift
 import UIKit
 
-class MBTabBarController: UITabBarController, StoreSubscriber, PodcastTableViewDelegate {
+class MBTabBarController: UITabBarController {
     var playPauseView: PlayPauseView!
-    var playerState: PlayerState = .initialized
     
     static func instantiateFromStoryboard() -> MBTabBarController {
         // swiftlint:disable force_cast
@@ -41,11 +40,11 @@ class MBTabBarController: UITabBarController, StoreSubscriber, PodcastTableViewD
     }
     
     @objc func togglePlayPause(_ sender: UIButton) {
-        MBStore.sharedStore.dispatch(PlayPausePodcast())
+        // MBStore.sharedStore.dispatch(PlayPausePodcast())
     }
     
     @objc func cancelPodcast(_ sender: UIButton) {
-        MBStore.sharedStore.dispatch(FinishedPodcast())
+        // MBStore.sharedStore.dispatch(FinishedPodcast())
     }
     
     override func viewDidLoad() {
@@ -53,57 +52,36 @@ class MBTabBarController: UITabBarController, StoreSubscriber, PodcastTableViewD
         configurePlayPauseView()
         self.tabBar.tintColor = UIColor.MBSalmon
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        MBStore.sharedStore.subscribe(self)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
-
-    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    func newState(state: MBAppState) {
-        var shouldShowPlayPause = false
-        switch state.podcastsState.player {
-        case .initialized:
-            break
-        case .paused, .error:
-            playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
-            shouldShowPlayPause = true
-        case .playing:
-            playPauseView.toggleButton.setImage(UIImage(named: "pause-bars"), for: .normal)
-            shouldShowPlayPause = true
-        case .finished:
-            shouldShowPlayPause = false
-        }
-        playerState = state.podcastsState.player
-        
-        if self.selectedIndex == 3,
-            let navigationController = self.viewControllers?.last as? UINavigationController,
-            let _ = navigationController.topViewController as? PodcastDetailViewController {
-            playPauseView?.isHidden = true
-        } else if shouldShowPlayPause {
-            playPauseView?.isHidden = false
-        } else {
-            playPauseView?.isHidden = true
-        }
-    }
-    
-    // MARK: PodcastTableViewDelegate
-    func didSelectPodcast(_ podcast: Podcast) {
-        playPauseView.image.image = UIImage(named: podcast.image)
-        playPauseView.titleLabel.text = podcast.title
-    }
-    
-    func filterPodcasts() {
-        // do nothing
-    }
+//    func newState(state: MBAppState) {
+//        var shouldShowPlayPause = false
+//        switch state.podcastsState.player {
+//        case .initialized:
+//            break
+//        case .paused, .error:
+//            playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
+//            shouldShowPlayPause = true
+//        case .playing:
+//            playPauseView.toggleButton.setImage(UIImage(named: "pause-bars"), for: .normal)
+//            shouldShowPlayPause = true
+//        case .finished:
+//            shouldShowPlayPause = false
+//        }
+//        playerState = state.podcastsState.player
+//
+//        if self.selectedIndex == 3,
+//            let navigationController = self.viewControllers?.last as? UINavigationController,
+//            let _ = navigationController.topViewController as? PodcastDetailViewController {
+//            playPauseView?.isHidden = true
+//        } else if shouldShowPlayPause {
+//            playPauseView?.isHidden = false
+//        } else {
+//            playPauseView?.isHidden = true
+//        }
+//    }
 }

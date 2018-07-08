@@ -42,6 +42,8 @@
 		D026D8E020F1A81F00CDBF89 /* XMLParsingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DB20F1A81F00CDBF89 /* XMLParsingDelegate.swift */; };
 		D026D8E120F1A81F00CDBF89 /* MBArticlesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DC20F1A81F00CDBF89 /* MBArticlesStore.swift */; };
 		D026D8E220F1A81F00CDBF89 /* MBDevotionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DD20F1A81F00CDBF89 /* MBDevotionsStore.swift */; };
+		D026D8E420F24EBB00CDBF89 /* PodcastPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8E320F24EBB00CDBF89 /* PodcastPlayer.swift */; };
+		D026D8E620F25CD400CDBF89 /* WeakRef.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8E520F25CD400CDBF89 /* WeakRef.swift */; };
 		D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22961FDE15120024D0F6 /* CoreDataStack.swift */; };
 		D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */; };
 		D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363C1F7FE19400D4E674 /* Coordinator.swift */; };
@@ -128,6 +130,8 @@
 		D026D8DB20F1A81F00CDBF89 /* XMLParsingDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParsingDelegate.swift; sourceTree = "<group>"; };
 		D026D8DC20F1A81F00CDBF89 /* MBArticlesStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBArticlesStore.swift; sourceTree = "<group>"; };
 		D026D8DD20F1A81F00CDBF89 /* MBDevotionsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBDevotionsStore.swift; sourceTree = "<group>"; };
+		D026D8E320F24EBB00CDBF89 /* PodcastPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastPlayer.swift; sourceTree = "<group>"; };
+		D026D8E520F25CD400CDBF89 /* WeakRef.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakRef.swift; sourceTree = "<group>"; };
 		D02C22961FDE15120024D0F6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppCoordinator.swift; path = "iOS Client/TabController/AppCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
@@ -248,6 +252,8 @@
 			children = (
 				23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */,
 				23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */,
+				D026D8E320F24EBB00CDBF89 /* PodcastPlayer.swift */,
+				D026D8E520F25CD400CDBF89 /* WeakRef.swift */,
 				23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */,
 				23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */,
 				239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */,
@@ -661,6 +667,7 @@
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,
 				D05EF18820E08B3B0066BA3E /* SearchResultsTableViewController.swift in Sources */,
 				23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */,
+				D026D8E620F25CD400CDBF89 /* WeakRef.swift in Sources */,
 				D0EA55E52066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift in Sources */,
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
@@ -681,6 +688,7 @@
 				23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */,
 				239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */,
 				23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */,
+				D026D8E420F24EBB00CDBF89 /* PodcastPlayer.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
 				23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */,
 				D05EF18120E080470066BA3E /* Article.swift in Sources */,

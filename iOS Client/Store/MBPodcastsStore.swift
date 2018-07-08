@@ -14,6 +14,8 @@ protocol PodcastsRepository: class {
     func getStreams() -> [PodcastStream]
     func getVisibleStreams() -> [PodcastStream]
     func setStreamVisible(stream: PodcastStream, isVisible: Bool)
+    func containsSavedPodcast(_ podcast: Podcast) -> Bool
+    func getUrlFor(podcast: Podcast) -> URL?
 }
 
 class MBPodcastsStore: PodcastsRepository {
@@ -37,10 +39,10 @@ class MBPodcastsStore: PodcastsRepository {
         initializeFiles()
         
         // leverage the registration domain to create default stream visibility settings
-        let defaultStreamVisibilitySettings: [PodcastStream: Bool] = [.pz: true,
-                                                                      .mockingPulpit: true,
-                                                                      .mockingCast: true,
-                                                                      .talkingbird:true]
+        var defaultStreamVisibilitySettings: [String: Bool] = [:]
+        self.streams.forEach { (stream) in
+            defaultStreamVisibilitySettings[stream.rawValue] = true
+        }
         UserDefaults.standard.register(defaults: [streamVisibilityDefaultsKey: defaultStreamVisibilitySettings])
     }
     
@@ -111,26 +113,6 @@ class MBPodcastsStore: PodcastsRepository {
         }
     }
     
-    func containsSavedPodcast(_ podcast: Podcast) -> Bool {
-        guard let title = podcast.title else { return false }
-        do {
-            let isFilePresent = try fileHelper.fileExists(at: "podcasts/\(title).mp3")
-            return isFilePresent
-        } catch { }
-        return false
-    }
-    
-    func getUrlFor(podcast: Podcast) -> URL? {
-        do {
-            if let title = podcast.title {
-                let (_, _, url) = try fileHelper.urlPackage(forPath: "podcasts/\(title).mp3")
-                return url
-            }
-        } catch { }
-        return nil
-        
-    }
-    
     func savePodcastData(data: Data, path: String) {
         do {
             let (_, _, url) = try fileHelper.urlPackage(forPath: "podcasts/\(path).mp3")
@@ -152,21 +134,38 @@ class MBPodcastsStore: PodcastsRepository {
     }
     
     func getVisibleStreams() -> [PodcastStream] {
-        guard let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [PodcastStream: Bool] else {
+        guard let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [String: Bool] else {
             return []
         }
         
-        return visibilitySettings.keys.filter({ (stream) -> Bool in
-            return visibilitySettings[stream] ?? false
-        })
+        return visibilitySettings.keys.compactMap { PodcastStream(rawValue: $0)}.filter { visibilitySettings[$0.rawValue] ?? false}
     }
     
     func setStreamVisible(stream: PodcastStream, isVisible: Bool) {
-        if let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [PodcastStream: Bool] {
+        if let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [String: Bool] {
             var settings = visibilitySettings
-            settings[stream] = isVisible
+            settings[stream.rawValue] = isVisible
             UserDefaults.standard.set(settings, forKey: streamVisibilityDefaultsKey)
         }
+    }
+    
+    func containsSavedPodcast(_ podcast: Podcast) -> Bool {
+        guard let title = podcast.title else { return false }
+        do {
+            let isFilePresent = try fileHelper.fileExists(at: "podcasts/\(title).mp3")
+            return isFilePresent
+        } catch { }
+        return false
+    }
+    
+    func getUrlFor(podcast: Podcast) -> URL? {
+        do {
+            if let title = podcast.title {
+                let (_, _, url) = try fileHelper.urlPackage(forPath: "podcasts/\(title).mp3")
+                return url
+            }
+        } catch { }
+        return nil
     }
 }
 

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ReSwift
 
 class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PodcastFilterDelegate {
     @IBOutlet weak var tableView: UITableView!

@@ -10,10 +10,7 @@ import UIKit
 import ReSwift
 import AVKit
 
-class PodcastDetailViewController: UIViewController, StoreSubscriber {
-    
-    var totalDuration: Double?
-    
+class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     @IBOutlet weak var durationSlider: UISlider!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -25,12 +22,14 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
     @IBOutlet weak var imageHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var backgroundImageView: UIImageView!
     
-    var timeFormatter: DateComponentsFormatter?
-    
-    weak var delegate: PodcastDetailViewControllerDelegate?
-    var playerState: PlayerState?
-    var selectedPodcast: Podcast!
+    var currentProgress: Double = 0.0
+    var totalDuration: Double = 0.0
     var fullImageSize: CGFloat = 0.0
+    var isPlaying: Bool = false
+    
+    var player: PodcastPlayer!
+    var selectedPodcast: Podcast!
+    var timeFormatter: DateComponentsFormatter!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,12 +40,8 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         backgroundImageView.image = UIImage(named: imageName)
         self.navigationItem.title = selectedPodcast.feed.title
         
-        configureFormatter()
-        
         durationSlider.addTarget(self, action: #selector(onSeek(slider:event:)), for: .valueChanged)
         durationSlider.setValue(0.0, animated: false)
-        
-        playerState = .initialized
         
         // Sets the nav bar to be transparent
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -57,42 +52,38 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         self.imageWidthConstraint.constant = fullImageSize
         self.imageHeightConstraint.constant = fullImageSize
         
+        self.player.playPodcast(self.selectedPodcast)
+        self.currentProgress = self.player.getCurrentProgress()
+        self.totalDuration = self.player.getTotalDuration()
+        self.updateCurrentDuration()
+        self.player.subscribe(self)
+        
         self.view.layoutIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        MBStore.sharedStore.subscribe(self)
+ 
         self.imageView.layer.shadowPath = UIBezierPath(rect: self.imageView.bounds).cgPath
         self.imageView.layer.shadowRadius = 20
         self.imageView.layer.shadowOpacity = 0.4
         self.imageView.layer.shadowOffset = CGSize(width: -5, height: -5)
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
-    }
-    
-    func configureFormatter() {
-        timeFormatter = DateComponentsFormatter()
-        timeFormatter?.unitsStyle = .positional
-        timeFormatter?.allowedUnits = [ .hour, .minute, .second ]
-        timeFormatter?.zeroFormattingBehavior = [ .pad ]
-    }
+
 
     @IBAction func pressPlayPause(_ sender: Any) {
-        MBStore.sharedStore.dispatch(PlayPausePodcast())
+        self.player.togglePlayPause()
     }
     
     @objc func onSeek(slider: UISlider, event: UIEvent) {
         if let touchEvent = event.allTouches?.first {
-            let secondToSeekTo = Double(slider.value) * (totalDuration ?? 0.0)
+            let secondToSeekTo = Double(slider.value) * (self.totalDuration)
             switch touchEvent.phase {
             case .moved:
-                updateCurrentDuration(current: secondToSeekTo, total: totalDuration ?? 0.0)
+                self.currentProgress = secondToSeekTo
+                self.updateCurrentDuration()
             case .ended:
-                delegate?.seek(to: secondToSeekTo)
+                self.player.seek(to: secondToSeekTo)
             default:
                 break
             }
@@ -118,43 +109,54 @@ class PodcastDetailViewController: UIViewController, StoreSubscriber {
         }
     }
     
-    static func instantiateFromStoryboard(podcast: Podcast) -> PodcastDetailViewController {
+    static func instantiateFromStoryboard(podcast: Podcast, player: PodcastPlayer) -> PodcastDetailViewController {
         // swiftlint:disable force_cast
         let detailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
         // swiftlint:enable force_cast
         detailVC.selectedPodcast = podcast
+        detailVC.player = player
+        
+        var timeFormatter = DateComponentsFormatter()
+        timeFormatter.unitsStyle = .positional
+        timeFormatter.allowedUnits = [ .hour, .minute, .second ]
+        timeFormatter.zeroFormattingBehavior = [ .pad ]
+        detailVC.timeFormatter = timeFormatter
+        
         return detailVC
     }
     
-    func newState(state: MBAppState) {
-        switch state.podcastsState.player {
-        case .initialized, .error, .paused, .finished:
-            playPauseButton.setImage(#imageLiteral(resourceName: "play-arrow"), for: .normal)
-            if playerState == .playing, playerState != .initialized {
-                animateImage(size: CGSize(width: fullImageSize * 0.75, height: fullImageSize * 0.75), duration: 0.6)
-            }
-        case .playing:
-            playPauseButton.setImage(#imageLiteral(resourceName: "pause-bars"), for: .normal)
-            if playerState != .playing, playerState != .initialized {
-                animateImage(size: CGSize(width: fullImageSize, height: fullImageSize), duration: 0.6)
-            }
+    private func updateCurrentDuration() {
+        self.timeFormatter.allowedUnits = self.totalDuration >= Double(3600) ? [.hour, .minute, .second] : [.minute, .second]
+        
+        self.durationLabel.text = timeFormatter.string(from: self.currentProgress)
+        self.totalDurationLabel.text = timeFormatter.string(from: self.totalDuration)
+        
+        if self.totalDuration > 0.0 {
+            self.durationSlider.setValue(Float(self.currentProgress/self.totalDuration), animated: true)
         }
-        playerState = state.podcastsState.player
     }
     
-    func updateCurrentDuration(current: Double, total: Double ) {
-        totalDuration = total
-        timeFormatter?.allowedUnits = total >= Double(3600) ? [.hour, .minute, .second] : [.minute, .second]
-        durationLabel.text = timeFormatter?.string(from: current)
-        totalDurationLabel.text = timeFormatter?.string(from: total)
-        guard let validTime = totalDuration, validTime > 0 else {
-            return
+    // MARK: - Podcast Player Subscriber
+    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool) {
+        print("isPlaying: \(isPlaying) self.isPlaying \(self.isPlaying)")
+        DispatchQueue.main.async {
+            self.currentProgress = currentProgress
+            self.totalDuration = totalDuration
+            self.updateCurrentDuration()
+            
+            if isPlaying != self.isPlaying {
+                if isPlaying {
+                    // just turned on
+                    self.playPauseButton.setImage(#imageLiteral(resourceName: "pause-bars"), for: .normal)
+                    self.animateImage(size: CGSize(width: self.fullImageSize * 0.75, height: self.fullImageSize * 0.75), duration: 0.6)
+                } else {
+                    // just turned off
+                    self.playPauseButton.setImage(#imageLiteral(resourceName: "play-arrow"), for: .normal)
+                    self.animateImage(size: CGSize(width: self.fullImageSize, height: self.fullImageSize), duration: 0.6)
+                }
+            }
+            
+            self.isPlaying = isPlaying
         }
-        durationSlider.setValue(Float(current/validTime), animated: true)
     }
-}
-
-
-protocol PodcastDetailViewControllerDelegate: class {
-    func seek(to second: Double)
 }
