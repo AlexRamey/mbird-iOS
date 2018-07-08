@@ -22,6 +22,10 @@ class BookmarkCell: UITableViewCell {
         
         coverImageView.contentMode = .scaleAspectFill
         coverImageView.clipsToBounds = true
+        
+        let bgColorView = UIView()
+        bgColorView.backgroundColor = UIColor.MBSelectedCell
+        self.selectedBackgroundView = bgColorView
     }
     
     // MARK: - View Life Cycle

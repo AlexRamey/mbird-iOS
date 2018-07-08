@@ -25,6 +25,10 @@ class RecentArticleTableViewCell: UITableViewCell {
         
         self.timeLabel.textColor = UIColor.MBOrange
         self.timeLabel.font = UIFont(name: "AvenirNext-Bold", size: 13.0)
+        
+        let bgColorView = UIView()
+        bgColorView.backgroundColor = UIColor.MBSelectedCell
+        self.selectedBackgroundView = bgColorView
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -17,6 +17,10 @@ class CategoryArticleTableViewCell: UITableViewCell {
         // Initialization code
         self.thumbnailImage.contentMode = .scaleAspectFill
         self.thumbnailImage.clipsToBounds = true
+        
+        let bgColorView = UIView()
+        bgColorView.backgroundColor = UIColor.MBSelectedCell
+        self.selectedBackgroundView = bgColorView
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
