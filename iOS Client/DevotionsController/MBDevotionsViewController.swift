@@ -10,9 +10,7 @@ import UIKit
 import ReSwift
 import CVCalendar
 
-class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewDelegate, UITableViewDataSource {
-
-
+class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var menuView: CVCalendarMenuView!
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
@@ -29,15 +27,37 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
-        monthLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 24.0)
+        tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "schedule"), style: .plain, target: self, action: #selector(self.scheduleNotifications(sender:)))
-        tableView.register(UINib(nibName: cellReusableId, bundle: nil), forCellReuseIdentifier: cellReusableId)
+        
+        monthLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 24.0)
         menuView.delegate = self
         calendarView.delegate = self
         calendarView.calendarAppearanceDelegate = self
+        
+        self.loadDevotions()
+    }
+    
+    private func loadDevotions() {
+        self.devotions = devotionsStore.getDevotions()
+        
+        if self.devotions.count > 0 {
+            self.tableView.reloadData()
+            return
+        }
+        
+        devotionsStore.syncDevotions { syncedDevotions, error in
+            DispatchQueue.main.async {
+                if error != nil {
+                    print("error syncing devotions: \(String(describing: error?.localizedDescription))")
+                } else if let newDevotions = syncedDevotions {
+                    self.devotions = newDevotions
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
     
     @objc func scheduleNotifications(sender: UIBarButtonItem) {
@@ -57,19 +77,9 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         calendarView.commitCalendarViewUpdate()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        MBStore.sharedStore.subscribe(self)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.scrollToSelectedDevotion(animated: false)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
     }
     
     @objc private func selectToday(_ sender: Any) {
@@ -82,30 +92,6 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         // swiftlint:enable force_cast
         vc.tabBarItem = UITabBarItem(title: "Devotions", image: UIImage(named: "bible-gray"), selectedImage: UIImage(named: "bible-selected"))
         return vc
-    }
-    
-    func newState(state: MBAppState) {
-        switch state.devotionState.devotions {
-        case .error:
-            break
-        case .initial:
-            break
-        case .loading, .loadingFromDisk:
-            break
-        case .loaded(let loadedDevotions):
-            if self.devotions.count != loadedDevotions.count {
-                self.devotions = loadedDevotions
-                tableView.reloadData()
-            } else {
-                var changedIndexPaths: [IndexPath] = []
-                for (idx, loadedDevotion) in loadedDevotions.enumerated()
-                    where self.devotions[idx] != loadedDevotion {
-                    self.devotions[idx] = loadedDevotion
-                    changedIndexPaths.append(IndexPath(row: idx, section: 0))
-                }
-                tableView.reloadRows(at: changedIndexPaths, with: .automatic)
-            }
-        }
     }
     
     func scrollToSelectedDevotion(animated: Bool) {
@@ -150,9 +136,15 @@ class MBDevotionsViewController: UIViewController, StoreSubscriber, UITableViewD
         }
         
         if let delegate = self.delegate {
+            // mark devotion as read
             devotions[indexPath.row].read = true
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            
+            // persist that it has been read
             let devotion = devotions[indexPath.row]
             try? self.devotionsStore.replace(devotion: devotion)
+            
+            // show detail view controller
             delegate.selectedDevotion(devotion)
         }
     }
@@ -206,7 +198,7 @@ extension MBDevotionsViewController: UIPopoverPresentationControllerDelegate {
         return UIModalPresentationStyle.none
     }
     
-    func prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
+    func prepareForPopoverPresentation(_ popoverPresentationController: UIPopoverPresentationController) {
         popoverPresentationController.permittedArrowDirections = .any
     }
 }

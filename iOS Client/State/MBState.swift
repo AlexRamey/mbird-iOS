@@ -18,15 +18,6 @@ struct MBArticleState: ArticleState {
 }
 /**************************************/
 
-/********** Devotion State *************/
-protocol DevotionState {
-    var devotions: Loaded<[LoadedDevotion]> { get set }
-}
-struct MBDevotionState: DevotionState {
-    var devotions: Loaded<[LoadedDevotion]> = .initial
-}
-/**************************************/
-
 /********** Podcasts State *************/
 protocol PodcastsState {
     var podcasts: Loaded<[Podcast]> { get set }
@@ -58,22 +49,19 @@ struct MBSettingsState: SettingsState {
 /********** App State *************/
 protocol AppState: StateType {
     var articleState: ArticleState { get }
-    var devotionState: DevotionState { get }
     var podcastsState: PodcastsState { get }
     var settingsState: SettingsState { get }
     
-    init(articleState: ArticleState, devotionState: DevotionState, podcastsState: PodcastsState, settingsState: SettingsState)
+    init(articleState: ArticleState, podcastsState: PodcastsState, settingsState: SettingsState)
 }
 
 struct MBAppState: AppState {
     var articleState: ArticleState = MBArticleState()
-    var devotionState: DevotionState = MBDevotionState()
     var podcastsState: PodcastsState = MBPodcastsState()
     var settingsState: SettingsState = MBSettingsState()
     
-    init(articleState: ArticleState, devotionState: DevotionState, podcastsState: PodcastsState, settingsState: SettingsState) {
+    init(articleState: ArticleState, podcastsState: PodcastsState, settingsState: SettingsState) {
         self.articleState = articleState
-        self.devotionState = devotionState
         self.podcastsState = podcastsState
         self.settingsState = settingsState
     }
