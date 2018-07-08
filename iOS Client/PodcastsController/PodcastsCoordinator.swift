@@ -19,17 +19,16 @@ class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate {
         return navigationController
     }
     
-    let podcastsStore = MBPodcastsStore()
-    var player: PodcastPlayer {
-        return PodcastPlayer(repository: podcastsStore)
-    }
+    let podcastsStore: MBPodcastsStore
+    let player: PodcastPlayer
     
     private lazy var navigationController: UINavigationController = {
         return UINavigationController()
     }()
     
-    override init(){
-        super.init()
+    init(store: MBPodcastsStore, player: PodcastPlayer) {
+        self.podcastsStore = store
+        self.player = player
     }
     
     func start() {

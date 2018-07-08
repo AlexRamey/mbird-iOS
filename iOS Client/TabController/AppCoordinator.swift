@@ -18,9 +18,14 @@ class AppCoordinator: NSObject, Coordinator {
     var articleDAO: ArticleDAO?
     let window: UIWindow
     let managedObjectContext: NSManagedObjectContext
+    let podcastsStore = MBPodcastsStore()
+    
+    private lazy var player: PodcastPlayer = {
+        return PodcastPlayer(repository: podcastsStore)
+    }()
     
     private lazy var tabBarController: MBTabBarController = {
-        let tabBarController = MBTabBarController.instantiateFromStoryboard()
+        let tabBarController = MBTabBarController.instantiateFromStoryboard(player: self.player)
         return tabBarController
     }()
     
@@ -34,7 +39,7 @@ class AppCoordinator: NSObject, Coordinator {
     
     // MARK: - Coordinator
     func start() {
-        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(managedObjectContext: self.managedObjectContext), DevotionsCoordinator(), PodcastsCoordinator()].map({(coord: Coordinator) -> UIViewController in
+        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(managedObjectContext: self.managedObjectContext), DevotionsCoordinator(), PodcastsCoordinator(store: self.podcastsStore, player: self.player)].map({(coord: Coordinator) -> UIViewController in
             coord.start()
             self.addChildCoordinator(childCoordinator: coord)
             return coord.rootViewController
