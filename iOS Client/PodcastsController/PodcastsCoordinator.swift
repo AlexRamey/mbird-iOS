@@ -133,7 +133,7 @@ class PodcastsCoordinator: NSObject, Coordinator, StoreSubscriber, AVAudioPlayer
         if let guid = podcast.guid {
             // Play if stored to disk, else fetch from network
             if currentPlayingPodcast?.guid != guid,
-                podcastsStore.conatainsSavedPodcast(podcast),
+                podcastsStore.containsSavedPodcast(podcast),
                 let url = podcastsStore.getUrlFor(podcast: podcast) {
                 let item = AVPlayerItem(url: url)
                 player.replaceCurrentItem(with: item)

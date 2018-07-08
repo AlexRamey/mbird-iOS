@@ -9,11 +9,11 @@
 import UIKit
 import ReSwift
 
-class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, StoreSubscriber {
-    
+class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PodcastFilterDelegate {
     @IBOutlet weak var tableView: UITableView!
-    var visibleStreams: Set<PodcastStream> = Set<PodcastStream>()
     var streams: [PodcastStream] = []
+    var repository: PodcastsRepository!
+    
     let filterReuseIdentifier: String = "PodcastFilterTableViewCell"
     
     override func viewDidLoad() {
@@ -25,42 +25,39 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         tableView.estimatedRowHeight = 110
         tableView.tableFooterView = nil
         navigationItem.title = "Filter"
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        MBStore.sharedStore.subscribe(self)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
-    }
-    
-    static func instantiateFromStoryboard() -> PodcastsFilterViewController {
-        // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastFilterViewController") as! PodcastsFilterViewController
-        // swiftlint:enable force_cast
-    }
-    
-    func newState(state: MBAppState) {
-        streams = state.podcastsState.streams
-        visibleStreams = state.podcastsState.visibleStreams
         
-        tableView.reloadData()
+        self.loadData()
+    }
+    
+    func loadData() {
+        self.streams = self.repository.getStreams()
+        self.tableView.reloadData()
+    }
+    
+    static func instantiateFromStoryboard(repository: PodcastsRepository) -> PodcastsFilterViewController {
+        // swiftlint:disable force_cast
+        let filterVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastFilterViewController") as! PodcastsFilterViewController
+        // swiftlint:enable force_cast
+        filterVC.repository = repository
+        return filterVC
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return streams.count
+        return self.streams.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: filterReuseIdentifier) as? PodcastFilterTableViewCell,
-            indexPath.row < streams.count else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: filterReuseIdentifier) as? PodcastFilterTableViewCell else {
                 return UITableViewCell()
         }
+        cell.delegate = self
         let stream = streams[indexPath.row]
-        cell.configure(image: UIImage(named: stream.imageName), stream: stream, on: visibleStreams.contains(stream))
+        cell.configure(image: UIImage(named: stream.imageName), stream: stream, on: self.repository.getVisibleStreams().contains(stream))
         return cell
+    }
+    
+    // MARK: - PodcastFilterDelegate
+    func filterStream(_ stream: PodcastStream, on: Bool) {
+        self.repository.setStreamVisible(stream: stream, isVisible: on)
     }
 }

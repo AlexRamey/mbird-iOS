@@ -20,8 +20,6 @@
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
 		23ABE3C21FDDE6D200F4B36B /* (null) in Sources */ = {isa = PBXBuildFile; };
-		23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */; };
-		23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */; };
 		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
 		23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */; };
 		23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */; };
@@ -33,15 +31,17 @@
 		23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8F1F91FAECD0B004964AE /* Color.swift */; };
 		23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED5DAE1FC652F6003B1BB3 /* DevotionTableViewCell.swift */; };
 		23ED5DB11FC652F6003B1BB3 /* DevotionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23ED5DAF1FC652F6003B1BB3 /* DevotionTableViewCell.xib */; };
-		23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */; };
 		23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */; };
 		23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */; };
 		23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */; };
 		23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
 		D01C330320AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01C330220AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift */; };
-		D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */; };
-		D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */; };
+		D026D8DE20F1A81F00CDBF89 /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8D920F1A81F00CDBF89 /* FileHelper.swift */; };
+		D026D8DF20F1A81F00CDBF89 /* MBPodcastsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DA20F1A81F00CDBF89 /* MBPodcastsStore.swift */; };
+		D026D8E020F1A81F00CDBF89 /* XMLParsingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DB20F1A81F00CDBF89 /* XMLParsingDelegate.swift */; };
+		D026D8E120F1A81F00CDBF89 /* MBArticlesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DC20F1A81F00CDBF89 /* MBArticlesStore.swift */; };
+		D026D8E220F1A81F00CDBF89 /* MBDevotionsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DD20F1A81F00CDBF89 /* MBDevotionsStore.swift */; };
 		D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02C22961FDE15120024D0F6 /* CoreDataStack.swift */; };
 		D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */; };
 		D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02D363C1F7FE19400D4E674 /* Coordinator.swift */; };
@@ -72,11 +72,6 @@
 		D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */; };
 		D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496451F93DB5C004ACA4E /* DeserializationError.swift */; };
 		D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496471F93E79C004ACA4E /* MBConstants.swift */; };
-		D0CD7BB61F7875F7000E26B0 /* MBState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CD7BB51F7875F7000E26B0 /* MBState.swift */; };
-		D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC291F7B178C007822CB /* MBStore.swift */; };
-		D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC2B1F7B18A3007822CB /* MBAppReducer.swift */; };
-		D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC2D1F7B1B49007822CB /* MBActions.swift */; };
-		D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */; };
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
 		D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */; };
 		D0EA55E52066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EA55E32066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift */; };
@@ -112,8 +107,6 @@
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
 		23A278711FD10091003B2022 /* DevotionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionNotification.swift; sourceTree = "<group>"; };
 		23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcastsStore.swift; sourceTree = "<group>"; };
-		23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
 		23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcast.swift; sourceTree = "<group>"; };
 		23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastFilterViewController.swift; sourceTree = "<group>"; };
 		23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastFilterTableViewCell.swift; sourceTree = "<group>"; };
@@ -125,14 +118,16 @@
 		23D8F1F91FAECD0B004964AE /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		23ED5DAE1FC652F6003B1BB3 /* DevotionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionTableViewCell.swift; sourceTree = "<group>"; };
 		23ED5DAF1FC652F6003B1BB3 /* DevotionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DevotionTableViewCell.xib; sourceTree = "<group>"; };
-		23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMLParsingDelegate.swift; sourceTree = "<group>"; };
 		23F2CB461FDC91F400B80856 /* MBPodcastsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcastsViewController.swift; sourceTree = "<group>"; };
 		23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsCoordinator.swift; sourceTree = "<group>"; };
 		23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastTableViewCell.swift; sourceTree = "<group>"; };
 		23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastTableViewCell.xib; sourceTree = "<group>"; };
 		D01C330220AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDailyDevotionViewController.swift; sourceTree = "<group>"; };
-		D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBArticlesStore.swift; sourceTree = "<group>"; };
-		D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsStore.swift; sourceTree = "<group>"; };
+		D026D8D920F1A81F00CDBF89 /* FileHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
+		D026D8DA20F1A81F00CDBF89 /* MBPodcastsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBPodcastsStore.swift; sourceTree = "<group>"; };
+		D026D8DB20F1A81F00CDBF89 /* XMLParsingDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParsingDelegate.swift; sourceTree = "<group>"; };
+		D026D8DC20F1A81F00CDBF89 /* MBArticlesStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBArticlesStore.swift; sourceTree = "<group>"; };
+		D026D8DD20F1A81F00CDBF89 /* MBDevotionsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBDevotionsStore.swift; sourceTree = "<group>"; };
 		D02C22961FDE15120024D0F6 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppCoordinator.swift; path = "iOS Client/TabController/AppCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		D02D363C1F7FE19400D4E674 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
@@ -166,11 +161,6 @@
 		D08F55951F786DCD0071ED86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D09496451F93DB5C004ACA4E /* DeserializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeserializationError.swift; sourceTree = "<group>"; };
 		D09496471F93E79C004ACA4E /* MBConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MBConstants.swift; path = "iOS Client/Constants/MBConstants.swift"; sourceTree = SOURCE_ROOT; };
-		D0CD7BB51F7875F7000E26B0 /* MBState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBState.swift; sourceTree = "<group>"; };
-		D0DDEC291F7B178C007822CB /* MBStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBStore.swift; sourceTree = "<group>"; };
-		D0DDEC2B1F7B18A3007822CB /* MBAppReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBAppReducer.swift; sourceTree = "<group>"; };
-		D0DDEC2D1F7B1B49007822CB /* MBActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBActions.swift; sourceTree = "<group>"; };
-		D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBMiddleware.swift; sourceTree = "<group>"; };
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
 		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0EA55E32066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArticlePicture+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -306,6 +296,19 @@
 			path = HTTPClient;
 			sourceTree = "<group>";
 		};
+		D026D8D820F1A81F00CDBF89 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				D026D8D920F1A81F00CDBF89 /* FileHelper.swift */,
+				D026D8DA20F1A81F00CDBF89 /* MBPodcastsStore.swift */,
+				D026D8DB20F1A81F00CDBF89 /* XMLParsingDelegate.swift */,
+				D026D8DC20F1A81F00CDBF89 /* MBArticlesStore.swift */,
+				D026D8DD20F1A81F00CDBF89 /* MBDevotionsStore.swift */,
+			);
+			name = Store;
+			path = "iOS Client/Store";
+			sourceTree = SOURCE_ROOT;
+		};
 		D02C22951FDE14E40024D0F6 /* CoreDataStack */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,13 +386,13 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
+				D026D8D820F1A81F00CDBF89 /* Store */,
 				2362417020DEE359002711D7 /* Search */,
 				23F2CB451FDC91D100B80856 /* PodcastsController */,
 				23864DE41FA6A0930061F212 /* Utilities */,
 				23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */,
 				23D8F1EE1FAAB310004964AE /* Data */,
 				237815501FA7FEF7000555B6 /* DevotionsController */,
-				D0DDEC301F7C7B1F007822CB /* Actions */,
 				D0DDEC371F7C7F52007822CB /* AppDelegate */,
 				D0DDEC391F7C7F8B007822CB /* ArticlesController */,
 				D0DDEC3C1F7C812F007822CB /* BookmarksController */,
@@ -398,11 +401,7 @@
 				D02C22951FDE14E40024D0F6 /* CoreDataStack */,
 				D00F8F5A1F93F132006CCD80 /* HTTPClient */,
 				D09F67111F93FAA3001D910E /* Main Storyboard */,
-				D0DDEC351F7C7BC6007822CB /* Middleware */,
 				D032F1991F87289D00E78333 /* Models */,
-				D0DDEC311F7C7B37007822CB /* Reducers */,
-				D0DDEC321F7C7B55007822CB /* State */,
-				D0DDEC361F7C7F3C007822CB /* Store */,
 				D0ED48E21F9D752600FEDCC9 /* Style */,
 				D02D36391F7C9FBF00D4E674 /* TabController */,
 				D08F55901F786DCD0071ED86 /* Assets.xcassets */,
@@ -418,51 +417,6 @@
 				D08F558A1F786DCD0071ED86 /* Main.storyboard */,
 			);
 			path = "Main Storyboard";
-			sourceTree = "<group>";
-		};
-		D0DDEC301F7C7B1F007822CB /* Actions */ = {
-			isa = PBXGroup;
-			children = (
-				D0DDEC2D1F7B1B49007822CB /* MBActions.swift */,
-			);
-			path = Actions;
-			sourceTree = "<group>";
-		};
-		D0DDEC311F7C7B37007822CB /* Reducers */ = {
-			isa = PBXGroup;
-			children = (
-				D0DDEC2B1F7B18A3007822CB /* MBAppReducer.swift */,
-			);
-			path = Reducers;
-			sourceTree = "<group>";
-		};
-		D0DDEC321F7C7B55007822CB /* State */ = {
-			isa = PBXGroup;
-			children = (
-				D0CD7BB51F7875F7000E26B0 /* MBState.swift */,
-			);
-			path = State;
-			sourceTree = "<group>";
-		};
-		D0DDEC351F7C7BC6007822CB /* Middleware */ = {
-			isa = PBXGroup;
-			children = (
-				D0DDEC331F7C7BC1007822CB /* MBMiddleware.swift */,
-			);
-			path = Middleware;
-			sourceTree = "<group>";
-		};
-		D0DDEC361F7C7F3C007822CB /* Store */ = {
-			isa = PBXGroup;
-			children = (
-				D0DDEC291F7B178C007822CB /* MBStore.swift */,
-				23F2CB431FDC50F000B80856 /* XMLParsingDelegate.swift */,
-				D02C22901FDD84820024D0F6 /* MBArticlesStore.swift */,
-				D02C22921FDD85F30024D0F6 /* MBDevotionsStore.swift */,
-				23ABE3C51FDE06FC00F4B36B /* MBPodcastsStore.swift */,
-				23ABE3C71FDE07BF00F4B36B /* FileHelper.swift */,
-			);
-			path = Store;
 			sourceTree = "<group>";
 		};
 		D0DDEC371F7C7F52007822CB /* AppDelegate */ = {
@@ -693,20 +647,16 @@
 				D0EA55F220798F2A005EFA7E /* RecentArticleTableViewCell.swift in Sources */,
 				D075154820AE80DF00CAEBCA /* DevotionScheduler.swift in Sources */,
 				D02D363B1F7FDFB500D4E674 /* AppCoordinator.swift in Sources */,
-				D0DDEC2A1F7B178C007822CB /* MBStore.swift in Sources */,
 				23F2CB471FDC91F400B80856 /* MBPodcastsViewController.swift in Sources */,
 				D05EF18520E0828F0066BA3E /* Category.swift in Sources */,
 				D02D363D1F7FE19400D4E674 /* Coordinator.swift in Sources */,
 				D0EA560120858F56005EFA7E /* ShowMoreViewController.swift in Sources */,
-				D0DDEC341F7C7BC1007822CB /* MBMiddleware.swift in Sources */,
 				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,
 				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
+				D026D8DF20F1A81F00CDBF89 /* MBPodcastsStore.swift in Sources */,
 				D05EF17F20E07BA00066BA3E /* ArticleDTO.swift in Sources */,
 				23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */,
-				23ABE3C61FDE06FC00F4B36B /* MBPodcastsStore.swift in Sources */,
 				D02FCCAC20E83C0900F40454 /* Image.swift in Sources */,
-				D0DDEC2E1F7B1B49007822CB /* MBActions.swift in Sources */,
-				D02C22911FDD84820024D0F6 /* MBArticlesStore.swift in Sources */,
 				D02FCCAE20E9487100F40454 /* Debouncer.swift in Sources */,
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,
 				D05EF18820E08B3B0066BA3E /* SearchResultsTableViewController.swift in Sources */,
@@ -715,10 +665,12 @@
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
 				23D8BB44207EE3930057C9D5 /* FeaturedArticleTableViewCell.swift in Sources */,
-				23ABE3C81FDE07BF00F4B36B /* FileHelper.swift in Sources */,
+				D026D8DE20F1A81F00CDBF89 /* FileHelper.swift in Sources */,
 				D0EA55F620799FC6005EFA7E /* CategoryHeaderTableViewCell.swift in Sources */,
 				D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */,
+				D026D8E020F1A81F00CDBF89 /* XMLParsingDelegate.swift in Sources */,
 				D0EA55E62066ADDE005EFA7E /* ArticlePicture+CoreDataProperties.swift in Sources */,
+				D026D8E220F1A81F00CDBF89 /* MBDevotionsStore.swift in Sources */,
 				D05EF18320E0827E0066BA3E /* Author.swift in Sources */,
 				D05EF18B20E095C40066BA3E /* SearchResultTableViewCell.swift in Sources */,
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
@@ -730,23 +682,20 @@
 				239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */,
 				23D8F1F71FAE12D2004964AE /* MBDevotion.swift in Sources */,
 				D08F55891F786DCD0071ED86 /* MBArticlesViewController.swift in Sources */,
-				D0DDEC2C1F7B18A3007822CB /* MBAppReducer.swift in Sources */,
 				23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */,
 				D05EF18120E080470066BA3E /* Article.swift in Sources */,
-				D02C22931FDD85F30024D0F6 /* MBDevotionsStore.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				232F08342066FC3B0051CF71 /* PlayPauseView.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
 				23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */,
 				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
+				D026D8E120F1A81F00CDBF89 /* MBArticlesStore.swift in Sources */,
 				D048E7F820CC115700240462 /* SectionHeaderView.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
 				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
 				D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */,
-				D0CD7BB61F7875F7000E26B0 /* MBState.swift in Sources */,
-				23F2CB441FDC50F000B80856 /* XMLParsingDelegate.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,

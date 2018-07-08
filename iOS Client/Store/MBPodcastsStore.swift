@@ -10,8 +10,13 @@ import Foundation
 import CoreData
 import PromiseKit
 
+protocol PodcastsRepository: class {
+    func getStreams() -> [PodcastStream]
+    func getVisibleStreams() -> [PodcastStream]
+    func setStreamVisible(stream: PodcastStream, isVisible: Bool)
+}
 
-class MBPodcastsStore {
+class MBPodcastsStore: PodcastsRepository {
     
     let client: MBClient
     let fileHelper: FileHelper
@@ -24,12 +29,19 @@ class MBPodcastsStore {
     let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast, .talkingbird]
     var podcastsPath: String = "podcasts.json"
     var podcastsDirectory: String = "podcasts"
+    let streamVisibilityDefaultsKey = "STREAM_VISIBILITY_DEFAULTS_KEY"
     
     init() {
         client = MBClient()
         fileHelper = FileHelper()
         initializeFiles()
-        MBStore.sharedStore.dispatch(SetPodcastStreams(streams: streams))
+        
+        // leverage the registration domain to create default stream visibility settings
+        let defaultStreamVisibilitySettings: [PodcastStream: Bool] = [.pz: true,
+                                                                      .mockingPulpit: true,
+                                                                      .mockingCast: true,
+                                                                      .talkingbird:true]
+        UserDefaults.standard.register(defaults: [streamVisibilityDefaultsKey: defaultStreamVisibilitySettings])
     }
     
     func syncPodcasts() -> Promise<[Podcast]> {
@@ -99,15 +111,7 @@ class MBPodcastsStore {
         }
     }
     
-    func readPodcastFilterSettings() {
-        streams.forEach {
-            let streamSetting = UserDefaults.standard.bool(forKey: $0.title)
-            print(streamSetting)
-            MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: $0, toggle: streamSetting))
-        }
-    }
-    
-    func conatainsSavedPodcast(_ podcast: Podcast) -> Bool {
+    func containsSavedPodcast(_ podcast: Podcast) -> Bool {
         guard let title = podcast.title else { return false }
         do {
             let isFilePresent = try fileHelper.fileExists(at: "podcasts/\(title).mp3")
@@ -139,6 +143,29 @@ class MBPodcastsStore {
     func getSavedPodcastsTitles() -> [String] {
         return fileHelper.getPathsAtDirectory(directory: podcastsDirectory).compactMap {
             return String($0.prefix($0.count-4))
+        }
+    }
+    
+    // MARK: - PodcastsRepository
+    func getStreams() -> [PodcastStream] {
+        return self.streams
+    }
+    
+    func getVisibleStreams() -> [PodcastStream] {
+        guard let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [PodcastStream: Bool] else {
+            return []
+        }
+        
+        return visibilitySettings.keys.filter({ (stream) -> Bool in
+            return visibilitySettings[stream] ?? false
+        })
+    }
+    
+    func setStreamVisible(stream: PodcastStream, isVisible: Bool) {
+        if let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [PodcastStream: Bool] {
+            var settings = visibilitySettings
+            settings[stream] = isVisible
+            UserDefaults.standard.set(settings, forKey: streamVisibilityDefaultsKey)
         }
     }
 }

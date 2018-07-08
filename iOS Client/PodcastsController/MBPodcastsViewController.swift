@@ -9,7 +9,7 @@
 import UIKit
 import ReSwift
 
-class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, StoreSubscriber {
+class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     var podcasts: [Podcast] = []
     let cellReuseIdentifier = "PodcastTableViewCell"
@@ -41,12 +41,10 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isTranslucent = false
-        MBStore.sharedStore.subscribe(self)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
     }
     
     @objc func filter() {
