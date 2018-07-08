@@ -7,7 +7,6 @@
 //
 import Foundation
 import UIKit
-import ReSwift
 import UserNotifications
 
 class DevotionsCoordinator: NSObject, Coordinator, UNUserNotificationCenterDelegate, DevotionTableViewDelegate {

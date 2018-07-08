@@ -6,7 +6,6 @@
 //  Copyright © 2017 Mockingbird. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import ReSwift
 import AVKit

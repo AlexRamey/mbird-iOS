@@ -11,7 +11,6 @@ import Nuke
 import Preheat
 
 class SearchResultsTableViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
-    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     let reuseIdentifier = "searchResultCellReuseIdentifier"

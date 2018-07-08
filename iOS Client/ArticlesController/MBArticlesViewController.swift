@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ReSwift
 import CoreData
 import Nuke
 import Preheat
@@ -19,7 +18,7 @@ enum RowType {
     case categoryFooter
 }
 
-class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, StoreSubscriber, HeaderViewDelegate, UISearchControllerDelegate {
+class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HeaderViewDelegate, UISearchControllerDelegate {
     // properties
     @IBOutlet weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
@@ -36,8 +35,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
     let categoryFooterReuseIdentifier = "categoryFooterReuseIdentifier"
     
-    var currentState: ArticleState = MBArticleState()
     var isFirstAppearance = true
+    var selectedIndexPath: IndexPath?
     
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
@@ -56,37 +55,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         // swiftlint:enable force_cast
         vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
         return vc
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        MBStore.sharedStore.subscribe(self)
-
-        if isFirstAppearance {
-            MBStore.sharedStore.dispatch(RefreshArticles(shouldMakeNetworkCall: true))
-            isFirstAppearance = false
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        controller?.enabled = true
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        // When you disable preheat controller it removes all preheating
-        // index paths and calls its handler
-        controller?.enabled = false
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-        MBStore.sharedStore.unsubscribe(self)
     }
     
     override func viewDidLoad() {
@@ -108,9 +76,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
         refreshControl.tintColor = UIColor(red: 235.0/255.0, green: 96.0/255.0, blue: 93.0/255.0, alpha: 1.0)
         refreshControl.attributedTitle = NSAttributedString(string: "Updating ...", attributes: nil)
-
-        let articles = articlesStore.getArticles()
-        MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: articles)))
         
         controller = Preheat.Controller(view: tableView)
         controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
@@ -131,6 +96,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.searchController?.searchResultsUpdater = searchResultsController
         self.searchController?.delegate = self
         self.definesPresentationContext = true
+        
+        self.loadArticleDataFromDisk()
     }
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
@@ -166,25 +133,55 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         preheater.stopPreheating(with: requests(for: removed))
     }
     
-    @objc private func refreshTableView(_ sender: Any) {
-        if self.refreshControl.isRefreshing {
-            MBStore.sharedStore.dispatch(RefreshArticles(shouldMakeNetworkCall: true))
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        if isFirstAppearance {
+            // the following line ensures that the refresh control has the correct tint/text on first use
+            self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
+            
+            self.refreshControl.beginRefreshing()
+            self.refreshTableView(self.refreshControl)
+            isFirstAppearance = false
         }
     }
-
-    private func loadArticleData(makeNetworkCall: Bool) {
-        let bgq = DispatchQueue.global(qos: .utility)
-        bgq.async {
-            if makeNetworkCall {
-                    self.articlesStore.syncAllData().then { _ -> Void in
-                        self.loadArticleDataFromDisk()
-                    }.catch { syncErr in
-                        print(syncErr)
-                        MBStore.sharedStore.dispatch(LoadedArticles(articles: .error))
-                    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        controller?.enabled = true
+        if let indexPath = self.selectedIndexPath {
+            self.tableView.deselectRow(at: indexPath, animated: true)
+            self.selectedIndexPath = nil
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // When you disable preheat controller it removes all preheating
+        // index paths and calls its handler
+        controller?.enabled = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    @objc private func refreshTableView(_ sender: UIRefreshControl) {
+        if sender.isRefreshing {
+            self.articlesStore.syncAllData().then { isNewData -> Void in
+                if isNewData {
+                    self.loadArticleDataFromDisk()
                 }
-            else {
-                self.loadArticleDataFromDisk()
+            }
+            .always {
+                self.refreshControl.endRefreshing()
+            }
+            .catch { _ in
+                    print("refresh articles failed . . .")
             }
         }
     }
@@ -192,45 +189,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     private func loadArticleDataFromDisk() {
         self.articlesStore.deleteOldArticles(completion: { (numDeleted) in
             print("Deleted \(numDeleted) old articles!!!")
-            let loadedArticles = self.articlesStore.getArticles()
-            MBStore.sharedStore.dispatch(LoadedArticles(articles: .loaded(data: loadedArticles)))
+            DispatchQueue.main.async {
+                let articles = self.articlesStore.getArticles()
+                self.latestArticles = self.getLatestArticles(articles: articles)
+                self.olderArticlesByCategory = self.groupArticlesByTopLevelCategoryName(articles: articles)
+                self.topLevelCategories = Array(self.olderArticlesByCategory.keys).sorted()
+                self.tableView.reloadData()
+            }
         })
-    }
-
-    func newState(state: MBAppState) {
-        switch state.articleState.articles {
-        case .initial:
-            break
-        case .loading:
-            if case .loading = self.currentState.articles {
-                // do nothing
-            } else if case .loadingFromDisk = self.currentState.articles {
-                // do nothing
-            } else {
-                self.refreshControl.beginRefreshing()
-                self.loadArticleData(makeNetworkCall: true)
-            }
-        case .loadingFromDisk:
-            if case .loading = self.currentState.articles {
-                // do nothing
-            } else if case .loadingFromDisk = self.currentState.articles {
-                // do nothing
-            } else {
-                self.refreshControl.beginRefreshing()
-                self.loadArticleData(makeNetworkCall: false)
-            }
-        case .error:
-            print("Error: Loading articles")
-            self.refreshControl.endRefreshing()
-        case .loaded(let data):
-            latestArticles = getLatestArticles(articles: data)
-            olderArticlesByCategory = groupArticlesByTopLevelCategoryName(articles: data)
-            topLevelCategories = Array(olderArticlesByCategory.keys).sorted()
-            tableView.reloadData()
-            self.refreshControl.endRefreshing()
-        }
-        
-        self.currentState = state.articleState
     }
     
     private func getLatestArticles(articles: [MBArticle]) -> [MBArticle] {
@@ -426,6 +392,7 @@ extension MBArticlesViewController {
     
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.selectedIndexPath = indexPath
         if rowTypeForPath(indexPath) == .categoryFooter {
             if let showMoreDelegate = self.showMoreDelegate {
                 let selectedCategory = topLevelCategories[indexPath.section - 1]
@@ -451,6 +418,9 @@ extension MBArticlesViewController {
     
     // MARK: HeaderViewDelegate
     func searchTapped(sender: SectionHeaderView) -> UISearchBar? {
+        guard !self.refreshControl.isRefreshing else {
+            return nil // search bar looks weird if it comes while the section header is too low
+        }
         return self.searchController?.searchBar
     }
 }

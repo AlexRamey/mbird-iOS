@@ -9,12 +9,10 @@
 import CoreData
 import UIKit
 import PromiseKit
-import ReSwift
 import Nuke
 import Preheat
 
 class ShowMoreViewController: UITableViewController {
-    typealias StoreSubscriberStateType = ArticleState
     var articlesStore: MBArticlesStore!
     var currentCategory: MBCategory!
     var articles: [MBArticle] = []

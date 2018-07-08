@@ -6,9 +6,7 @@
 //  Copyright © 2017 Mockingbird. All rights reserved.
 //
 
-import Foundation
 import UIKit
-import ReSwift
 import SafariServices
 import CoreData
 
@@ -55,7 +53,7 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
     func selectedURL(url: URL) {
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self
-        self.navigationController.pushViewController(safariVC, animated: true)
+        self.navigationController.present(safariVC, animated: true, completion: nil)
     }
     
     // MARK: = SF Safari View Controller Delegate

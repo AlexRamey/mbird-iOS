@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 import UIKit
-import ReSwift
 
 class AppCoordinator: NSObject, Coordinator {
     var childCoordinators: [Coordinator] = []

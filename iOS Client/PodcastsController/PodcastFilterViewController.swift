@@ -6,9 +6,8 @@
 //  Copyright © 2018 Mockingbird. All rights reserved.
 //
 
-import Foundation
-import ReSwift
 import UIKit
+import ReSwift
 
 class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, StoreSubscriber {
     

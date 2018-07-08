@@ -10,31 +10,8 @@ import ReSwift
 
 func appReducer(action: Action, state: MBAppState?) -> MBAppState {
     return MBAppState(
-        articleState: articleReducer(action: action, state: state?.articleState),
-        podcastsState: podcastsReducer(action: action, state: state?.podcastsState),
-        settingsState: settingsReducer(action: action, state: state?.settingsState)
+        podcastsState: podcastsReducer(action: action, state: state?.podcastsState)
     )
-}
-
-func articleReducer(action: Action, state: ArticleState?) -> ArticleState {
-    var nextState = state ?? MBArticleState()
-    
-    switch action {
-    case _ as ReSwiftInit:
-        break
-    case let action as RefreshArticles:
-        if action.shouldMakeNetworkCall {
-            nextState.articles = Loaded<[MBArticle]>.loading
-        } else {
-            nextState.articles = Loaded<[MBArticle]>.loadingFromDisk
-        }
-    case let action as LoadedArticles:
-        nextState.articles = action.articles
-    default:
-        break
-    }
-    
-    return nextState
 }
 
 func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
@@ -73,9 +50,4 @@ func podcastsReducer(action: Action, state: PodcastsState?) -> PodcastsState {
     }
     return nextState
     
-}
-
-func settingsReducer(action: Action, state: SettingsState?) -> SettingsState {
-    let nextState = state ?? MBSettingsState()
-    return nextState
 }

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ReSwift
 import CVCalendar
 
 class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {

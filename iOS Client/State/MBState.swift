@@ -8,16 +8,6 @@
 
 import ReSwift
 
-/********** Article State *************/
-protocol ArticleState {
-    var articles: Loaded<[MBArticle]> { get set }
-}
-struct MBArticleState: ArticleState {
-    var articles: Loaded<[MBArticle]> = .initial
-    
-}
-/**************************************/
-
 /********** Podcasts State *************/
 protocol PodcastsState {
     var podcasts: Loaded<[Podcast]> { get set }
@@ -37,33 +27,16 @@ struct MBPodcastsState: PodcastsState {
     var downloadedPodcasts: Set<String> = Set<String>()
 }
 
-/********** Settings State *************/
-protocol SettingsState {
-    var notificationPermission: Permission { get set }
-}
-
-struct MBSettingsState: SettingsState {
-    var notificationPermission: Permission = .unprompted
-}
-
 /********** App State *************/
 protocol AppState: StateType {
-    var articleState: ArticleState { get }
     var podcastsState: PodcastsState { get }
-    var settingsState: SettingsState { get }
-    
-    init(articleState: ArticleState, podcastsState: PodcastsState, settingsState: SettingsState)
+    init(podcastsState: PodcastsState)
 }
 
 struct MBAppState: AppState {
-    var articleState: ArticleState = MBArticleState()
     var podcastsState: PodcastsState = MBPodcastsState()
-    var settingsState: SettingsState = MBSettingsState()
-    
-    init(articleState: ArticleState, podcastsState: PodcastsState, settingsState: SettingsState) {
-        self.articleState = articleState
+    init(podcastsState: PodcastsState) {
         self.podcastsState = podcastsState
-        self.settingsState = settingsState
     }
 }
 /**************************************/
@@ -75,13 +48,6 @@ enum Loaded<T> {
     case loadingFromDisk
     case loaded(data: T)
     case error
-}
-
-/****** Permission *****/
-enum Permission {
-    case unprompted
-    case approved
-    case denied
 }
 
 enum PlayerState {

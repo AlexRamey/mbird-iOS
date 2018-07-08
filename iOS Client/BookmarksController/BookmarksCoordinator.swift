@@ -8,7 +8,6 @@
 
 import UIKit
 import CoreData
-import ReSwift
 import SafariServices
 
 class BookmarksCoordinator: NSObject, Coordinator, ArticlesTableViewDelegate, ArticleDetailDelegate, SFSafariViewControllerDelegate {

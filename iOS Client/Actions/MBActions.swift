@@ -8,18 +8,6 @@
 
 import ReSwift
 
-struct RefreshArticles: Action {
-    var shouldMakeNetworkCall: Bool
-}
-
-struct LoadedArticles: Action {
-    var articles: Loaded<[MBArticle]>
-}
-
-struct LoadedDevotions: Action {
-    var devotions: Loaded<[LoadedDevotion]>
-}
-
 struct LoadedPodcasts: Action {
     var podcasts: Loaded<[Podcast]>
 }
