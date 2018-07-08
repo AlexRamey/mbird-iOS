@@ -15,6 +15,11 @@ class DevotionTableViewCell: UITableViewCell {
     @IBOutlet weak var verseLabel: UILabel!
     @IBOutlet weak var readNotifier: UIImageView!
     
+    override func awakeFromNib() {
+        let bgColorView = UIView()
+        bgColorView.backgroundColor = UIColor.MBSelectedCell
+        self.selectedBackgroundView = bgColorView
+    }
     
     func configure(devotion: LoadedDevotion) {
         dayLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 32)
