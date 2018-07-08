@@ -30,6 +30,22 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     var selectedPodcast: Podcast!
     var timeFormatter: DateComponentsFormatter!
     
+    static func instantiateFromStoryboard(podcast: Podcast, player: PodcastPlayer) -> PodcastDetailViewController {
+        // swiftlint:disable force_cast
+        let detailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
+        // swiftlint:enable force_cast
+        detailVC.selectedPodcast = podcast
+        detailVC.player = player
+        
+        var timeFormatter = DateComponentsFormatter()
+        timeFormatter.unitsStyle = .positional
+        timeFormatter.allowedUnits = [ .hour, .minute, .second ]
+        timeFormatter.zeroFormattingBehavior = [ .pad ]
+        detailVC.timeFormatter = timeFormatter
+        
+        return detailVC
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -70,7 +86,11 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.imageView.layer.shadowOpacity = 0.4
         self.imageView.layer.shadowOffset = CGSize(width: -5, height: -5)
     }
-
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.player.unsubscribe(self)
+    }
 
     @IBAction func pressPlayPause(_ sender: Any) {
         self.player.togglePlayPause()
@@ -110,22 +130,6 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         }
     }
     
-    static func instantiateFromStoryboard(podcast: Podcast, player: PodcastPlayer) -> PodcastDetailViewController {
-        // swiftlint:disable force_cast
-        let detailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
-        // swiftlint:enable force_cast
-        detailVC.selectedPodcast = podcast
-        detailVC.player = player
-        
-        var timeFormatter = DateComponentsFormatter()
-        timeFormatter.unitsStyle = .positional
-        timeFormatter.allowedUnits = [ .hour, .minute, .second ]
-        timeFormatter.zeroFormattingBehavior = [ .pad ]
-        detailVC.timeFormatter = timeFormatter
-        
-        return detailVC
-    }
-    
     private func updateCurrentDuration() {
         self.timeFormatter.allowedUnits = self.totalDuration >= Double(3600) ? [.hour, .minute, .second] : [.minute, .second]
         
@@ -139,7 +143,6 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     
     // MARK: - Podcast Player Subscriber
     func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool) {
-        print("isPlaying: \(isPlaying) self.isPlaying \(self.isPlaying)")
         DispatchQueue.main.async {
             self.currentProgress = currentProgress
             self.totalDuration = totalDuration
