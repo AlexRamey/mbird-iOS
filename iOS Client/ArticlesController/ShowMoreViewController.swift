@@ -9,14 +9,12 @@
 import CoreData
 import UIKit
 import PromiseKit
-import ReSwift
 import Nuke
 import Preheat
 
-class ShowMoreViewController: UITableViewController, StoreSubscriber {
-    typealias StoreSubscriberStateType = ArticleState
-    var articlesStore: MBArticlesStore?
-    var currentCategory: MBCategory?
+class ShowMoreViewController: UITableViewController {
+    var articlesStore: MBArticlesStore!
+    var currentCategory: MBCategory!
     var articles: [MBArticle] = []
     var categoryIDs: [Int] = []
     var isLoadingMore = false
@@ -24,34 +22,30 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
     let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
+    weak var delegate: ArticlesTableViewDelegate?
     
-    static func instantiateFromStoryboard() -> ShowMoreViewController {
+    static func instantiateFromStoryboard(store: MBArticlesStore, category: MBCategory) -> ShowMoreViewController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ShowMoreViewController") as! ShowMoreViewController
+        let showMoreVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ShowMoreViewController") as! ShowMoreViewController
         // swiftlint:enable force_cast
+        showMoreVC.articlesStore = store
+        showMoreVC.currentCategory = category
+        return showMoreVC
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureBackButton()
-        
-        // this is regrettable, but our routing setup makes it very cumbersome
-        // to pass in dependencies for non-root view controllers. Ideally,
-        // we would delete ReSwift and all routing logic, and just have the coordinators
-        // respond to navigation events via delegate methods and inject dependencies
-        // directly into newly spawned view controllers
-        if let articlesVC = self.navigationController?.viewControllers.first as? MBArticlesViewController, self.articlesStore == nil {
-            self.articlesStore = articlesVC.articlesStore
-        }
-        
+
         tableView.register(UINib(nibName: "CategoryArticleTableViewCell", bundle: nil), forCellReuseIdentifier: categoryArticleReuseIdentifier)
-        
         tableView.rowHeight = UITableViewAutomaticDimension
         
         controller = Preheat.Controller(view: tableView)
         controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
+        
+        self.title = self.currentCategory.name
+        self.loadArticles()
     }
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
@@ -76,26 +70,11 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        MBStore.sharedStore.subscribe(self) {
-            $0.select { appState in
-                appState.articleState
-            }.skipRepeats { lhs, rhs in
-                lhs.selectedCategory == rhs.selectedCategory
-            }
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
         controller?.enabled = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        MBStore.sharedStore.unsubscribe(self)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -104,29 +83,6 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
         // When you disable preheat controller it removes all preheating
         // index paths and calls its handler
         controller?.enabled = false
-    }
-    
-    func configureBackButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backToArticles(sender:)))
-    }
-    
-    @objc func backToArticles(sender: AnyObject) {
-        MBStore.sharedStore.dispatch(RefreshArticles(shouldMakeNetworkCall: false))
-        MBStore.sharedStore.dispatch(PopCurrentNavigation())
-    }
-    
-    func newState(state: ArticleState) {
-        if self.currentCategory?.name != state.selectedCategory {
-            if let categoryName = state.selectedCategory,
-                let newCategory = articlesStore?.getCategoryByName(categoryName) {
-                self.title = categoryName
-                self.currentCategory = newCategory
-            } else {
-                self.title = ""
-                self.currentCategory = nil
-            }
-            self.loadArticles()
-        }
     }
     
     private func configureCell(_ cell: CategoryArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
@@ -152,14 +108,12 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
     }
     
     private func loadArticles() {
-        guard let store = self.articlesStore, let cat = self.currentCategory else { return }
-        
         self.categoryIDs = []
         var catArticles: Set<MBArticle> = []
         // DFS through the category tree rooted at currentCategory
         // to acquire the ids of all children categories and collect
         // any articles we already have associated with those categories
-        var stack: [MBCategory] = [cat]
+        var stack: [MBCategory] = [self.currentCategory]
         while let current = stack.popLast() {
             self.categoryIDs.append(Int(current.categoryID))
             if let articles = current.articles as? Set<MBArticle> {
@@ -252,8 +206,9 @@ class ShowMoreViewController: UITableViewController, StoreSubscriber {
     
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let action = SelectedArticle(article: articles[indexPath.row].toDomain())
-        MBStore.sharedStore.dispatch(action)
+        if let delegate = self.delegate {
+            delegate.selectedArticle(articles[indexPath.row].toDomain())
+        }
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

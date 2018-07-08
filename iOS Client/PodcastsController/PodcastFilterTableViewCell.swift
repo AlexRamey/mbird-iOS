@@ -9,10 +9,10 @@
 import UIKit
 
 class PodcastFilterTableViewCell: UITableViewCell {
-
     @IBOutlet weak var toggleSwitch: UISwitch!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var podcastImage: UIImageView!
+    weak var delegate: PodcastFilterDelegate?
     
     var stream: PodcastStream?
     
@@ -24,12 +24,14 @@ class PodcastFilterTableViewCell: UITableViewCell {
         podcastImage.layer.cornerRadius = 10
         self.selectionStyle = .none
     }
-    @IBAction func toggled(_ sender: UISwitch) {
-        guard let stream = stream else {
-            return
-        }
-        UserDefaults.standard.set(!sender.isOn, forKey: stream.title)
-        MBStore.sharedStore.dispatch(TogglePodcastFilter(podcastStream: stream, toggle: !sender.isOn))
-    }
     
+    @IBAction func toggled(_ sender: UISwitch) {
+        if let stream = stream, let delegate = self.delegate {
+            delegate.filterStream(stream, on: sender.isOn)
+        }
+    }
+}
+
+protocol PodcastFilterDelegate: class {
+    func filterStream(_ stream: PodcastStream, on: Bool)
 }

@@ -6,19 +6,21 @@
 //  Copyright © 2017 Mockingbird. All rights reserved.
 //
 
-import ReSwift
 import UIKit
 
-class MBTabBarController: UITabBarController, StoreSubscriber {
-    
+class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
     var playPauseView: PlayPauseView!
-    var playerState: PlayerState = .initialized
+    var player: PodcastPlayer!
+    var isCancelled: Bool = false
     
-    static func instantiateFromStoryboard() -> MBTabBarController {
+    static func instantiateFromStoryboard(player: PodcastPlayer) -> MBTabBarController {
         // swiftlint:disable force_cast
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BaseTabController") as! MBTabBarController
+        let tabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BaseTabController") as! MBTabBarController
         // swiftlint:enable force_cast
+        tabVC.player = player
+        return tabVC
     }
+    
     func configurePlayPauseView() {
         let tabBar = self.tabBar
         playPauseView = PlayPauseView.loadInstance()
@@ -42,28 +44,19 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
     }
     
     @objc func togglePlayPause(_ sender: UIButton) {
-        MBStore.sharedStore.dispatch(PlayPausePodcast())
+        self.player.togglePlayPause()
     }
     
     @objc func cancelPodcast(_ sender: UIButton) {
-        MBStore.sharedStore.dispatch(FinishedPodcast())
+        self.isCancelled = true
+        self.player.pause()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configurePlayPauseView()
         self.tabBar.tintColor = UIColor.MBSalmon
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        MBStore.sharedStore.subscribe(self)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
-
+        self.player.subscribe(self)
     }
 
     override func didReceiveMemoryWarning() {
@@ -71,39 +64,33 @@ class MBTabBarController: UITabBarController, StoreSubscriber {
         // Dispose of any resources that can be recreated.
     }
     
-    func select(tab: Tab) {
-        self.selectedIndex = tab.rawValue
-    }
-    
-    func newState(state: MBAppState) {
-        if let podImageName = state.podcastsState.selectedPodcast?.image {
+    // MARK: - Podcast Player Subscriber
+    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool) {
+        var shouldShowPlayPause = true
+        
+        if !isPlaying && self.isCancelled {
+            // this is the last notify we'll get before a podcast begins playing again
+            shouldShowPlayPause = false
+            self.isCancelled = false
+        }
+        
+        if let podImageName = self.player.currentlyPlayingPodcast?.image {
             playPauseView.image.image = UIImage(named: podImageName)
         }
-        var shouldShowPlayPause = false
-        switch state.podcastsState.player {
-        case .initialized:
-            break
-        case .paused, .error:
-            playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
-            shouldShowPlayPause = true
-        case .playing:
+        playPauseView.titleLabel.text = self.player.currentlyPlayingPodcast?.title ?? "mbird podcast"
+        
+        if isPlaying {
             playPauseView.toggleButton.setImage(UIImage(named: "pause-bars"), for: .normal)
-            playPauseView.titleLabel.text = state.podcastsState.selectedPodcast?.title
-            shouldShowPlayPause = true
-        case .finished:
-            shouldShowPlayPause = false
-        }
-        playerState = state.podcastsState.player
-        if state.navigationState.selectedTab == .podcasts,
-            let routes = state.navigationState.routes[.podcasts],
-            let topRoute = routes.last,
-            case .detail = topRoute {
-            playPauseView?.isHidden = true
-        } else if shouldShowPlayPause {
-            playPauseView?.isHidden = false
         } else {
+            playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
+        }
+        
+        if self.selectedIndex == 3,
+            let navigationController = self.viewControllers?.last as? UINavigationController,
+            let _ = navigationController.topViewController as? PodcastDetailViewController {
             playPauseView?.isHidden = true
+        } else {
+            playPauseView?.isHidden = !shouldShowPlayPause
         }
     }
-
 }

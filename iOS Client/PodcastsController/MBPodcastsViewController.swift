@@ -7,11 +7,11 @@
 //
 
 import UIKit
-import ReSwift
+import PromiseKit
 
-class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, StoreSubscriber {
-
+class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var podcasts: [Podcast] = []
+    var visiblePodcasts: [Podcast] = []
     let cellReuseIdentifier = "PodcastTableViewCell"
     
     var podcastDateFormatter: DateFormatter = {
@@ -23,8 +23,17 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     
     @IBOutlet weak var tableView: UITableView!
     let podcastStore = MBPodcastsStore()
-    var savedPodcastTitles: Set<String>?
-    var currentlyDownloadingTitles: Set<String>?
+    var savedPodcastTitles: [String] = []
+    var currentlyDownloadingTitles: [String] = []
+    weak var delegate: PodcastTableViewDelegate?
+    
+    static func instantiateFromStoryboard() -> MBPodcastsViewController {
+        // swiftlint:disable force_cast
+        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
+        // swiftlint:enable force_cast
+        vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-gray"), selectedImage: UIImage(named: "headphones-selected"))
+        return vc
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,21 +44,44 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         tableView.estimatedRowHeight = 110
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filter"), style: .done, target: self, action: #selector(MBPodcastsViewController.filter))
+        
+        self.savedPodcastTitles = self.podcastStore.getSavedPodcastsTitles()
+        self.loadData()
+    }
+    
+    private func loadData() {
+        firstly { () -> Promise<[Podcast]> in
+            self.podcastStore.getSavedPodcasts()
+        }.then { podcasts -> Promise<[Podcast]> in
+            self.podcasts = podcasts
+            self.showPodcasts()
+            return self.podcastStore.syncPodcasts()
+        }.then { podcasts -> Void in
+            self.podcasts = podcasts
+            self.showPodcasts()
+        }.catch { error in
+            print("error fetching podcasts: \(error)")
+        }
+    }
+    
+    private func showPodcasts() {
+        let visibleStreams = self.podcastStore.getVisibleStreams()
+        self.visiblePodcasts = self.podcasts.filter({ (podcast) -> Bool in
+            visibleStreams.contains(podcast.feed)
+        })
+        self.tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isTranslucent = false
-        MBStore.sharedStore.subscribe(self)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        MBStore.sharedStore.unsubscribe(self)
+        self.showPodcasts()
     }
     
     @objc func filter() {
-        MBStore.sharedStore.dispatch(FilterPodcasts())
+        if let delegate = self.delegate {
+            delegate.filterPodcasts()
+        }
     }
     
     // MARK: - UITableViewDataSource
@@ -58,55 +90,31 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return podcasts.count
+        return self.visiblePodcasts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // swiftlint:disable force_cast
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellReuseIdentifier) as! PodcastTableViewCell
         // swiftlint:enable force_cast
-        if indexPath.row < podcasts.count {
-            let podcast = podcasts[indexPath.row]
-            let saved = savedPodcastTitles?.contains(podcast.title ?? "") ?? false
-            let downloading = currentlyDownloadingTitles?.contains(podcast.title ?? "") ?? false
-            cell.configure(title: podcast.title ?? "",
-                           image: UIImage(named: podcast.image),
-                           date: podcastDateFormatter.string(from: podcast.pubDate),
-                           guid: podcast.guid ?? "",
-                           saved: saved,
-                           downloading: downloading)
-        } else {
-            cell.configure(title: "", image: nil, date: nil, guid: "", saved: false, downloading: false)
-        }
+        
+        let podcast = visiblePodcasts[indexPath.row]
+        let saved = self.savedPodcastTitles.contains(podcast.title ?? "")
+        let downloading = self.currentlyDownloadingTitles.contains(podcast.title ?? "")
+        cell.configure(title: podcast.title ?? "",
+                       image: UIImage(named: podcast.image),
+                       date: podcastDateFormatter.string(from: podcast.pubDate),
+                       guid: podcast.guid ?? "",
+                       saved: saved,
+                       downloading: downloading)
         cell.delegate = self
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        MBStore.sharedStore.dispatch(SelectedPodcast(podcast: podcasts[indexPath.row]))
-    }
-    
-    // MARK: - StoreSubscriber
-    func newState(state: MBAppState) {
-        let podcastsState = state.podcastsState
-        switch podcastsState.podcasts {
-        case .initial, .error, .loading, .loadingFromDisk:
-            //TODO: Handle error and loading states
-            break
-        case .loaded(let data):
-            self.podcasts = data.filter { state.podcastsState.visibleStreams.contains($0.feed) }
-            self.savedPodcastTitles = state.podcastsState.downloadedPodcasts
-            self.currentlyDownloadingTitles = state.podcastsState.downloadingPodcasts
-            self.tableView.reloadData()
+        if let delegate = self.delegate {
+            delegate.didSelectPodcast(self.visiblePodcasts[indexPath.row])
         }
-    }
-    
-    static func instantiateFromStoryboard() -> MBPodcastsViewController {
-        // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
-        // swiftlint:enable force_cast
-        vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-gray"), selectedImage: UIImage(named: "headphones-selected"))
-        return vc
     }
 }
 
@@ -114,14 +122,21 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
     func downloadPodcast(url: String, title: String) {
         print("download podcast at url: \(url)")
         guard let url = URL(string: url) else { return }
-        MBStore.sharedStore.dispatch(DownloadPodcast(title: title))
-        let _ = MBClient().getPodcast(url: url).then { data -> Void in
+        self.currentlyDownloadingTitles.append(title)
+        MBClient().getPodcast(url: url).then { data -> Void in
             self.podcastStore.savePodcastData(data: data, path: title)
-            MBStore.sharedStore.dispatch(FinishedDownloadingPodcast(title: title))
+            
+            self.savedPodcastTitles.append(title)
+            if let idx = self.currentlyDownloadingTitles.index(where: { (elem) -> Bool in
+                return elem == title
+            }) {
+                self.currentlyDownloadingTitles.remove(at: idx)
+            }
         }
     }
 }
 
-protocol PodcastDownloadingDelegate {
-    func downloadPodcast(url: String, title: String)
+protocol PodcastTableViewDelegate: class {
+    func didSelectPodcast(_ podcast: Podcast)
+    func filterPodcasts()
 }

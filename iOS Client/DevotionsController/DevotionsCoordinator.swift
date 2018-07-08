@@ -7,12 +7,9 @@
 //
 import Foundation
 import UIKit
-import ReSwift
 import UserNotifications
 
-class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotificationCenterDelegate {
-    var route: [RouteComponent] = [.base]
-    var tab: Tab = .devotions
+class DevotionsCoordinator: NSObject, Coordinator, UNUserNotificationCenterDelegate, DevotionTableViewDelegate {
     var childCoordinators: [Coordinator] = []
     var devotionsStore = MBDevotionsStore()
     let scheduler: DevotionScheduler = Scheduler()
@@ -28,25 +25,11 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     
     func start() {
         let devotionsController = MBDevotionsViewController.instantiateFromStoryboard()
+        devotionsController.delegate = self
         navigationController.pushViewController(devotionsController, animated: true)
-        MBStore.sharedStore.subscribe(self)
         UNUserNotificationCenter.current().delegate = self
         let devotions = devotionsStore.getDevotions()
-        if devotions.count == 0 {
-            devotionsStore.syncDevotions { syncedDevotions, error in
-                DispatchQueue.main.async {
-                    if error != nil {
-                        MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.error))
-                    } else if let newDevotions = syncedDevotions {
-                        MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: newDevotions)))
-                        self.scheduleDevotionsIfNecessary(devotions: newDevotions)
-                    }
-                }
-            }
-        } else {
-            MBStore.sharedStore.dispatch(LoadedDevotions(devotions: Loaded.loaded(data: devotions)))
-            self.scheduleDevotionsIfNecessary(devotions: devotions)
-        }
+        self.scheduleDevotionsIfNecessary(devotions: devotions)
     }
     
     private func scheduleDevotionsIfNecessary(devotions: [LoadedDevotion]) {
@@ -66,13 +49,14 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
         }
     }
     
-    // MARK: - StoreSubscriber
-    func newState(state: MBAppState) {
-        guard state.navigationState.selectedTab == .devotions, let newRoute = state.navigationState.routes[.devotions] else {
-            return
-        }
-        build(newRoute: newRoute)
-        route = newRoute
+    private func showDevotionDetail(devotion: LoadedDevotion) {
+        let detailVC = DevotionDetailViewController.instantiateFromStoryboard(devotion: devotion)
+        self.navigationController.pushViewController(detailVC, animated: true)
+    }
+    
+    // MARK: - DevotionTableViewDelegate
+    func selectedDevotion(_ devotion: LoadedDevotion) {
+        self.showDevotionDetail(devotion: devotion)
     }
     
     // MARK: - UNNotificationDelegate
@@ -94,10 +78,9 @@ class DevotionsCoordinator: NSObject, Coordinator, StoreSubscriber, UNUserNotifi
     
     private func selectTodaysDevotion() {
         let devotions = devotionsStore.getDevotions()
-        MBStore.sharedStore.dispatch(LoadedDevotions(devotions: .loaded(data: devotions)))
-        
         if let devotion = devotions.first(where: {$0.dateAsMMdd == Date().toMMddString()}) {
-            MBStore.sharedStore.dispatch(SelectedDevotion(devotion: devotion))
+            self.navigationController.tabBarController?.selectedIndex = 2
+            self.showDevotionDetail(devotion: devotion)
         }
     }
 }

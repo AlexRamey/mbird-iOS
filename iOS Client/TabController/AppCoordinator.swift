@@ -9,24 +9,23 @@
 import Foundation
 import CoreData
 import UIKit
-import ReSwift
 
-class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSubscriber {
-    var route: [RouteComponent] = [RouteComponent]()
-    
+class AppCoordinator: NSObject, Coordinator {
     var childCoordinators: [Coordinator] = []
-    var tab: Tab = .articles
-    
     var rootViewController: UIViewController {
         return self.tabBarController
     }
     var articleDAO: ArticleDAO?
     let window: UIWindow
     let managedObjectContext: NSManagedObjectContext
+    let podcastsStore = MBPodcastsStore()
+    
+    private lazy var player: PodcastPlayer = {
+        return PodcastPlayer(repository: podcastsStore)
+    }()
     
     private lazy var tabBarController: MBTabBarController = {
-        let tabBarController = MBTabBarController.instantiateFromStoryboard()
-        tabBarController.delegate = self
+        let tabBarController = MBTabBarController.instantiateFromStoryboard(player: self.player)
         return tabBarController
     }()
     
@@ -40,29 +39,10 @@ class AppCoordinator: NSObject, Coordinator, UITabBarControllerDelegate, StoreSu
     
     // MARK: - Coordinator
     func start() {
-        MBStore.sharedStore.subscribe(self)
-        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(managedObjectContext: self.managedObjectContext), DevotionsCoordinator(), PodcastsCoordinator()].map({(coord: Coordinator) -> UIViewController in
+        self.tabBarController.viewControllers = [ArticlesCoordinator(managedObjectContext: self.managedObjectContext), BookmarksCoordinator(managedObjectContext: self.managedObjectContext), DevotionsCoordinator(), PodcastsCoordinator(store: self.podcastsStore, player: self.player)].map({(coord: Coordinator) -> UIViewController in
             coord.start()
             self.addChildCoordinator(childCoordinator: coord)
             return coord.rootViewController
         })
-    }
-    
-    // MARK: - StoreSubscriber
-    func newState(state: MBAppState) {
-        if self.tab != state.navigationState.selectedTab, let rootVC = rootViewController as? MBTabBarController {
-            self.tab = state.navigationState.selectedTab
-            rootVC.select(tab: self.tab)
-        }
-    }
-    
-    // MARK: - UITabBarControllerDelegate
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if let tabViewControllers = tabBarController.viewControllers,
-           let newTab = Tab(rawValue: tabViewControllers.index(of: viewController) ?? -1) {
-                MBStore.sharedStore.dispatch(NavigationActionSwitchTab(tab: newTab))
-        }
-        
-        return false
     }
 }

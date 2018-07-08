@@ -20,6 +20,7 @@ class MBBookmarksViewController: UIViewController {
         queue.name = "Image Maker Queue"
         return queue
     }()
+    weak var delegate: ArticlesTableViewDelegate?
     
     // MARK: - IBOutlets
     @IBOutlet weak var tableView: UITableView!
@@ -145,8 +146,9 @@ extension MBBookmarksViewController: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let selectedArticle = fetchedResultsController.object(at: indexPath)
-        let action = SelectedArticle(article: selectedArticle.toDomain())
-        MBStore.sharedStore.dispatch(action)
+        if let delegate = self.delegate {
+            let selectedArticle = fetchedResultsController.object(at: indexPath)
+            delegate.selectedArticle(selectedArticle.toDomain())
+        }
     }
 }

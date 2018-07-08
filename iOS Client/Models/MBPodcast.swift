@@ -20,7 +20,7 @@ struct PodcastDTO: Codable {
     let title: String?
 }
 
-struct Podcast: Detailable, Codable {
+struct Podcast: Codable {
     let author: String?
     let duration: String?
     let guid: String?

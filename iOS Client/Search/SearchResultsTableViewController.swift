@@ -11,13 +11,13 @@ import Nuke
 import Preheat
 
 class SearchResultsTableViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
-    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     let reuseIdentifier = "searchResultCellReuseIdentifier"
     var searchBar: UISearchBar?
     var store: MBArticlesStore!
     var debouncedSearch: Debouncer!
+    weak var delegate: ArticlesTableViewDelegate?
     
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
@@ -227,7 +227,8 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     
     // MARK: - Table view delegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let action = SelectedArticle(article: self.results[indexPath.row])
-        MBStore.sharedStore.dispatch(action)
+        if let delegate = self.delegate {
+            delegate.selectedArticle(self.results[indexPath.row])
+        }
     }
 }
