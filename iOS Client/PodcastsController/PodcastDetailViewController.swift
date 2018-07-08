@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ReSwift
 import AVKit
 
 class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {

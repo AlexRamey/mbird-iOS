@@ -6,7 +6,6 @@
 //  Copyright © 2017 Mockingbird. All rights reserved.
 //
 
-import ReSwift
 import UIKit
 
 class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {

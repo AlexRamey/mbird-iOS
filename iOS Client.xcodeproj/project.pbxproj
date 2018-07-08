@@ -19,7 +19,7 @@
 		239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
-		23ABE3C21FDDE6D200F4B36B /* (null) in Sources */ = {isa = PBXBuildFile; };
+		23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
 		23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */; };
 		23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */; };
@@ -606,7 +606,6 @@
 				"${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework",
 				"${BUILT_PRODUCTS_DIR}/Preheat/Preheat.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-				"${BUILT_PRODUCTS_DIR}/ReSwift/ReSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -614,7 +613,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Nuke.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Preheat.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -707,7 +705,7 @@
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
-				23ABE3C21FDDE6D200F4B36B /* (null) in Sources */,
+				23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */,
 				D01C330320AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift in Sources */,
 				239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,
