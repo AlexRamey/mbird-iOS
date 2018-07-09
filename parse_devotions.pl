@@ -15,6 +15,7 @@ my @dates = ();
 my @verses = ();
 my @verseTexts = ();
 my @texts = ();
+my @authors = ();
 
 ## Step 1: Read input from stdin
 my $devotionsText = "";
@@ -51,14 +52,25 @@ if ($#devotions != 365) {
 
 ## For each devotion, grab the verseText, verse, and text
 ## Strategy, just match the verse itself, which is in parentheses at end of line 1
-## Then leverage the prematch and postmatch variables to get the verseText and devotion text.
+## Everything before it is verseText and after it is devotion text. We then
+## have to grab the author from the end of the devotion text.
 my $devotion;
 for $devotion (@devotions) {
-    my $verseRegEx = '\((.+)\)\s';
+    my $verseRegEx = '(.*)\((.+?)\)\s*\n';
     if ($devotion =~ m/$verseRegEx/) {
-        push @verseTexts, $`;   # $` is the special prematch variable
-        push @verses, $1;       # $1 refers to the text matched by the (.+) group (back-ref)
-        push @texts, $';        # $` is the special postmatch variable
+        push @verseTexts, $1;       # $1 refers to the text matched by the first (.+) group (back-ref)
+        push @verses, $2;           # $2 refers to the text matched by the second (.+) group (back-ref)
+        my $text = $';              # $' is the special postmatch variable
+        $text =~ s/^\s+|\s+$//g;    # trim whitespace
+        my $authorRegEx = '\n[^A-Za-z]*(.+?)$';
+        if ($text =~ m/$authorRegEx/) {
+            $text =~ s/$authorRegEx//g;
+            push @texts, $text; 
+            push @authors, $1;
+        } else {
+            die "author regex failed to match"
+        }
+
     } else {
         die "verse regex failed to match";
     }
@@ -84,7 +96,8 @@ foreach my $i (0 .. $#dates) {
     print "\t\t\"date\": \"$dates[$i]\",\n";
     print "\t\t\"verse\": \"$verses[$i]\",\n";
     print "\t\t\"verseText\": \"$verseTexts[$i]\",\n";
-    print "\t\t\"text\": \"$texts[$i]\"\n";
+    print "\t\t\"text\": \"$texts[$i]\",\n";
+    print "\t\t\"author\": \"$authors[$i]\"\n";
     print ("\t}" . (($i eq "$#dates") ? "" : ","));
 }
 print "\n]\n";
