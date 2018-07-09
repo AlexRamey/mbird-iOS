@@ -28,6 +28,11 @@ class FileHelper {
         }
     }
     
+    func delete(path: String) throws {
+        let (manager, _, url) = try urlPackage(forPath: path)
+        try manager.removeItem(at: url)
+    }
+    
     func urlPackage(forPath: String) throws -> (FileManager, String, URL) {
         let manager = FileManager.default
         guard let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first as URL? else {

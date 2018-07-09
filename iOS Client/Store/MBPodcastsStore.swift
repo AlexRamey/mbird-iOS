@@ -167,6 +167,13 @@ class MBPodcastsStore: PodcastsRepository {
         } catch { }
         return nil
     }
+    
+    func removePodcast(title: String) -> Promise<Void> {
+        return firstly {
+            try fileHelper.delete(path: "podcasts/\(title).mp3")
+            return Promise()
+        }
+    }
 }
 
 enum PodcastStoreError: Error {

@@ -11,7 +11,6 @@ import UIKit
 class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
     var playPauseView: PlayPauseView!
     var player: PodcastPlayer!
-    var isCancelled: Bool = false
     
     static func instantiateFromStoryboard(player: PodcastPlayer) -> MBTabBarController {
         // swiftlint:disable force_cast
@@ -48,8 +47,7 @@ class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
     }
     
     @objc func cancelPodcast(_ sender: UIButton) {
-        self.isCancelled = true
-        self.player.pause()
+        self.player.stop()
     }
     
     override func viewDidLoad() {
@@ -65,13 +63,12 @@ class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
     }
     
     // MARK: - Podcast Player Subscriber
-    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool) {
+    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool) {
         var shouldShowPlayPause = true
         
-        if !isPlaying && self.isCancelled {
+        if isCanceled {
             // this is the last notify we'll get before a podcast begins playing again
             shouldShowPlayPause = false
-            self.isCancelled = false
         }
         
         if let podImageName = self.player.currentlyPlayingPodcast?.image {

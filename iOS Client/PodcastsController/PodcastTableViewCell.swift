@@ -12,11 +12,12 @@ class PodcastTableViewCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var podcastImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var addButton: UIButton!
+    @IBOutlet weak var actionButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var guid: String?
     var title: String?
+    var saved: Bool = false
     weak var delegate: PodcastDownloadingDelegate?
     
     override func awakeFromNib() {
@@ -33,7 +34,12 @@ class PodcastTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: String, image: UIImage?, date: String?, guid: String, saved: Bool, downloading: Bool) {
+    func configure(title: String,
+                   image: UIImage?,
+                   date: String?,
+                   guid: String,
+                   saved: Bool,
+                   downloading: Bool) {
         activityIndicator.hidesWhenStopped = true
         titleLabel.text = title
         podcastImage.image = image
@@ -43,20 +49,37 @@ class PodcastTableViewCell: UITableViewCell {
         self.guid = guid
         self.title = title
         downloading ? activityIndicator.startAnimating() : activityIndicator.stopAnimating()
-        addButton.isHidden = saved || downloading ? true : false
-        
+        actionButton.isHidden = downloading ? true : false
+        actionButton.setImage(saved ? UIImage(named: "download-done") : UIImage(named: "add"), for: .normal)
+        self.saved = saved
     }
     
-    @IBAction func pressAddButton(_ sender: Any) {
+    @IBAction func pressActionButton(_ sender: Any) {
+        if saved {
+            removePodcast()
+        } else {
+            downloadPodcast()
+        }
+    }
+    
+    private func downloadPodcast() {
         guard let guid = self.guid, let title = title else {
             return
         }
         self.activityIndicator.startAnimating()
-        self.addButton.isHidden = true
+        self.actionButton.isHidden = true
         delegate?.downloadPodcast(url: guid, title: title)
+    }
+    
+    private func removePodcast() {
+        guard let title = title else {
+            return
+        }
+        delegate?.removePodcast(title: title)
     }
 }
 
 protocol PodcastDownloadingDelegate: class {
     func downloadPodcast(url: String, title: String)
+    func removePodcast(title: String)
 }
