@@ -23,15 +23,17 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     
     @IBOutlet weak var tableView: UITableView!
     let podcastStore = MBPodcastsStore()
-    var savedPodcastTitles: [String] = []
-    var currentlyDownloadingTitles: [String] = []
+    var savedPodcastTitles: Set<String> = Set<String>()
+    var currentlyDownloadingTitles: Set<String> = Set<String>()
     weak var delegate: PodcastTableViewDelegate?
+    var uninstaller: Uninstaller?
     
-    static func instantiateFromStoryboard() -> MBPodcastsViewController {
+    static func instantiateFromStoryboard(uninstaller: Uninstaller) -> MBPodcastsViewController {
         // swiftlint:disable force_cast
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
         // swiftlint:enable force_cast
         vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-gray"), selectedImage: UIImage(named: "headphones-selected"))
+        vc.uninstaller = uninstaller
         return vc
     }
     
@@ -46,7 +48,6 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filter"), style: .done, target: self, action: #selector(MBPodcastsViewController.filter))
         
-        self.savedPodcastTitles = self.podcastStore.getSavedPodcastsTitles()
         self.loadData()
     }
     
@@ -76,6 +77,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        self.savedPodcastTitles = Set(self.podcastStore.getSavedPodcastsTitles())
         self.showPodcasts()
     }
     
@@ -123,20 +125,25 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
     func downloadPodcast(url: String, title: String) {
         print("download podcast at url: \(url)")
         guard let url = URL(string: url) else { return }
-        self.currentlyDownloadingTitles.append(title)
-        MBClient().getPodcast(url: url).then { data -> Void in
+        self.currentlyDownloadingTitles.insert(title)
+        let _ = MBClient().getPodcast(url: url).then { data -> Void in
             self.podcastStore.savePodcastData(data: data, path: title)
-            
-            self.savedPodcastTitles.append(title)
-            if let idx = self.currentlyDownloadingTitles.index(where: { (elem) -> Bool in
-                return elem == title
-            }) {
-                self.currentlyDownloadingTitles.remove(at: idx)
-            }
+            self.savedPodcastTitles.insert(title)
+            self.currentlyDownloadingTitles.remove(title)
             self.tableView.reloadData()
         }
     }
+    
+    func removePodcast(title: String) {
+        let _ = uninstaller?.uninstall(id: title).then { uninstalled -> Void in
+            if uninstalled {
+                self.savedPodcastTitles.remove(title)
+                self.tableView.reloadData()
+            }
+        }
+    }
 }
+
 
 protocol PodcastTableViewDelegate: class {
     func didSelectPodcast(_ podcast: Podcast)

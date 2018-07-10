@@ -11,7 +11,7 @@ import Foundation
 import MediaPlayer
 
 protocol PodcastPlayerSubscriber: class {
-    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool)
+    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool)
 }
 
 class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
@@ -20,6 +20,7 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     var currentlyPlayingPodcast: Podcast?
     let repository: PodcastsRepository
     private var subscribers: [WeakRef<AnyObject>] = []
+    var isCanceled = false
     
     init(repository: PodcastsRepository) {
         self.repository = repository
@@ -75,7 +76,7 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     @objc func notifySubscribers() {
         self.subscribers.forEach { (subscriberRef) in
             if let subscriber = subscriberRef.value as? PodcastPlayerSubscriber {
-                subscriber.notify(currentProgress: self.getCurrentProgress(), totalDuration: self.getTotalDuration(), isPlaying: self.player.rate != 0.0)
+                subscriber.notify(currentProgress: self.getCurrentProgress(), totalDuration: self.getTotalDuration(), isPlaying: self.player.rate != 0.0, isCanceled: self.isCanceled)
             }
         }
     }
@@ -122,15 +123,26 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     private func play() {
+        self.isCanceled = false
         self.setAudioSessionIsActive(true)
         self.player.play()
         self.timer?.invalidate()
         self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PodcastPlayer.notifySubscribers), userInfo: nil, repeats: true)
+        self.notifySubscribers()
     }
     
     func pause() {
         timer?.invalidate()
         player.pause()
+        self.notifySubscribers()
+        self.setAudioSessionIsActive(false)
+    }
+    
+    func stop() {
+        timer?.invalidate()
+        player.pause()
+        self.isCanceled = true
+        self.currentlyPlayingPodcast = nil
         self.notifySubscribers()
         self.setAudioSessionIsActive(false)
     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2302819D20F2F4D0004F0CBD /* PodcastUninstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2302819C20F2F4D0004F0CBD /* PodcastUninstaller.swift */; };
 		232F08322066FB5F0051CF71 /* PlayPauseView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 232F08312066FB5F0051CF71 /* PlayPauseView.xib */; };
 		232F08342066FC3B0051CF71 /* PlayPauseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F08332066FC3B0051CF71 /* PlayPauseView.swift */; };
 		232F08362066FDA50051CF71 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232F08352066FDA50051CF71 /* UIView.swift */; };
@@ -19,7 +20,7 @@
 		239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
-		23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		23ABE3C21FDDE6D200F4B36B /* (null) in Sources */ = {isa = PBXBuildFile; };
 		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
 		23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */; };
 		23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */; };
@@ -96,6 +97,7 @@
 		0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_Client.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		136BACE6A8C13A0F0360B527 /* Pods-iOS Client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Client.release.xcconfig"; path = "Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client.release.xcconfig"; sourceTree = "<group>"; };
 		2251FCAEBD05DD222F6C84FD /* Pods-iOS Client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client.debug.xcconfig"; sourceTree = "<group>"; };
+		2302819C20F2F4D0004F0CBD /* PodcastUninstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastUninstaller.swift; sourceTree = "<group>"; };
 		232F08312066FB5F0051CF71 /* PlayPauseView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayPauseView.xib; sourceTree = "<group>"; };
 		232F08332066FC3B0051CF71 /* PlayPauseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayPauseView.swift; sourceTree = "<group>"; };
 		232F08352066FDA50051CF71 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */,
 				23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */,
 				23D8BB40207C5C920057C9D5 /* PodcastFilterTableViewCell.xib */,
+				2302819C20F2F4D0004F0CBD /* PodcastUninstaller.swift */,
 			);
 			path = PodcastsController;
 			sourceTree = "<group>";
@@ -646,6 +649,7 @@
 			files = (
 				D0EA55FE2079AE63005EFA7E /* CategoryFooterTableViewCell.swift in Sources */,
 				D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */,
+				2302819D20F2F4D0004F0CBD /* PodcastUninstaller.swift in Sources */,
 				23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */,
 				D0EA55FA2079A42C005EFA7E /* CategoryArticleTableViewCell.swift in Sources */,
 				D0EA55F220798F2A005EFA7E /* RecentArticleTableViewCell.swift in Sources */,
@@ -705,7 +709,7 @@
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,
 				D0F6A72220216DBC001C3AED /* BookmarkCell.swift in Sources */,
 				D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */,
-				23ABE3C21FDDE6D200F4B36B /* BuildFile in Sources */,
+				23ABE3C21FDDE6D200F4B36B /* (null) in Sources */,
 				D01C330320AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift in Sources */,
 				239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */,
 				D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */,

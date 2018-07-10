@@ -9,6 +9,10 @@
 import UIKit
 import AVKit
 
+protocol PodcastDetailHandler: class {
+    func dismissDetail()
+}
+
 class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     @IBOutlet weak var durationSlider: UISlider!
     @IBOutlet weak var imageView: UIImageView!
@@ -28,21 +32,27 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     
     var player: PodcastPlayer!
     var selectedPodcast: Podcast!
+    var saved: Bool = false
     var timeFormatter: DateComponentsFormatter!
     
-    static func instantiateFromStoryboard(podcast: Podcast, player: PodcastPlayer) -> PodcastDetailViewController {
+    var podcastStore = MBPodcastsStore()
+    var uninstaller: Uninstaller?
+    weak var handler: PodcastDetailHandler?
+    
+    static func instantiateFromStoryboard(podcast: Podcast, player: PodcastPlayer, uninstaller: Uninstaller, handler: PodcastDetailHandler) -> PodcastDetailViewController {
         // swiftlint:disable force_cast
         let detailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
         // swiftlint:enable force_cast
         detailVC.selectedPodcast = podcast
         detailVC.player = player
+        detailVC.handler = handler
         
         var timeFormatter = DateComponentsFormatter()
         timeFormatter.unitsStyle = .positional
         timeFormatter.allowedUnits = [ .hour, .minute, .second ]
         timeFormatter.zeroFormattingBehavior = [ .pad ]
         detailVC.timeFormatter = timeFormatter
-        
+        detailVC.uninstaller = uninstaller
         return detailVC
     }
     
@@ -74,7 +84,8 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.totalDuration = self.player.getTotalDuration()
         self.updateCurrentDuration()
         self.player.subscribe(self)
-        
+        self.saved = podcastStore.containsSavedPodcast(self.selectedPodcast)
+        configureDownloadButton(downloaded: self.saved, loading: false)
         self.view.layoutIfNeeded()
     }
     
@@ -111,6 +122,13 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         }
     }
     
+    @IBAction func pressDownloadButton(_ sender: Any) {
+        if saved {
+            removePodcast()
+        } else {
+            downloadPodcast()
+        }
+    }
     func animateImage(size: CGSize, duration: CFTimeInterval) {
         var shadowRect = imageView.bounds
         let fromRect = CGRect(x: shadowRect.origin.x, y: shadowRect.origin.y, width: shadowRect.width + 10, height: shadowRect.height + 10)
@@ -141,9 +159,45 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         }
     }
     
+    private func configureDownloadButton(downloaded: Bool, loading: Bool) {
+        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(image: downloaded ? UIImage(named: "download-done") :  UIImage(named: "add"),
+                                                                   style: .done,
+                                                                   target: self,
+                                                                   action: downloaded ?
+                                                                    #selector(PodcastDetailViewController.removePodcast) :
+                                                                    #selector(PodcastDetailViewController.downloadPodcast))]
+    }
+    
+    @objc private func removePodcast() {
+        guard let title = self.selectedPodcast.title else { return }
+        let _ = uninstaller?.uninstall(id: title).then { uninstalled in
+            self.saved = !uninstalled
+        }
+    }
+    
+    @objc private func downloadPodcast() {
+        guard let path = self.selectedPodcast.guid,
+            let title = self.selectedPodcast.title,
+            let url = URL(string: path) else {
+                return
+        }
+        let _ = MBClient().getPodcast(url: url).then { podcast in
+            return self.podcastStore.savePodcastData(data: podcast,
+                                                     path: title)
+        }.then { _ -> Void in
+            self.saved = true
+            self.configureDownloadButton(downloaded: true,
+                                         loading: false)
+        }
+    }
+    
     // MARK: - Podcast Player Subscriber
-    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool) {
+    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool) {
         DispatchQueue.main.async {
+            guard !isCanceled else {
+                self.handler?.dismissDetail()
+                return
+            }
             self.currentProgress = currentProgress
             self.totalDuration = totalDuration
             self.updateCurrentDuration()
