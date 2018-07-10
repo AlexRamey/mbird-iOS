@@ -85,7 +85,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.updateCurrentDuration()
         self.player.subscribe(self)
         self.saved = podcastStore.containsSavedPodcast(self.selectedPodcast)
-        configureDownloadButton(downloaded: self.saved, loading: false)
+        configureBarButtonItems(downloaded: self.saved)
         self.view.layoutIfNeeded()
     }
     
@@ -159,13 +159,21 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         }
     }
     
-    private func configureDownloadButton(downloaded: Bool, loading: Bool) {
-        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(image: downloaded ? UIImage(named: "download-done") :  UIImage(named: "add"),
-                                                                   style: .done,
-                                                                   target: self,
-                                                                   action: downloaded ?
-                                                                    #selector(PodcastDetailViewController.removePodcast) :
-                                                                    #selector(PodcastDetailViewController.downloadPodcast))]
+    private func configureBarButtonItems(downloaded: Bool) {
+        self.navigationItem.rightBarButtonItems = [getDownloadBarButton(downloaded: downloaded), getShareBarButton()]
+    }
+    
+    private func getDownloadBarButton(downloaded: Bool) -> UIBarButtonItem {
+        return UIBarButtonItem(image: downloaded ? UIImage(named: "download-done") :  UIImage(named: "add"),
+                               style: .done,
+                               target: self,
+                               action: downloaded ?
+                                #selector(PodcastDetailViewController.removePodcast) :
+                                #selector(PodcastDetailViewController.downloadPodcast))
+    }
+    
+    private func getShareBarButton() -> UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(PodcastDetailViewController.sharePodcast))
     }
     
     @objc private func removePodcast() {
@@ -186,8 +194,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
                                                      path: title)
         }.then { _ -> Void in
             self.saved = true
-            self.configureDownloadButton(downloaded: true,
-                                         loading: false)
+            self.configureBarButtonItems(downloaded: true)
         }
     }
     
@@ -216,5 +223,25 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
             
             self.isPlaying = isPlaying
         }
+    }
+    
+    @objc func sharePodcast(sender: Any) {
+        // set up activity view controller
+        let activityViewController = UIActivityViewController(activityItems: [ "\(selectedPodcast.feed.title): ", selectedPodcast.title ?? "", selectedPodcast.guid ?? "" ], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        // exclude some activity types from the list (optional)
+        activityViewController.excludedActivityTypes = [
+            .airDrop,
+            .assignToContact,
+            .openInIBooks,
+            .postToFlickr,
+            .postToVimeo,
+            .print,
+            .saveToCameraRoll
+        ]
+        
+        // present the view controller
+        self.present(activityViewController, animated: true, completion: nil)
     }
 }
