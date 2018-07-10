@@ -9,7 +9,6 @@
 import UIKit
 
 class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, UninstallerDelegate, PodcastDetailHandler {
-    var articleDAO: ArticleDAO?
     var childCoordinators: [Coordinator] = []
     var podcastDetailViewController: PodcastDetailViewController? {
         return navigationController.viewControllers.last as? PodcastDetailViewController

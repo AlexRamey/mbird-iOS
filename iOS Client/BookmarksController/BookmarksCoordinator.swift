@@ -14,7 +14,7 @@ class BookmarksCoordinator: NSObject, Coordinator, ArticlesTableViewDelegate, Ar
     var childCoordinators: [Coordinator] = []
     var overlay: URL?
     let managedObjectContext: NSManagedObjectContext
-    var articleDAO: ArticleDAO?
+    var articleDAO: ArticleDAO
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -24,9 +24,9 @@ class BookmarksCoordinator: NSObject, Coordinator, ArticlesTableViewDelegate, Ar
         return UINavigationController()
     }()
     
-    init(managedObjectContext: NSManagedObjectContext) {
+    init(dao: ArticleDAO, managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        self.articleDAO = MBArticlesStore(context: managedObjectContext)
+        self.articleDAO = dao
         super.init()
     }
     

@@ -32,5 +32,7 @@ struct Article {
 }
 
 protocol ArticleDAO {
+    func downloadImageURLsForArticle(_ article: Article, withCompletion completion: @escaping (URL?) -> Void)
+    func getArticles() -> [Article]
     func saveArticle(_ article: Article) -> Error?
 }

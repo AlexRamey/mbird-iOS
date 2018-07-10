@@ -42,6 +42,43 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     }
     
     /***** Article DAO *****/
+    func downloadImageURLsForArticle(_ article: Article, withCompletion completion: @escaping (URL?) -> Void) {
+        guard let entity = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
+            completion(nil)
+            return
+        }
+        
+        self.client.getImageById(Int(entity.imageID)) { image in
+            self.managedObjectContext.perform {
+                do {
+                    entity.thumbnailLink = image?.thumbnailUrl?.absoluteString
+                    entity.imageLink = image?.thumbnailUrl?.absoluteString
+                    try self.managedObjectContext.save()
+                    if let imageLink = entity.thumbnailLink ?? entity.imageLink,
+                        let url = URL(string: imageLink) {
+                        completion(url)
+                    } else {
+                        completion(nil)
+                    }
+                } catch {
+                    print("😅 unable to save image url for \(entity.articleID)")
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
+    func getArticles() -> [Article] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
+        fetchRequest.sortDescriptors = [sort]
+        if let articles = performFetch(fetchRequest: fetchRequest) as? [MBArticle] {
+            return articles.map { return $0.toDomain() }
+        } else {
+            return []
+        }
+    }
+    
     func saveArticle(_ article: Article) -> Error? {
         guard let _ = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
             return NSError(domain: "CD Adapter", code: 0, userInfo: nil)
@@ -59,16 +96,6 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     }
     
     /***** Read from Core Data *****/
-    func getAuthors() -> [MBAuthor] {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
-        return performFetch(fetchRequest: fetchRequest) as? [MBAuthor] ?? []
-    }
-    
-    func getCategories() -> [MBCategory] {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
-        return performFetch(fetchRequest: fetchRequest) as? [MBCategory] ?? []
-    }
-    
     func getCategoryByName(_ name: String) -> MBCategory? {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
         fetchRequest.predicate = NSPredicate(format: "name == %@", name)
@@ -78,7 +105,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return results.first
     }
     
-    func getArticles() -> [MBArticle] {
+    func getArticleEntities() -> [MBArticle] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
         let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
         fetchRequest.sortDescriptors = [sort]
@@ -141,33 +168,8 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         }
     }
     
-    func downloadImageURLsForArticle(_ article: MBArticle, withCompletion completion: @escaping (URL?) -> Void) {
-        self.client.getImageById(Int(article.imageID)) { image in
-            if let context = article.managedObjectContext {
-                context.perform {
-                    do {
-                        article.thumbnailLink = image?.thumbnailUrl?.absoluteString
-                        article.imageLink = image?.thumbnailUrl?.absoluteString
-                        try context.save()
-                        if let imageLink = article.thumbnailLink ?? article.imageLink,
-                            let url = URL(string: imageLink) {
-                             completion(url)
-                        } else {
-                            completion(nil)
-                        }
-                    } catch {
-                        print("😅 unable to save image url for \(article.articleID)")
-                        completion(nil)
-                    }
-                }
-            } else {
-                completion(nil)
-            }
-        }
-    }
-    
     private func resolveArticleImageURLs() {
-        let articles = self.getArticles()
+        let articles = self.getArticleEntities()
         self.managedObjectContext.perform {
             articles.forEach { (article) in
                 if (article.imageID > 0) && (article.imageLink == nil) {

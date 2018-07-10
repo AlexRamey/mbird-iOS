@@ -13,9 +13,9 @@ import Nuke
 import Preheat
 
 class ShowMoreViewController: UITableViewController {
-    var articlesStore: MBArticlesStore!
-    var currentCategory: MBCategory!
-    var articles: [MBArticle] = []
+    var articleDAO: ArticleDAO
+    var currentCategory: Category
+    var articles: [Article] = []
     var categoryIDs: [Int] = []
     var isLoadingMore = false
     var footerView: UIActivityIndicatorView?
@@ -24,11 +24,11 @@ class ShowMoreViewController: UITableViewController {
     var controller: Preheat.Controller<UITableView>?
     weak var delegate: ArticlesTableViewDelegate?
     
-    static func instantiateFromStoryboard(store: MBArticlesStore, category: MBCategory) -> ShowMoreViewController {
+    static func instantiateFromStoryboard(dao: ArticleDAO, category: Category) -> ShowMoreViewController {
         // swiftlint:disable force_cast
         let showMoreVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ShowMoreViewController") as! ShowMoreViewController
         // swiftlint:enable force_cast
-        showMoreVC.articlesStore = store
+        showMoreVC.articleDAO = dao
         showMoreVC.currentCategory = category
         return showMoreVC
     }
@@ -50,12 +50,11 @@ class ShowMoreViewController: UITableViewController {
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
         func requests(for indexPaths: [IndexPath]) -> [Request] {
-            return indexPaths.flatMap {
+            return indexPaths.compactMap {
                 let article = self.articles[$0.row]
                 
-                guard let link = article.thumbnailLink ?? article.imageLink,
-                    let url = URL(string: link) else {
-                        return nil
+                guard let url = article.image?.thumbnailUrl else {
+                    return nil
                 }
                 
                 var request = Request(url: url)
@@ -85,19 +84,23 @@ class ShowMoreViewController: UITableViewController {
         controller?.enabled = false
     }
     
-    private func configureCell(_ cell: CategoryArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
-        cell.setTitle(article.title?.convertHtml())
+    private func configureCell(_ cell: CategoryArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
+        cell.setTitle(article.title.convertHtml())
         
         cell.thumbnailImage.image = nil
-        if let savedData = article.image?.image {
-            cell.thumbnailImage.image = UIImage(data: savedData as Data)
-        } else if let imageLink = article.thumbnailLink ?? article.imageLink,
-            let url = URL(string: imageLink) {
-            Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
-        } else if article.imageID != 0 {
-            self.articlesStore?.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
+        if let imageLink = article.image?.thumbnailUrl {
+            Manager.shared.loadImage(with: imageLink, into: cell.thumbnailImage)
+        } else if article.imageId != 0 {
+            self.articleDAO.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
                 if url != nil {
                     DispatchQueue.main.async {
+                        self.articles = self.articles.map({ (item) -> Article in
+                            var mutableItem = item
+                            if item.id == article.id {
+                                mutableItem.image = Image(id: item.imageId, thumbnailUrl: url!, imageUrl: nil)
+                            }
+                            return mutableItem
+                        })
                         if self.tableView.indexPathsForVisibleItems.contains(indexPath) {
                             self.tableView.reloadRows(at: [indexPath], with: .automatic)
                         }
@@ -109,13 +112,13 @@ class ShowMoreViewController: UITableViewController {
     
     private func loadArticles() {
         self.categoryIDs = []
-        var catArticles: Set<MBArticle> = []
+        var catArticles: Set<Article> = []
         // DFS through the category tree rooted at currentCategory
         // to acquire the ids of all children categories and collect
         // any articles we already have associated with those categories
-        var stack: [MBCategory] = [self.currentCategory]
+        var stack: [Category] = [self.currentCategory]
         while let current = stack.popLast() {
-            self.categoryIDs.append(Int(current.categoryID))
+            self.categoryIDs.append(Int(current.id))
             if let articles = current.articles as? Set<MBArticle> {
                 catArticles.formUnion(articles)
             }

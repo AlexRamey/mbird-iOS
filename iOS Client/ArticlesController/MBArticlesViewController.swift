@@ -46,13 +46,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // dependencies
     let client: MBClient = MBClient()
-    var articlesStore: MBArticlesStore!
+    var articlesStore: ArticleDAO
     var searchController: UISearchController?
 
-    static func instantiateFromStoryboard() -> MBArticlesViewController {
+    static func instantiateFromStoryboard(dao: ArticleDAO) -> MBArticlesViewController {
         // swiftlint:disable force_cast
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
         // swiftlint:enable force_cast
+        vc.articlesStore = dao
         vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
         return vc
     }

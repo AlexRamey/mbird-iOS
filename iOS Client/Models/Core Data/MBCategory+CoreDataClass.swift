@@ -60,10 +60,19 @@ public class MBCategory: NSManagedObject {
     // which it returns. If called on a top-level category, this method returns the
     // receiver.
     func getTopLevelCategory() -> MBCategory? {
+        return self.getTopLevelCategoryInternal(loopGuard: 0)
+    }
+    
+    private func getTopLevelCategoryInternal(loopGuard: Int) -> MBCategory? {
+        if loopGuard > 50 {
+            // just in case they create a cycle . . .
+            return nil
+        }
+        
         if self.parentID == 0 {
             return self
         } else {
-            return self.parent?.getTopLevelCategory() ?? nil
+            return self.parent?.getTopLevelCategoryInternal(loopGuard:loopGuard+1) ?? nil
         }
     }
     

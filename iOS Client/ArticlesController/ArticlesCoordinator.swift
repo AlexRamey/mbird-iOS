@@ -13,12 +13,7 @@ import CoreData
 class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate, SFSafariViewControllerDelegate, ArticlesTableViewDelegate, ShowMoreArticlesDelegate, ArticleDetailDelegate {
     var childCoordinators: [Coordinator] = []
     var overlay: URL?
-    let managedObjectContext: NSManagedObjectContext
-    var articleDAO: ArticleDAO?
-    
-    private lazy var articlesStore = {
-       return MBArticlesStore(context: self.managedObjectContext)
-    }()
+    var articleDAO: ArticleDAO
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -28,9 +23,8 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
         return UINavigationController()
     }()
     
-    init(managedObjectContext: NSManagedObjectContext) {
-        self.managedObjectContext = managedObjectContext
-        self.articleDAO = MBArticlesStore(context: managedObjectContext)
+    init(dao: ArticleDAO) {
+        self.articleDAO = dao
         super.init()
     }
     
@@ -63,8 +57,7 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
     
     // MARK: - Coordinator
     func start() {
-        let articlesController = MBArticlesViewController.instantiateFromStoryboard()
-        articlesController.articlesStore = articlesStore
+        let articlesController = MBArticlesViewController.instantiateFromStoryboard(dao: self.articleDAO)
         articlesController.delegate = self
         articlesController.showMoreDelegate = self
         self.navigationController.pushViewController(articlesController, animated: true)
