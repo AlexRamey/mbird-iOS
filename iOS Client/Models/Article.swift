@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PromiseKit
 
 struct Article {
     var id: Int
@@ -29,10 +30,23 @@ struct Article {
     mutating func resolveCategories(dao: CategoryDAO) {
         self.categories = dao.getCategoriesById(self.categoryIds)
     }
+    
+    func getDate() -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        if let timeZone = TimeZone(identifier: "GMT") {
+            dateFormatter.timeZone = timeZone
+        }
+        return dateFormatter.date(from: self.date)
+    }
 }
 
 protocol ArticleDAO {
+    func deleteOldArticles(completion: @escaping (Int) -> Void)
     func downloadImageURLsForArticle(_ article: Article, withCompletion completion: @escaping (URL?) -> Void)
     func getArticles() -> [Article]
+    func getLatestCategoryArticles(categoryIDs: [Int], skip: Int) -> [Article]
     func saveArticle(_ article: Article) -> Error?
+    func syncAllData() -> Promise<Bool>
+    func syncCategoryArticles(categories: [Int], excluded: [Int]) -> Promise<Bool>
 }

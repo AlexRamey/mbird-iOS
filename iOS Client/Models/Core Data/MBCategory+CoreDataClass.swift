@@ -76,6 +76,26 @@ public class MBCategory: NSManagedObject {
         }
     }
     
+    func getAllDescendants() -> [MBCategory] {
+        var retVal: Set<MBCategory> = []
+        var queue: [MBCategory] = (self.children?.allObjects as? [MBCategory]) ?? []
+        
+        var loopGuard = 0 // just in case they create a cycle
+        while let current = queue.popLast() {
+            guard loopGuard < 1000 else {
+                return Array(retVal)
+            }
+            loopGuard += 1
+            
+            retVal.insert(current)
+            if let children = current.children?.allObjects as? [MBCategory] {
+                queue.insert(contentsOf: children, at: 0)
+            }
+        }
+        
+        return Array(retVal)
+    }
+    
     func toDomain() -> Category {
         return Category(id: Int(self.categoryID), name: self.name ?? "", parentId: Int(self.parentID))
     }

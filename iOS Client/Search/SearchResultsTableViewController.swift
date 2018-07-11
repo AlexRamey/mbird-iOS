@@ -15,7 +15,8 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     let reuseIdentifier = "searchResultCellReuseIdentifier"
     var searchBar: UISearchBar?
-    var store: MBArticlesStore!
+    var authorDAO: AuthorDAO!
+    var categoryDAO: CategoryDAO!
     var debouncedSearch: Debouncer!
     weak var delegate: ArticlesTableViewDelegate?
     
@@ -33,16 +34,18 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     // dependencies
     let client = MBClient()
     
-    static func instantiateFromStoryboard() -> SearchResultsTableViewController {
+    static func instantiateFromStoryboard(authorDAO: AuthorDAO, categoryDAO: CategoryDAO) -> SearchResultsTableViewController {
         // swiftlint:disable force_cast
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleSearchResultsVC") as! SearchResultsTableViewController
+        // swiftlint:enable force_cast
         vc.debouncedSearch = Debouncer(delay: 1.0, callback: { (searchController) in
             DispatchQueue.main.async {
                 vc.doSearch(for: searchController)
             }
         })
+        vc.authorDAO = authorDAO
+        vc.categoryDAO = categoryDAO
         return vc
-        // swiftlint:enable force_cast
     }
     
     override func viewDidLoad() {
@@ -153,8 +156,8 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
             
             var results = articles
             for index in 0..<results.count {
-                results[index].resolveAuthor(dao: self.store)
-                results[index].resolveCategories(dao: self.store)
+                results[index].resolveAuthor(dao: self.authorDAO)
+                results[index].resolveCategories(dao: self.categoryDAO)
             }
             
             self.client.getImagesById(results.map {$0.imageId}, completion: { (images) in

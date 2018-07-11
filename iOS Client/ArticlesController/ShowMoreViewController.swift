@@ -6,15 +6,15 @@
 //  Copyright © 2018 Mockingbird. All rights reserved.
 //
 
-import CoreData
 import UIKit
 import PromiseKit
 import Nuke
 import Preheat
 
 class ShowMoreViewController: UITableViewController {
-    var articleDAO: ArticleDAO
-    var currentCategory: Category
+    var articleDAO: ArticleDAO!
+    var categoryDAO: CategoryDAO!
+    var currentCategory: Category!
     var articles: [Article] = []
     var categoryIDs: [Int] = []
     var isLoadingMore = false
@@ -24,11 +24,12 @@ class ShowMoreViewController: UITableViewController {
     var controller: Preheat.Controller<UITableView>?
     weak var delegate: ArticlesTableViewDelegate?
     
-    static func instantiateFromStoryboard(dao: ArticleDAO, category: Category) -> ShowMoreViewController {
+    static func instantiateFromStoryboard(articleDAO: ArticleDAO, categoryDAO: CategoryDAO, category: Category) -> ShowMoreViewController {
         // swiftlint:disable force_cast
         let showMoreVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ShowMoreViewController") as! ShowMoreViewController
         // swiftlint:enable force_cast
-        showMoreVC.articleDAO = dao
+        showMoreVC.articleDAO = articleDAO
+        showMoreVC.categoryDAO = categoryDAO
         showMoreVC.currentCategory = category
         return showMoreVC
     }
@@ -111,43 +112,22 @@ class ShowMoreViewController: UITableViewController {
     }
     
     private func loadArticles() {
-        self.categoryIDs = []
-        var catArticles: Set<Article> = []
-        // DFS through the category tree rooted at currentCategory
-        // to acquire the ids of all children categories and collect
-        // any articles we already have associated with those categories
-        var stack: [Category] = [self.currentCategory]
-        while let current = stack.popLast() {
-            self.categoryIDs.append(Int(current.id))
-            if let articles = current.articles as? Set<MBArticle> {
-                catArticles.formUnion(articles)
-            }
-            if let children = current.children?.allObjects as? [MBCategory] {
-                stack.append(contentsOf: children)
-            }
-        }
-        
         // Load articles we already have into the table view (catArticles)
-        self.articles = sortedByDate(articles: catArticles)
+        self.categoryIDs = [self.currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: self.currentCategory).map { return $0.id }
+        self.articles = self.articleDAO.getLatestCategoryArticles(categoryIDs: self.categoryIDs, skip: 0)
         self.tableView.reloadData()
-        
         if self.articles.count < 10 {
             self.loadMore()
         }
     }
     
     private func loadMoreArticlesWithCompletion(_ completion: @escaping () -> Void) {
-        guard let store = self.articlesStore else {
-            completion()
-            return
-        }
-        
         firstly {
-            store.syncCategoryArticles(categories: self.categoryIDs, excluded: self.articles.map {Int($0.articleID)} )
+            self.articleDAO.syncCategoryArticles(categories: self.categoryIDs, excluded: self.articles.map { $0.id })
         }.then { isNewData -> Void in
             if isNewData {
                 DispatchQueue.main.async {
-                    let newArticles = store.getCategoryArticles(categoryIDs: self.categoryIDs, skip: self.articles.count)
+                    let newArticles = self.articleDAO.getLatestCategoryArticles(categoryIDs: self.categoryIDs, skip: self.articles.count)
                     self.addMoreArticles(newArticles)
                 }
             }
@@ -158,27 +138,24 @@ class ShowMoreViewController: UITableViewController {
         }
     }
     
-    private func addMoreArticles(_ newArticles: [MBArticle]) {
+    private func addMoreArticles(_ newArticles: [Article]) {
         if newArticles.count > 0 {
-            let existingArticles = Set<MBArticle>(self.articles)
-            let newSet = existingArticles.union(newArticles)
-            self.articles = sortedByDate(articles: newSet)
+            newArticles.forEach { (newArticle) in
+                if !self.articles.contains { $0.id == newArticle.id } {
+                    self.articles.append(newArticle)
+                }
+            }
+            self.articles.sort { (articleI, articleJ) -> Bool in
+                if let iDate = articleI.getDate(), let jDate = articleJ.getDate() {
+                    return iDate.compare(jDate) == .orderedDescending
+                } else if articleI.getDate() != nil {
+                    return true // favor existant iDate over non-existant jDate
+                } else {
+                    return false // favor existant jDate or consider these to be equal
+                }
+            }
             self.tableView.reloadData()
         }
-    }
-    
-    private func sortedByDate(articles: Set<MBArticle>) -> [MBArticle] {
-        return articles.sorted(by: { (articleI, articleJ) -> Bool in
-            if let iDate = articleI.date as Date?, let jDate = articleJ.date as Date? {
-                return iDate.compare(jDate) == .orderedDescending
-            } else if articleI.date != nil {
-                return true // favor existant iDate over non-existant jDate
-            } else if articleJ.date != nil {
-                return false // favor existant jDate over non-existant iDate
-            } else {
-                return false // consider these to be equal since both dates are non-present
-            }
-        })
     }
     
     private func loadMore() {
@@ -210,7 +187,7 @@ class ShowMoreViewController: UITableViewController {
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let delegate = self.delegate {
-            delegate.selectedArticle(articles[indexPath.row].toDomain())
+            delegate.selectedArticle(articles[indexPath.row])
         }
     }
     

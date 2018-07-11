@@ -41,7 +41,63 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return []
     }
     
+    func getCategoryByName(_ name: String) -> Category? {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
+        fetchRequest.predicate = NSPredicate(format: "name == %@", name)
+        guard let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] else {
+            return nil
+        }
+        return results.first?.toDomain()
+    }
+    
+    func getDescendentsOfCategory(cat: Category) -> [Category] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
+        fetchRequest.predicate = NSPredicate(format: "categoryID == %d", cat.id)
+        if let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] {
+            return results.first?.getAllDescendants().map { return $0.toDomain() } ?? []
+        }
+        return []
+    }
+    
     /***** Article DAO *****/
+    /***** Data Cleanup Task *****/
+    func deleteOldArticles(completion: @escaping (Int) -> Void) {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: false))
+        
+        self.managedObjectContext.perform {
+            guard let count = try? self.managedObjectContext.count(for: fetchRequest) else {
+                completion(0)
+                return
+            }
+            
+            let numToDelete = count - MBConstants.MAX_ARTICLES_ON_DEVICE
+            guard numToDelete > 0 else {
+                completion(0)
+                return
+            }
+            
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: true)]
+            fetchRequest.fetchLimit = numToDelete
+            guard let articlesToDelete = try? self.managedObjectContext.fetch(fetchRequest) else {
+                completion(0)
+                return
+            }
+            
+            articlesToDelete.forEach({ (article) in
+                self.managedObjectContext.delete(article)
+            })
+            
+            do {
+                try self.managedObjectContext.save()
+                completion(articlesToDelete.count)
+            } catch let error as NSError {
+                print("Could not save context: \(error), \(error.userInfo)")
+                completion(0)
+            }
+        }
+    }
+    
     func downloadImageURLsForArticle(_ article: Article, withCompletion completion: @escaping (URL?) -> Void) {
         guard let entity = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
             completion(nil)
@@ -79,6 +135,15 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         }
     }
     
+    func getLatestCategoryArticles(categoryIDs: [Int], skip: Int) -> [Article] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
+        fetchRequest.sortDescriptors = [sort]
+        fetchRequest.fetchOffset = skip
+        fetchRequest.predicate = NSPredicate(format: "ANY categories.categoryID in %@", categoryIDs)
+        return (performFetch(fetchRequest: fetchRequest) as? [MBArticle])?.map { $0.toDomain() } ?? []
+    }
+    
     func saveArticle(_ article: Article) -> Error? {
         guard let _ = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
             return NSError(domain: "CD Adapter", code: 0, userInfo: nil)
@@ -95,29 +160,60 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return err
     }
     
-    /***** Read from Core Data *****/
-    func getCategoryByName(_ name: String) -> MBCategory? {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
-        fetchRequest.predicate = NSPredicate(format: "name == %@", name)
-        guard let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] else {
-            return nil
+    /***** Download Data from Network *****/
+    func syncAllData() -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            var results: [Bool] = []
+            let bgq = DispatchQueue.global(qos: .userInitiated)
+            firstly {
+                downloadAuthors()
+                }.then(on: bgq) { result -> Promise<Bool> in
+                    results.append(result)
+                    return self.downloadCategories()
+                }.then(on: bgq) { result -> Promise<Bool> in
+                    results.append(result)
+                    if let linkErr = self.linkCategoriesTogether() {
+                        reject(linkErr)
+                    }
+                    return self.downloadArticles()
+                }.then(on: bgq) { result -> Void in
+                    results.append(result)
+                    
+                    // fire off requests to get the image urls
+                    self.resolveArticleImageURLs()
+                    
+                    fulfill(results.reduce(false, { (accumulator, item) -> Bool in
+                        return accumulator || item
+                    }))
+                }.catch { error in
+                    print("There was an error downloading data! \(error)")
+                    reject(error)
+            }
         }
-        return results.first
     }
     
+    public func syncCategoryArticles(categories: [Int], excluded: [Int]) -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            firstly {
+                performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
+                    client.getRecentArticles(inCategories: categories, excludingArticlesWithIDs: excluded, withCompletion: completion)
+                }, deserializeFunc: MBArticle.deserialize)
+                }.then() { result -> Void in
+                    // fire off requests to get the image urls
+                    self.resolveArticleImageURLs()
+                    fulfill(result)
+                }.catch { error in
+                    print("There was an error downloading data! \(error)")
+                    reject(error)
+            }
+        }
+    }
+    
+    /***** Read from Core Data *****/
     func getArticleEntities() -> [MBArticle] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
         let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
         fetchRequest.sortDescriptors = [sort]
-        return performFetch(fetchRequest: fetchRequest) as? [MBArticle] ?? []
-    }
-    
-    func getCategoryArticles(categoryIDs: [Int], skip: Int) -> [MBArticle] {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
-        let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
-        fetchRequest.sortDescriptors = [sort]
-        fetchRequest.fetchOffset = skip
-        fetchRequest.predicate = NSPredicate(format: "ANY categories.categoryID in %@", categoryIDs)
         return performFetch(fetchRequest: fetchRequest) as? [MBArticle] ?? []
     }
     
@@ -134,38 +230,6 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         }
         
         return retVal
-    }
-    
-    /***** Download Data from Network *****/
-    func syncAllData() -> Promise<Bool> {
-        return Promise { fulfill, reject in
-            var results: [Bool] = []
-            let bgq = DispatchQueue.global(qos: .userInitiated)
-            firstly {
-                downloadAuthors()
-            }.then(on: bgq) { result -> Promise<Bool> in
-                results.append(result)
-                return self.downloadCategories()
-            }.then(on: bgq) { result -> Promise<Bool> in
-                results.append(result)
-                if let linkErr = self.linkCategoriesTogether() {
-                    reject(linkErr)
-                }
-                return self.downloadArticles()
-            }.then(on: bgq) { result -> Void in
-                results.append(result)
-                
-                // fire off requests to get the image urls
-                self.resolveArticleImageURLs()
-                
-                fulfill(results.reduce(false, { (accumulator, item) -> Bool in
-                    return accumulator || item
-                }))
-            }.catch { error in
-                print("There was an error downloading data! \(error)")
-                reject(error)
-            }
-        }
     }
     
     private func resolveArticleImageURLs() {
@@ -224,23 +288,6 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     
     private func downloadArticles() -> Promise<Bool> {
         return performDownload(clientFunction: client.getRecentArticlesWithCompletion, deserializeFunc: MBArticle.deserialize)
-    }
-    
-    public func syncCategoryArticles(categories: [Int], excluded: [Int]) -> Promise<Bool> {
-        return Promise { fulfill, reject in
-            firstly {
-                performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
-                    client.getRecentArticles(inCategories: categories, excludingArticlesWithIDs: excluded, withCompletion: completion)
-                }, deserializeFunc: MBArticle.deserialize)
-            }.then() { result -> Void in
-                    // fire off requests to get the image urls
-                    self.resolveArticleImageURLs()
-                    fulfill(result)
-            }.catch { error in
-                    print("There was an error downloading data! \(error)")
-                    reject(error)
-            }
-        }
     }
     
     // An internal helper function to perform a download
@@ -308,43 +355,4 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
             throw MBDeserializationError.contractMismatch(msg: "unable to cast json object into an array of NSDictionary objects")
         }
     }
-    
-    /***** Data Cleanup Task *****/
-    func deleteOldArticles(completion: @escaping (Int) -> Void) {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
-        fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: false))
-        
-        self.managedObjectContext.perform {
-            guard let count = try? self.managedObjectContext.count(for: fetchRequest) else {
-                completion(0)
-                return
-            }
-            
-            let numToDelete = count - MBConstants.MAX_ARTICLES_ON_DEVICE
-            guard numToDelete > 0 else {
-                completion(0)
-                return
-            }
-            
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: true)]
-            fetchRequest.fetchLimit = numToDelete
-            guard let articlesToDelete = try? self.managedObjectContext.fetch(fetchRequest) else {
-                completion(0)
-                return
-            }
-            
-            articlesToDelete.forEach({ (article) in
-                self.managedObjectContext.delete(article)
-            })
-            
-            do {
-                try self.managedObjectContext.save()
-                completion(articlesToDelete.count)
-            } catch let error as NSError {
-                print("Could not save context: \(error), \(error.userInfo)")
-                completion(0)
-            }
-        }
-    }
-    
 }

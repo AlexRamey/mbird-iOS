@@ -23,10 +23,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
     
-    var olderArticlesByCategory = [String: [MBArticle]]()
+    var olderArticlesByCategory = [String: [Article]]()
     var topLevelCategories: [String] = []
     
-    var latestArticles: [MBArticle] = []
+    var latestArticles: [Article] = []
     let numLatest = 10
     let numOlderPerCategory = 5
     let featuredReuseIdentifier = "featuredReuseIdentifier"
@@ -46,14 +46,18 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // dependencies
     let client: MBClient = MBClient()
-    var articlesStore: ArticleDAO
+    var articlesStore: ArticleDAO!
+    var authorDAO: AuthorDAO!
+    var categoryDAO: CategoryDAO!
     var searchController: UISearchController?
 
-    static func instantiateFromStoryboard(dao: ArticleDAO) -> MBArticlesViewController {
+    static func instantiateFromStoryboard(articleDAO: ArticleDAO, authorDAO: AuthorDAO, categoryDAO: CategoryDAO) -> MBArticlesViewController {
         // swiftlint:disable force_cast
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
         // swiftlint:enable force_cast
-        vc.articlesStore = dao
+        vc.articlesStore = articleDAO
+        vc.authorDAO = authorDAO
+        vc.categoryDAO = categoryDAO
         vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
         return vc
     }
@@ -83,7 +87,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
         
-        let searchResultsController = SearchResultsTableViewController.instantiateFromStoryboard()
+        let searchResultsController = SearchResultsTableViewController.instantiateFromStoryboard(authorDAO: self.authorDAO, categoryDAO: self.categoryDAO)
         searchResultsController.delegate = self.delegate
         self.searchController = UISearchController(searchResultsController: searchResultsController)
         self.searchController?.hidesNavigationBarDuringPresentation = false
@@ -93,7 +97,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             searchBar.backgroundImage = UIImage()
             searchBar.isTranslucent = false
         }
-        searchResultsController.store = self.articlesStore
         self.searchController?.searchResultsUpdater = searchResultsController
         self.searchController?.delegate = self
         self.definesPresentationContext = true
@@ -103,30 +106,30 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
         func requests(for indexPaths: [IndexPath]) -> [Request] {
-            return indexPaths.flatMap {
-                var link: String?
+            return indexPaths.compactMap {
+                var url: URL?
                 switch rowTypeForPath($0) {
                 case .featured:
                     guard let article = articleForPath($0) else {
                         return nil
                     }
-                    link = article.imageLink ?? article.thumbnailLink
+                    url = article.image?.imageUrl ?? article.image?.thumbnailUrl
                 case .recent, .category:
                     guard let article = articleForPath($0) else {
                         return nil
                     }
-                    link = article.thumbnailLink ?? article.imageLink
+                    url = article.image?.thumbnailUrl ?? article.image?.imageUrl
                 default:
                     break
                 }
                 
-                guard let imageLink = link, let url = URL(string: imageLink) else {
-                    return nil
+                if let resolvedURL = url {
+                    var request = Request(url: resolvedURL)
+                    request.priority = .low
+                    return request
                 }
                 
-                var request = Request(url: url)
-                request.priority = .low
-                return request
+                return nil
             }
         }
         
@@ -193,69 +196,65 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             DispatchQueue.main.async {
                 let articles = self.articlesStore.getArticles()
                 self.latestArticles = self.getLatestArticles(articles: articles)
-                self.olderArticlesByCategory = self.groupArticlesByTopLevelCategoryName(articles: articles)
+                let olderArticles = articles.filter { (article) -> Bool in
+                    return !self.latestArticles.contains { $0.id == article.id }
+                }
+                self.olderArticlesByCategory = self.groupArticlesByTopLevelCategoryName(articles: olderArticles)
                 self.topLevelCategories = Array(self.olderArticlesByCategory.keys).sorted()
                 self.tableView.reloadData()
             }
         })
     }
     
-    private func getLatestArticles(articles: [MBArticle]) -> [MBArticle] {
+    private func getLatestArticles(articles: [Article]) -> [Article] {
         let articlesWithImages = articles.filter { (article) -> Bool in
-            return article.imageID != 0
+            return article.imageId != 0
         }
         return Array(articlesWithImages.prefix(numLatest))
     }
     
-    private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
-        cell.setTitle(article.title?.convertHtml())
-        cell.setCategory(article.getTopLevelCategories().first)
-        cell.setDate(date: article.date as Date?)
+    private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
+        cell.setTitle(article.title.convertHtml())
+        cell.setCategory(article.categories.first?.name)
+        cell.setDate(date: article.getDate())
         
         cell.featuredImage.image = nil
-        if let savedData = article.image?.image {
-            cell.featuredImage.image = UIImage(data: savedData as Data)
-        } else if let imageLink = article.imageLink ?? article.thumbnailLink,
-                  let url = URL(string: imageLink) {
+        if let url = article.image?.thumbnailUrl {
             Manager.shared.loadImage(with: url, into: cell.featuredImage)
-        } else if article.imageID != 0 {
+        } else if article.imageId != 0 {
             self.downloadImageForArticle(article: article, atIndexPath: indexPath)
         }
     }
 
-    private func configureRecentCell(_ cell: RecentArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
-        cell.setTitle(article.title?.convertHtml())
-        cell.setCategory(article.getTopLevelCategories().first)
-        cell.setDate(date: article.date as Date?)
+    private func configureRecentCell(_ cell: RecentArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
+        cell.setTitle(article.title.convertHtml())
+        cell.setCategory(article.categories.first?.name)
+        cell.setDate(date: article.getDate())
         
         cell.thumbnailImage.image = nil
-        if let savedData = article.image?.image {
-            cell.thumbnailImage.image = UIImage(data: savedData as Data)
-        } else if let imageLink = article.thumbnailLink ?? article.imageLink, let url = URL(string: imageLink) {
+        if let url = article.image?.thumbnailUrl {
             Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
-        } else if article.imageID != 0 {
+        } else if article.imageId != 0 {
             self.downloadImageForArticle(article: article, atIndexPath: indexPath)
         }
     }
     
-    private func configureCategoryArticleCell(_ cell: CategoryArticleTableViewCell, withArticle article: MBArticle, atIndexPath indexPath: IndexPath) {
-        cell.setTitle(article.title?.convertHtml())
+    private func configureCategoryArticleCell(_ cell: CategoryArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
+        cell.setTitle(article.title.convertHtml())
         
         cell.thumbnailImage.image = nil
-        if let savedData = article.image?.image {
-            cell.thumbnailImage.image = UIImage(data: savedData as Data)
-        } else if let imageLink = article.thumbnailLink ?? article.imageLink,
-                  let url = URL(string: imageLink) {
+        if let url = article.image?.thumbnailUrl {
             Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
-        } else if article.imageID != 0 {
+        } else if article.imageId != 0 {
             self.downloadImageForArticle(article: article, atIndexPath: indexPath)
         }
     }
     
-    private func downloadImageForArticle(article: MBArticle, atIndexPath indexPath: IndexPath) {
+    private func downloadImageForArticle(article: Article, atIndexPath indexPath: IndexPath) {
         self.articlesStore.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
-            if url != nil {
+            if let url = url {
                 DispatchQueue.main.async {
+                    self.setArticleImageURL(article, url: url)
                     if self.tableView.indexPathsForVisibleItems.contains(indexPath) {
                         self.tableView.reloadRows(at: [indexPath], with: .automatic)
                     }
@@ -264,20 +263,34 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     
-    private func groupArticlesByTopLevelCategoryName(articles: [MBArticle]) -> [String: [MBArticle]] {
-        var retVal = [String: [MBArticle]]()
-        
-        let olderArticles = articles.filter { (article) -> Bool in
-            return !latestArticles.contains(article)
+    private func setArticleImageURL(_ article: Article, url: URL) {
+        if let idx = self.latestArticles.index (where: { $0.id == article.id }) {
+            self.latestArticles[idx].image = Image(id: article.imageId, thumbnailUrl: url, imageUrl: nil)
         }
         
-        olderArticles.forEach { (article) in
-            article.getTopLevelCategories().forEach({ (cat) in
-                if retVal[cat] == nil {
-                    retVal[cat] = []
+        for key in self.topLevelCategories {
+            if let categoryArticles = self.olderArticlesByCategory[key] {
+                self.olderArticlesByCategory[key] = categoryArticles.map {
+                    var mutableItem = $0
+                    if $0.id == article.id {
+                        mutableItem.image = Image(id: $0.imageId, thumbnailUrl: url, imageUrl: nil)
+                    }
+                    return mutableItem
                 }
-                if let cnt = retVal[cat]?.count, cnt < numOlderPerCategory {
-                    retVal[cat]?.append(article)
+            }
+        }
+    }
+    
+    private func groupArticlesByTopLevelCategoryName(articles: [Article]) -> [String: [Article]] {
+        var retVal = [String: [Article]]()
+        
+        articles.forEach { (article) in
+            article.categories.forEach({ (cat) in
+                if retVal[cat.name] == nil {
+                    retVal[cat.name] = []
+                }
+                if let cnt = retVal[cat.name]?.count, cnt < numOlderPerCategory {
+                    retVal[cat.name]?.append(article)
                 }
             })
         }
@@ -302,7 +315,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    private func articleForPath(_ indexPath: IndexPath) -> MBArticle? {
+    private func articleForPath(_ indexPath: IndexPath) -> Article? {
         switch rowTypeForPath(indexPath) {
         case .featured, .recent:
             return self.latestArticles[indexPath.row]
@@ -401,7 +414,7 @@ extension MBArticlesViewController {
             }
         } else if let article = articleForPath(indexPath) {
             if let delegate = self.delegate {
-                delegate.selectedArticle(article.toDomain())
+                delegate.selectedArticle(article)
             }
         }
     }

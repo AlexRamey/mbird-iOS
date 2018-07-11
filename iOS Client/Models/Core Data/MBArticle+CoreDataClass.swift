@@ -74,12 +74,7 @@ public class MBArticle: NSManagedObject {
         linkArticle(resolvedArticle, toAuthor: from.authorId)
         linkArticle(resolvedArticle, toCategories: from.categoryIds)
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        if let timeZone = TimeZone(identifier: "GMT") {
-            dateFormatter.timeZone = timeZone
-        }
-        resolvedArticle.date = dateFormatter.date(from: from.date) as NSDate?
+        resolvedArticle.date = from.getDate() as NSDate?
         return resolvedArticle
     }
     
