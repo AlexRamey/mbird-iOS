@@ -148,7 +148,7 @@ extension MBBookmarksViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if let delegate = self.delegate {
             let selectedArticle = fetchedResultsController.object(at: indexPath)
-            delegate.selectedArticle(selectedArticle.toDomain())
+            delegate.selectedArticle(selectedArticle.toDomain(), categoryContext: nil)
         }
     }
 }

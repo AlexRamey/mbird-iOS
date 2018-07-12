@@ -24,7 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
-        self.appCoordinator = AppCoordinator(window: self.window!, managedObjectContext: coreDataStack.managedContext)
+        // inject dependencies
+        let managedObjectContext = coreDataStack.managedContext
+        let articleStore = MBArticlesStore(context: managedObjectContext)
+        let articleDAO: ArticleDAO = articleStore
+        let authorDAO: AuthorDAO = articleStore
+        let categoryDAO: CategoryDAO = articleStore
+        
+        self.appCoordinator = AppCoordinator(window: self.window!, articleDAO: articleDAO, authorDAO: authorDAO, categoryDAO: categoryDAO, managedObjectContext: managedObjectContext)
         self.appCoordinator.start()
         
         application.setMinimumBackgroundFetchInterval(MBConstants.SECONDS_IN_A_DAY)

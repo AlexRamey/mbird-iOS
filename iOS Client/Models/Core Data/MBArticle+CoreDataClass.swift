@@ -74,12 +74,7 @@ public class MBArticle: NSManagedObject {
         linkArticle(resolvedArticle, toAuthor: from.authorId)
         linkArticle(resolvedArticle, toCategories: from.categoryIds)
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        if let timeZone = TimeZone(identifier: "GMT") {
-            dateFormatter.timeZone = timeZone
-        }
-        resolvedArticle.date = dateFormatter.date(from: from.date) as NSDate?
+        resolvedArticle.date = from.getDate() as NSDate?
         return resolvedArticle
     }
     
@@ -150,16 +145,10 @@ public class MBArticle: NSManagedObject {
             strDate = dateFormatter.string(from: date)
         }
 
-        var catIds: [Int] = []
-        var cats: [Category] = []
-        if let categories = self.categories {
-            categories.forEach { (item) in
-                if let cat = item as? MBCategory {
-                    catIds.append(Int(cat.categoryID))
-                    cats.append(cat.toDomain())
-                }
-            }
-        }
+
+        let categories = self.getTopLevelCategories()
+        let catIds: [Int] = categories.map { return Int($0.categoryID) }
+        let cats: [Category] = categories.map { return $0.toDomain() }
         
         var image: Image?
         if self.imageID != 0, let imageLink = self.imageLink {
@@ -169,12 +158,12 @@ public class MBArticle: NSManagedObject {
         return Article(id: Int(self.articleID), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: Int(self.authorID), author: self.author?.toDomain(), imageId: Int(self.imageID), image: image, content: self.content ?? "", categoryIds: catIds, categories: cats, isBookmarked: self.isBookmarked)
     }
     
-    func getTopLevelCategories() -> Set<String> {
+    private func getTopLevelCategories() -> [MBCategory] {
         guard let cats = self.categories else {
             return []
         }
         
         // use a set to remove duplicates
-        return Set(cats.flatMap { return ($0 as? MBCategory)?.getTopLevelCategory()?.name })
+        return Array(Set(cats.compactMap { return ($0 as? MBCategory)?.getTopLevelCategory() }))
     }
 }

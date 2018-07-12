@@ -8,17 +8,13 @@
 
 import UIKit
 import SafariServices
-import CoreData
 
 class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate, SFSafariViewControllerDelegate, ArticlesTableViewDelegate, ShowMoreArticlesDelegate, ArticleDetailDelegate {
     var childCoordinators: [Coordinator] = []
     var overlay: URL?
-    let managedObjectContext: NSManagedObjectContext
-    var articleDAO: ArticleDAO?
-    
-    private lazy var articlesStore = {
-       return MBArticlesStore(context: self.managedObjectContext)
-    }()
+    var articleDAO: ArticleDAO
+    var authorDAO: AuthorDAO
+    var categoryDAO: CategoryDAO
     
     var rootViewController: UIViewController {
         return self.navigationController
@@ -28,23 +24,24 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
         return UINavigationController()
     }()
     
-    init(managedObjectContext: NSManagedObjectContext) {
-        self.managedObjectContext = managedObjectContext
-        self.articleDAO = MBArticlesStore(context: managedObjectContext)
+    init(articleDAO: ArticleDAO, authorDAO: AuthorDAO, categoryDAO: CategoryDAO) {
+        self.articleDAO = articleDAO
+        self.authorDAO = authorDAO
+        self.categoryDAO = categoryDAO
         super.init()
     }
     
     // MARK: - Articles Table View Delegate
-    func selectedArticle(_ article: Article) {
-        let detailVC = MBArticleDetailViewController.instantiateFromStoryboard(article: article, dao: articleDAO)
+    func selectedArticle(_ article: Article, categoryContext: String?) {
+        let detailVC = MBArticleDetailViewController.instantiateFromStoryboard(article: article, categoryContext: categoryContext, dao: self.articleDAO)
         detailVC.delegate = self
         self.navigationController.pushViewController(detailVC, animated: true)
     }
     
     // MARK: - Show More Articles Delegate
     func showMoreArticlesForCategory(_ categoryName: String) {
-        if let cat = self.articlesStore.getCategoryByName(categoryName) {
-            let showMoreVC = ShowMoreViewController.instantiateFromStoryboard(store: self.articlesStore, category: cat)
+        if let cat = self.categoryDAO.getCategoryByName(categoryName) {
+            let showMoreVC = ShowMoreViewController.instantiateFromStoryboard(articleDAO: self.articleDAO, categoryDAO: self.categoryDAO, category: cat)
             self.navigationController.pushViewController(showMoreVC, animated: true)
         }
     }
@@ -63,8 +60,7 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
     
     // MARK: - Coordinator
     func start() {
-        let articlesController = MBArticlesViewController.instantiateFromStoryboard()
-        articlesController.articlesStore = articlesStore
+        let articlesController = MBArticlesViewController.instantiateFromStoryboard(articleDAO: self.articleDAO, authorDAO: self.authorDAO, categoryDAO: self.categoryDAO)
         articlesController.delegate = self
         articlesController.showMoreDelegate = self
         self.navigationController.pushViewController(articlesController, animated: true)

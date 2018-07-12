@@ -60,11 +60,40 @@ public class MBCategory: NSManagedObject {
     // which it returns. If called on a top-level category, this method returns the
     // receiver.
     func getTopLevelCategory() -> MBCategory? {
+        return self.getTopLevelCategoryInternal(loopGuard: 0)
+    }
+    
+    private func getTopLevelCategoryInternal(loopGuard: Int) -> MBCategory? {
+        if loopGuard > 50 {
+            // just in case they create a cycle . . .
+            return nil
+        }
+        
         if self.parentID == 0 {
             return self
         } else {
-            return self.parent?.getTopLevelCategory() ?? nil
+            return self.parent?.getTopLevelCategoryInternal(loopGuard:loopGuard+1) ?? nil
         }
+    }
+    
+    func getAllDescendants() -> [MBCategory] {
+        var retVal: Set<MBCategory> = []
+        var queue: [MBCategory] = (self.children?.allObjects as? [MBCategory]) ?? []
+        
+        var loopGuard = 0 // just in case they create a cycle
+        while let current = queue.popLast() {
+            guard loopGuard < 1000 else {
+                return Array(retVal)
+            }
+            loopGuard += 1
+            
+            retVal.insert(current)
+            if let children = current.children?.allObjects as? [MBCategory] {
+                queue.insert(contentsOf: children, at: 0)
+            }
+        }
+        
+        return Array(retVal)
     }
     
     func toDomain() -> Category {
