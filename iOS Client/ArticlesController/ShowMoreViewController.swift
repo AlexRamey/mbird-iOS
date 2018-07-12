@@ -187,7 +187,7 @@ class ShowMoreViewController: UITableViewController {
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let delegate = self.delegate {
-            delegate.selectedArticle(articles[indexPath.row])
+            delegate.selectedArticle(articles[indexPath.row], categoryContext: self.currentCategory.name)
         }
     }
     

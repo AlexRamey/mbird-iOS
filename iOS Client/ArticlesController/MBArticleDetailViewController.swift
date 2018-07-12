@@ -14,14 +14,16 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
     var selectedArticle: Article?
     var articleDAO: ArticleDAO?
+    var categoryContext: String?
     weak var delegate: ArticleDetailDelegate?
     
-    static func instantiateFromStoryboard(article: Article?, dao: ArticleDAO?) -> MBArticleDetailViewController {
+    static func instantiateFromStoryboard(article: Article?, categoryContext: String?, dao: ArticleDAO?) -> MBArticleDetailViewController {
         // swiftlint:disable force_cast
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleDetailController") as! MBArticleDetailViewController
         // swiftlint:enable force_cast
         vc.articleDAO = dao
         vc.selectedArticle = article
+        vc.categoryContext = categoryContext
         return vc
     }
     
@@ -55,7 +57,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             let head = "<head>\n\(contentTypeHead)\n\(viewPortHead)\n\(cssHead)\n</head>"
             
             // <style>
-            let titleFontSize = UIFont.preferredFont(forTextStyle: .headline).pointSize * 0.80
+            let titleFontSize = UIFont.preferredFont(forTextStyle: .headline).pointSize * 1.35
             let authorFontSize = UIFont.preferredFont(forTextStyle: .subheadline).pointSize * 0.80
             let bodyFontSize = UIFont.preferredFont(forTextStyle: .body).pointSize * 0.80
             let style = ""
@@ -67,9 +69,24 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             
             
             // <body>
+            var info: [String] = []
+            if let category = self.categoryContext ?? self.selectedArticle?.categories.first?.name {
+                info.append(category.uppercased())
+            }
+            if let date = self.selectedArticle?.getDate() {
+                var longDate = DateFormatter.localizedString(from: date, dateStyle: .long, timeStyle: .none)
+                if let idx = longDate.index(of: ",") {
+                    longDate = String(longDate.prefix(upTo: idx))
+                }
+                info.append(longDate.uppercased())
+            }
+            
+            let meta: String = info.joined(separator: " | ")
             let title: String = self.selectedArticle?.title ?? "Untitled 👀"
             let author: String = self.selectedArticle?.author?.name ?? "Mockingbird Staff"
             let articleHeader = """
+                <p class=""></p>
+                <p class="meta">\(meta)</p>
                 <p class="title">\(title)</p>
                 <p class="author">by \(author)</p>
                 <p class="dots">.....................</p>

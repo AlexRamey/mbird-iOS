@@ -32,8 +32,8 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
     }
     
     // MARK: - Articles Table View Delegate
-    func selectedArticle(_ article: Article) {
-        let detailVC = MBArticleDetailViewController.instantiateFromStoryboard(article: article, dao: self.articleDAO)
+    func selectedArticle(_ article: Article, categoryContext: String?) {
+        let detailVC = MBArticleDetailViewController.instantiateFromStoryboard(article: article, categoryContext: categoryContext, dao: self.articleDAO)
         detailVC.delegate = self
         self.navigationController.pushViewController(detailVC, animated: true)
     }

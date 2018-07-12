@@ -231,7 +231,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     // MARK: - Table view delegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let delegate = self.delegate {
-            delegate.selectedArticle(self.results[indexPath.row])
+            delegate.selectedArticle(self.results[indexPath.row], categoryContext: nil)
         }
     }
 }

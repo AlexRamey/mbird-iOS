@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreData
 import Nuke
 import Preheat
 
@@ -414,7 +413,11 @@ extension MBArticlesViewController {
             }
         } else if let article = articleForPath(indexPath) {
             if let delegate = self.delegate {
-                delegate.selectedArticle(article)
+                var context: String?
+                if self.rowTypeForPath(indexPath) == .category {
+                    context = topLevelCategories[indexPath.section - 1]
+                }
+                delegate.selectedArticle(article, categoryContext: context)
             }
         }
     }
@@ -440,7 +443,7 @@ extension MBArticlesViewController {
 }
 
 protocol ArticlesTableViewDelegate: class {
-    func selectedArticle(_ article: Article)
+    func selectedArticle(_ article: Article, categoryContext: String?)
 }
 
 protocol ShowMoreArticlesDelegate: class {

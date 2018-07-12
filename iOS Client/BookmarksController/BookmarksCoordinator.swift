@@ -39,8 +39,8 @@ class BookmarksCoordinator: NSObject, Coordinator, ArticlesTableViewDelegate, Ar
     }
     
     // MARK: - Bookmarks Table View Delegate
-    func selectedArticle(_ article: Article) {
-        let articleDetailVC = MBArticleDetailViewController.instantiateFromStoryboard(article: article, dao: self.articleDAO)
+    func selectedArticle(_ article: Article, categoryContext: String?) {
+        let articleDetailVC = MBArticleDetailViewController.instantiateFromStoryboard(article: article, categoryContext: categoryContext, dao: self.articleDAO)
         articleDetailVC.delegate = self
         self.navigationController.pushViewController(articleDetailVC, animated: true)
     }
