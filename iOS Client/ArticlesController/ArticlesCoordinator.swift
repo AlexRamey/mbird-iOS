@@ -42,6 +42,7 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
     func showMoreArticlesForCategory(_ categoryName: String) {
         if let cat = self.categoryDAO.getCategoryByName(categoryName) {
             let showMoreVC = ShowMoreViewController.instantiateFromStoryboard(articleDAO: self.articleDAO, categoryDAO: self.categoryDAO, category: cat)
+            showMoreVC.delegate = self
             self.navigationController.pushViewController(showMoreVC, animated: true)
         }
     }
