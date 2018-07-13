@@ -32,7 +32,7 @@
                         <constraint firstAttribute="height" constant="23" id="DIU-HT-lBf"/>
                         <constraint firstAttribute="width" constant="23" id="juT-bl-WJy"/>
                     </constraints>
-                    <state key="normal" title="Button" image="search-glass"/>
+                    <state key="normal" title="Button" image="search-binoculars"/>
                     <connections>
                         <action selector="searchArticles:" destination="iN0-l3-epB" eventType="touchUpInside" id="Vd8-Uy-fbB"/>
                     </connections>
@@ -61,6 +61,6 @@
         </view>
     </objects>
     <resources>
-        <image name="search-glass" width="25" height="25"/>
+        <image name="search-binoculars" width="50" height="50"/>
     </resources>
 </document>
