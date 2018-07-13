@@ -19,7 +19,13 @@ class DevotionDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareDevotion(sender:)))
+        
+        // let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareDevotion(sender:)))
+        
+        let shareItem = UIBarButtonItem(image: UIImage(named: "share-button"), style: .plain, target: self, action: #selector(self.shareDevotion(sender:)))
+        
+        self.navigationItem.rightBarButtonItem = shareItem
+        
         monthLabel.text = selectedDevotion.formattedMonth
         dayLabel.text = selectedDevotion.formattedMonthDay
         verseLabel.text = selectedDevotion.verse

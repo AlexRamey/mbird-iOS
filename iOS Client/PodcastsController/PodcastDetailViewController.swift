@@ -173,7 +173,8 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     }
     
     private func getShareBarButton() -> UIBarButtonItem {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(PodcastDetailViewController.sharePodcast))
+        // return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(PodcastDetailViewController.sharePodcast))
+        return UIBarButtonItem(image: UIImage(named: "share-button"), style: .plain, target: self, action: #selector(PodcastDetailViewController.sharePodcast))
     }
     
     @objc private func removePodcast() {

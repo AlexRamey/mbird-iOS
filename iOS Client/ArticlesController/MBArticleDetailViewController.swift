@@ -108,7 +108,9 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     func configureRightBarButtons() {
         let bookmarkItem = UIBarButtonItem(image: UIImage(named: "bookmark-item"), style: .plain, target: self, action: #selector(self.bookmarkArticle(sender:)))
         
-        let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
+        // let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
+        
+        let shareItem = UIBarButtonItem(image: UIImage(named: "share-button"), style: .plain, target: self, action: #selector(self.shareArticle(sender:)))
         
         var items = [shareItem]
         if self.tabBarController?.selectedIndex != 1 {
