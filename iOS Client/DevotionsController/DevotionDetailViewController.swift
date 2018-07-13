@@ -15,8 +15,9 @@ class DevotionDetailViewController: UIViewController {
     @IBOutlet weak var verseLabel: UILabel!
     @IBOutlet weak var verseTextLabel: UILabel!
     @IBOutlet weak var bodyLabel: UILabel!
-    var selectedDevotion: LoadedDevotion!
+    @IBOutlet weak var authorLabel: UILabel!
     
+    var selectedDevotion: LoadedDevotion!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareDevotion(sender:)))
@@ -25,6 +26,13 @@ class DevotionDetailViewController: UIViewController {
         verseLabel.text = selectedDevotion.verse
         verseTextLabel.text = selectedDevotion.verseText
         bodyLabel.text = selectedDevotion.text
+        authorLabel.text = "- \(selectedDevotion.author)"
+        monthLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 30)
+        dayLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 25)
+        verseLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 14)
+        verseTextLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 16)
+        bodyLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 16)
+        authorLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 16)
     }
     
     static func instantiateFromStoryboard(devotion: LoadedDevotion) -> DevotionDetailViewController {

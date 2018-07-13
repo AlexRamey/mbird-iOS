@@ -26,6 +26,8 @@ class PodcastTableViewCell: UITableViewCell {
         let bgColorView = UIView()
         bgColorView.backgroundColor = UIColor.MBSelectedCell
         self.selectedBackgroundView = bgColorView
+        self.titleLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 18)
+        self.dateLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 14)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

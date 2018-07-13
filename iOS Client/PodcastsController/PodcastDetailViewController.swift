@@ -43,6 +43,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         // swiftlint:disable force_cast
         let detailVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastDetailViewController") as! PodcastDetailViewController
         // swiftlint:enable force_cast
+        
         detailVC.selectedPodcast = podcast
         detailVC.player = player
         detailVC.handler = handler
@@ -64,7 +65,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         imageView.image = UIImage(named: imageName)
         backgroundImageView.image = UIImage(named: imageName)
         self.navigationItem.title = selectedPodcast.feed.title
-        
+        self.titleLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 20)
         durationSlider.addTarget(self, action: #selector(onSeek(slider:event:)), for: .valueChanged)
         durationSlider.setValue(0.0, animated: false)
         
