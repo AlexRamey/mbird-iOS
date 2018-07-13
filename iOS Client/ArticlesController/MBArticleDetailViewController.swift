@@ -108,7 +108,9 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     func configureRightBarButtons() {
         let bookmarkItem = UIBarButtonItem(image: UIImage(named: "bookmark-item"), style: .plain, target: self, action: #selector(self.bookmarkArticle(sender:)))
         
-        let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
+        // let shareItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.action, target: self, action: #selector(self.shareArticle(sender:)))
+        
+        let shareItem = UIBarButtonItem(image: UIImage(named: "share-button"), style: .plain, target: self, action: #selector(self.shareArticle(sender:)))
         
         var items = [shareItem]
         if self.tabBarController?.selectedIndex != 1 {
@@ -166,8 +168,15 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     private func popAlertWithMessage(_ msg: String) {
         let alert = UIAlertController(title: "Done", message: msg, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+        self.present(alert, animated: true) {
+            self.perform(#selector(MBArticleDetailViewController.dismissAlert), with: nil, afterDelay: 1.0)
+        }
+    }
+    
+    @objc private func dismissAlert() {
+        DispatchQueue.main.async {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     override func didReceiveMemoryWarning() {
