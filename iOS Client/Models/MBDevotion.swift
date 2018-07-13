@@ -14,6 +14,7 @@ struct MBDevotion: Codable {
     var text: String
     var verse: String
     var verseText: String
+    var author: String
 }
 
 struct LoadedDevotion: Codable, Equatable {
@@ -22,6 +23,7 @@ struct LoadedDevotion: Codable, Equatable {
     var verse: String
     var verseText: String
     var read: Bool
+    var author: String
     
     // MARK: - Equatable
     static func == (lhs: LoadedDevotion, rhs: LoadedDevotion) -> Bool {
@@ -29,7 +31,8 @@ struct LoadedDevotion: Codable, Equatable {
                 lhs.text        == rhs.text         &&
                 lhs.verse       == rhs.verse        &&
                 lhs.verseText   == rhs.verseText    &&
-                lhs.read        == rhs.read
+                lhs.read        == rhs.read         &&
+                lhs.author      == rhs.author
     }
     
     static let calendar: NSCalendar? = {
@@ -95,5 +98,6 @@ struct LoadedDevotion: Codable, Equatable {
         verse = devotion.verse
         verseText = devotion.verseText
         self.read = read
+        author = devotion.author
     }
 }
