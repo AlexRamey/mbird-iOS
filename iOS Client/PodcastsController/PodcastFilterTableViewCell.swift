@@ -14,24 +14,29 @@ class PodcastFilterTableViewCell: UITableViewCell {
     @IBOutlet weak var podcastImage: UIImageView!
     weak var delegate: PodcastFilterDelegate?
     
-    var stream: PodcastStream?
+    var filterOption: PodcastFilterOption?
     
-    func configure(image: UIImage? = nil, stream: PodcastStream, on: Bool = false) {
-        toggleSwitch.isOn = on
-        titleLabel.text = stream.title
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        titleLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 20)
+         self.selectionStyle = .none
+    }
+    
+    func configure(image: UIImage? = nil, title: String, option: PodcastFilterOption, isOn: Bool = false) {
+        toggleSwitch.isOn = isOn
+        titleLabel.text = title
         podcastImage.image = image
-        self.stream = stream
+        self.filterOption = option
         podcastImage.layer.cornerRadius = 10
-        self.selectionStyle = .none
     }
     
     @IBAction func toggled(_ sender: UISwitch) {
-        if let stream = stream, let delegate = self.delegate {
-            delegate.filterStream(stream, on: sender.isOn)
+        if let option = filterOption, let delegate = self.delegate {
+            delegate.toggleFilterOption(option, isOn: sender.isOn)
         }
     }
 }
 
 protocol PodcastFilterDelegate: class {
-    func filterStream(_ stream: PodcastStream, on: Bool)
+    func toggleFilterOption(_ stream: PodcastFilterOption, isOn: Bool)
 }

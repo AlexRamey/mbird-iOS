@@ -64,5 +64,18 @@ public enum PodcastStream: String, Codable {
         case .talkingbird: return "Talkingbird"
         }
     }
+    
+    var description: String {
+        switch self {
+        case .pz:
+            return "Grace-based impressions and outré correlations from the author of Grace in Practice, Paul F.M. Zahl."
+        case .mockingCast:
+            return "A bi-weekly roundtable on culture, faith and grace, co-hosted by RJ Heijmen, Sarah Condon and David Zahl."
+        case .mockingPulpit:
+            return "Sermons from Mockingbird contributors, singing that “same song” of God’s grace in different keys, week after week."
+        case .talkingbird:
+            return "Your destination for talks given at Mbird events, both present and past. Subjects run the gamut from religion and theology to psychology and literature to pop culture and relationships and everything in between."
+        }
+    }
 }
 
