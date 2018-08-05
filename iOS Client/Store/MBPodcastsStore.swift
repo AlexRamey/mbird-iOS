@@ -12,7 +12,7 @@ import PromiseKit
 
 protocol PodcastsRepository: class {
     func getStreams() -> [PodcastStream]
-    func getVisibleFilterOptions() -> [PodcastFilterOption]
+    func getEnabledFilterOptions() -> [PodcastFilterOption]
     func setFilter(option: PodcastFilterOption, isVisible: Bool)
     func containsSavedPodcast(_ podcast: Podcast) -> Bool
     func getUrlFor(podcast: Podcast) -> URL?
@@ -133,20 +133,23 @@ class MBPodcastsStore: PodcastsRepository {
         return self.streams
     }
     
-    func getVisibleFilterOptions() -> [PodcastFilterOption] {
+    func getEnabledFilterOptions() -> [PodcastFilterOption] {
         guard let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [String: Bool] else {
             return []
         }
         
-        return visibilitySettings.keys.compactMap {
-            if let stream = PodcastStream(rawValue: $0) {
-                return PodcastFilterOption.stream(stream)
-            } else if $0 == PodcastFilterOption.downloaded.key {
-                return PodcastFilterOption.downloaded
-            } else {
-                return nil
+        return visibilitySettings
+            .keys
+            .filter { visibilitySettings[$0] ?? false }
+            .compactMap {
+                if let stream = PodcastStream(rawValue: $0) {
+                    return PodcastFilterOption.stream(stream)
+                } else if $0 == PodcastFilterOption.downloaded.key {
+                    return PodcastFilterOption.downloaded
+                } else {
+                    return nil
+                }
             }
-        }.filter { visibilitySettings[$0.key] ?? false}
     }
     
     func setFilter(option: PodcastFilterOption, isVisible: Bool) {

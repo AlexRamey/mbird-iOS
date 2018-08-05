@@ -16,23 +16,27 @@ class PodcastFilterTableViewCell: UITableViewCell {
     
     var filterOption: PodcastFilterOption?
     
-    func configure(image: UIImage? = nil, title: String, option: PodcastFilterOption, on: Bool = false) {
-        toggleSwitch.isOn = on
-        titleLabel.text = title
+    override func awakeFromNib() {
+        super.awakeFromNib()
         titleLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 20)
+         self.selectionStyle = .none
+    }
+    
+    func configure(image: UIImage? = nil, title: String, option: PodcastFilterOption, isOn: Bool = false) {
+        toggleSwitch.isOn = isOn
+        titleLabel.text = title
         podcastImage.image = image
         self.filterOption = option
         podcastImage.layer.cornerRadius = 10
-        self.selectionStyle = .none
     }
     
     @IBAction func toggled(_ sender: UISwitch) {
         if let option = filterOption, let delegate = self.delegate {
-            delegate.toggleFilterOption(option, on: sender.isOn)
+            delegate.toggleFilterOption(option, isOn: sender.isOn)
         }
     }
 }
 
 protocol PodcastFilterDelegate: class {
-    func toggleFilterOption(_ stream: PodcastFilterOption, on: Bool)
+    func toggleFilterOption(_ stream: PodcastFilterOption, isOn: Bool)
 }

@@ -11,13 +11,13 @@ import UIKit
 class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PodcastFilterDelegate {
     @IBOutlet weak var tableView: UITableView!
     var filterOptions: [PodcastFilterOption] = []
-    var visibleOptions: [PodcastFilterOption] = []
+    var enabledOptions: [PodcastFilterOption] = []
     var repository: PodcastsRepository!
     
     let filterReuseIdentifier: String = "PodcastFilterTableViewCell"
     
     var shouldHideStreamOptions: Bool {
-        return visibleOptions.contains(where: {
+        return enabledOptions.contains(where: {
             switch $0 {
             case .downloaded: return true
             case .stream: return false
@@ -39,9 +39,9 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     func loadData() {
-        self.filterOptions = self.repository.getStreams().map{ PodcastFilterOption.stream($0) }
+        self.filterOptions = self.repository.getStreams().map { PodcastFilterOption.stream($0) }
         self.filterOptions.append(.downloaded)
-        self.visibleOptions = self.repository.getVisibleFilterOptions()
+        self.enabledOptions = self.repository.getEnabledFilterOptions()
         self.tableView.reloadData()
     }
     
@@ -77,19 +77,19 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
             cell.configure(image: UIImage(named: stream.imageName),
                            title: stream.title,
                            option: option,
-                           on: optionsContainsStream(visibleOptions, stream: stream))
+                           isOn: optionsContainsStream(enabledOptions, stream: stream))
         case .downloaded:
             cell.configure(image: UIImage(named: "download-done"),
                            title: "Downloaded Podcasts",
                            option: option,
-                           on: shouldHideStreamOptions)
+                           isOn: shouldHideStreamOptions)
         }
         return cell
     }
     
     // MARK: - PodcastFilterDelegate
-    func toggleFilterOption(_ option: PodcastFilterOption, on: Bool) {
-        self.repository.setFilter(option: option, isVisible: on)
+    func toggleFilterOption(_ option: PodcastFilterOption, isOn: Bool) {
+        self.repository.setFilter(option: option, isVisible: isOn)
         loadData()
     }
     
