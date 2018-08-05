@@ -32,6 +32,19 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     }
     
     /***** Category DAO *****/
+    // todo: only return categories with at least one article
+    func getAllTopLevelCategories() -> [Category] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
+        let sort = NSSortDescriptor(key: #keyPath(MBCategory.name), ascending: true)
+        fetchRequest.sortDescriptors = [sort]
+        fetchRequest.predicate = NSPredicate(format: "parentID == %d", 0)
+        if let categories = performFetch(fetchRequest: fetchRequest) as? [MBCategory] {
+            return categories.map { return $0.toDomain() }
+        } else {
+            return []
+        }
+    }
+    
     func getCategoriesById(_ ids: [Int]) -> [Category] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
         fetchRequest.predicate = NSPredicate(format: "categoryID in %@", ids)

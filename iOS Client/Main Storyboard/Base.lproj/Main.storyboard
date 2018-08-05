@@ -690,6 +690,71 @@
             </objects>
             <point key="canvasLocation" x="848.79999999999995" y="-779.46026986506752"/>
         </scene>
+        <!--Select Category View Controller-->
+        <scene sceneID="ZID-vH-IN6">
+            <objects>
+                <viewController storyboardIdentifier="SelectCategoryVC" id="I2X-RF-rkX" customClass="SelectCategoryViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="WLv-OE-PDR"/>
+                        <viewControllerLayoutGuide type="bottom" id="A5p-My-Zqr"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="zwa-hd-Dgu">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="5Gt-Bc-cYp">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="checkmark" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="categoryCellResuseIdentifier" id="yp8-Jz-FtH">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yp8-Jz-FtH" id="eIT-Ih-VN1">
+                                            <rect key="frame" x="0.0" y="0.0" width="336" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="I2X-RF-rkX" id="1rw-ud-FHN"/>
+                                    <outlet property="delegate" destination="I2X-RF-rkX" id="KE3-6F-dFz"/>
+                                </connections>
+                            </tableView>
+                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LdB-R0-QZp">
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="rAD-pl-Ces"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="Select Category" id="Mke-13-MUi">
+                                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="JI0-Su-pXm">
+                                            <connections>
+                                                <action selector="dismissMe:" destination="I2X-RF-rkX" id="3Zw-3Q-cOd"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="5Gt-Bc-cYp" firstAttribute="top" secondItem="LdB-R0-QZp" secondAttribute="bottom" id="4yy-Ze-ov2"/>
+                            <constraint firstItem="A5p-My-Zqr" firstAttribute="top" secondItem="5Gt-Bc-cYp" secondAttribute="bottom" id="5LL-3F-ENb"/>
+                            <constraint firstItem="LdB-R0-QZp" firstAttribute="top" secondItem="WLv-OE-PDR" secondAttribute="bottom" id="Ijn-t8-qNv"/>
+                            <constraint firstAttribute="trailing" secondItem="LdB-R0-QZp" secondAttribute="trailing" id="Q1R-tM-GIa"/>
+                            <constraint firstItem="LdB-R0-QZp" firstAttribute="leading" secondItem="zwa-hd-Dgu" secondAttribute="leading" id="YL9-ur-O3a"/>
+                            <constraint firstItem="5Gt-Bc-cYp" firstAttribute="leading" secondItem="zwa-hd-Dgu" secondAttribute="leading" id="bEG-GU-EMr"/>
+                            <constraint firstAttribute="trailing" secondItem="5Gt-Bc-cYp" secondAttribute="trailing" id="xZg-eZ-oot"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="5Gt-Bc-cYp" id="xIA-gd-hdL"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2w8-fa-RuS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-546.39999999999998" y="-1444.2278860569716"/>
+        </scene>
     </scenes>
     <resources>
         <image name="devotion-footer" width="417" height="417"/>

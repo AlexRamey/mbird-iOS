@@ -30,7 +30,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     let recentReuseIdentifier = "recentReuseIdentifier"
     let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
     
-    var isFirstAppearance = true
     var selectedIndexPath: IndexPath?
     
     var isLoadingMore = false
@@ -56,16 +55,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         vc.authorDAO = authorDAO
         vc.categoryDAO = categoryDAO
         vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
-        
-        // we have a default value set in the registration domain, so force-unwrap is safe
-        let selectedCategoryName = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
-        
-        if selectedCategoryName != MBConstants.MOST_RECENT_CATEGORY_NAME,
-            let selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName) {
-            vc.category = selectedCategory
-        } else {
-            vc.category = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
-        }
         
         return vc
     }
@@ -121,15 +110,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                         return nil
                     }
                     url = article.image?.imageUrl ?? article.image?.thumbnailUrl
-                case .recent, .category:
+                default:
                     guard let article = articleForPath($0) else {
                         return nil
                     }
                     url = article.image?.thumbnailUrl ?? article.image?.imageUrl
-                default:
-                    break
                 }
-                
                 if let resolvedURL = url {
                     var request = Request(url: resolvedURL)
                     request.priority = .low
@@ -149,13 +135,23 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         
-        if isFirstAppearance {
+        // we have a default value set in the registration domain, so force-unwrap is safe
+        let selectedCategoryName = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
+        
+        if self.category?.name ?? "" != selectedCategoryName {
+            if selectedCategoryName != MBConstants.MOST_RECENT_CATEGORY_NAME,
+                let selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName) {
+                self.category = selectedCategory
+            } else {
+                self.category = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
+            }
+            self.loadArticleDataFromDisk()
+            
             // the following line ensures that the refresh control has the correct tint/text on first use
             self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
             
             self.refreshControl.beginRefreshing()
             self.refreshTableView(self.refreshControl)
-            isFirstAppearance = false
         }
     }
     
@@ -183,10 +179,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc private func refreshTableView(_ sender: UIRefreshControl) {
         if sender.isRefreshing {
-            self.articlesStore.syncAllData().then { isNewData -> Void in
-                if isNewData {
-                    self.loadArticleDataFromDisk()
-                }
+            self.articlesStore.syncAllData().then { _ -> Void in
+                self.loadArticleDataFromDisk()
             }
             .always {
                 self.refreshControl.endRefreshing()
@@ -371,7 +365,13 @@ extension MBArticlesViewController {
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: sectionHeaderReuseIdentifier) as? SectionHeaderView else {
             return nil
         }
-        header.setText("Mockingbird")
+        
+        if self.category?.name ?? "" == MBConstants.MOST_RECENT_CATEGORY_NAME {
+            header.setText("Mockingbird")
+        } else {
+            header.setText(self.category?.name ?? "Mockingbird")
+        }
+        
         header.delegate = self
         self.searchBarHolder = header
         return header
@@ -449,6 +449,11 @@ extension MBArticlesViewController {
             return nil // search bar looks weird if it comes while the section header is too low
         }
         return self.searchController?.searchBar
+    }
+    
+    func filterTapped(sender: SectionHeaderView) {
+        let filterVC = SelectCategoryViewController.instantiateFromStoryboard(categoryDAO: self.categoryDAO)
+        self.present(filterVC, animated: true, completion: nil)
     }
 }
 

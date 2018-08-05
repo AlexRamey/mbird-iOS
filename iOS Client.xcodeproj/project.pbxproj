@@ -37,6 +37,7 @@
 		23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */; };
 		23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */; };
 		2FF8A78758E86F4B5F3DD3DF /* Pods_iOS_Client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E0C3C6365D9BF5E69097373 /* Pods_iOS_Client.framework */; };
+		D011D53F21169EDE004E748A /* SelectCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D011D53E21169EDE004E748A /* SelectCategoryViewController.swift */; };
 		D01C330320AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01C330220AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift */; };
 		D026D8DE20F1A81F00CDBF89 /* FileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8D920F1A81F00CDBF89 /* FileHelper.swift */; };
 		D026D8DF20F1A81F00CDBF89 /* MBPodcastsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D026D8DA20F1A81F00CDBF89 /* MBPodcastsStore.swift */; };
@@ -121,6 +122,7 @@
 		23F2CB481FDC920300B80856 /* PodcastsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsCoordinator.swift; sourceTree = "<group>"; };
 		23F2CB4A1FDC93E800B80856 /* PodcastTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastTableViewCell.swift; sourceTree = "<group>"; };
 		23F2CB4B1FDC93E800B80856 /* PodcastTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastTableViewCell.xib; sourceTree = "<group>"; };
+		D011D53E21169EDE004E748A /* SelectCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectCategoryViewController.swift; sourceTree = "<group>"; };
 		D01C330220AA5A1D00D5A59D /* ScheduleDailyDevotionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDailyDevotionViewController.swift; sourceTree = "<group>"; };
 		D026D8D920F1A81F00CDBF89 /* FileHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHelper.swift; sourceTree = "<group>"; };
 		D026D8DA20F1A81F00CDBF89 /* MBPodcastsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBPodcastsStore.swift; sourceTree = "<group>"; };
@@ -437,6 +439,7 @@
 				D0EA55F020798F2A005EFA7E /* RecentArticleTableViewCell.swift */,
 				D0EA55F120798F2A005EFA7E /* RecentArticleTableViewCell.xib */,
 				D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */,
+				D011D53E21169EDE004E748A /* SelectCategoryViewController.swift */,
 				D048E7F720CC115700240462 /* SectionHeaderView.swift */,
 				D048E7F920CC11ED00240462 /* SectionHeaderView.xib */,
 				2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */,
@@ -632,6 +635,7 @@
 			files = (
 				D02D36421F7FE8FA00D4E674 /* BookmarksCoordinator.swift in Sources */,
 				2302819D20F2F4D0004F0CBD /* PodcastUninstaller.swift in Sources */,
+				D011D53F21169EDE004E748A /* SelectCategoryViewController.swift in Sources */,
 				23F2CB491FDC920300B80856 /* PodcastsCoordinator.swift in Sources */,
 				D0EA55FA2079A42C005EFA7E /* CategoryArticleTableViewCell.swift in Sources */,
 				D0EA55F220798F2A005EFA7E /* RecentArticleTableViewCell.swift in Sources */,

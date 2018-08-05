@@ -45,6 +45,10 @@ class SectionHeaderView: UITableViewHeaderFooterView, SearchBarHolder {
         }
     }
     
+    @IBAction func filterCategory(_ sender: UIButton) {
+        delegate?.filterTapped(sender: self)
+    }
+    
     // MARK: SearchBarHolder
     func removeSearchBar() {
         self.searchBar?.removeFromSuperview()
@@ -53,5 +57,5 @@ class SectionHeaderView: UITableViewHeaderFooterView, SearchBarHolder {
 
 protocol HeaderViewDelegate: class {
     func searchTapped(sender: SectionHeaderView) -> UISearchBar?
+    func filterTapped(sender: SectionHeaderView)
 }
-

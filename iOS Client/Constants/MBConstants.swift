@@ -14,6 +14,6 @@ struct MBConstants {
     static let DEVOTION_NOTIFICATION_WINDOW_SIZE = 50
     static let DEFAULTS_DAILY_DEVOTION_TIME_KEY = "DAILY_DEVOTION_TIME_KEY"
     static let SELECTED_CATEGORY_NAME_KEY = "SELECTED_CATEGORY_ID_KEY"
-    static let MOST_RECENT_CATEGORY_NAME = "5264a33a-984d-11e8-9eb6-529269fb1459"
+    static let MOST_RECENT_CATEGORY_NAME = "Most Recent"
     // swiftlint:enable identifier_name
 }
