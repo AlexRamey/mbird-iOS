@@ -20,6 +20,9 @@
 		2392518821169A7300C597A7 /* PodcastInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392518721169A7300C597A7 /* PodcastInfoViewController.swift */; };
 		2392518B21169C5B00C597A7 /* PodcastInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392518921169C5B00C597A7 /* PodcastInfoTableViewCell.swift */; };
 		2392518C21169C5B00C597A7 /* PodcastInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2392518A21169C5B00C597A7 /* PodcastInfoTableViewCell.xib */; };
+		2392518F211771B900C597A7 /* MoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392518E211771B900C597A7 /* MoreViewController.swift */; };
+		239251912117726C00C597A7 /* MoreCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239251902117726C00C597A7 /* MoreCoordinator.swift */; };
+		239251932117741B00C597A7 /* LinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239251922117741B00C597A7 /* LinkButton.swift */; };
 		239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
@@ -108,6 +111,9 @@
 		2392518721169A7300C597A7 /* PodcastInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastInfoViewController.swift; sourceTree = "<group>"; };
 		2392518921169C5B00C597A7 /* PodcastInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastInfoTableViewCell.swift; sourceTree = "<group>"; };
 		2392518A21169C5B00C597A7 /* PodcastInfoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastInfoTableViewCell.xib; sourceTree = "<group>"; };
+		2392518E211771B900C597A7 /* MoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreViewController.swift; sourceTree = "<group>"; };
+		239251902117726C00C597A7 /* MoreCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreCoordinator.swift; sourceTree = "<group>"; };
+		239251922117741B00C597A7 /* LinkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkButton.swift; sourceTree = "<group>"; };
 		239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastDetailViewController.swift; sourceTree = "<group>"; };
 		239975D51FECB029003337EC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
@@ -229,6 +235,16 @@
 				232F08352066FDA50051CF71 /* UIView.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		2392518D2117719F00C597A7 /* MoreController */ = {
+			isa = PBXGroup;
+			children = (
+				2392518E211771B900C597A7 /* MoreViewController.swift */,
+				239251902117726C00C597A7 /* MoreCoordinator.swift */,
+				239251922117741B00C597A7 /* LinkButton.swift */,
+			);
+			path = MoreController;
 			sourceTree = "<group>";
 		};
 		23ABE3C01FDDE3DA00F4B36B /* Recovered References */ = {
@@ -396,6 +412,7 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
+				2392518D2117719F00C597A7 /* MoreController */,
 				D026D8D820F1A81F00CDBF89 /* Store */,
 				2362417020DEE359002711D7 /* Search */,
 				23F2CB451FDC91D100B80856 /* PodcastsController */,
@@ -661,6 +678,7 @@
 				D05EF17F20E07BA00066BA3E /* ArticleDTO.swift in Sources */,
 				23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */,
 				D02FCCAC20E83C0900F40454 /* Image.swift in Sources */,
+				239251932117741B00C597A7 /* LinkButton.swift in Sources */,
 				D02FCCAE20E9487100F40454 /* Debouncer.swift in Sources */,
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,
 				D05EF18820E08B3B0066BA3E /* SearchResultsTableViewController.swift in Sources */,
@@ -672,7 +690,6 @@
 				23D8BB44207EE3930057C9D5 /* FeaturedArticleTableViewCell.swift in Sources */,
 				D026D8DE20F1A81F00CDBF89 /* FileHelper.swift in Sources */,
 				2392518821169A7300C597A7 /* PodcastInfoViewController.swift in Sources */,
-				D0EA55F620799FC6005EFA7E /* CategoryHeaderTableViewCell.swift in Sources */,
 				D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */,
 				D026D8E020F1A81F00CDBF89 /* XMLParsingDelegate.swift in Sources */,
 				D0EA55E62066ADDE005EFA7E /* ArticlePicture+CoreDataProperties.swift in Sources */,
@@ -682,6 +699,7 @@
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
 				23864DE61FA6A1C10061F212 /* String.swift in Sources */,
+				2392518F211771B900C597A7 /* MoreViewController.swift in Sources */,
 				D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */,
 				232F08362066FDA50051CF71 /* UIView.swift in Sources */,
 				23D8F1F51FAE129D004964AE /* iOS_Client.xcdatamodeld in Sources */,
@@ -698,6 +716,7 @@
 				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
 				D026D8E120F1A81F00CDBF89 /* MBArticlesStore.swift in Sources */,
+				239251912117726C00C597A7 /* MoreCoordinator.swift in Sources */,
 				D048E7F820CC115700240462 /* SectionHeaderView.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
