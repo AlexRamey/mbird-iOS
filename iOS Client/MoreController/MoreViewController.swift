@@ -44,7 +44,7 @@ class MoreViewController: UIViewController {
         aboutButton.configure(title: "ABOUT",
                               link: URL(string: "http://www.mbird.com/about/history-and-mission/")!,
                               onButtonPress: pressedLink)
-        self.title = "\u{00B7}\u{00B7}\u{00B7} MORE \u{00B7}\u{00B7}\u{00B7}"
+        self.title = "\u{00B7}\u{00B7}\u{00B7}   MORE   \u{00B7}\u{00B7}\u{00B7}"
         self.tabBarItem.title = "More"
         
     }
