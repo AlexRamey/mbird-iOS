@@ -39,6 +39,7 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     private func configureRemoteCommandHandling() {
         let commandCenter = MPRemoteCommandCenter.shared()
         commandCenter.togglePlayPauseCommand.addTarget { (_) -> MPRemoteCommandHandlerStatus in
+            self.togglePlayPause()
             return .success
         }
     }
