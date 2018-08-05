@@ -17,6 +17,9 @@
 		237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */; };
 		23864DE61FA6A1C10061F212 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23864DE51FA6A1C10061F212 /* String.swift */; };
 		239068701FDE1C1F00BD1215 /* MBCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */; };
+		2392518821169A7300C597A7 /* PodcastInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392518721169A7300C597A7 /* PodcastInfoViewController.swift */; };
+		2392518B21169C5B00C597A7 /* PodcastInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392518921169C5B00C597A7 /* PodcastInfoTableViewCell.swift */; };
+		2392518C21169C5B00C597A7 /* PodcastInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2392518A21169C5B00C597A7 /* PodcastInfoTableViewCell.xib */; };
 		239975D41FEC9C8A003337EC /* PodcastDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */; };
 		239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */; };
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
@@ -106,6 +109,9 @@
 		237815511FA7FF21000555B6 /* MBDevotionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDevotionsViewController.swift; sourceTree = "<group>"; };
 		237815531FA7FF40000555B6 /* DevotionsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionsCoordinator.swift; sourceTree = "<group>"; };
 		23864DE51FA6A1C10061F212 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		2392518721169A7300C597A7 /* PodcastInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastInfoViewController.swift; sourceTree = "<group>"; };
+		2392518921169C5B00C597A7 /* PodcastInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastInfoTableViewCell.swift; sourceTree = "<group>"; };
+		2392518A21169C5B00C597A7 /* PodcastInfoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastInfoTableViewCell.xib; sourceTree = "<group>"; };
 		239975D31FEC9C8A003337EC /* PodcastDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastDetailViewController.swift; sourceTree = "<group>"; };
 		239975D51FECB029003337EC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		239E3BA61FBD42A1006E3C9C /* DevotionDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionDetailViewController.swift; sourceTree = "<group>"; };
@@ -265,6 +271,9 @@
 				23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */,
 				23D8BB40207C5C920057C9D5 /* PodcastFilterTableViewCell.xib */,
 				2302819C20F2F4D0004F0CBD /* PodcastUninstaller.swift */,
+				2392518721169A7300C597A7 /* PodcastInfoViewController.swift */,
+				2392518921169C5B00C597A7 /* PodcastInfoTableViewCell.swift */,
+				2392518A21169C5B00C597A7 /* PodcastInfoTableViewCell.xib */,
 			);
 			path = PodcastsController;
 			sourceTree = "<group>";
@@ -559,6 +568,7 @@
 				D048E7FA20CC11ED00240462 /* SectionHeaderView.xib in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */,
+				2392518C21169C5B00C597A7 /* PodcastInfoTableViewCell.xib in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
 				23D8F1F01FAAB3A1004964AE /* devotions.json in Resources */,
 				23ED5DB11FC652F6003B1BB3 /* DevotionTableViewCell.xib in Resources */,
@@ -661,6 +671,7 @@
 				D0EA560120858F56005EFA7E /* ShowMoreViewController.swift in Sources */,
 				237815521FA7FF21000555B6 /* MBDevotionsViewController.swift in Sources */,
 				D032F1A21F8728B700E78333 /* MBArticle+CoreDataClass.swift in Sources */,
+				2392518B21169C5B00C597A7 /* PodcastInfoTableViewCell.swift in Sources */,
 				D026D8DF20F1A81F00CDBF89 /* MBPodcastsStore.swift in Sources */,
 				D05EF17F20E07BA00066BA3E /* ArticleDTO.swift in Sources */,
 				23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */,
@@ -675,6 +686,7 @@
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
 				23D8BB44207EE3930057C9D5 /* FeaturedArticleTableViewCell.swift in Sources */,
 				D026D8DE20F1A81F00CDBF89 /* FileHelper.swift in Sources */,
+				2392518821169A7300C597A7 /* PodcastInfoViewController.swift in Sources */,
 				D0EA55F620799FC6005EFA7E /* CategoryHeaderTableViewCell.swift in Sources */,
 				D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */,
 				D026D8E020F1A81F00CDBF89 /* XMLParsingDelegate.swift in Sources */,

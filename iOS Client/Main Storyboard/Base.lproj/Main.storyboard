@@ -386,6 +386,39 @@
             </objects>
             <point key="canvasLocation" x="1212" y="1465.8170914542729"/>
         </scene>
+        <!--Podcast Info View Controller-->
+        <scene sceneID="UBQ-Rc-HtK">
+            <objects>
+                <viewController storyboardIdentifier="PodcastInfoViewController" id="9AV-rh-xi1" customClass="PodcastInfoViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gqm-CN-KRW"/>
+                        <viewControllerLayoutGuide type="bottom" id="I0Y-tm-6v9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fRi-uI-5Ni">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zi4-eh-wQN">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="zi4-eh-wQN" firstAttribute="leading" secondItem="fRi-uI-5Ni" secondAttribute="leading" id="E0y-Je-a8h"/>
+                            <constraint firstItem="zi4-eh-wQN" firstAttribute="top" secondItem="gqm-CN-KRW" secondAttribute="bottom" id="HFR-O4-a4E"/>
+                            <constraint firstAttribute="trailing" secondItem="zi4-eh-wQN" secondAttribute="trailing" id="aKr-VJ-E1p"/>
+                            <constraint firstItem="I0Y-tm-6v9" firstAttribute="top" secondItem="zi4-eh-wQN" secondAttribute="bottom" id="izd-fB-G9g"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="zi4-eh-wQN" id="Gxd-Y4-yDO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mp1-pq-zcS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2061" y="1474"/>
+        </scene>
         <!--Devotion Detail View Controller-->
         <scene sceneID="d40-1k-nQD">
             <objects>
