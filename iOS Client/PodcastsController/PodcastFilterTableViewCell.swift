@@ -20,6 +20,7 @@ class PodcastFilterTableViewCell: UITableViewCell {
         super.awakeFromNib()
         titleLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 20)
          self.selectionStyle = .none
+        self.toggleSwitch.onTintColor = UIColor.MBSalmon
     }
     
     func configure(image: UIImage? = nil, title: String, option: PodcastFilterOption, isOn: Bool = false) {
