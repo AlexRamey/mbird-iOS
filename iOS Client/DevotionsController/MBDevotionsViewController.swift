@@ -23,6 +23,10 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "\u{00B7}\u{00B7}\u{00B7}   DEVOTIONS   \u{00B7}\u{00B7}\u{00B7}"
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Devotions", style: .plain, target: nil, action: nil)
+        self.tabBarItem.title = "Devotions"
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension

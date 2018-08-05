@@ -260,8 +260,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                     if let idx = self.articles.index (where: { $0.id == article.id }) {
                         self.articles[idx].image = Image(id: article.imageId, thumbnailUrl: url, imageUrl: nil)
                     }
-                    if self.tableView.indexPathsForVisibleItems.contains(indexPath) {
-                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    
+                    if let cell = self.tableView.cellForRow(at: indexPath) as? ThumbnailImageCell {
+                        Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
                     }
                 }
             }
@@ -305,7 +306,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                         if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
                             newArticles = self.articlesStore.getLatestArticles(skip: self.articles.count)
                         } else {
-                            newArticles = self.articlesStore.getLatestCategoryArticles(categoryIDs:restriction.map { $0.id }, skip: self.articles.count)
+                            newArticles = self.articlesStore.getLatestCategoryArticles(categoryIDs: restriction.map { $0.id }, skip: self.articles.count)
                         }
                         
                         self.addMoreArticles(newArticles)
@@ -468,4 +469,8 @@ protocol ArticlesTableViewDelegate: class {
 
 protocol SearchBarHolder {
     func removeSearchBar()
+}
+
+protocol ThumbnailImageCell {
+    var thumbnailImage: UIImageView! { get }
 }

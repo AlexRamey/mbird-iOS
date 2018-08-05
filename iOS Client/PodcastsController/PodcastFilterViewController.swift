@@ -23,7 +23,7 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 110
         tableView.tableFooterView = nil
-        navigationItem.title = "Filter"
+        self.title = "FILTER"
         
         self.loadData()
     }

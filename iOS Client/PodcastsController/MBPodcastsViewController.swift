@@ -39,6 +39,10 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "\u{00B7}\u{00B7}\u{00B7}   PODCASTS   \u{00B7}\u{00B7}\u{00B7}"
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+        self.tabBarItem.title = "Podcasts"
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: cellReuseIdentifier, bundle: nil), forCellReuseIdentifier: cellReuseIdentifier)

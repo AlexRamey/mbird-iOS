@@ -64,7 +64,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         let imageName = self.selectedPodcast.image
         imageView.image = UIImage(named: imageName)
         backgroundImageView.image = UIImage(named: imageName)
-        self.navigationItem.title = selectedPodcast.feed.title
+        self.navigationItem.title = selectedPodcast.feed.shortTitle
         self.titleLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 20)
         durationSlider.addTarget(self, action: #selector(onSeek(slider:event:)), for: .valueChanged)
         durationSlider.setValue(0.0, animated: false)

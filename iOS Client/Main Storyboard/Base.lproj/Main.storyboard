@@ -748,6 +748,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="navItem" destination="Mke-13-MUi" id="her-lQ-oYH"/>
                         <outlet property="tableView" destination="5Gt-Bc-cYp" id="xIA-gd-hdL"/>
                     </connections>
                 </viewController>

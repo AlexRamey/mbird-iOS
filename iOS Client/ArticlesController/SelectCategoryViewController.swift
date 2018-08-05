@@ -10,6 +10,7 @@ import UIKit
 
 class SelectCategoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var navItem: UINavigationItem!
     
     var categoryDAO: CategoryDAO!
     var categories: [Category] = []
@@ -26,6 +27,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDelegate, UITab
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navItem.title = "SELECT CATEGORY"
         self.currentSelection = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
         let mostRecent = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
         self.categories = [mostRecent] + self.categoryDAO.getAllTopLevelCategories()
