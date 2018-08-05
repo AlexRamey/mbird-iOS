@@ -22,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         registerDefaults()
+        styleNavBar()
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
@@ -81,6 +82,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func registerDefaults(){
         let defaults = [ MBConstants.SELECTED_CATEGORY_NAME_KEY : MBConstants.MOST_RECENT_CATEGORY_NAME ]
         UserDefaults.standard.register(defaults: defaults)
+    }
+    
+    func styleNavBar() {
+        let attrs = [
+            NSAttributedStringKey.foregroundColor: UIColor.MBOrange,
+            NSAttributedStringKey.font: UIFont(name: "AvenirNext-Bold", size: 18.0)
+        ]
+        
+        UINavigationBar.appearance().titleTextAttributes = attrs
+        UINavigationBar.appearance().barTintColor = UIColor.white
     }
     
     // MARK: - Background App Refresh

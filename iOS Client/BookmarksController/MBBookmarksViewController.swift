@@ -35,7 +35,10 @@ class MBBookmarksViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Bookmarks"
+        self.title = "\u{00B7}\u{00B7}\u{00B7}   BOOKMARKS   \u{00B7}\u{00B7}\u{00B7}"
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Bookmarks", style: .plain, target: nil, action: nil)
+        self.tabBarItem.title = "Bookmarks"
+        
         self.isEditing = true
         self.tableView.rowHeight = UITableViewAutomaticDimension
         

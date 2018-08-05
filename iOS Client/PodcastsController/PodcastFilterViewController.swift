@@ -32,16 +32,18 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "FILTER"
         tableView.register(UINib(nibName: "PodcastFilterTableViewCell", bundle: nil), forCellReuseIdentifier: filterReuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 110
         tableView.tableFooterView = nil
-        navigationItem.title = "Filter"
+        
         let infoButton = UIButton(type: .infoLight)
         infoButton.addTarget(self, action: #selector(PodcastsFilterViewController.viewInfo), for: .touchUpInside)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: infoButton)
+        
         self.loadData()
     }
     

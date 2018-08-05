@@ -56,6 +56,15 @@ public enum PodcastStream: String, Codable {
         }
     }
     
+    var shortTitle: String {
+        switch self {
+        case .pz: return "PZ's Podcast"
+        case .mockingCast: return "Mockingcast"
+        case .mockingPulpit: return "Mockingpulpit"
+        case .talkingbird: return "Talkingbird"
+        }
+    }
+    
     var description: String {
         switch self {
         case .pz:
