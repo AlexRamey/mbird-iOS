@@ -27,11 +27,6 @@ class SectionHeaderView: UITableViewHeaderFooterView, SearchBarHolder {
         self.sectionTitle.text = "\u{00B7}\u{00B7}\u{00B7}   \(text.uppercased())   \u{00B7}\u{00B7}\u{00B7}"
     }
     
-    func setSearchVisible(isVisible: Bool) {
-        self.searchGlass.isHidden = !isVisible
-        self.searchGlass.isEnabled = isVisible
-    }
-    
     @IBAction func searchArticles(_ sender: UIButton) {
         guard let delegate = self.delegate else {
             return
@@ -60,6 +55,3 @@ protocol HeaderViewDelegate: class {
     func searchTapped(sender: SectionHeaderView) -> UISearchBar?
 }
 
-protocol SearchBarHolder {
-    func removeSearchBar()
-}

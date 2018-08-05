@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        registerDefaults()
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
@@ -69,6 +70,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         coreDataStack.saveContext()
+    }
+    
+    /*
+     registerDefaults() sets initial values for user preferences in the Registration Domain
+     of UserDefaults, which is an in-memory store. If the user later selects preference values,
+     they will be saved in the persistent Application Domain. Values is the Application Domain
+     will always trump their counterparts in the Registration Domain.
+     */
+    func registerDefaults(){
+        let defaults = [ MBConstants.SELECTED_CATEGORY_NAME_KEY : MBConstants.MOST_RECENT_CATEGORY_NAME ]
+        UserDefaults.standard.register(defaults: defaults)
     }
     
     // MARK: - Background App Refresh

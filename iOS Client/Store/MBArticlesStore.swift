@@ -124,10 +124,11 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         }
     }
     
-    func getArticles() -> [Article] {
+    func getLatestArticles(skip: Int) -> [Article] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
         let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
         fetchRequest.sortDescriptors = [sort]
+        fetchRequest.fetchOffset = skip
         if let articles = performFetch(fetchRequest: fetchRequest) as? [MBArticle] {
             return articles.map { return $0.toDomain() }
         } else {
@@ -192,11 +193,11 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         }
     }
     
-    public func syncCategoryArticles(categories: [Int], excluded: [Int]) -> Promise<Bool> {
+    public func syncLatestArticles(categoryRestriction: Category?, offset: Int) -> Promise<Bool> {
         return Promise { fulfill, reject in
             firstly {
                 performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
-                    client.getRecentArticles(inCategories: categories, excludingArticlesWithIDs: excluded, withCompletion: completion)
+                    client.getRecentArticles(inCategories: [categoryRestriction].compactMap { return $0?.id }, offset: offset, withCompletion: completion)
                 }, deserializeFunc: MBArticle.deserialize)
                 }.then() { result -> Void in
                     // fire off requests to get the image urls
