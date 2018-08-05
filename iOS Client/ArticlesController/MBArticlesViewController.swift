@@ -202,7 +202,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
                     self.articles = self.articlesStore.getLatestArticles(skip: 0)
                 } else {
-                    self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: [currentCategory.id], skip: 0)
+                    let lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+                    self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: lineage, skip: 0)
                 }
                 
                 self.tableView.reloadData()
@@ -212,7 +213,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
         cell.setTitle(article.title.convertHtml())
-        cell.setCategory(article.categories.first?.name)
+        if self.category?.name ?? "" == MBConstants.MOST_RECENT_CATEGORY_NAME {
+            cell.setCategory(article.categories.first?.name)
+        } else {
+            cell.setCategory(self.category?.name)
+        }
+        
         cell.setDate(date: article.getDate())
         
         cell.featuredImage.image = nil
@@ -285,11 +291,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             completion()
             return
         }
-        var restriction: Category? = currentCategory
-        if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
-            restriction = nil
+        var restriction: [Category] = []
+        if currentCategory.name != MBConstants.MOST_RECENT_CATEGORY_NAME {
+            restriction = [currentCategory] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory)
         }
-        
         firstly {
             self.articlesStore.syncLatestArticles(categoryRestriction: restriction, offset: self.articles.count)
         }.then { isNewData -> Void in
@@ -300,7 +305,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                         if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
                             newArticles = self.articlesStore.getLatestArticles(skip: self.articles.count)
                         } else {
-                            newArticles = self.articlesStore.getLatestCategoryArticles(categoryIDs: [currentCategory.id], skip: self.articles.count)
+                            newArticles = self.articlesStore.getLatestCategoryArticles(categoryIDs:restriction.map { $0.id }, skip: self.articles.count)
                         }
                         
                         self.addMoreArticles(newArticles)
