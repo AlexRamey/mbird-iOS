@@ -9,12 +9,12 @@
 import UIKit
 import Nuke
 import Preheat
+import PromiseKit
 
 enum RowType {
     case featured
     case recent
     case category
-    case categoryFooter
 }
 
 class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HeaderViewDelegate, UISearchControllerDelegate {
@@ -22,26 +22,23 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
     
-    var olderArticlesByCategory = [String: [Article]]()
-    var topLevelCategories: [String] = []
+    var category: Category?
+    var articles: [Article] = []
     
-    var latestArticles: [Article] = []
-    let numLatest = 10
-    let numOlderPerCategory = 5
+    let sectionHeaderReuseIdentifier = "sectionHeaderReuseIdentifier"
     let featuredReuseIdentifier = "featuredReuseIdentifier"
     let recentReuseIdentifier = "recentReuseIdentifier"
-    let sectionHeaderReuseIdentifier = "sectionHeaderReuseIdentifier"
     let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
-    let categoryFooterReuseIdentifier = "categoryFooterReuseIdentifier"
     
-    var isFirstAppearance = true
     var selectedIndexPath: IndexPath?
+    
+    var isLoadingMore = false
+    var footerView: UIActivityIndicatorView?
     
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
     var searchBarHolder: SearchBarHolder?
     weak var delegate: ArticlesTableViewDelegate?
-    weak var showMoreDelegate: ShowMoreArticlesDelegate?
     
     // dependencies
     let client: MBClient = MBClient()
@@ -58,6 +55,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         vc.authorDAO = authorDAO
         vc.categoryDAO = categoryDAO
         vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
+        
         return vc
     }
     
@@ -70,11 +68,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         tableView.rowHeight = UITableViewAutomaticDimension
         
+        tableView.register(UINib(nibName: "SectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: sectionHeaderReuseIdentifier)
         tableView.register(UINib(nibName: "FeaturedArticleTableViewCell", bundle: nil), forCellReuseIdentifier: featuredReuseIdentifier)
         tableView.register(UINib(nibName: "RecentArticleTableViewCell", bundle: nil), forCellReuseIdentifier: recentReuseIdentifier)
-        tableView.register(UINib(nibName: "SectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: sectionHeaderReuseIdentifier)
         tableView.register(UINib(nibName: "CategoryArticleTableViewCell", bundle: nil), forCellReuseIdentifier: categoryArticleReuseIdentifier)
-        tableView.register(UINib(nibName: "CategoryFooterTableViewCell", bundle: nil), forCellReuseIdentifier: categoryFooterReuseIdentifier)
         
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
@@ -113,15 +110,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                         return nil
                     }
                     url = article.image?.imageUrl ?? article.image?.thumbnailUrl
-                case .recent, .category:
+                default:
                     guard let article = articleForPath($0) else {
                         return nil
                     }
                     url = article.image?.thumbnailUrl ?? article.image?.imageUrl
-                default:
-                    break
                 }
-                
                 if let resolvedURL = url {
                     var request = Request(url: resolvedURL)
                     request.priority = .low
@@ -141,13 +135,23 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         
-        if isFirstAppearance {
+        // we have a default value set in the registration domain, so force-unwrap is safe
+        let selectedCategoryName = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
+        
+        if self.category?.name ?? "" != selectedCategoryName {
+            if selectedCategoryName != MBConstants.MOST_RECENT_CATEGORY_NAME,
+                let selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName) {
+                self.category = selectedCategory
+            } else {
+                self.category = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
+            }
+            self.loadArticleDataFromDisk()
+            
             // the following line ensures that the refresh control has the correct tint/text on first use
             self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
             
             self.refreshControl.beginRefreshing()
             self.refreshTableView(self.refreshControl)
-            isFirstAppearance = false
         }
     }
     
@@ -175,10 +179,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc private func refreshTableView(_ sender: UIRefreshControl) {
         if sender.isRefreshing {
-            self.articlesStore.syncAllData().then { isNewData -> Void in
-                if isNewData {
-                    self.loadArticleDataFromDisk()
-                }
+            self.articlesStore.syncAllData().then { _ -> Void in
+                self.loadArticleDataFromDisk()
             }
             .always {
                 self.refreshControl.endRefreshing()
@@ -193,28 +195,30 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.articlesStore.deleteOldArticles(completion: { (numDeleted) in
             print("Deleted \(numDeleted) old articles!!!")
             DispatchQueue.main.async {
-                let articles = self.articlesStore.getArticles()
-                self.latestArticles = self.getLatestArticles(articles: articles)
-                let olderArticles = articles.filter { (article) -> Bool in
-                    return !self.latestArticles.contains { $0.id == article.id }
+                guard let currentCategory = self.category else {
+                    return
                 }
-                self.olderArticlesByCategory = self.groupArticlesByTopLevelCategoryName(articles: olderArticles)
-                self.topLevelCategories = Array(self.olderArticlesByCategory.keys).sorted()
+                
+                if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
+                    self.articles = self.articlesStore.getLatestArticles(skip: 0)
+                } else {
+                    let lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+                    self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: lineage, skip: 0)
+                }
+                
                 self.tableView.reloadData()
             }
         })
     }
     
-    private func getLatestArticles(articles: [Article]) -> [Article] {
-        let articlesWithImages = articles.filter { (article) -> Bool in
-            return article.imageId != 0
-        }
-        return Array(articlesWithImages.prefix(numLatest))
-    }
-    
     private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
         cell.setTitle(article.title.convertHtml())
-        cell.setCategory(article.categories.first?.name)
+        if self.category?.name ?? "" == MBConstants.MOST_RECENT_CATEGORY_NAME {
+            cell.setCategory(article.categories.first?.name)
+        } else {
+            cell.setCategory(self.category?.name)
+        }
+        
         cell.setDate(date: article.getDate())
         
         cell.featuredImage.image = nil
@@ -253,7 +257,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.articlesStore.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
             if let url = url {
                 DispatchQueue.main.async {
-                    self.setArticleImageURL(article, url: url)
+                    if let idx = self.articles.index (where: { $0.id == article.id }) {
+                        self.articles[idx].image = Image(id: article.imageId, thumbnailUrl: url, imageUrl: nil)
+                    }
                     if self.tableView.indexPathsForVisibleItems.contains(indexPath) {
                         self.tableView.reloadRows(at: [indexPath], with: .automatic)
                     }
@@ -262,104 +268,117 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     
-    private func setArticleImageURL(_ article: Article, url: URL) {
-        if let idx = self.latestArticles.index (where: { $0.id == article.id }) {
-            self.latestArticles[idx].image = Image(id: article.imageId, thumbnailUrl: url, imageUrl: nil)
-        }
-        
-        for key in self.topLevelCategories {
-            if let categoryArticles = self.olderArticlesByCategory[key] {
-                self.olderArticlesByCategory[key] = categoryArticles.map {
-                    var mutableItem = $0
-                    if $0.id == article.id {
-                        mutableItem.image = Image(id: $0.imageId, thumbnailUrl: url, imageUrl: nil)
-                    }
-                    return mutableItem
-                }
-            }
-        }
-    }
-    
-    private func groupArticlesByTopLevelCategoryName(articles: [Article]) -> [String: [Article]] {
-        var retVal = [String: [Article]]()
-        
-        articles.forEach { (article) in
-            article.categories.forEach({ (cat) in
-                if retVal[cat.name] == nil {
-                    retVal[cat.name] = []
-                }
-                if let cnt = retVal[cat.name]?.count, cnt < numOlderPerCategory {
-                    retVal[cat.name]?.append(article)
-                }
-            })
-        }
-
-        return retVal
-    }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    private func loadMore() {
+        if !self.isLoadingMore {
+            self.isLoadingMore = true
+            self.footerView?.startAnimating()
+            self.loadMoreArticlesWithCompletion { () -> Void in
+                DispatchQueue.main.async {
+                    self.footerView?.stopAnimating()
+                    self.isLoadingMore = false
+                }
+            }
+        }
+    }
+    
+    private func loadMoreArticlesWithCompletion(_ completion: @escaping () -> Void) {
+        guard let currentCategory = self.category else {
+            completion()
+            return
+        }
+        var restriction: [Category] = []
+        if currentCategory.name != MBConstants.MOST_RECENT_CATEGORY_NAME {
+            restriction = [currentCategory] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory)
+        }
+        firstly {
+            self.articlesStore.syncLatestArticles(categoryRestriction: restriction, offset: self.articles.count)
+        }.then { isNewData -> Void in
+                if isNewData && self.category?.name ?? "" == currentCategory.name {
+                    DispatchQueue.main.async {
+                        var newArticles: [Article] = []
+                        
+                        if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
+                            newArticles = self.articlesStore.getLatestArticles(skip: self.articles.count)
+                        } else {
+                            newArticles = self.articlesStore.getLatestCategoryArticles(categoryIDs:restriction.map { $0.id }, skip: self.articles.count)
+                        }
+                        
+                        self.addMoreArticles(newArticles)
+                    }
+                }
+                completion()
+            }.catch { error in
+                print("Error loading more articles: \(error)")
+                completion()
+        }
+    }
+    
+    private func addMoreArticles(_ newArticles: [Article]) {
+        if newArticles.count > 0 {
+            newArticles.forEach { (newArticle) in
+                if !self.articles.contains { $0.id == newArticle.id } {
+                    self.articles.append(newArticle)
+                }
+            }
+            self.articles.sort { (articleI, articleJ) -> Bool in
+                if let iDate = articleI.getDate(), let jDate = articleJ.getDate() {
+                    return iDate.compare(jDate) == .orderedDescending
+                } else if articleI.getDate() != nil {
+                    return true // favor existant iDate over non-existant jDate
+                } else {
+                    return false // favor existant jDate or consider these to be equal
+                }
+            }
+            self.tableView.reloadData()
+        }
+    }
+    
     private func rowTypeForPath(_ indexPath: IndexPath) -> RowType {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return .featured        // first overall row
-        } else if indexPath.section == 0 {
-            return .recent          // other rows in first section
-        } else if indexPath.row == self.tableView(tableView, numberOfRowsInSection: indexPath.section) - 1 {
-            return .categoryFooter  // last row in other sections
+            return .featured
+        } else if let catName = self.category?.name, catName == MBConstants.MOST_RECENT_CATEGORY_NAME {
+            return .recent
         } else {
-            return .category        // middle rows in other sections
+            return .category
         }
     }
     
     private func articleForPath(_ indexPath: IndexPath) -> Article? {
-        switch rowTypeForPath(indexPath) {
-        case .featured, .recent:
-            return self.latestArticles[indexPath.row]
-        case .category:
-            let categoryName = topLevelCategories[indexPath.section - 1]
-            if let articles = self.olderArticlesByCategory[categoryName] {
-                return articles[indexPath.row]
-            }
-        default:
-            break
+        guard self.articles.count > indexPath.row else {
+            return nil
         }
-        
-        return nil
+        return self.articles[indexPath.row]
     }
 }
 
 extension MBArticlesViewController {
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return latestArticles.count
-        }
-        
-        let categoryName = topLevelCategories[section - 1]
-        return 1 + (olderArticlesByCategory[categoryName]?.count ?? 0)
+        return self.articles.count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return topLevelCategories.count + 1
+        return 1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: sectionHeaderReuseIdentifier) as? SectionHeaderView else {
             return nil
         }
-        if section == 0 {
-            header.setSearchVisible(isVisible: true)
+        
+        if self.category?.name ?? "" == MBConstants.MOST_RECENT_CATEGORY_NAME {
             header.setText("Mockingbird")
-            header.delegate = self
-            self.searchBarHolder = header
         } else {
-            header.setSearchVisible(isVisible: false)
-            header.setText(self.topLevelCategories[section - 1])
+            header.setText(self.category?.name ?? "Mockingbird")
         }
         
+        header.delegate = self
+        self.searchBarHolder = header
         return header
     }
     
@@ -373,51 +392,34 @@ extension MBArticlesViewController {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: featuredReuseIdentifier, for: indexPath) as? FeaturedArticleTableViewCell else {
                 return UITableViewCell()
             }
-            self.configureFeaturedCell(cell, withArticle: latestArticles[indexPath.row], atIndexPath: indexPath)
+            self.configureFeaturedCell(cell, withArticle: self.articles[indexPath.row], atIndexPath: indexPath)
             return cell
         case .recent:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: recentReuseIdentifier, for: indexPath) as? RecentArticleTableViewCell else {
                 return UITableViewCell()
             }
-            self.configureRecentCell(cell, withArticle: latestArticles[indexPath.row], atIndexPath: indexPath)
-            return cell
-        case .categoryFooter:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: categoryFooterReuseIdentifier, for: indexPath) as? CategoryFooterTableViewCell else {
-                return UITableViewCell()
-            }
+            self.configureRecentCell(cell, withArticle: self.articles[indexPath.row], atIndexPath: indexPath)
             return cell
         case .category:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: categoryArticleReuseIdentifier, for: indexPath) as? CategoryArticleTableViewCell else {
                 return UITableViewCell()
             }
-            if let article = articleForPath(indexPath) {
-                self.configureCategoryArticleCell(cell, withArticle: article, atIndexPath: indexPath)
-            }
+            self.configureCategoryArticleCell(cell, withArticle: self.articles[indexPath.row], atIndexPath: indexPath)
             return cell
         }
     }
     
     // MARK: - UISearchControllerDelegate
     func didDismissSearchController(_ searchController: UISearchController) {
-        print("DID DISMISS")
         self.searchBarHolder?.removeSearchBar()
     }
     
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndexPath = indexPath
-        if rowTypeForPath(indexPath) == .categoryFooter {
-            if let showMoreDelegate = self.showMoreDelegate {
-                let selectedCategory = topLevelCategories[indexPath.section - 1]
-                showMoreDelegate.showMoreArticlesForCategory(selectedCategory)
-            }
-        } else if let article = articleForPath(indexPath) {
+        if let article = articleForPath(indexPath) {
             if let delegate = self.delegate {
-                var context: String?
-                if self.rowTypeForPath(indexPath) == .category {
-                    context = topLevelCategories[indexPath.section - 1]
-                }
-                delegate.selectedArticle(article, categoryContext: context)
+                delegate.selectedArticle(article, categoryContext: self.category?.name)
             }
         }
     }
@@ -426,11 +428,24 @@ extension MBArticlesViewController {
         switch rowTypeForPath(indexPath) {
         case .featured:
             return 500.0
-        case .recent, .category:
+        default:
             return 200.0
-        case .categoryFooter:
-            return 86.0
         }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == self.articles.count {
+            self.loadMore()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if self.footerView == nil {
+            let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+            spinner.hidesWhenStopped = true
+            self.footerView = spinner
+        }
+        return self.footerView
     }
     
     // MARK: HeaderViewDelegate
@@ -440,12 +455,17 @@ extension MBArticlesViewController {
         }
         return self.searchController?.searchBar
     }
+    
+    func filterTapped(sender: SectionHeaderView) {
+        let filterVC = SelectCategoryViewController.instantiateFromStoryboard(categoryDAO: self.categoryDAO)
+        self.present(filterVC, animated: true, completion: nil)
+    }
 }
 
 protocol ArticlesTableViewDelegate: class {
     func selectedArticle(_ article: Article, categoryContext: String?)
 }
 
-protocol ShowMoreArticlesDelegate: class {
-    func showMoreArticlesForCategory(_ category: String)
+protocol SearchBarHolder {
+    func removeSearchBar()
 }

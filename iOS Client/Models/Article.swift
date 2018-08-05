@@ -44,9 +44,9 @@ struct Article {
 protocol ArticleDAO {
     func deleteOldArticles(completion: @escaping (Int) -> Void)
     func downloadImageURLsForArticle(_ article: Article, withCompletion completion: @escaping (URL?) -> Void)
-    func getArticles() -> [Article]
+    func getLatestArticles(skip: Int) -> [Article]
     func getLatestCategoryArticles(categoryIDs: [Int], skip: Int) -> [Article]
     func saveArticle(_ article: Article) -> Error?
     func syncAllData() -> Promise<Bool>
-    func syncCategoryArticles(categories: [Int], excluded: [Int]) -> Promise<Bool>
+    func syncLatestArticles(categoryRestriction: [Category], offset: Int) -> Promise<Bool>
 }

@@ -9,6 +9,7 @@
 import Foundation
 
 protocol CategoryDAO {
+    func getAllTopLevelCategories() -> [Category]
     func getCategoriesById(_ ids: [Int]) -> [Category]
     func getCategoryByName(_ name: String) -> Category?
     func getDescendentsOfCategory(cat: Category) -> [Category]
