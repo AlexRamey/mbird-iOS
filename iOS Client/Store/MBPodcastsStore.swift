@@ -12,8 +12,8 @@ import PromiseKit
 
 protocol PodcastsRepository: class {
     func getStreams() -> [PodcastStream]
-    func getVisibleStreams() -> [PodcastStream]
-    func setStreamVisible(stream: PodcastStream, isVisible: Bool)
+    func getVisibleFilterOptions() -> [PodcastFilterOption]
+    func setFilter(option: PodcastFilterOption, isVisible: Bool)
     func containsSavedPodcast(_ podcast: Podcast) -> Bool
     func getUrlFor(podcast: Podcast) -> URL?
 }
@@ -133,18 +133,26 @@ class MBPodcastsStore: PodcastsRepository {
         return self.streams
     }
     
-    func getVisibleStreams() -> [PodcastStream] {
+    func getVisibleFilterOptions() -> [PodcastFilterOption] {
         guard let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [String: Bool] else {
             return []
         }
         
-        return visibilitySettings.keys.compactMap { PodcastStream(rawValue: $0)}.filter { visibilitySettings[$0.rawValue] ?? false}
+        return visibilitySettings.keys.compactMap {
+            if let stream = PodcastStream(rawValue: $0) {
+                return PodcastFilterOption.stream(stream)
+            } else if $0 == PodcastFilterOption.downloaded.key {
+                return PodcastFilterOption.downloaded
+            } else {
+                return nil
+            }
+        }.filter { visibilitySettings[$0.key] ?? false}
     }
     
-    func setStreamVisible(stream: PodcastStream, isVisible: Bool) {
+    func setFilter(option: PodcastFilterOption, isVisible: Bool) {
         if let visibilitySettings = UserDefaults.standard.object(forKey: streamVisibilityDefaultsKey) as? [String: Bool] {
             var settings = visibilitySettings
-            settings[stream.rawValue] = isVisible
+            settings[option.key] = isVisible
             UserDefaults.standard.set(settings, forKey: streamVisibilityDefaultsKey)
         }
     }

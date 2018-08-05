@@ -67,9 +67,22 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     private func showPodcasts() {
-        let visibleStreams = self.podcastStore.getVisibleStreams()
+        let visibleFilterOptions = self.podcastStore.getVisibleFilterOptions()
+        let visibleStreams: [PodcastStream] = visibleFilterOptions.compactMap {
+            if case PodcastFilterOption.stream(let stream) = $0 { return stream }
+            else { return nil }
+        }
+        let showDownloadedPodcasts = visibleFilterOptions.contains(where: {
+            if case PodcastFilterOption.downloaded = $0 { return true }
+            else { return false }
+        })
         self.visiblePodcasts = self.podcasts.filter({ (podcast) -> Bool in
-            visibleStreams.contains(podcast.feed)
+            if showDownloadedPodcasts {
+                guard savedPodcastTitles.contains(podcast.title ?? "") else {
+                    return false
+                }
+            }
+            return visibleStreams.contains(podcast.feed)
         })
         self.tableView.reloadData()
     }
