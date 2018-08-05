@@ -29,8 +29,9 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         tableView.estimatedRowHeight = 110
         tableView.tableFooterView = nil
         navigationItem.title = "Filter"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "info"), style: .done, target: self, action: #selector(PodcastsFilterViewController.viewInfo))
-        
+        let infoButton = UIButton(type: .infoLight)
+        infoButton.addTarget(self, action: #selector(PodcastsFilterViewController.viewInfo), for: .touchUpInside)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: infoButton)
         self.loadData()
     }
     
