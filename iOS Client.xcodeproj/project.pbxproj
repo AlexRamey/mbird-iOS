@@ -80,6 +80,7 @@
 		D08F558C1F786DCD0071ED86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08F558A1F786DCD0071ED86 /* Main.storyboard */; };
 		D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D08F55901F786DCD0071ED86 /* Assets.xcassets */; };
 		D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */; };
+		D092EF282117B70900C04B67 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D092EF272117B70900C04B67 /* Settings.bundle */; };
 		D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496451F93DB5C004ACA4E /* DeserializationError.swift */; };
 		D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496471F93E79C004ACA4E /* MBConstants.swift */; };
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
@@ -174,6 +175,7 @@
 		D08F55901F786DCD0071ED86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D08F55931F786DCD0071ED86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D08F55951F786DCD0071ED86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D092EF272117B70900C04B67 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D09496451F93DB5C004ACA4E /* DeserializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeserializationError.swift; sourceTree = "<group>"; };
 		D09496471F93E79C004ACA4E /* MBConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MBConstants.swift; path = "iOS Client/Constants/MBConstants.swift"; sourceTree = SOURCE_ROOT; };
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 		D08F557A1F786DCD0071ED86 = {
 			isa = PBXGroup;
 			children = (
+				D092EF272117B70900C04B67 /* Settings.bundle */,
 				D08F55851F786DCD0071ED86 /* iOS Client */,
 				D08F55841F786DCD0071ED86 /* Products */,
 				B2F9D019B88BC6D17F4B6012 /* Pods */,
@@ -506,6 +509,7 @@
 				D0B43F141F787176007869DE /* ShellScript */,
 				F1396EF305B68971310EBA9B /* [CP] Embed Pods Frameworks */,
 				C067F49D1E8514FDE1205463 /* [CP] Copy Pods Resources */,
+				D092EF292117BA6C00C04B67 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -570,6 +574,7 @@
 				D0EA55F320798F2A005EFA7E /* RecentArticleTableViewCell.xib in Resources */,
 				D048E7FA20CC11ED00240462 /* SectionHeaderView.xib in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
+				D092EF282117B70900C04B67 /* Settings.bundle in Resources */,
 				23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */,
 				2392518C21169C5B00C597A7 /* PodcastInfoTableViewCell.xib in Resources */,
 				D08F55911F786DCD0071ED86 /* Assets.xcassets in Resources */,
@@ -597,6 +602,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		D092EF292117BA6C00C04B67 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "  cp \"$PROJECT_DIR/Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client-acknowledgements.plist\" \"$PROJECT_DIR/Settings.bundle/Pods-acknowledgements.plist\"";
 		};
 		D0B43F141F787176007869DE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
