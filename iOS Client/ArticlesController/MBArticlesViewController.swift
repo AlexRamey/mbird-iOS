@@ -33,6 +33,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var selectedIndexPath: IndexPath?
     
     var isLoadingMore = false
+    var isFirstAppearance = true
     var footerView: UIActivityIndicatorView?
     
     let preheater = Nuke.Preheater()
@@ -146,7 +147,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.category = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
             }
             self.loadArticleDataFromDisk()
-            
+        }
+        
+        if isFirstAppearance {
+            isFirstAppearance = false
             // the following line ensures that the refresh control has the correct tint/text on first use
             self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
             
