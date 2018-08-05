@@ -44,10 +44,19 @@ class AppCoordinator: NSObject, Coordinator {
     
     // MARK: - Coordinator
     func start() {
-        self.tabBarController.viewControllers = [ArticlesCoordinator(articleDAO: self.articleDAO, authorDAO: self.authorDAO, categoryDAO: self.categoryDAO), BookmarksCoordinator(dao: self.articleDAO, managedObjectContext: self.managedObjectContext), DevotionsCoordinator(), PodcastsCoordinator(store: self.podcastsStore, player: self.player)].map({(coord: Coordinator) -> UIViewController in
-            coord.start()
-            self.addChildCoordinator(childCoordinator: coord)
-            return coord.rootViewController
-        })
+        self.tabBarController.viewControllers = [ArticlesCoordinator(articleDAO: self.articleDAO,
+                                                                     authorDAO: self.authorDAO,
+                                                                     categoryDAO: self.categoryDAO),
+                                                 BookmarksCoordinator(dao: self.articleDAO,
+                                                                      managedObjectContext: self.managedObjectContext),
+                                                 DevotionsCoordinator(),
+                                                 PodcastsCoordinator(store: self.podcastsStore,
+                                                                     player: self.player),
+                                                 MoreCoordinator()]
+            .map({(coord: Coordinator) -> UIViewController in
+                coord.start()
+                self.addChildCoordinator(childCoordinator: coord)
+                return coord.rootViewController
+            })
     }
 }
