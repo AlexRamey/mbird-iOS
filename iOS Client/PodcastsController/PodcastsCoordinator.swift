@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, UninstallerDelegate, PodcastDetailHandler {
+class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, UninstallerDelegate, PodcastDetailHandler, PodcastFilterHandler, PodcastInfoHandler {
     var childCoordinators: [Coordinator] = []
     var podcastDetailViewController: PodcastDetailViewController? {
         return navigationController.viewControllers.last as? PodcastDetailViewController
@@ -46,7 +46,7 @@ class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, Unin
     }
     
     func filterPodcasts() {
-        let filterViewController = PodcastsFilterViewController.instantiateFromStoryboard(repository: self.podcastsStore)
+        let filterViewController = PodcastsFilterViewController.instantiateFromStoryboard(repository: self.podcastsStore, handler: self)
         self.navigationController.pushViewController(filterViewController, animated: true)
     }
     
@@ -61,5 +61,17 @@ class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, Unin
     // MARK: - PodcastDetailHandler
     func dismissDetail() {
         navigationController.popViewController(animated: false)
+    }
+    
+    // MARK: - PodcastFilterHandler
+    func viewInfo() {
+        let infoController = PodcastInfoViewController.instantiateFromStoryboard(repository: podcastsStore, handler: self)
+        let navController = UINavigationController(rootViewController: infoController)
+        navigationController.present(navController, animated: true, completion: nil)
+    }
+    
+    // MARK: - PodcastInfoHandler
+    func dismissInfo() {
+        self.navigationController.dismiss(animated: true, completion: nil)
     }
 }
