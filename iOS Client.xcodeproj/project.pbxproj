@@ -509,6 +509,7 @@
 				D0B43F141F787176007869DE /* ShellScript */,
 				F1396EF305B68971310EBA9B /* [CP] Embed Pods Frameworks */,
 				C067F49D1E8514FDE1205463 /* [CP] Copy Pods Resources */,
+				D092EF292117BA6C00C04B67 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -601,6 +602,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		D092EF292117BA6C00C04B67 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "  cp \"$PROJECT_DIR/Pods/Target Support Files/Pods-iOS Client/Pods-iOS Client-acknowledgements.plist\" \"$PROJECT_DIR/Settings.bundle/Pods-acknowledgements.plist\"";
 		};
 		D0B43F141F787176007869DE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
