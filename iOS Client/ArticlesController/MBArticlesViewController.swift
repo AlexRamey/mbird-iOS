@@ -201,7 +201,16 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.articlesStore.deleteOldArticles(completion: { (numDeleted) in
             print("Deleted \(numDeleted) old articles!!!")
             DispatchQueue.main.async {
-                self.articles = self.articlesStore.getLatestArticles(skip: 0)
+                guard let currentCategory = self.category else {
+                    return
+                }
+                
+                if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
+                    self.articles = self.articlesStore.getLatestArticles(skip: 0)
+                } else {
+                    self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: [currentCategory.id], skip: 0)
+                }
+                
                 self.tableView.reloadData()
             }
         })
@@ -290,7 +299,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         firstly {
             self.articlesStore.syncLatestArticles(categoryRestriction: restriction, offset: self.articles.count)
         }.then { isNewData -> Void in
-                if isNewData && self.category?.name ?? "" == currentCategory.name  {
+                if isNewData && self.category?.name ?? "" == currentCategory.name {
                     DispatchQueue.main.async {
                         var newArticles: [Article] = []
                         
