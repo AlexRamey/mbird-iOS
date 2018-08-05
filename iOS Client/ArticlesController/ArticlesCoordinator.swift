@@ -9,7 +9,7 @@
 import UIKit
 import SafariServices
 
-class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate, SFSafariViewControllerDelegate, ArticlesTableViewDelegate, ShowMoreArticlesDelegate, ArticleDetailDelegate {
+class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate, SFSafariViewControllerDelegate, ArticlesTableViewDelegate, ArticleDetailDelegate {
     var childCoordinators: [Coordinator] = []
     var overlay: URL?
     var articleDAO: ArticleDAO
@@ -37,16 +37,7 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
         detailVC.delegate = self
         self.navigationController.pushViewController(detailVC, animated: true)
     }
-    
-    // MARK: - Show More Articles Delegate
-    func showMoreArticlesForCategory(_ categoryName: String) {
-        if let cat = self.categoryDAO.getCategoryByName(categoryName) {
-            let showMoreVC = ShowMoreViewController.instantiateFromStoryboard(articleDAO: self.articleDAO, categoryDAO: self.categoryDAO, category: cat)
-            showMoreVC.delegate = self
-            self.navigationController.pushViewController(showMoreVC, animated: true)
-        }
-    }
-    
+
     // MARK: - Article Detail Delegate
     func selectedURL(url: URL) {
         let safariVC = SFSafariViewController(url: url)
@@ -63,7 +54,6 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
     func start() {
         let articlesController = MBArticlesViewController.instantiateFromStoryboard(articleDAO: self.articleDAO, authorDAO: self.authorDAO, categoryDAO: self.categoryDAO)
         articlesController.delegate = self
-        articlesController.showMoreDelegate = self
         self.navigationController.pushViewController(articlesController, animated: true)
     }
 }

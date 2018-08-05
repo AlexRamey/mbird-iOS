@@ -42,7 +42,7 @@ class MBClient: NSObject {
     }
     
     func getRecentArticles(inCategories categories: [Int],
-                           excludingArticlesWithIDs excluded: [Int],
+                           offset: Int,
                            withCompletion completion: @escaping ([Data], Error?) -> Void) {
         var categoriesArg = ""
         if categories.count > 0 {
@@ -51,16 +51,7 @@ class MBClient: NSObject {
             }
             categoriesArg.removeLast()
         }
-        
-        var excludedArg = ""
-        if excluded.count > 0 {
-            excludedArg = excluded.reduce("&exclude=") { (result, elem) -> String in
-                return "\(result)\(elem),"
-            }
-            excludedArg.removeLast()
-        }
-        
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=20\(categoriesArg)\(excludedArg)"
+        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=20&offset=\(offset)\(categoriesArg)"
         print("URL: \(urlString)")
         
         guard let url = URL(string: urlString) else {
