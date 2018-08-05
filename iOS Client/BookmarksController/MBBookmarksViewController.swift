@@ -41,6 +41,7 @@ class MBBookmarksViewController: UIViewController {
         
         self.isEditing = true
         self.tableView.rowHeight = UITableViewAutomaticDimension
+        setupBackgroundView()
         
         let fetchRequest: NSFetchRequest<MBArticle> = MBArticle.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: true))
@@ -57,11 +58,22 @@ class MBBookmarksViewController: UIViewController {
         } catch let error as NSError {
             print("Fetching error: \(error), \(error.userInfo)")
         }
+        
+        self.tableView.backgroundView?.isHidden = tableView.numberOfRows(inSection: 0) > 0
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    private func setupBackgroundView() {
+        let backgroundView = UILabel()
+        backgroundView.font = UIFont(name: "IowanOldStyle-Roman", size: 20.0)
+        backgroundView.textAlignment = .center
+        backgroundView.numberOfLines = 0
+        backgroundView.text = "To bookmark a post, visit the one you'd like to save and tap the feather at the top of the screen. To remove, swipe left."
+        self.tableView.backgroundView = backgroundView
     }
 }
 
@@ -102,6 +114,7 @@ extension MBBookmarksViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
+        self.tableView.backgroundView?.isHidden = tableView.numberOfRows(inSection: 0) > 0
     }
 }
 
