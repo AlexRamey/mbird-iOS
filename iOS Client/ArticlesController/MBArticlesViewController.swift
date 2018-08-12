@@ -17,7 +17,7 @@ enum RowType {
     case category
 }
 
-class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, HeaderViewDelegate, UISearchControllerDelegate {
+class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchControllerDelegate {
     // properties
     @IBOutlet weak var tableView: UITableView!
     private let refreshControl = UIRefreshControl()
@@ -25,7 +25,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var category: Category?
     var articles: [Article] = []
     
-    let sectionHeaderReuseIdentifier = "sectionHeaderReuseIdentifier"
     let featuredReuseIdentifier = "featuredReuseIdentifier"
     let recentReuseIdentifier = "recentReuseIdentifier"
     let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
@@ -38,7 +37,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let preheater = Nuke.Preheater()
     var controller: Preheat.Controller<UITableView>?
-    var searchBarHolder: SearchBarHolder?
     weak var delegate: ArticlesTableViewDelegate?
     
     // dependencies
@@ -64,12 +62,13 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         self.title = "Home"
         
+        configureNavBar()
+        
         tableView.delegate = self
         tableView.dataSource = self
         
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        tableView.register(UINib(nibName: "SectionHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: sectionHeaderReuseIdentifier)
         tableView.register(UINib(nibName: "FeaturedArticleTableViewCell", bundle: nil), forCellReuseIdentifier: featuredReuseIdentifier)
         tableView.register(UINib(nibName: "RecentArticleTableViewCell", bundle: nil), forCellReuseIdentifier: recentReuseIdentifier)
         tableView.register(UINib(nibName: "CategoryArticleTableViewCell", bundle: nil), forCellReuseIdentifier: categoryArticleReuseIdentifier)
@@ -87,11 +86,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         let searchResultsController = SearchResultsTableViewController.instantiateFromStoryboard(authorDAO: self.authorDAO, categoryDAO: self.categoryDAO)
         searchResultsController.delegate = self.delegate
         self.searchController = UISearchController(searchResultsController: searchResultsController)
-        self.searchController?.hidesNavigationBarDuringPresentation = false
-        self.searchController?.dimsBackgroundDuringPresentation = false
+        self.searchController?.hidesNavigationBarDuringPresentation = true
+        self.searchController?.dimsBackgroundDuringPresentation = true
         if let searchBar = self.searchController?.searchBar {
             searchResultsController.searchBar = searchBar
             searchBar.backgroundImage = UIImage()
+            searchBar.searchBarStyle = .default
+            searchBar.barTintColor = UIColor.white
+            searchBar.tintColor = UIColor.MBSalmon
             searchBar.isTranslucent = false
         }
         self.searchController?.searchResultsUpdater = searchResultsController
@@ -131,10 +133,31 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         preheater.stopPreheating(with: requests(for: removed))
     }
     
+    private func configureNavBar() {
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "Home", style: .plain, target: nil, action: nil)
+        
+        let filter = UIBarButtonItem(image: UIImage(named: "filter"), style: .plain, target: self, action: #selector(self.filterTapped(sender:)))
+        
+        let search = UIBarButtonItem(image: UIImage(named: "search-binoculars"), style: .plain, target: self, action: #selector(self.searchTapped(sender:)))
+        
+        self.navigationItem.leftBarButtonItem = filter
+        self.navigationItem.rightBarButtonItem = search
+    }
+    
+    @objc func filterTapped(sender: UIBarButtonItem) {
+        let filterVC = SelectCategoryViewController.instantiateFromStoryboard(categoryDAO: self.categoryDAO)
+        self.present(filterVC, animated: true, completion: nil)
+    }
+    
+    @objc func searchTapped(sender: UIBarButtonItem) {
+        if let searchBar = self.searchController?.searchBar {
+            self.tableView.addSubview(searchBar)
+            searchBar.becomeFirstResponder()
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
         
         // we have a default value set in the registration domain, so force-unwrap is safe
         let selectedCategoryName = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
@@ -148,6 +171,21 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             self.loadArticleDataFromDisk()
         }
+        
+        var navTitle = "Mockingbird"
+        if let catName = self.category?.name,
+            catName != MBConstants.MOST_RECENT_CATEGORY_NAME {
+            navTitle = catName
+        }
+        navTitle = "\u{00B7}\u{00B7}\u{00B7}   \(navTitle.uppercased())   \u{00B7}\u{00B7}\u{00B7}"
+        
+        var navLabel = UILabel()
+        navLabel.text = navTitle
+        navLabel.font = UIFont(name: "AvenirNext-Bold", size: 18.0)
+        navLabel.textColor = UIColor.MBOrange
+        navLabel.adjustsFontSizeToFitWidth = true
+        navLabel.minimumScaleFactor = 0.5
+        self.navigationItem.titleView = navLabel
         
         if isFirstAppearance {
             isFirstAppearance = false
@@ -178,7 +216,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     @objc private func refreshTableView(_ sender: UIRefreshControl) {
@@ -371,26 +408,6 @@ extension MBArticlesViewController {
         return 1
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: sectionHeaderReuseIdentifier) as? SectionHeaderView else {
-            return nil
-        }
-        
-        if self.category?.name ?? "" == MBConstants.MOST_RECENT_CATEGORY_NAME {
-            header.setText("Mockingbird")
-        } else {
-            header.setText(self.category?.name ?? "Mockingbird")
-        }
-        
-        header.delegate = self
-        self.searchBarHolder = header
-        return header
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50.0
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch rowTypeForPath(indexPath) {
         case .featured:
@@ -416,7 +433,9 @@ extension MBArticlesViewController {
     
     // MARK: - UISearchControllerDelegate
     func didDismissSearchController(_ searchController: UISearchController) {
-        self.searchBarHolder?.removeSearchBar()
+        if let searchBar = self.searchController?.searchBar {
+            searchBar.removeFromSuperview()
+        }
     }
     
     // MARK: - UITableViewDelegate
@@ -425,8 +444,8 @@ extension MBArticlesViewController {
         if let article = articleForPath(indexPath) {
             if let delegate = self.delegate {
                 var context = self.category?.name
-                if self.category?.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
-                    context = self.articles[indexPath.row].categories.first?.name
+                if context ?? "" == MBConstants.MOST_RECENT_CATEGORY_NAME {
+                    context = nil // no special context for most recent category
                 }
                 delegate.selectedArticle(article, categoryContext: context)
             }
@@ -456,27 +475,10 @@ extension MBArticlesViewController {
         }
         return self.footerView
     }
-    
-    // MARK: HeaderViewDelegate
-    func searchTapped(sender: SectionHeaderView) -> UISearchBar? {
-        guard !self.refreshControl.isRefreshing else {
-            return nil // search bar looks weird if it comes while the section header is too low
-        }
-        return self.searchController?.searchBar
-    }
-    
-    func filterTapped(sender: SectionHeaderView) {
-        let filterVC = SelectCategoryViewController.instantiateFromStoryboard(categoryDAO: self.categoryDAO)
-        self.present(filterVC, animated: true, completion: nil)
-    }
 }
 
 protocol ArticlesTableViewDelegate: class {
     func selectedArticle(_ article: Article, categoryContext: String?)
-}
-
-protocol SearchBarHolder {
-    func removeSearchBar()
 }
 
 protocol ThumbnailImageCell {

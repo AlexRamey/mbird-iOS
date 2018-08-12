@@ -65,8 +65,6 @@
 		D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */; };
 		D032F1A51F8728B700E78333 /* MBAuthor+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */; };
 		D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */; };
-		D048E7F820CC115700240462 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D048E7F720CC115700240462 /* SectionHeaderView.swift */; };
-		D048E7FA20CC11ED00240462 /* SectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D048E7F920CC11ED00240462 /* SectionHeaderView.xib */; };
 		D05EF17F20E07BA00066BA3E /* ArticleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05EF17E20E07BA00066BA3E /* ArticleDTO.swift */; };
 		D05EF18120E080470066BA3E /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05EF18020E080470066BA3E /* Article.swift */; };
 		D05EF18320E0827E0066BA3E /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05EF18220E0827E0066BA3E /* Author.swift */; };
@@ -158,8 +156,6 @@
 		D032F19E1F8728B700E78333 /* MBAuthor+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBAuthor+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTabBarController.swift; sourceTree = "<group>"; };
-		D048E7F720CC115700240462 /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
-		D048E7F920CC11ED00240462 /* SectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeaderView.xib; sourceTree = "<group>"; };
 		D05EF17E20E07BA00066BA3E /* ArticleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDTO.swift; sourceTree = "<group>"; };
 		D05EF18020E080470066BA3E /* Article.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		D05EF18220E0827E0066BA3E /* Author.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
@@ -469,8 +465,6 @@
 				D0EA55F120798F2A005EFA7E /* RecentArticleTableViewCell.xib */,
 				D08F55881F786DCD0071ED86 /* MBArticlesViewController.swift */,
 				D011D53E21169EDE004E748A /* SelectCategoryViewController.swift */,
-				D048E7F720CC115700240462 /* SectionHeaderView.swift */,
-				D048E7F920CC11ED00240462 /* SectionHeaderView.xib */,
 				2376236A1F904B290020A476 /* MBArticleDetailViewController.swift */,
 			);
 			path = ArticlesController;
@@ -572,7 +566,6 @@
 				D0EA55FB2079A42C005EFA7E /* CategoryArticleTableViewCell.xib in Resources */,
 				D05EF18C20E095C40066BA3E /* SearchResultTableViewCell.xib in Resources */,
 				D0EA55F320798F2A005EFA7E /* RecentArticleTableViewCell.xib in Resources */,
-				D048E7FA20CC11ED00240462 /* SectionHeaderView.xib in Resources */,
 				D08F55941F786DCD0071ED86 /* LaunchScreen.storyboard in Resources */,
 				D092EF282117B70900C04B67 /* Settings.bundle in Resources */,
 				23F2CB4D1FDC93E800B80856 /* PodcastTableViewCell.xib in Resources */,
@@ -735,7 +728,6 @@
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
 				D026D8E120F1A81F00CDBF89 /* MBArticlesStore.swift in Sources */,
 				239251912117726C00C597A7 /* MoreCoordinator.swift in Sources */,
-				D048E7F820CC115700240462 /* SectionHeaderView.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
 				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
