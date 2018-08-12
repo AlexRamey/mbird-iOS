@@ -424,7 +424,11 @@ extension MBArticlesViewController {
         self.selectedIndexPath = indexPath
         if let article = articleForPath(indexPath) {
             if let delegate = self.delegate {
-                delegate.selectedArticle(article, categoryContext: self.category?.name)
+                var context = self.category?.name
+                if self.category?.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
+                    context = self.articles[indexPath.row].categories.first?.name
+                }
+                delegate.selectedArticle(article, categoryContext: context)
             }
         }
     }
