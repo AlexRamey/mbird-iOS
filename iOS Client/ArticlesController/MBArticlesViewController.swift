@@ -262,9 +262,9 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         cell.setDate(date: article.getDate())
         
-        cell.featuredImage.image = nil
+        cell.thumbnailImage.image = nil
         if let url = article.image?.thumbnailUrl {
-            Manager.shared.loadImage(with: url, into: cell.featuredImage)
+            Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
         } else if article.imageId != 0 {
             self.downloadImageForArticle(article: article, atIndexPath: indexPath)
         }
