@@ -7,8 +7,8 @@
 
 import UIKit
 
-class FeaturedArticleTableViewCell: UITableViewCell {
-    @IBOutlet weak var featuredImage: UIImageView!
+class FeaturedArticleTableViewCell: UITableViewCell, ThumbnailImageCell {
+    @IBOutlet weak var thumbnailImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
@@ -16,8 +16,8 @@ class FeaturedArticleTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.featuredImage.contentMode = .scaleAspectFill
-        self.featuredImage.clipsToBounds = true
+        self.thumbnailImage.contentMode = .scaleAspectFill
+        self.thumbnailImage.clipsToBounds = true
         
         self.categoryLabel.textColor = UIColor.MBOrange
         self.categoryLabel.font = UIFont(name: "AvenirNext-Bold", size: 13.0)
