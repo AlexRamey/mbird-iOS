@@ -767,7 +767,7 @@
         <!--Search Results Table View Controller-->
         <scene sceneID="H34-Wh-Uqn">
             <objects>
-                <viewController storyboardIdentifier="ArticleSearchResultsVC" automaticallyAdjustsScrollViewInsets="NO" id="mAv-vf-sJM" customClass="SearchResultsTableViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ArticleSearchResultsVC" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" id="mAv-vf-sJM" customClass="SearchResultsTableViewController" customModule="iOS_Client" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="QAw-Hl-rVo"/>
                         <viewControllerLayoutGuide type="bottom" id="mZ4-rR-zx9"/>
