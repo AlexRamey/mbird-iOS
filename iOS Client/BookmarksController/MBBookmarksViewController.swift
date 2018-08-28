@@ -21,6 +21,7 @@ class MBBookmarksViewController: UIViewController {
         return queue
     }()
     weak var delegate: ArticlesTableViewDelegate?
+    var emptyLabel: UILabel?
     
     // MARK: - IBOutlets
     @IBOutlet weak var tableView: UITableView!
@@ -58,8 +59,6 @@ class MBBookmarksViewController: UIViewController {
         } catch let error as NSError {
             print("Fetching error: \(error), \(error.userInfo)")
         }
-        
-        self.tableView.backgroundView?.isHidden = tableView.numberOfRows(inSection: 0) > 0
     }
     
     override func didReceiveMemoryWarning() {
@@ -68,12 +67,18 @@ class MBBookmarksViewController: UIViewController {
     }
     
     private func setupBackgroundView() {
-        let backgroundView = UILabel()
-        backgroundView.font = UIFont(name: "IowanOldStyle-Roman", size: 20.0)
-        backgroundView.textAlignment = .center
-        backgroundView.numberOfLines = 0
-        backgroundView.text = "To bookmark a post, visit the one you'd like to save and tap the feather at the top of the screen. To remove, swipe left."
-        self.tableView.backgroundView = backgroundView
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+        label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15).isActive = true
+        label.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        label.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        label.font = UIFont(name: "IowanOldStyle-Roman", size: 20.0)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.text = "To bookmark a post, visit the one you'd like to save and tap the feather at the top of the screen. To remove, swipe left."
+        emptyLabel = label
     }
 }
 
@@ -114,7 +119,7 @@ extension MBBookmarksViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
-        self.tableView.backgroundView?.isHidden = tableView.numberOfRows(inSection: 0) > 0
+        self.emptyLabel?.isHidden = tableView.numberOfRows(inSection: 0) > 0
     }
 }
 
