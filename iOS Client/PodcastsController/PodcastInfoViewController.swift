@@ -26,6 +26,7 @@ class PodcastInfoViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.dataSource = self
         tableView.register(UINib(nibName: podcastInfoReusableId, bundle: nil), forCellReuseIdentifier: podcastInfoReusableId)
         tableView.rowHeight = UITableViewAutomaticDimension
+        self.title = "\u{00B7}\u{00B7}\u{00B7}   PODCASTS   \u{00B7}\u{00B7}\u{00B7}"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(PodcastInfoViewController.dismissInfo))
         self.tableView.tableFooterView = UIView()
     }

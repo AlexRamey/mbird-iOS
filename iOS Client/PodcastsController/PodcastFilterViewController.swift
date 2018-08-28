@@ -8,16 +8,11 @@
 
 import UIKit
 
-protocol PodcastFilterHandler {
-    func viewInfo()
-}
-
 class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, PodcastFilterDelegate {
     @IBOutlet weak var tableView: UITableView!
     var filterOptions: [PodcastFilterOption] = []
     var enabledOptions: [PodcastFilterOption] = []
     var repository: PodcastsRepository!
-    var handler: PodcastFilterHandler?
     
     let filterReuseIdentifier: String = "PodcastFilterTableViewCell"
     
@@ -40,10 +35,6 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         tableView.estimatedRowHeight = 110
         tableView.tableFooterView = nil
         
-        let infoButton = UIButton(type: .infoLight)
-        infoButton.addTarget(self, action: #selector(PodcastsFilterViewController.viewInfo), for: .touchUpInside)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: infoButton)
-        
         self.loadData()
     }
     
@@ -54,17 +45,12 @@ class PodcastsFilterViewController: UIViewController, UITableViewDataSource, UIT
         self.tableView.reloadData()
     }
     
-    static func instantiateFromStoryboard(repository: PodcastsRepository, handler: PodcastFilterHandler) -> PodcastsFilterViewController {
+    static func instantiateFromStoryboard(repository: PodcastsRepository) -> PodcastsFilterViewController {
         // swiftlint:disable force_cast
         let filterVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastFilterViewController") as! PodcastsFilterViewController
         // swiftlint:enable force_cast
         filterVC.repository = repository
-        filterVC.handler = handler
         return filterVC
-    }
-    
-    @objc func viewInfo(_ sender: Any) {
-        handler?.viewInfo()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
