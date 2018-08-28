@@ -50,8 +50,12 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         tableView.estimatedRowHeight = 110
         
         self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filter"), style: .done, target: self, action: #selector(MBPodcastsViewController.filter))
-        
+        let filterBarButton = UIBarButtonItem(image: UIImage(named: "filter"), style: .done, target: self, action: #selector(MBPodcastsViewController.filter))
+        let infoButton = UIButton(type: .infoLight)
+        infoButton.addTarget(self, action: #selector(MBPodcastsViewController.viewInfo), for: .touchUpInside)
+        let infoBarButton = UIBarButtonItem(customView: infoButton)
+        self.navigationItem.rightBarButtonItem = filterBarButton
+        self.navigationItem.leftBarButtonItem = infoBarButton
         self.loadData()
     }
     
@@ -112,6 +116,10 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         if let delegate = self.delegate {
             delegate.filterPodcasts()
         }
+    }
+    
+    @objc func viewInfo(_ sender: Any) {
+        delegate?.viewInfo()
     }
     
     // MARK: - UITableViewDataSource
@@ -175,4 +183,5 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
 protocol PodcastTableViewDelegate: class {
     func didSelectPodcast(_ podcast: Podcast)
     func filterPodcasts()
+    func viewInfo()
 }

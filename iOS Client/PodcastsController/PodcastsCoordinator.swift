@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, UninstallerDelegate, PodcastDetailHandler, PodcastFilterHandler, PodcastInfoHandler {
+class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, UninstallerDelegate, PodcastDetailHandler, PodcastInfoHandler {
     var childCoordinators: [Coordinator] = []
     var podcastDetailViewController: PodcastDetailViewController? {
         return navigationController.viewControllers.last as? PodcastDetailViewController
@@ -46,7 +46,7 @@ class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, Unin
     }
     
     func filterPodcasts() {
-        let filterViewController = PodcastsFilterViewController.instantiateFromStoryboard(repository: self.podcastsStore, handler: self)
+        let filterViewController = PodcastsFilterViewController.instantiateFromStoryboard(repository: self.podcastsStore)
         self.navigationController.pushViewController(filterViewController, animated: true)
     }
     
