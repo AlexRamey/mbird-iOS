@@ -151,7 +151,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc func searchTapped(sender: UIBarButtonItem) {
         if let searchBar = self.searchController?.searchBar {
-            self.tableView.addSubview(searchBar)
+            self.view.addSubview(searchBar)
             searchBar.becomeFirstResponder()
         }
     }
@@ -438,6 +438,12 @@ extension MBArticlesViewController {
         }
     }
     
+    func didPresentSearchController(_ searchController: UISearchController) {
+        if searchController.searchBar.superview?.frame.origin.y != 0.0 {
+            searchController.searchBar.superview?.frame.origin = CGPoint(x: 0.0, y: 0.0)
+        }
+    }
+
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedIndexPath = indexPath
