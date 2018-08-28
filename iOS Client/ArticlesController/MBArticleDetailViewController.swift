@@ -158,7 +158,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             return
         }
         
-        if let _ = dao.saveArticle(article) {
+        if let _ = dao.bookmarkArticle(article) {
             self.popAlertWithMessage(errMessage)
             return
         }

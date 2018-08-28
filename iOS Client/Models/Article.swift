@@ -46,7 +46,7 @@ protocol ArticleDAO {
     func downloadImageURLsForArticle(_ article: Article, withCompletion completion: @escaping (URL?) -> Void)
     func getLatestArticles(skip: Int) -> [Article]
     func getLatestCategoryArticles(categoryIDs: [Int], skip: Int) -> [Article]
-    func saveArticle(_ article: Article) -> Error?
+    func bookmarkArticle(_ article: Article) -> Error?
     func syncAllData() -> Promise<Bool>
     func syncLatestArticles(categoryRestriction: [Category], offset: Int) -> Promise<Bool>
 }

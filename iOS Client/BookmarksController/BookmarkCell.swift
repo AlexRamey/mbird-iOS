@@ -36,7 +36,7 @@ class BookmarkCell: UITableViewCell {
         coverImageView.image = nil
     }
     
-    func configure(article: MBArticle) {
+    func configure(article: Bookmark) {
         self.titleLabel.attributedText = article.title?.convertHtml()
         self.titleLabel.textColor = UIColor.MBOrange
         self.titleLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 16.0)

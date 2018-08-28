@@ -14,7 +14,7 @@ class MBBookmarksViewController: UIViewController {
     
     private let bookmarkCellIdentifier = "bookmarkCellReuseIdentifier"
     var managedObjectContext: NSManagedObjectContext!
-    var fetchedResultsController: NSFetchedResultsController<MBArticle>!
+    var fetchedResultsController: NSFetchedResultsController<Bookmark>!
     lazy var imageMakerQueue: OperationQueue = {
         var queue = OperationQueue()
         queue.name = "Image Maker Queue"
@@ -44,10 +44,8 @@ class MBBookmarksViewController: UIViewController {
         self.tableView.rowHeight = UITableViewAutomaticDimension
         setupBackgroundView()
         
-        let fetchRequest: NSFetchRequest<MBArticle> = MBArticle.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: true))
-        
-        let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
+        let fetchRequest: NSFetchRequest<Bookmark> = Bookmark.fetchRequest()
+        let sort = NSSortDescriptor(key: #keyPath(Bookmark.date), ascending: false)
         fetchRequest.sortDescriptors = [sort]
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -149,7 +147,7 @@ extension MBBookmarksViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let article = fetchedResultsController.object(at: indexPath)
-            article.isBookmarked = false
+            article.managedObjectContext?.delete(article)
             do {
                 try article.managedObjectContext?.save()
             } catch {

@@ -162,8 +162,8 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return (performFetch(fetchRequest: fetchRequest) as? [MBArticle])?.map { $0.toDomain() } ?? []
     }
     
-    func saveArticle(_ article: Article) -> Error? {
-        guard let _ = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
+    func bookmarkArticle(_ article: Article) -> Error? {
+        guard let _ = Bookmark.newBookmark(fromArticle: article, inContext: self.managedObjectContext) else {
             return NSError(domain: "CD Adapter", code: 0, userInfo: nil)
         }
         
