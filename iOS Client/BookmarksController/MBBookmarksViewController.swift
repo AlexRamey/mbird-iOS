@@ -42,7 +42,6 @@ class MBBookmarksViewController: UIViewController {
         
         self.isEditing = true
         self.tableView.rowHeight = UITableViewAutomaticDimension
-        setupBackgroundView()
         
         let fetchRequest: NSFetchRequest<Bookmark> = Bookmark.fetchRequest()
         let sort = NSSortDescriptor(key: #keyPath(Bookmark.date), ascending: false)
@@ -57,6 +56,8 @@ class MBBookmarksViewController: UIViewController {
         } catch let error as NSError {
             print("Fetching error: \(error), \(error.userInfo)")
         }
+        
+        setupBackgroundView()
     }
     
     override func didReceiveMemoryWarning() {
@@ -76,6 +77,7 @@ class MBBookmarksViewController: UIViewController {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.text = "To bookmark a post, visit the one you'd like to save and tap the feather at the top of the screen. To remove, swipe left."
+        label.isHidden = tableView.numberOfRows(inSection: 0) > 0
         emptyLabel = label
     }
 }
