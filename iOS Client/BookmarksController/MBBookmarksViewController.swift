@@ -88,7 +88,7 @@ extension MBBookmarksViewController {
         if let bookmarkCell = cell as? BookmarkCell {
             let article = fetchedResultsController.object(at: indexPath)
             bookmarkCell.configure(article: article)
-            if let link = article.imageLink, let url = URL(string: link) {
+            if let link = article.thumbnailLink, let url = URL(string: link) {
                 Manager.shared.loadImage(with: url, into: bookmarkCell.coverImageView)
             }
         }

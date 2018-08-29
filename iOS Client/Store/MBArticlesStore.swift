@@ -125,9 +125,8 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
             self.managedObjectContext.perform {
                 do {
                     entity.thumbnailLink = image?.thumbnailUrl?.absoluteString
-                    entity.imageLink = image?.thumbnailUrl?.absoluteString
                     try self.managedObjectContext.save()
-                    if let imageLink = entity.thumbnailLink ?? entity.imageLink,
+                    if let imageLink = entity.thumbnailLink,
                         let url = URL(string: imageLink) {
                         completion(url)
                     } else {
@@ -254,11 +253,10 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         let articles = self.getArticleEntities()
         self.managedObjectContext.perform {
             articles.forEach { (article) in
-                if (article.imageID > 0) && (article.imageLink == nil) {
+                if (article.imageID > 0) && (article.thumbnailLink == nil) {
                     self.client.getImageById(Int(article.imageID), completion: { (image) in
                         self.managedObjectContext.perform {
                             article.thumbnailLink = image?.thumbnailUrl?.absoluteString
-                            article.imageLink = image?.thumbnailUrl?.absoluteString
                             do {
                                 try self.managedObjectContext.save()
                             } catch {

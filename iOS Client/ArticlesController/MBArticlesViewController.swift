@@ -106,20 +106,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     func preheat(added: [IndexPath], removed: [IndexPath]) {
         func requests(for indexPaths: [IndexPath]) -> [Request] {
             return indexPaths.compactMap {
-                var url: URL?
-                switch rowTypeForPath($0) {
-                case .featured:
-                    guard let article = articleForPath($0) else {
-                        return nil
-                    }
-                    url = article.image?.imageUrl ?? article.image?.thumbnailUrl
-                default:
-                    guard let article = articleForPath($0) else {
-                        return nil
-                    }
-                    url = article.image?.thumbnailUrl ?? article.image?.imageUrl
+                guard let article = articleForPath($0) else {
+                    return nil
                 }
-                if let resolvedURL = url {
+                if let resolvedURL = article.image?.thumbnailUrl {
                     var request = Request(url: resolvedURL)
                     request.priority = .low
                     return request
@@ -299,7 +289,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             if let url = url {
                 DispatchQueue.main.async {
                     if let idx = self.articles.index (where: { $0.id == article.id }) {
-                        self.articles[idx].image = Image(id: article.imageId, thumbnailUrl: url, imageUrl: nil)
+                        self.articles[idx].image = Image(id: article.imageId, thumbnailUrl: url)
                     }
                     
                     if let cell = self.tableView.cellForRow(at: indexPath) as? ThumbnailImageCell {

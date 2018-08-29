@@ -94,7 +94,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                     return nil
                 }
                 let article = self.results[indexPath.row]
-                if let url = article.image?.thumbnailUrl ?? article.image?.imageUrl {
+                if let url = article.image?.thumbnailUrl {
                     var request = Request(url: url)
                     request.priority = .low
                     return request
@@ -219,7 +219,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         let article = self.results[indexPath.row]
         cell.setTitle(article.title.convertHtml())
         cell.thumbnailImage.image = nil
-        if let url = article.image?.thumbnailUrl ?? article.image?.imageUrl {
+        if let url = article.image?.thumbnailUrl {
             Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
         }
         return cell

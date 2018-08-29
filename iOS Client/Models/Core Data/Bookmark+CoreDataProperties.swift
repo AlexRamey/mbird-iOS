@@ -21,7 +21,7 @@ extension Bookmark {
     @NSManaged public var author: String?
     @NSManaged public var content: String?
     @NSManaged public var date: NSDate?
-    @NSManaged public var imageLink: String?
+    @NSManaged public var thumbnailLink: String?
     @NSManaged public var link: String?
     @NSManaged public var title: String?
     @NSManaged public var category: String?

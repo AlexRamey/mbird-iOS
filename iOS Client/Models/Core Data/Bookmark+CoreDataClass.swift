@@ -25,7 +25,7 @@ public class Bookmark: NSManagedObject {
         resolvedBookmark.title = from.title
         resolvedBookmark.content = from.content
         resolvedBookmark.imageId = Int32(from.imageId)
-        resolvedBookmark.imageLink = from.image?.thumbnailUrl?.absoluteString ?? from.image?.imageUrl?.absoluteString
+        resolvedBookmark.thumbnailLink = from.image?.thumbnailUrl?.absoluteString
         resolvedBookmark.date = from.getDate() as NSDate?
         resolvedBookmark.category = from.categories.first?.name
         resolvedBookmark.author = from.author?.name
@@ -68,8 +68,8 @@ public class Bookmark: NSManagedObject {
         let cats: [Category] = [Category(id: -1, name: self.category ?? "unclassified", parentId: 0)]
         
         var image: Image?
-        if self.imageId != 0, let imageLink = self.imageLink {
-            image = Image(id: Int(self.imageId), thumbnailUrl: URL(string: imageLink), imageUrl: nil)
+        if self.imageId != 0, let imageLink = self.thumbnailLink {
+            image = Image(id: Int(self.imageId), thumbnailUrl: URL(string: imageLink))
         }
         
         return Article(id: Int(self.articleId), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: -1, author: Author(id: -1, name: self.author ?? "", info: ""), imageId: Int(self.imageId), image: image, content: self.content ?? "", categoryIds: [], categories: cats, isBookmarked: true)
