@@ -11,7 +11,6 @@ import Foundation
 struct Image {
     var id: Int
     var thumbnailUrl: URL?
-    var imageUrl: URL?
 }
 
 protocol ImageDAO {

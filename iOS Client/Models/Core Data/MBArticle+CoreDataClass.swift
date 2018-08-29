@@ -69,7 +69,7 @@ public class MBArticle: NSManagedObject {
         resolvedArticle.title = from.title
         resolvedArticle.content = from.content
         resolvedArticle.imageID = Int32(from.imageId)
-        resolvedArticle.imageLink = from.image?.thumbnailUrl?.absoluteString ?? from.image?.imageUrl?.absoluteString
+        resolvedArticle.thumbnailLink = from.image?.thumbnailUrl?.absoluteString
         
         linkArticle(resolvedArticle, toAuthor: from.authorId)
         linkArticle(resolvedArticle, toCategories: from.categoryIds)
@@ -151,8 +151,8 @@ public class MBArticle: NSManagedObject {
         let cats: [Category] = categories.map { return $0.toDomain() }
         
         var image: Image?
-        if self.imageID != 0, let imageLink = self.imageLink {
-            image = Image(id: Int(self.imageID), thumbnailUrl: URL(string: imageLink), imageUrl: nil)
+        if self.imageID != 0, let imageLink = self.thumbnailLink {
+            image = Image(id: Int(self.imageID), thumbnailUrl: URL(string: imageLink))
         }
         
         return Article(id: Int(self.articleID), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: Int(self.authorID), author: self.author?.toDomain(), imageId: Int(self.imageID), image: image, content: self.content ?? "", categoryIds: catIds, categories: cats, isBookmarked: self.isBookmarked)

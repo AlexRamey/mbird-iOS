@@ -381,8 +381,7 @@ extension MBClient: ImageDAO {
             
             // keypaths for the image urls
             let keyPaths: [String] = [
-                "media_details.sizes.thumbnail.source_url",
-                "media_details.sizes.full.source_url"
+                "media_details.sizes.thumbnail.source_url"
             ]
             
             guard let arr = json as? NSDictionary else {
@@ -394,12 +393,7 @@ extension MBClient: ImageDAO {
                 thumbnailURL = URL(string: thumbURL)
             }
             
-            var imageURL: URL? = nil
-            if let imgURL = arr.value(forKeyPath: keyPaths[1]) as? String {
-                imageURL = URL(string: imgURL)
-            }
-            
-            completion(Image(id: id, thumbnailUrl: thumbnailURL , imageUrl: imageURL))
+            completion(Image(id: id, thumbnailUrl: thumbnailURL))
             }.resume()
     }
 }
