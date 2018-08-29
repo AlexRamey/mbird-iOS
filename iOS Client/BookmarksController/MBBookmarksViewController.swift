@@ -14,7 +14,7 @@ class MBBookmarksViewController: UIViewController {
     
     private let bookmarkCellIdentifier = "bookmarkCellReuseIdentifier"
     var managedObjectContext: NSManagedObjectContext!
-    var fetchedResultsController: NSFetchedResultsController<MBArticle>!
+    var fetchedResultsController: NSFetchedResultsController<Bookmark>!
     lazy var imageMakerQueue: OperationQueue = {
         var queue = OperationQueue()
         queue.name = "Image Maker Queue"
@@ -42,12 +42,9 @@ class MBBookmarksViewController: UIViewController {
         
         self.isEditing = true
         self.tableView.rowHeight = UITableViewAutomaticDimension
-        setupBackgroundView()
         
-        let fetchRequest: NSFetchRequest<MBArticle> = MBArticle.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: true))
-        
-        let sort = NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: false)
+        let fetchRequest: NSFetchRequest<Bookmark> = Bookmark.fetchRequest()
+        let sort = NSSortDescriptor(key: #keyPath(Bookmark.date), ascending: false)
         fetchRequest.sortDescriptors = [sort]
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -59,6 +56,8 @@ class MBBookmarksViewController: UIViewController {
         } catch let error as NSError {
             print("Fetching error: \(error), \(error.userInfo)")
         }
+        
+        setupBackgroundView()
     }
     
     override func didReceiveMemoryWarning() {
@@ -78,6 +77,7 @@ class MBBookmarksViewController: UIViewController {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.text = "To bookmark a post, visit the one you'd like to save and tap the feather at the top of the screen. To remove, swipe left."
+        label.isHidden = tableView.numberOfRows(inSection: 0) > 0
         emptyLabel = label
     }
 }
@@ -149,7 +149,7 @@ extension MBBookmarksViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let article = fetchedResultsController.object(at: indexPath)
-            article.isBookmarked = false
+            article.managedObjectContext?.delete(article)
             do {
                 try article.managedObjectContext?.save()
             } catch {

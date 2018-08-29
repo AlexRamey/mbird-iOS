@@ -81,10 +81,10 @@
 		D092EF282117B70900C04B67 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D092EF272117B70900C04B67 /* Settings.bundle */; };
 		D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496451F93DB5C004ACA4E /* DeserializationError.swift */; };
 		D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496471F93E79C004ACA4E /* MBConstants.swift */; };
+		D0B8BBB22134F55B00355D4B /* Bookmark+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B8BBB02134F55B00355D4B /* Bookmark+CoreDataClass.swift */; };
+		D0B8BBB32134F55B00355D4B /* Bookmark+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B8BBB12134F55B00355D4B /* Bookmark+CoreDataProperties.swift */; };
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
 		D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */; };
-		D0EA55E52066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EA55E32066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift */; };
-		D0EA55E62066ADDE005EFA7E /* ArticlePicture+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EA55E42066ADDE005EFA7E /* ArticlePicture+CoreDataProperties.swift */; };
 		D0EA55EF20797E40005EFA7E /* FeaturedArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0EA55EE20797E40005EFA7E /* FeaturedArticleTableViewCell.xib */; };
 		D0EA55F220798F2A005EFA7E /* RecentArticleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EA55F020798F2A005EFA7E /* RecentArticleTableViewCell.swift */; };
 		D0EA55F320798F2A005EFA7E /* RecentArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0EA55F120798F2A005EFA7E /* RecentArticleTableViewCell.xib */; };
@@ -174,10 +174,10 @@
 		D092EF272117B70900C04B67 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D09496451F93DB5C004ACA4E /* DeserializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeserializationError.swift; sourceTree = "<group>"; };
 		D09496471F93E79C004ACA4E /* MBConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MBConstants.swift; path = "iOS Client/Constants/MBConstants.swift"; sourceTree = SOURCE_ROOT; };
+		D0B8BBB02134F55B00355D4B /* Bookmark+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bookmark+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D0B8BBB12134F55B00355D4B /* Bookmark+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bookmark+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
 		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		D0EA55E32066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArticlePicture+CoreDataClass.swift"; sourceTree = "<group>"; };
-		D0EA55E42066ADDE005EFA7E /* ArticlePicture+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArticlePicture+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0EA55EE20797E40005EFA7E /* FeaturedArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeaturedArticleTableViewCell.xib; sourceTree = "<group>"; };
 		D0EA55F020798F2A005EFA7E /* RecentArticleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentArticleTableViewCell.swift; sourceTree = "<group>"; };
 		D0EA55F120798F2A005EFA7E /* RecentArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecentArticleTableViewCell.xib; sourceTree = "<group>"; };
@@ -375,8 +375,8 @@
 		D05EF18620E082D40066BA3E /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
-				D0EA55E32066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift */,
-				D0EA55E42066ADDE005EFA7E /* ArticlePicture+CoreDataProperties.swift */,
+				D0B8BBB02134F55B00355D4B /* Bookmark+CoreDataClass.swift */,
+				D0B8BBB12134F55B00355D4B /* Bookmark+CoreDataProperties.swift */,
 				D09496451F93DB5C004ACA4E /* DeserializationError.swift */,
 				D032F19C1F8728B700E78333 /* MBArticle+CoreDataClass.swift */,
 				D032F19F1F8728B700E78333 /* MBAuthor+CoreDataProperties.swift */,
@@ -695,7 +695,6 @@
 				D05EF18820E08B3B0066BA3E /* SearchResultsTableViewController.swift in Sources */,
 				23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */,
 				D026D8E620F25CD400CDBF89 /* WeakRef.swift in Sources */,
-				D0EA55E52066ADDE005EFA7E /* ArticlePicture+CoreDataClass.swift in Sources */,
 				2376236B1F904B290020A476 /* MBArticleDetailViewController.swift in Sources */,
 				23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */,
 				23D8BB44207EE3930057C9D5 /* FeaturedArticleTableViewCell.swift in Sources */,
@@ -703,7 +702,6 @@
 				2392518821169A7300C597A7 /* PodcastInfoViewController.swift in Sources */,
 				D02C22971FDE15120024D0F6 /* CoreDataStack.swift in Sources */,
 				D026D8E020F1A81F00CDBF89 /* XMLParsingDelegate.swift in Sources */,
-				D0EA55E62066ADDE005EFA7E /* ArticlePicture+CoreDataProperties.swift in Sources */,
 				D026D8E220F1A81F00CDBF89 /* MBDevotionsStore.swift in Sources */,
 				D05EF18320E0827E0066BA3E /* Author.swift in Sources */,
 				D05EF18B20E095C40066BA3E /* SearchResultTableViewCell.swift in Sources */,
@@ -722,11 +720,13 @@
 				D05EF18120E080470066BA3E /* Article.swift in Sources */,
 				D032F1A01F8728B700E78333 /* MBCategory+CoreDataClass.swift in Sources */,
 				232F08342066FC3B0051CF71 /* PlayPauseView.swift in Sources */,
+				D0B8BBB22134F55B00355D4B /* Bookmark+CoreDataClass.swift in Sources */,
 				D03E50F61F7C8E2F004F5648 /* MBTabBarController.swift in Sources */,
 				23F2CB4C1FDC93E800B80856 /* PodcastTableViewCell.swift in Sources */,
 				239E3BA71FBD42A1006E3C9C /* DevotionDetailViewController.swift in Sources */,
 				23D8F1FA1FAECD0B004964AE /* Color.swift in Sources */,
 				D026D8E120F1A81F00CDBF89 /* MBArticlesStore.swift in Sources */,
+				D0B8BBB32134F55B00355D4B /* Bookmark+CoreDataProperties.swift in Sources */,
 				239251912117726C00C597A7 /* MoreCoordinator.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
