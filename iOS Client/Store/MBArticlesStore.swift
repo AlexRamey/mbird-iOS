@@ -77,44 +77,6 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     }
     
     /***** Article DAO *****/
-    /***** Data Cleanup Task *****/
-    private func deleteArticles(completion: @escaping (Error) -> Void) {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
-        fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: false))
-        
-        self.managedObjectContext.perform {
-            guard let count = try? self.managedObjectContext.count(for: fetchRequest) else {
-                completion(0)
-                return
-            }
-            
-            let numToDelete = count - MBConstants.MAX_ARTICLES_ON_DEVICE
-            guard numToDelete > 0 else {
-                completion(0)
-                return
-            }
-            
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(MBArticle.date), ascending: true)]
-            fetchRequest.fetchLimit = numToDelete
-            guard let articlesToDelete = try? self.managedObjectContext.fetch(fetchRequest) else {
-                completion(0)
-                return
-            }
-            
-            articlesToDelete.forEach({ (article) in
-                self.managedObjectContext.delete(article)
-            })
-            
-            do {
-                try self.managedObjectContext.save()
-                completion(articlesToDelete.count)
-            } catch let error as NSError {
-                print("Could not save context: \(error), \(error.userInfo)")
-                completion(0)
-            }
-        }
-    }
-    
     func downloadImageURLsForArticle(_ article: Article, withCompletion completion: @escaping (URL?) -> Void) {
         guard let entity = MBArticle.newArticle(fromArticle: article, inContext: self.managedObjectContext) else {
             completion(nil)
@@ -177,18 +139,72 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return err
     }
     
-    func nukeAndPave() -> Promise<Bool> {
-        firstly {
-            when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles())
-        }.done { authors, categories, articles in
-            // flush db
-            // save data
-            // link categories
-            // resolve image urls
-        }.catch { error
-            print("There was an error downloading data! \(error)")
-            reject(error)
+    func nukeAndPave() -> Promise<[Article]> {
+        return Promise { fulfill, reject in
+            firstly{
+                when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles())
+            }.then { authors, categories, articles -> Void in
+                // flush db
+                if let nukeErr = self.nuke() {
+                    throw nukeErr
+                }
+                
+                var saveError: Error?
+                // save data
+                self.managedObjectContext.performAndWait {
+                    do {
+                        authors.forEach { MBAuthor.newAuthor(fromAuthor: $0, inContext: self.managedObjectContext ) }
+                        try self.managedObjectContext.save()
+                        
+                        categories.forEach {MBCategory.newCategory(fromCategory: $0, inContext: self.managedObjectContext)}
+                        try self.managedObjectContext.save()
+                        
+                        if let linkErr = self.linkCategoriesTogether() {
+                            throw linkErr
+                        }
+                        
+                        articles.forEach {MBArticle.newArticle(fromArticle: $0, inContext: self.managedObjectContext)}
+                        try self.managedObjectContext.save()
+                    } catch {
+                        saveError = error
+                    }
+                }
+                
+                if let saveError = saveError {
+                    throw saveError
+                }
+
+                self.resolveArticleImageURLs()
+                fulfill(self.getLatestArticles(skip: 0))
+            }.catch { error in
+                print("There was an error downloading data! \(error)")
+                reject(error)
+            }
         }
+    }
+    
+    private func nuke() -> Error? {
+        let articles = self.performFetch(fetchRequest: NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName))
+        
+        let authors = self.performFetch(fetchRequest: NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName))
+        
+        let categories = self.performFetch(fetchRequest: NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName))
+        
+        let objects = articles + authors + categories
+        var retVal: Error?
+        self.managedObjectContext.performAndWait {
+            for object in objects {
+                self.managedObjectContext.delete(object)
+            }
+            
+            do {
+                try self.managedObjectContext.save()
+            } catch {
+                retVal = error
+            }
+        }
+        
+        return retVal
     }
     
     /***** Read from Core Data *****/

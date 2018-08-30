@@ -79,7 +79,7 @@ class MBClient: NSObject {
     
     // getRecentArticles makes a single URL request for recent posts
     // When the response is received, it calls the completion block with the resulting data and error
-    func getRecentArticles() -> Promise<Article> {
+    func getRecentArticles() -> Promise<[Article]> {
         return Promise { fulfill, reject in
             let urlString = "\(baseURL)\(articlesEndpoint)?per_page=100"
             guard let url = URL(string: urlString) else {
@@ -106,7 +106,7 @@ class MBClient: NSObject {
                     return dto.toDomain()
                 })
                 
-                completion(domainArticles, nil)
+                fulfill(domainArticles)
             }
         }
     }

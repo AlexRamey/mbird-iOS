@@ -46,5 +46,5 @@ protocol ArticleDAO {
     func getLatestArticles(skip: Int) -> [Article]
     func getLatestCategoryArticles(categoryIDs: [Int], skip: Int) -> [Article]
     func bookmarkArticle(_ article: Article) -> Error?
-    func deleteArticles(completion: @escaping (Error) -> Void)
+    func nukeAndPave() -> Promise<[Article]>
 }

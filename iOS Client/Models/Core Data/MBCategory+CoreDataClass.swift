@@ -10,11 +10,10 @@
 import Foundation
 import CoreData
 
-
 public class MBCategory: NSManagedObject {
     static let entityName: String = "Category"
     
-    public class func newCategory(fromCategory from: Category, inContext managedContext: NSManagedObjectContext) -> MBCategory? {
+    class func newCategory(fromCategory from: Category, inContext managedContext: NSManagedObjectContext) -> MBCategory? {
         let predicate = NSPredicate(format: "categoryID == %d", from.id)
         let fetchRequest = NSFetchRequest<MBCategory>(entityName: self.entityName)
         fetchRequest.predicate = predicate
