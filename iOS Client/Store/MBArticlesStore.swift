@@ -78,7 +78,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     
     /***** Article DAO *****/
     /***** Data Cleanup Task *****/
-    func deleteOldArticles(completion: @escaping (Int) -> Void) {
+    private func deleteArticles(completion: @escaping (Error) -> Void) {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
         fetchRequest.predicate = NSPredicate(format: "isBookmarked == %@", NSNumber(value: false))
         
@@ -177,52 +177,17 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return err
     }
     
-    /***** Download Data from Network *****/
-    func syncAllData() -> Promise<Bool> {
-        return Promise { fulfill, reject in
-            var results: [Bool] = []
-            let bgq = DispatchQueue.global(qos: .userInitiated)
-            firstly {
-                downloadAuthors()
-                }.then(on: bgq) { result -> Promise<Bool> in
-                    results.append(result)
-                    return self.downloadCategories()
-                }.then(on: bgq) { result -> Promise<Bool> in
-                    results.append(result)
-                    if let linkErr = self.linkCategoriesTogether() {
-                        reject(linkErr)
-                    }
-                    return self.downloadArticles()
-                }.then(on: bgq) { result -> Void in
-                    results.append(result)
-                    
-                    // fire off requests to get the image urls
-                    self.resolveArticleImageURLs()
-                    
-                    fulfill(results.reduce(false, { (accumulator, item) -> Bool in
-                        return accumulator || item
-                    }))
-                }.catch { error in
-                    print("There was an error downloading data! \(error)")
-                    reject(error)
-            }
-        }
-    }
-    
-    public func syncLatestArticles(categoryRestriction: [Category], offset: Int) -> Promise<Bool> {
-        return Promise { fulfill, reject in
-            firstly {
-                performDownload(clientFunction: { (completion: @escaping ([Data], Error?) -> Void) in
-                    client.getRecentArticles(inCategories: categoryRestriction.map { return $0.id }, offset: offset, withCompletion: completion)
-                }, deserializeFunc: MBArticle.deserialize)
-                }.then() { result -> Void in
-                    // fire off requests to get the image urls
-                    self.resolveArticleImageURLs()
-                    fulfill(result)
-                }.catch { error in
-                    print("There was an error downloading data! \(error)")
-                    reject(error)
-            }
+    func nukeAndPave() -> Promise<Bool> {
+        firstly {
+            when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles())
+        }.done { authors, categories, articles in
+            // flush db
+            // save data
+            // link categories
+            // resolve image urls
+        }.catch { error
+            print("There was an error downloading data! \(error)")
+            reject(error)
         }
     }
     
@@ -292,83 +257,5 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         }
         
         return caughtError
-    }
-    
-    private func downloadAuthors() -> Promise<Bool> {
-        return performDownload(clientFunction: client.getAuthorsWithCompletion, deserializeFunc: MBAuthor.deserialize)
-    }
-    
-    private func downloadCategories() -> Promise<Bool> {
-        return performDownload(clientFunction: client.getCategoriesWithCompletion, deserializeFunc: MBCategory.deserialize)
-    }
-    
-    private func downloadArticles() -> Promise<Bool> {
-        return performDownload(clientFunction: client.getRecentArticlesWithCompletion, deserializeFunc: MBArticle.deserialize)
-    }
-    
-    // An internal helper function to perform a download
-    private func performDownload(clientFunction: (@escaping ([Data], Error?) -> Void) -> Void,
-                                 deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool) -> Promise<Bool> {
-        return Promise { fulfill, reject in
-            clientFunction { (data: [Data], err: Error?) in
-                if let clientErr = err {
-                    reject(clientErr)
-                    return
-                }
-                
-                var isNewData = false
-                var caughtError: Error? = nil
-                // data is an array of Data, where each datum is a serialized array representing a page of results
-                // thus, think of data as an array of results pages
-                for jsonData in data {
-                    do {
-                        isNewData = try self.downloadModelsHandler(data: jsonData, deserializeFunc: deserializeFunc) || isNewData
-                    } catch {
-                        print("could not handle data: \(error) \(error.localizedDescription)")
-                        caughtError = error
-                    }
-                }
-                
-                if let error = caughtError {
-                    reject(error)
-                } else {
-                    fulfill(isNewData)
-                }
-            }
-        }
-    }
-    
-    // An internal helper that returns a handler which saves the json array as a group of core data objects
-    private func downloadModelsHandler(data: Data,
-                                       deserializeFunc: @escaping (NSDictionary, NSManagedObjectContext) throws -> Bool) throws -> Bool {
-        
-        // deserialize data into the managed context and save it
-        let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        if let arr = json as? [NSDictionary] {
-            var isNewData: Bool = false
-            var caughtError: Error? = nil
-            
-            self.managedObjectContext.performAndWait {
-                do {
-                    try arr.forEach({ (json: NSDictionary) in
-                        if try deserializeFunc(json, self.managedObjectContext) {
-                            isNewData = true
-                        }
-                    })
-                    
-                    try self.managedObjectContext.save()
-                } catch {
-                   caughtError = error
-                }
-            }
-            
-            if let error = caughtError {
-                throw MBDeserializationError.contextInsertionError(msg: "an unexpected error occurred: \(error) :\(error.localizedDescription)")
-            }
-            
-            return isNewData
-        } else {
-            throw MBDeserializationError.contractMismatch(msg: "unable to cast json object into an array of NSDictionary objects")
-        }
     }
 }
