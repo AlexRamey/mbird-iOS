@@ -41,47 +41,18 @@ class MBClient: NSObject {
         case failedPagingRequest(msg: String)
     }
     
-    func getRecentArticles(inCategories categories: [Int],
-                           offset: Int,
-                           withCompletion completion: @escaping ([Data], Error?) -> Void) {
-        var categoriesArg = ""
-        if categories.count > 0 {
-            categoriesArg = categories.reduce("&categories=") { (result, elem) -> String in
-                return "\(result)\(elem),"
-            }
-            categoriesArg.removeLast()
-        }
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=20&offset=\(offset)\(categoriesArg)"
-        print("URL: \(urlString)")
-        
-        guard let url = URL(string: urlString) else {
-            completion([], NetworkRequestError.invalidURL(url: urlString))
-            return
-        }
-        
-        print("firing getArticles request")
-        getDataFromURL(url, withCompletion: completion)
-    }
-    
-    func getPodcast(url: URL) -> Promise<Data> {
+    func getRecentArticles(inCategories categories: [Int], offset: Int, pageSize: Int) -> Promise<[Article]> {
         return Promise { fulfill, reject in
-            getDataFromURL(url) { data, error in
-                if let err = error {
-                    reject(err)
-                } else if let data = data.first {
-                    fulfill(data)
-                } else {
-                    reject(NetworkRequestError.networkError(msg: "Did not receive any valid data"))
+            var categoriesArg = ""
+            if categories.count > 0 {
+                categoriesArg = categories.reduce("&categories=") { (result, elem) -> String in
+                    return "\(result)\(elem),"
                 }
+                categoriesArg.removeLast()
             }
-        }
-    }
-    
-    // getRecentArticles makes a single URL request for recent posts
-    // When the response is received, it calls the completion block with the resulting data and error
-    func getRecentArticles() -> Promise<[Article]> {
-        return Promise { fulfill, reject in
-            let urlString = "\(baseURL)\(articlesEndpoint)?per_page=100"
+            let urlString = "\(baseURL)\(articlesEndpoint)?per_page=\(pageSize)&offset=\(offset)\(categoriesArg)"
+            print("URL: \(urlString)")
+            
             guard let url = URL(string: urlString) else {
                 reject(NetworkRequestError.invalidURL(url: urlString))
                 return
@@ -107,6 +78,20 @@ class MBClient: NSObject {
                 })
                 
                 fulfill(domainArticles)
+            }
+        }
+    }
+    
+    func getPodcast(url: URL) -> Promise<Data> {
+        return Promise { fulfill, reject in
+            getDataFromURL(url) { data, error in
+                if let err = error {
+                    reject(err)
+                } else if let data = data.first {
+                    fulfill(data)
+                } else {
+                    reject(NetworkRequestError.networkError(msg: "Did not receive any valid data"))
+                }
             }
         }
     }

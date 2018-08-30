@@ -142,7 +142,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     func nukeAndPave() -> Promise<[Article]> {
         return Promise { fulfill, reject in
             firstly{
-                when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles())
+                when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles(inCategories: [], offset: 0, pageSize: 100))
             }.then { authors, categories, articles -> Void in
                 // flush db
                 if let nukeErr = self.nuke() {
