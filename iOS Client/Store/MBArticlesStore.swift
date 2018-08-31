@@ -142,7 +142,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     func nukeAndPave() -> Promise<[Article]> {
         return Promise { fulfill, reject in
             firstly{
-                when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles(inCategories: [], offset: 0, pageSize: 100))
+                when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles(inCategories: [], offset: 0, pageSize: 100, before: nil, after: nil, asc: false))
             }.then { authors, categories, articles -> Void in
                 // flush db
                 if let nukeErr = self.nuke() {
@@ -205,6 +205,20 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         }
         
         return retVal
+    }
+    
+    func saveArticles(articles: [Article]) -> Error? {
+        var saveErr: Error?
+        self.managedObjectContext.performAndWait {
+            articles.forEach { _ = MBArticle.newArticle(fromArticle: $0, inContext: self.managedObjectContext) }
+            do {
+                try self.managedObjectContext.save()
+            } catch {
+                print("unable to save articles: \(error)")
+                saveErr = error
+            }
+        }
+        return saveErr
     }
     
     /***** Read from Core Data *****/

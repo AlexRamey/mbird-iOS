@@ -47,4 +47,5 @@ protocol ArticleDAO {
     func getLatestCategoryArticles(categoryIDs: [Int], skip: Int) -> [Article]
     func bookmarkArticle(_ article: Article) -> Error?
     func nukeAndPave() -> Promise<[Article]>
+    func saveArticles(articles: [Article]) -> Error?
 }

@@ -235,7 +235,12 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
             }
             
-            self.client.getRecentArticles(inCategories: lineage, offset: 0, pageSize: 10).then { recentArticles -> Void in
+            var afterArg: String?
+            if let latestArticle = self.articles.first, latestArticle.date != "" {
+                afterArg = latestArticle.date
+            }
+            
+            self.client.getRecentArticles(inCategories: lineage, offset: 0, pageSize: 100, before: nil, after: afterArg, asc: true).then { recentArticles -> Void in
                 self.processCandidateArticles(recentArticles, forCategory: currentCategory)
                 }
                 .always {
@@ -261,8 +266,15 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
         }
         
-        self.client.getRecentArticles(inCategories: lineage, offset: self.articles.count, pageSize: 20).then { recentArticles -> Void in
-                self.processCandidateArticles(recentArticles, forCategory: currentCategory)
+        var offsetArg: Int = self.articles.count
+        var beforeArg: String?
+        if let earliestArticle = self.articles.last, earliestArticle.date != "" {
+            beforeArg = earliestArticle.date
+            offsetArg = 0 // we can use date instead
+        }
+        
+        self.client.getRecentArticles(inCategories: lineage, offset: offsetArg, pageSize: 20, before: beforeArg, after: nil, asc: false).then { recentArticles -> Void in
+            self.processCandidateArticles(recentArticles, forCategory: currentCategory)
             }
             .always {
                 self.isLoadingMore = false
@@ -297,6 +309,16 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             
             DispatchQueue.main.async {
+                // it's only safe to save 'most recent' category to disk;
+                // saving articles for a specific category can cause there
+                // to be holes on the most recent view. The next paging request
+                // will assume the articles are sequential and basically
+                // mash them down, covering up other potential articles and
+                // resulting in non-productive duplicates being returned
+                if forCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
+                    _ = self.articlesStore.saveArticles(articles: newArticles)
+                }
+                
                 // if the results are still relevant, then add them
                 if self.category?.name ?? "" == forCategory.name {
                     self.articles = newArticles + self.articles
