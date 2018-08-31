@@ -83,6 +83,8 @@
 		D09496481F93E79C004ACA4E /* MBConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09496471F93E79C004ACA4E /* MBConstants.swift */; };
 		D0B8BBB22134F55B00355D4B /* Bookmark+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B8BBB02134F55B00355D4B /* Bookmark+CoreDataClass.swift */; };
 		D0B8BBB32134F55B00355D4B /* Bookmark+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B8BBB12134F55B00355D4B /* Bookmark+CoreDataProperties.swift */; };
+		D0DD187221377675008A24C9 /* AuthorDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DD187121377675008A24C9 /* AuthorDTO.swift */; };
+		D0DD187421377AEF008A24C9 /* CategoryDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DD187321377AEF008A24C9 /* CategoryDTO.swift */; };
 		D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */; };
 		D0DED1FE1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */; };
 		D0EA55EF20797E40005EFA7E /* FeaturedArticleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0EA55EE20797E40005EFA7E /* FeaturedArticleTableViewCell.xib */; };
@@ -176,6 +178,8 @@
 		D09496471F93E79C004ACA4E /* MBConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MBConstants.swift; path = "iOS Client/Constants/MBConstants.swift"; sourceTree = SOURCE_ROOT; };
 		D0B8BBB02134F55B00355D4B /* Bookmark+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bookmark+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D0B8BBB12134F55B00355D4B /* Bookmark+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bookmark+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		D0DD187121377675008A24C9 /* AuthorDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorDTO.swift; sourceTree = "<group>"; };
+		D0DD187321377AEF008A24C9 /* CategoryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryDTO.swift; sourceTree = "<group>"; };
 		D0DDEC3A1F7C8129007822CB /* MBBookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookmarksViewController.swift; sourceTree = "<group>"; };
 		D0DED1FD1FDC3AC100F48E8C /* MBArticle+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MBArticle+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0EA55EE20797E40005EFA7E /* FeaturedArticleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeaturedArticleTableViewCell.xib; sourceTree = "<group>"; };
@@ -316,6 +320,8 @@
 			children = (
 				D032F1631F81695500E78333 /* MBClient.swift */,
 				D05EF17E20E07BA00066BA3E /* ArticleDTO.swift */,
+				D0DD187121377675008A24C9 /* AuthorDTO.swift */,
+				D0DD187321377AEF008A24C9 /* CategoryDTO.swift */,
 			);
 			path = HTTPClient;
 			sourceTree = "<group>";
@@ -531,7 +537,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -688,6 +694,7 @@
 				D026D8DF20F1A81F00CDBF89 /* MBPodcastsStore.swift in Sources */,
 				D05EF17F20E07BA00066BA3E /* ArticleDTO.swift in Sources */,
 				23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */,
+				D0DD187421377AEF008A24C9 /* CategoryDTO.swift in Sources */,
 				D02FCCAC20E83C0900F40454 /* Image.swift in Sources */,
 				239251932117741B00C597A7 /* LinkButton.swift in Sources */,
 				D02FCCAE20E9487100F40454 /* Debouncer.swift in Sources */,
@@ -705,6 +712,7 @@
 				D026D8E220F1A81F00CDBF89 /* MBDevotionsStore.swift in Sources */,
 				D05EF18320E0827E0066BA3E /* Author.swift in Sources */,
 				D05EF18B20E095C40066BA3E /* SearchResultTableViewCell.swift in Sources */,
+				D0DD187221377675008A24C9 /* AuthorDTO.swift in Sources */,
 				237815541FA7FF40000555B6 /* DevotionsCoordinator.swift in Sources */,
 				D02D36401F7FE5A800D4E674 /* ArticlesCoordinator.swift in Sources */,
 				23864DE61FA6A1C10061F212 /* String.swift in Sources */,

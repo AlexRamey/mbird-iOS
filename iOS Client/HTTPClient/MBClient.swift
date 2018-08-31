@@ -41,26 +41,45 @@ class MBClient: NSObject {
         case failedPagingRequest(msg: String)
     }
     
-    func getRecentArticles(inCategories categories: [Int],
-                           offset: Int,
-                           withCompletion completion: @escaping ([Data], Error?) -> Void) {
-        var categoriesArg = ""
-        if categories.count > 0 {
-            categoriesArg = categories.reduce("&categories=") { (result, elem) -> String in
-                return "\(result)\(elem),"
+    func getRecentArticles(inCategories categories: [Int], offset: Int, pageSize: Int) -> Promise<[Article]> {
+        return Promise { fulfill, reject in
+            var categoriesArg = ""
+            if categories.count > 0 {
+                categoriesArg = categories.reduce("&categories=") { (result, elem) -> String in
+                    return "\(result)\(elem),"
+                }
+                categoriesArg.removeLast()
             }
-            categoriesArg.removeLast()
+            let urlString = "\(baseURL)\(articlesEndpoint)?per_page=\(pageSize)&offset=\(offset)\(categoriesArg)"
+            print("URL: \(urlString)")
+            
+            guard let url = URL(string: urlString) else {
+                reject(NetworkRequestError.invalidURL(url: urlString))
+                return
+            }
+            
+            print("firing getArticles request")
+            getDataFromURL(url) { (data, err) in
+                guard let payload = data.first, err == nil else {
+                    reject(err ?? NetworkRequestError.failedPagingRequest(msg: "no first page :("))
+                    return
+                }
+                
+                var articles: [ArticleDTO] = []
+                do {
+                    articles = try self.decoder.decode([ArticleDTO].self, from: payload)
+                } catch {
+                    reject(error)
+                    return
+                }
+                
+                let domainArticles = articles.map({ (dto) -> Article in
+                    return dto.toDomain()
+                })
+                
+                fulfill(domainArticles)
+            }
         }
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=20&offset=\(offset)\(categoriesArg)"
-        print("URL: \(urlString)")
-        
-        guard let url = URL(string: urlString) else {
-            completion([], NetworkRequestError.invalidURL(url: urlString))
-            return
-        }
-        
-        print("firing getArticles request")
-        getDataFromURL(url, withCompletion: completion)
     }
     
     func getPodcast(url: URL) -> Promise<Data> {
@@ -75,19 +94,6 @@ class MBClient: NSObject {
                 }
             }
         }
-    }
-    
-    // getRecentArticlesWithCompletion makes a single URL request for recent posts
-    // When the response is received, it calls the completion block with the resulting data and error
-    func getRecentArticlesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(articlesEndpoint)?per_page=50"
-        guard let url = URL(string: urlString) else {
-            completion([], NetworkRequestError.invalidURL(url: urlString))
-            return
-        }
-        
-        print("firing getArticles request")
-        getDataFromURL(url, withCompletion: completion)
     }
     
     func searchArticlesWithCompletion(query: String, completion: @escaping ([Article], Error?) -> Void ) {
@@ -153,42 +159,90 @@ class MBClient: NSObject {
         }.resume()
     }
     
-    // getCategoriesWithCompletion makes a single request for the first page of category data.
+    // getCategories makes a single request for the first page of category data.
     // After this request comes back, it examines the x-wp-totalpages response header to
     // determine how many pages of data exist. It then fires off concurrent requests for all
     // pages of category data. It invokes the passed-in completion with an array of response data
     // and optionally an error if one occurred at any point in the process.
-    func getCategoriesWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(categoriesEndpoint)\(urlArgs)"
-        let urlStringWithPageOne = "\(urlString)1"
-        guard let url = URL(string: urlStringWithPageOne) else {
-            completion([], NetworkRequestError.invalidURL(url: urlStringWithPageOne))
-            return
+    func getCategories() -> Promise<[Category]> {
+        return Promise { fulfill, reject in
+            let urlString = "\(baseURL)\(categoriesEndpoint)\(urlArgs)"
+            let urlStringWithPageOne = "\(urlString)1"
+            guard let url = URL(string: urlStringWithPageOne) else {
+                reject(NetworkRequestError.invalidURL(url: urlStringWithPageOne))
+                return
+            }
+            
+            print("firing initial getCategories request")
+            self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+                self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: { (pages, err) in
+                    if let err = err {
+                        reject(err)
+                        return
+                    }
+                    
+                    var categories: [CategoryDTO] = []
+                    for page in pages {
+                        do {
+                            let pageOfCategories = try self.decoder.decode([CategoryDTO].self, from: page)
+                            categories.append(contentsOf: pageOfCategories)
+                        } catch {
+                            reject(error)
+                            return
+                        }
+                    }
+                    
+                    let domainCategories = categories.map({ (dto) -> Category in
+                        return dto.toDomain()
+                    })
+                    
+                    fulfill(domainCategories)
+                })
+            }.resume()
         }
-        
-        print("firing initial getCategories request")
-        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
-            self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: completion)
-        }.resume()
     }
     
-    // getAuthorsWithCompletion makes a single request for the first page of author data.
+    // getAuthors makes a single request for the first page of author data.
     // After this request comes back, it examines the x-wp-totalpages response header to
     // determine how many pages of data exist. It then fires off concurrent requests for all
     // pages of author data. It invokes the passed-in completion with an array of response data
     // and optionally an error if one occurred at any point in the process.
-    func getAuthorsWithCompletion(completion: @escaping ([Data], Error?) -> Void ) {
-        let urlString = "\(baseURL)\(authorsEndpoint)\(urlArgs)"
-        let urlStringWithPageOne = "\(urlString)1"
-        guard let url = URL(string: urlStringWithPageOne) else {
-            completion([], NetworkRequestError.invalidURL(url: urlStringWithPageOne))
-            return
+    func getAuthors() -> Promise<[Author]> {
+        return Promise { fulfill, reject in
+            let urlString = "\(baseURL)\(authorsEndpoint)\(urlArgs)"
+            let urlStringWithPageOne = "\(urlString)1"
+            guard let url = URL(string: urlStringWithPageOne) else {
+                reject(NetworkRequestError.invalidURL(url: urlStringWithPageOne))
+                return
+            }
+            
+            print("firing initial getAuthors request")
+            self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
+                self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: { (pages, err) in
+                    if let err = err {
+                        reject(err)
+                        return
+                    }
+                    
+                    var authors: [AuthorDTO] = []
+                    for page in pages {
+                        do {
+                            let pageOfAuthors = try self.decoder.decode([AuthorDTO].self, from: page)
+                            authors.append(contentsOf: pageOfAuthors)
+                        } catch {
+                            reject(error)
+                            return
+                        }
+                    }
+
+                    let domainAuthors = authors.map({ (dto) -> Author in
+                        return dto.toDomain()
+                    })
+                    
+                    fulfill(domainAuthors)
+                })
+            }.resume()
         }
-        
-        print("firing initial getAuthors request")
-        self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
-            self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: completion)
-        }.resume()
     }
     
     func getPodcasts(for stream: PodcastStream) -> Promise<[PodcastDTO]> {

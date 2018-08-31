@@ -40,7 +40,7 @@
     </entity>
     <elements>
         <element name="Article" positionX="-450" positionY="-36" width="128" height="210"/>
-        <element name="Author" positionX="-218" positionY="167" width="128" height="103"/>
+        <element name="Author" positionX="-218" positionY="167" width="128" height="105"/>
         <element name="Bookmark" positionX="-333" positionY="-54" width="128" height="180"/>
         <element name="Category" positionX="-236" positionY="-300" width="128" height="135"/>
     </elements>

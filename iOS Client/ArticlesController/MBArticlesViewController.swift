@@ -183,7 +183,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
             
             self.refreshControl.beginRefreshing()
-            self.refreshTableView(self.refreshControl)
+            self.nukeAndPave()
         }
     }
     
@@ -208,38 +208,127 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillDisappear(animated)
     }
     
-    @objc private func refreshTableView(_ sender: UIRefreshControl) {
-        if sender.isRefreshing {
-            self.articlesStore.syncAllData().then { _ -> Void in
+    // called only once from viewDidLoad
+    private func nukeAndPave() {
+        self.articlesStore.nukeAndPave().then { _ -> Void in
                 self.loadArticleDataFromDisk()
             }
             .always {
                 self.refreshControl.endRefreshing()
             }
             .catch { _ in
+                print("nuke and pave articles failed . . .")
+        }
+    }
+    
+    // called for subsequent refreshes (user pulls down refresh control)
+    @objc private func refreshTableView(_ sender: UIRefreshControl) {
+        if sender.isRefreshing {
+            guard let currentCategory = self.category else {
+                print("there is no category")
+                self.refreshControl.endRefreshing()
+                return
+            }
+            
+            var lineage: [Int] = []
+            if currentCategory.name != MBConstants.MOST_RECENT_CATEGORY_NAME {
+                lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+            }
+            
+            self.client.getRecentArticles(inCategories: lineage, offset: 0, pageSize: 10).then { recentArticles -> Void in
+                self.processCandidateArticles(recentArticles, forCategory: currentCategory)
+                }
+                .always {
+                    self.refreshControl.endRefreshing()
+                }
+                .catch { _ in
                     print("refresh articles failed . . .")
             }
         }
     }
     
-    private func loadArticleDataFromDisk() {
-        self.articlesStore.deleteOldArticles(completion: { (numDeleted) in
-            print("Deleted \(numDeleted) old articles!!!")
+    private func loadMore() {
+        guard !self.isLoadingMore else { return }
+        guard let currentCategory = self.category else {
+            print("there is no category")
+            return
+        }
+        self.isLoadingMore = true
+        self.footerView?.startAnimating()
+
+        var lineage: [Int] = []
+        if currentCategory.name != MBConstants.MOST_RECENT_CATEGORY_NAME {
+            lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+        }
+        
+        self.client.getRecentArticles(inCategories: lineage, offset: self.articles.count, pageSize: 20).then { recentArticles -> Void in
+                self.processCandidateArticles(recentArticles, forCategory: currentCategory)
+            }
+            .always {
+                self.isLoadingMore = false
+                self.footerView?.stopAnimating()
+            }
+            .catch { _ in
+                print("loading more articles failed . . .")
+        }
+    }
+    
+    private func processCandidateArticles(_ candidateArticles: [Article], forCategory: Category) {
+        // this is n^2 performance improvement opportunity if needed
+        var newArticles = candidateArticles.filter({ (candidateArticle) -> Bool in
+            return !self.articles.contains(where: { (existingArticle) -> Bool in
+                return existingArticle.id == candidateArticle.id
+            })
+        })
+        
+        guard newArticles.count > 0 else { return }
+        
+        for index in 0..<newArticles.count {
+            newArticles[index].resolveAuthor(dao: self.authorDAO)
+            newArticles[index].resolveCategories(dao: self.categoryDAO)
+        }
+        
+        self.client.getImagesById(newArticles.map {$0.imageId}, completion: { (images) in
+            // note n^2 performance improvement opportunity if we need it
+            for index in 0..<newArticles.count {
+                newArticles[index].image = images.first(where: { (image) -> Bool in
+                    newArticles[index].imageId == image.id
+                })
+            }
+            
             DispatchQueue.main.async {
-                guard let currentCategory = self.category else {
-                    return
+                // if the results are still relevant, then add them
+                if self.category?.name ?? "" == forCategory.name {
+                    self.articles = newArticles + self.articles
+                    self.articles.sort { (articleI, articleJ) -> Bool in
+                        if let iDate = articleI.getDate(), let jDate = articleJ.getDate() {
+                            return iDate.compare(jDate) == .orderedDescending
+                        } else if articleI.getDate() != nil {
+                            return true // favor existant iDate over non-existant jDate
+                        } else {
+                            return false // favor existant jDate or consider these to be equal
+                        }
+                    }
+                    self.tableView.reloadData()
                 }
-                
-                if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
-                    self.articles = self.articlesStore.getLatestArticles(skip: 0)
-                } else {
-                    let lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
-                    self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: lineage, skip: 0)
-                }
-                
-                self.tableView.reloadData()
             }
         })
+    }
+    
+    private func loadArticleDataFromDisk() {
+        guard let currentCategory = self.category else {
+            return
+        }
+        
+        if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
+            self.articles = self.articlesStore.getLatestArticles(skip: 0)
+        } else {
+            let lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+            self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: lineage, skip: 0)
+        }
+        
+        self.tableView.reloadData()
+        self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
     }
     
     private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
@@ -303,71 +392,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    private func loadMore() {
-        if !self.isLoadingMore {
-            self.isLoadingMore = true
-            self.footerView?.startAnimating()
-            self.loadMoreArticlesWithCompletion { () -> Void in
-                DispatchQueue.main.async {
-                    self.footerView?.stopAnimating()
-                    self.isLoadingMore = false
-                }
-            }
-        }
-    }
-    
-    private func loadMoreArticlesWithCompletion(_ completion: @escaping () -> Void) {
-        guard let currentCategory = self.category else {
-            completion()
-            return
-        }
-        var restriction: [Category] = []
-        if currentCategory.name != MBConstants.MOST_RECENT_CATEGORY_NAME {
-            restriction = [currentCategory] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory)
-        }
-        firstly {
-            self.articlesStore.syncLatestArticles(categoryRestriction: restriction, offset: self.articles.count)
-        }.then { isNewData -> Void in
-                if isNewData && self.category?.name ?? "" == currentCategory.name {
-                    DispatchQueue.main.async {
-                        var newArticles: [Article] = []
-                        
-                        if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
-                            newArticles = self.articlesStore.getLatestArticles(skip: self.articles.count)
-                        } else {
-                            newArticles = self.articlesStore.getLatestCategoryArticles(categoryIDs: restriction.map { $0.id }, skip: self.articles.count)
-                        }
-                        
-                        self.addMoreArticles(newArticles)
-                    }
-                }
-                completion()
-            }.catch { error in
-                print("Error loading more articles: \(error)")
-                completion()
-        }
-    }
-    
-    private func addMoreArticles(_ newArticles: [Article]) {
-        if newArticles.count > 0 {
-            newArticles.forEach { (newArticle) in
-                if !self.articles.contains { $0.id == newArticle.id } {
-                    self.articles.append(newArticle)
-                }
-            }
-            self.articles.sort { (articleI, articleJ) -> Bool in
-                if let iDate = articleI.getDate(), let jDate = articleJ.getDate() {
-                    return iDate.compare(jDate) == .orderedDescending
-                } else if articleI.getDate() != nil {
-                    return true // favor existant iDate over non-existant jDate
-                } else {
-                    return false // favor existant jDate or consider these to be equal
-                }
-            }
-            self.tableView.reloadData()
-        }
     }
     
     private func rowTypeForPath(_ indexPath: IndexPath) -> RowType {

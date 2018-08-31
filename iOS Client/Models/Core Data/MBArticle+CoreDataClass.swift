@@ -12,50 +12,6 @@ import CoreData
 
 public class MBArticle: NSManagedObject {
     static let entityName: String = "Article"
-    var uiimage: UIImage? = nil
-    
-    // deserialize accepts an NSDictionary and deserializes the object into the provided
-    // managedObjectContext. It returns an error if something goes wrong.
-    // If the article already existed, then it updates its fields from the new json
-    // values. If no article with the json's id value already existed, a new one is
-    // created and inserted into the managedContext.
-    public class func deserialize(json: NSDictionary, intoContext managedContext: NSManagedObjectContext) throws -> Bool {
-        guard let idArg = json.object(forKey: "id") as? Int else {
-            throw(MBDeserializationError.contractMismatch(msg: "unable to cast json 'id' into an Int32"))
-        }
-        
-        var (resolvedArticle, isNewData) = self.resolveOrCreateArticleById(idArg, inContext: managedContext)
-        
-        guard let article = resolvedArticle else {
-            throw(MBDeserializationError.contextInsertionError(msg: "unable to resolve article with id: \(idArg) into managed context"))
-        }
-        
-        article.setValue(json.object(forKey: "id") as? Int32, forKey: "articleID")
-        article.setValue(json.value(forKeyPath: "author") as? Int32, forKey: "authorID")
-        article.setValue(json.value(forKeyPath: "link") as? String, forKey: "link")
-        article.setValue(json.value(forKeyPath: "featured_media") as? Int32, forKey: "imageID")
-        article.setValue(json.value(forKeyPath: "title.rendered") as? String, forKey: "title")
-        article.setValue(json.value(forKeyPath: "content.rendered") as? String, forKey: "content")
-        
-        if let dateStr = json.value(forKeyPath: "date") as? String {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-            if let timeZone = TimeZone(identifier: "America/New_York") {
-                dateFormatter.timeZone = timeZone
-            }
-            article.setValue(dateFormatter.date(from: dateStr), forKey: "date")
-        }
-        
-        if let authorID = json.object(forKey: "author") as? Int {
-            linkArticle(article, toAuthor: authorID)
-        }
-        
-        if let categoryIDs = json.object(forKey: "categories") as? [Int] {
-            linkArticle(article, toCategories: categoryIDs)
-        }
-        
-        return isNewData
-    }
     
     class func newArticle(fromArticle from: Article, inContext managedContext: NSManagedObjectContext) -> MBArticle? {
         let (article, _) = self.resolveOrCreateArticleById(from.id, inContext: managedContext)

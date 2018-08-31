@@ -93,21 +93,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().titleTextAttributes = attrs
         UINavigationBar.appearance().barTintColor = UIColor.white
     }
-    
-    // MARK: - Background App Refresh
-    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        
-        let bgq = DispatchQueue.global(qos: .utility)
-        bgq.async {
-            self.articlesStore.syncAllData().then { isNewData -> Void in
-                if isNewData {
-                    completionHandler(.newData)
-                } else {
-                    completionHandler(.noData)
-                }
-            }.catch { _ in
-                completionHandler(.failed)
-            }
-        }
-    }
 }
