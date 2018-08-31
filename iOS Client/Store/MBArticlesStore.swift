@@ -207,6 +207,20 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return retVal
     }
     
+    func saveArticles(articles: [Article]) -> Error? {
+        var saveErr: Error?
+        self.managedObjectContext.performAndWait {
+            articles.forEach { _ = MBArticle.newArticle(fromArticle: $0, inContext: self.managedObjectContext) }
+            do {
+                try self.managedObjectContext.save()
+            } catch {
+                print("unable to save articles: \(error)")
+                saveErr = error
+            }
+        }
+        return saveErr
+    }
+    
     /***** Read from Core Data *****/
     func getArticleEntities() -> [MBArticle] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)

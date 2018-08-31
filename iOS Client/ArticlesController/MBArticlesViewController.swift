@@ -262,7 +262,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         self.client.getRecentArticles(inCategories: lineage, offset: self.articles.count, pageSize: 20).then { recentArticles -> Void in
-                self.processCandidateArticles(recentArticles, forCategory: currentCategory)
+            self.processCandidateArticles(recentArticles, forCategory: currentCategory)
             }
             .always {
                 self.isLoadingMore = false
@@ -297,6 +297,16 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             
             DispatchQueue.main.async {
+                // it's only safe to save 'most recent' category to disk;
+                // saving articles for a specific category can cause there
+                // to be holes on the most recent view. The next paging request
+                // will assume the articles are sequential and basically
+                // mash them down, covering up other potential articles and
+                // resulting in non-productive duplicates being returned
+                if forCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
+                    _ = self.articlesStore.saveArticles(articles: newArticles)
+                }
+                
                 // if the results are still relevant, then add them
                 if self.category?.name ?? "" == forCategory.name {
                     self.articles = newArticles + self.articles
