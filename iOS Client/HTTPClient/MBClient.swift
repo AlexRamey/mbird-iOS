@@ -41,7 +41,7 @@ class MBClient: NSObject {
         case failedPagingRequest(msg: String)
     }
     
-    func getRecentArticles(inCategories categories: [Int], offset: Int, pageSize: Int) -> Promise<[Article]> {
+    func getRecentArticles(inCategories categories: [Int], offset: Int, pageSize: Int, before: String?, after: String?, asc: Bool) -> Promise<[Article]> {
         return Promise { fulfill, reject in
             var categoriesArg = ""
             if categories.count > 0 {
@@ -50,7 +50,16 @@ class MBClient: NSObject {
                 }
                 categoriesArg.removeLast()
             }
-            let urlString = "\(baseURL)\(articlesEndpoint)?per_page=\(pageSize)&offset=\(offset)\(categoriesArg)"
+            var beforeArg = ""
+            if let beforeDate = before {
+                beforeArg = "&before=\(beforeDate)"
+            }
+            var afterArg = ""
+            if let afterDate = after {
+                afterArg = "&after=\(afterDate)"
+            }
+            let orderArg = "&order=" + (asc ? "asc" : "desc")
+            let urlString = "\(baseURL)\(articlesEndpoint)?per_page=\(pageSize)&offset=\(offset)\(categoriesArg)\(beforeArg)\(afterArg)\(orderArg)"
             print("URL: \(urlString)")
             
             guard let url = URL(string: urlString) else {
