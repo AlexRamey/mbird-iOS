@@ -26,7 +26,7 @@ class MoreViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        topTitleLabel.font = UIFont(name: "IowanOldStyle-Bold",
+        topTitleLabel.font = UIFont(name: "IowanOldStyle-Roman",
                                     size: 20)
         quoteLabel.font =  UIFont(name: "IowanOldStyle-Italic",
                                   size: 14)
