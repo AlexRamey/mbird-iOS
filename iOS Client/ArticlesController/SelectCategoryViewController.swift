@@ -71,5 +71,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDelegate, UITab
         self.currentSelection = self.categories[indexPath.row].name
         UserDefaults.standard.set(self.currentSelection, forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)
         self.tableView.reloadData()
+        self.dismiss(animated: true, completion: nil)
     }
 }
