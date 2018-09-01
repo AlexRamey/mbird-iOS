@@ -63,7 +63,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.title = "Home"
         
         configureNavBar()
-        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -347,16 +346,17 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         guard let currentCategory = self.category else {
             return
         }
-        
         if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
             self.articles = self.articlesStore.getLatestArticles(skip: 0)
         } else {
             let lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
             self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: lineage, skip: 0)
         }
-        
+            
         self.tableView.reloadData()
-        self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        if !self.articles.isEmpty {
+            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        }
     }
     
     private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
