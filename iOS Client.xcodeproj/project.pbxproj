@@ -28,6 +28,8 @@
 		23A278721FD10091003B2022 /* DevotionNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A278711FD10091003B2022 /* DevotionNotification.swift */; };
 		23ABE3C21FDDE6D200F4B36B /* (null) in Sources */ = {isa = PBXBuildFile; };
 		23ABE3CA1FDE0B0100F4B36B /* MBPodcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */; };
+		23C3E23D213A088700B09306 /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C3E23C213A088700B09306 /* LaunchScreenViewController.swift */; };
+		23C3E23F213A0A9700B09306 /* ParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C3E23E213A0A9700B09306 /* ParentViewController.swift */; };
 		23D8BB3E207C5A310057C9D5 /* PodcastFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */; };
 		23D8BB41207C5C920057C9D5 /* PodcastFilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */; };
 		23D8BB42207C5C920057C9D5 /* PodcastFilterTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23D8BB40207C5C920057C9D5 /* PodcastFilterTableViewCell.xib */; };
@@ -121,6 +123,8 @@
 		23A278711FD10091003B2022 /* DevotionNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevotionNotification.swift; sourceTree = "<group>"; };
 		23ABE3C31FDDECA900F4B36B /* MBCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MBCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		23ABE3C91FDE0B0100F4B36B /* MBPodcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBPodcast.swift; sourceTree = "<group>"; };
+		23C3E23C213A088700B09306 /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
+		23C3E23E213A0A9700B09306 /* ParentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentViewController.swift; sourceTree = "<group>"; };
 		23D8BB3D207C5A310057C9D5 /* PodcastFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastFilterViewController.swift; sourceTree = "<group>"; };
 		23D8BB3F207C5C920057C9D5 /* PodcastFilterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastFilterTableViewCell.swift; sourceTree = "<group>"; };
 		23D8BB40207C5C920057C9D5 /* PodcastFilterTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastFilterTableViewCell.xib; sourceTree = "<group>"; };
@@ -447,6 +451,8 @@
 			isa = PBXGroup;
 			children = (
 				D08F558A1F786DCD0071ED86 /* Main.storyboard */,
+				23C3E23C213A088700B09306 /* LaunchScreenViewController.swift */,
+				23C3E23E213A0A9700B09306 /* ParentViewController.swift */,
 			);
 			path = "Main Storyboard";
 			sourceTree = "<group>";
@@ -697,6 +703,7 @@
 				D0DD187421377AEF008A24C9 /* CategoryDTO.swift in Sources */,
 				D02FCCAC20E83C0900F40454 /* Image.swift in Sources */,
 				239251932117741B00C597A7 /* LinkButton.swift in Sources */,
+				23C3E23D213A088700B09306 /* LaunchScreenViewController.swift in Sources */,
 				D02FCCAE20E9487100F40454 /* Debouncer.swift in Sources */,
 				23ED5DB01FC652F6003B1BB3 /* DevotionTableViewCell.swift in Sources */,
 				D05EF18820E08B3B0066BA3E /* SearchResultsTableViewController.swift in Sources */,
@@ -738,6 +745,7 @@
 				239251912117726C00C597A7 /* MoreCoordinator.swift in Sources */,
 				D0DDEC3B1F7C8129007822CB /* MBBookmarksViewController.swift in Sources */,
 				D08F55871F786DCD0071ED86 /* AppDelegate.swift in Sources */,
+				23C3E23F213A0A9700B09306 /* ParentViewController.swift in Sources */,
 				D032F1A41F8728B700E78333 /* MBAuthor+CoreDataClass.swift in Sources */,
 				D09496461F93DB5C004ACA4E /* DeserializationError.swift in Sources */,
 				D032F1641F81695500E78333 /* MBClient.swift in Sources */,

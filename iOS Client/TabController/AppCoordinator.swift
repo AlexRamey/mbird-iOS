@@ -13,7 +13,7 @@ import UIKit
 class AppCoordinator: NSObject, Coordinator {
     var childCoordinators: [Coordinator] = []
     var rootViewController: UIViewController {
-        return self.tabBarController
+        return self.parentController
     }
     var articleDAO: ArticleDAO
     var authorDAO: AuthorDAO
@@ -26,10 +26,18 @@ class AppCoordinator: NSObject, Coordinator {
         return PodcastPlayer(repository: podcastsStore)
     }()
     
+    private var parentController: ParentViewController {
+        let initial = LaunchScreenViewController.instantiateFromStoryboard()
+        let vc = ParentViewController.build(initial, tabBarController)
+        return vc
+    }
+    
     private lazy var tabBarController: MBTabBarController = {
         let tabBarController = MBTabBarController.instantiateFromStoryboard(player: self.player)
         return tabBarController
     }()
+    
+    
     
     init(window: UIWindow, articleDAO: ArticleDAO, authorDAO: AuthorDAO, categoryDAO: CategoryDAO, managedObjectContext: NSManagedObjectContext) {
         self.window = window
