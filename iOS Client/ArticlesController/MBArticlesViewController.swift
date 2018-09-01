@@ -159,7 +159,13 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             } else {
                 self.category = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
             }
-            self.loadArticleDataFromDisk()
+            if isFirstAppearance {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                    self.loadArticleDataFromDisk()
+                }
+            } else {
+                self.loadArticleDataFromDisk()
+            }
         }
         
         var navTitle = "Mockingbird"
