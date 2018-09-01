@@ -144,6 +144,9 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
             firstly{
                 when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles(inCategories: [], offset: 0, pageSize: 100, before: nil, after: nil, asc: false))
             }.then { authors, categories, articles -> Void in
+                // build map of image id to image link
+                let imageLinkCache = self.getLinks()
+                
                 // flush db
                 if let nukeErr = self.nuke() {
                     throw nukeErr
@@ -174,7 +177,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
                     throw saveError
                 }
 
-                self.resolveArticleImageURLs()
+                self.resolveArticleImageURLs(cache: imageLinkCache)
                 fulfill(self.getLatestArticles(skip: 0))
             }.catch { error in
                 print("There was an error downloading data! \(error)")
@@ -204,6 +207,22 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
             }
         }
         
+        return retVal
+    }
+    
+    private func getLinks() -> [Int: String] {
+        let request = NSFetchRequest<NSManagedObject>(entityName: MBArticle.entityName)
+        request.predicate = NSPredicate(format: "thumbnailLink != NULL AND thumbnailLink != %@", "")
+        let articles = self.performFetch(fetchRequest: request) as? [MBArticle] ?? []
+        
+        var retVal: [Int: String] = [:]
+        articles.forEach { (article) in
+            if let link = article.thumbnailLink {
+                retVal[Int(article.imageID)] = link
+            } else {
+                print("fail")
+            }
+        }
         return retVal
     }
     
@@ -244,8 +263,26 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
         return retVal
     }
     
-    private func resolveArticleImageURLs() {
+    private func resolveArticleImageURLs(cache: [Int: String]) {
         let articles = self.getArticleEntities()
+        
+        // resolve image links from cache to prevent unnecessary network calls
+        // for image resources
+        self.managedObjectContext.performAndWait {
+            articles.forEach { (article) in
+                if let link = cache[Int(article.imageID)] {
+                    article.thumbnailLink = link
+                }
+            }
+            do {
+                try self.managedObjectContext.save()
+            } catch {
+                print("😅 wat \(error as Any)")
+            }
+        }
+        
+        // for the other articles whose image id couldn't be resolved to a link
+        // from the cache, go ahead and pull down the link
         self.managedObjectContext.perform {
             articles.forEach { (article) in
                 if (article.imageID > 0) && (article.thumbnailLink == nil) {
