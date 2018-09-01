@@ -19,7 +19,7 @@ class LinkButton: UIButton {
                                                                      NSAttributedStringKey.foregroundColor: UIColor.white])
         self.setAttributedTitle(attributedTitle, for: .normal)
         self.link = link
-        self.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        self.heightAnchor.constraint(equalToConstant: 30).isActive = true
         self.layer.cornerRadius = 5
         self.backgroundColor = UIColor.MBSalmon
         self.onButtonPress = onButtonPress

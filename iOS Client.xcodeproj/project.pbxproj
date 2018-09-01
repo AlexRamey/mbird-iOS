@@ -354,6 +354,8 @@
 		D02D36391F7C9FBF00D4E674 /* TabController */ = {
 			isa = PBXGroup;
 			children = (
+				23C3E23C213A088700B09306 /* LaunchScreenViewController.swift */,
+				23C3E23E213A0A9700B09306 /* ParentViewController.swift */,
 				D02D363A1F7FDFB500D4E674 /* AppCoordinator.swift */,
 				D03E50F51F7C8E2F004F5648 /* MBTabBarController.swift */,
 			);
@@ -451,8 +453,6 @@
 			isa = PBXGroup;
 			children = (
 				D08F558A1F786DCD0071ED86 /* Main.storyboard */,
-				23C3E23C213A088700B09306 /* LaunchScreenViewController.swift */,
-				23C3E23E213A0A9700B09306 /* ParentViewController.swift */,
 			);
 			path = "Main Storyboard";
 			sourceTree = "<group>";

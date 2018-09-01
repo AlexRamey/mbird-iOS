@@ -23,8 +23,6 @@ class ParentViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white
-        self.view.alpha = 1
         addChildViewController(initial)
         addChildViewController(content)
         initial.didMove(toParentViewController: self)
