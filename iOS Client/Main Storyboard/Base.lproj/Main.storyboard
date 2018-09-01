@@ -221,30 +221,38 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="A8V-Wd-npB">
                                 <rect key="frame" x="15" y="35" width="345" height="617"/>
                                 <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bird" translatesAutoresizingMaskIntoConstraints="NO" id="wkZ-Zn-9L0">
+                                        <rect key="frame" x="157.5" y="0.0" width="30" height="30"/>
+                                        <color key="tintColor" red="1" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="1ul-SX-Tjj"/>
+                                            <constraint firstAttribute="width" constant="30" id="i5s-CO-WFW"/>
+                                        </constraints>
+                                    </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Mockingbird seeks to connect the Christian faith with the realities of everyday life in fresh and down-to-earth ways." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="FqS-GH-JZT">
-                                        <rect key="frame" x="0.0" y="0.0" width="345" height="61"/>
+                                        <rect key="frame" x="0.0" y="50" width="345" height="61"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ghE-cT-vpu" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
-                                        <rect key="frame" x="58.5" y="81" width="228" height="30"/>
-                                        <state key="normal" title="Button"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xpc-KO-G0h" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
                                         <rect key="frame" x="58.5" y="131" width="228" height="30"/>
                                         <state key="normal" title="Button"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fv-ve-USG" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xpc-KO-G0h" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
                                         <rect key="frame" x="58.5" y="181" width="228" height="30"/>
                                         <state key="normal" title="Button"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d43-Pj-JPl" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fv-ve-USG" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
                                         <rect key="frame" x="58.5" y="231" width="228" height="30"/>
                                         <state key="normal" title="Button"/>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d43-Pj-JPl" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
+                                        <rect key="frame" x="58.5" y="281" width="228" height="30"/>
+                                        <state key="normal" title="Button"/>
+                                    </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vYQ-DQ-hFF">
-                                        <rect key="frame" x="27.5" y="281" width="290" height="194"/>
+                                        <rect key="frame" x="27.5" y="331" width="290" height="144"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="752" text="&quot;Nothing else in the world matters but the kindness of Grace, God’s gift to suffering mortals.&quot; – Jack Kerouac" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="h9h-Vv-YoY">
@@ -906,6 +914,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="bird" width="50" height="50"/>
         <image name="devotion-footer" width="417" height="417"/>
         <image name="launch" width="1765" height="1987"/>
         <image name="mockingcast" width="1584" height="1584"/>
