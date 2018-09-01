@@ -669,7 +669,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="183.5" height="41"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                         <color key="tintColor" red="0.84313725490000002" green="0.33725490200000002" blue="0.34509803919999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                        <state key="normal" title="Cancel"/>
+                                        <state key="normal" title="Disable"/>
                                         <connections>
                                             <action selector="cancelNotificationsWithSender:" destination="Cpp-h8-gQ7" eventType="touchUpInside" id="bQg-ww-shf"/>
                                         </connections>

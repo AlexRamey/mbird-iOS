@@ -30,12 +30,28 @@ p.dots{
     color: #090909;
 }
 
+.wpsdc-drop-cap{
+    color: #000;
+    float: left;
+    font-family: "Iowan Old Style", -apple-system-body;
+    font-weight: bold;
+    font-size: 75px;
+    line-height: 60px;
+    padding-top: 4px;
+    padding-right: 8px;
+    padding-left: 3px;
+}
+
 body{
     font-family: "Iowan Old Style", -apple-system-body;
     font-weight: normal;
     margin: 18px 18px 0px 18px;
     color: #090909;
     background-color: #ffffff;
+}
+
+a{
+    color: #cd615d;
 }
 
 /*for size of embedded videos*/
