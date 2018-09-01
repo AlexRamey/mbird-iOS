@@ -69,10 +69,10 @@ class MBBookmarksViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
-        label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
-        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15).isActive = true
+        label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40).isActive = true
+        label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40).isActive = true
         label.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        label.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40).isActive = true
         label.font = UIFont(name: "IowanOldStyle-Roman", size: 20.0)
         label.textAlignment = .center
         label.numberOfLines = 0

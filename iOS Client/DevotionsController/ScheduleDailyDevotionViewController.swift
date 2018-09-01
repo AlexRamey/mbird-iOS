@@ -135,7 +135,7 @@ class ScheduleDailyDevotionViewController: UIViewController {
     }
 
     private func cancelAlert() {
-        let message = "Removed pending notifications."
+        let message = "Disabled daily notifications."
         let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
