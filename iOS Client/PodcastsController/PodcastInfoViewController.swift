@@ -39,11 +39,11 @@ class PodcastInfoViewController: UIViewController, UITableViewDataSource, UITabl
 
     static func instantiateFromStoryboard(repository: PodcastsRepository, handler: PodcastInfoHandler) -> PodcastInfoViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastInfoViewController") as! PodcastInfoViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PodcastInfoViewController") as! PodcastInfoViewController
         // swiftlint:enable force_cast
-        vc.repository = repository
-        vc.handler = handler
-        return vc
+        viewController.repository = repository
+        viewController.handler = handler
+        return viewController
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {

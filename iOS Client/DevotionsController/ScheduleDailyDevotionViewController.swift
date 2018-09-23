@@ -111,7 +111,7 @@ class ScheduleDailyDevotionViewController: UIViewController {
         let message = NSLocalizedString("Please give Mockingbird permission to alert you with daily devotionals by updating your notification settings.", comment: "")
         let goToSettingsAlert = UIAlertController(title: "", message: message, preferredStyle: UIAlertControllerStyle.alert)
         
-        goToSettingsAlert.addAction(UIAlertAction(title: settingsButton, style: .destructive, handler: { (action: UIAlertAction) in
+        goToSettingsAlert.addAction(UIAlertAction(title: settingsButton, style: .destructive, handler: { (_: UIAlertAction) in
             DispatchQueue.main.async {
                 guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
                     return

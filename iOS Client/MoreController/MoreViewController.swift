@@ -51,11 +51,11 @@ class MoreViewController: UIViewController {
     
     static func instantiateFromStoryboard(handler: MoreHandler) -> MoreViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MoreViewController") as! MoreViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MoreViewController") as! MoreViewController
         // swiftlint:enable force_cast
-        vc.tabBarItem = UITabBarItem(title: "More", image: UIImage(named: "more"), selectedImage: UIImage(named: "more"))
-        vc.handler = handler
-        return vc
+        viewController.tabBarItem = UITabBarItem(title: "More", image: UIImage(named: "more"), selectedImage: UIImage(named: "more"))
+        viewController.handler = handler
+        return viewController
     }
     
     func pressedLink(_ button: LinkButton) {

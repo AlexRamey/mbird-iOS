@@ -398,8 +398,8 @@ extension MBClient: ImageDAO {
         var jobCount = ids.count
         var results: [Image] = []
         
-        ids.forEach { (id) in
-            self.getImageById(id, completion: { (image) in
+        ids.forEach { (imageId) in
+            self.getImageById(imageId, completion: { (image) in
                 serialQueue.async {
                     if let image = image {
                         results.append(image)
@@ -413,14 +413,14 @@ extension MBClient: ImageDAO {
         }
     }
     
-    func getImageById(_ id: Int, completion: @escaping (Image?) -> Void) {
-        let urlString = "\(baseURL)\(mediaEndpoint)/\(id)"
+    func getImageById(_ imageId: Int, completion: @escaping (Image?) -> Void) {
+        let urlString = "\(baseURL)\(mediaEndpoint)/\(imageId)"
         guard let url = URL(string: urlString) else {
             completion(nil)
             return
         }
         
-        print("firing get media url request: \(id)")
+        print("firing get media url request: \(imageId)")
         self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
             guard self.wasDataTaskSuccessful(resp: resp, err: err) else {
                 completion(nil)
@@ -456,7 +456,7 @@ extension MBClient: ImageDAO {
                 thumbnailURL = URL(string: thumbURL)
             }
             
-            completion(Image(id: id, thumbnailUrl: thumbnailURL))
+            completion(Image(imageId: imageId, thumbnailUrl: thumbnailURL))
             }.resume()
     }
 }

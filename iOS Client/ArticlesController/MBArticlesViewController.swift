@@ -48,14 +48,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
 
     static func instantiateFromStoryboard(articleDAO: ArticleDAO, authorDAO: AuthorDAO, categoryDAO: CategoryDAO) -> MBArticlesViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
         // swiftlint:enable force_cast
-        vc.articlesStore = articleDAO
-        vc.authorDAO = authorDAO
-        vc.categoryDAO = categoryDAO
-        vc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
+        viewController.articlesStore = articleDAO
+        viewController.authorDAO = authorDAO
+        viewController.categoryDAO = categoryDAO
+        viewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home-gray"), selectedImage: UIImage(named: "home-selected"))
         
-        return vc
+        return viewController
     }
     
     override func viewDidLoad() {
@@ -156,7 +156,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 let selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName) {
                 self.category = selectedCategory
             } else {
-                self.category = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
+                self.category = Category(categoryId: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
             }
             if isFirstAppearance {
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
@@ -174,7 +174,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         navTitle = "\u{00B7}\u{00B7}\u{00B7}   \(navTitle.uppercased())   \u{00B7}\u{00B7}\u{00B7}"
         
-        var navLabel = UILabel()
+        let navLabel = UILabel()
         navLabel.text = navTitle
         navLabel.font = UIFont(name: "AvenirNext-Bold", size: 18.0)
         navLabel.textColor = UIColor.MBOrange
@@ -237,7 +237,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             
             var lineage: [Int] = []
             if currentCategory.name != MBConstants.MOST_RECENT_CATEGORY_NAME {
-                lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+                lineage = [currentCategory.categoryId] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.categoryId}
             }
             
             var afterArg: String?
@@ -268,7 +268,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
 
         var lineage: [Int] = []
         if currentCategory.name != MBConstants.MOST_RECENT_CATEGORY_NAME {
-            lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+            lineage = [currentCategory.categoryId] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.categoryId}
         }
         
         var offsetArg: Int = self.articles.count
@@ -294,7 +294,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         // this is n^2 performance improvement opportunity if needed
         var newArticles = candidateArticles.filter({ (candidateArticle) -> Bool in
             return !self.articles.contains(where: { (existingArticle) -> Bool in
-                return existingArticle.id == candidateArticle.id
+                return existingArticle.articleId == candidateArticle.articleId
             })
         })
         
@@ -309,7 +309,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             // note n^2 performance improvement opportunity if we need it
             for index in 0..<newArticles.count {
                 newArticles[index].image = images.first(where: { (image) -> Bool in
-                    newArticles[index].imageId == image.id
+                    newArticles[index].imageId == image.imageId
                 })
             }
             
@@ -349,7 +349,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         if currentCategory.name == MBConstants.MOST_RECENT_CATEGORY_NAME {
             self.articles = self.articlesStore.getLatestArticles(skip: 0)
         } else {
-            let lineage = [currentCategory.id] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.id}
+            let lineage = [currentCategory.categoryId] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.categoryId}
             self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: lineage, skip: 0)
         }
             
@@ -405,8 +405,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.articlesStore.downloadImageURLsForArticle(article, withCompletion: { (url: URL?) in
             if let url = url {
                 DispatchQueue.main.async {
-                    if let idx = self.articles.index (where: { $0.id == article.id }) {
-                        self.articles[idx].image = Image(id: article.imageId, thumbnailUrl: url)
+                    if let idx = self.articles.index (where: { $0.articleId == article.articleId }) {
+                        self.articles[idx].image = Image(imageId: article.imageId, thumbnailUrl: url)
                     }
                     
                     if let cell = self.tableView.cellForRow(at: indexPath) as? ThumbnailImageCell {

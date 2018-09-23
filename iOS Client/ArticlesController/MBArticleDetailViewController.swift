@@ -19,12 +19,12 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     
     static func instantiateFromStoryboard(article: Article?, categoryContext: String?, dao: ArticleDAO?) -> MBArticleDetailViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleDetailController") as! MBArticleDetailViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleDetailController") as! MBArticleDetailViewController
         // swiftlint:enable force_cast
-        vc.articleDAO = dao
-        vc.selectedArticle = article
-        vc.categoryContext = categoryContext
-        return vc
+        viewController.articleDAO = dao
+        viewController.selectedArticle = article
+        viewController.categoryContext = categoryContext
+        return viewController
     }
     
     override func viewDidLoad() {
@@ -158,8 +158,8 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             return
         }
         
-        if let _ = dao.bookmarkArticle(article) {
-            self.popAlertWithMessage(errMessage)
+        if let bookmarkErr = dao.bookmarkArticle(article) {
+            self.popAlertWithMessage(errMessage + ": \(bookmarkErr)")
             return
         }
         

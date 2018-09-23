@@ -84,7 +84,7 @@ class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
         
         if self.selectedIndex == 3,
             let navigationController = self.viewControllers?[3] as? UINavigationController,
-            let _ = navigationController.topViewController as? PodcastDetailViewController {
+            navigationController.topViewController as? PodcastDetailViewController != nil {
             playPauseView?.isHidden = true
         } else {
             playPauseView?.isHidden = !shouldShowPlayPause

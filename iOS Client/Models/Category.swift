@@ -16,7 +16,7 @@ protocol CategoryDAO {
 }
 
 struct Category {
-    var id: Int
+    var categoryId: Int
     var name: String
     var parentId: Int
 }

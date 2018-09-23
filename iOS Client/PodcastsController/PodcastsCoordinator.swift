@@ -54,7 +54,7 @@ class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, Unin
     func alertForUninstallItem(completion: @escaping ((UninstallApprovalStatus) -> Void)) {
         let alert = UIAlertController(title: "Are you sure you would like to uninstall this podcast?", message: "Doing so will force the playback to end.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ -> Void in completion(.deny) })
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ -> Void in completion(.approve) } )
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ -> Void in completion(.approve)})
         rootViewController.present(alert, animated: true, completion: nil)
     }
     

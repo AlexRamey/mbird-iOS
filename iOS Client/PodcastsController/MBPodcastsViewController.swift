@@ -30,11 +30,11 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     
     static func instantiateFromStoryboard(uninstaller: Uninstaller) -> MBPodcastsViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
         // swiftlint:enable force_cast
-        vc.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-gray"), selectedImage: UIImage(named: "headphones-selected"))
-        vc.uninstaller = uninstaller
-        return vc
+        viewController.tabBarItem = UITabBarItem(title: "Podcasts", image: UIImage(named: "headphones-gray"), selectedImage: UIImage(named: "headphones-selected"))
+        viewController.uninstaller = uninstaller
+        return viewController
     }
     
     override func viewDidLoad() {
@@ -79,16 +79,14 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         let visibleStreams: [PodcastStream] = enabledFilterOptions.compactMap {
             if case PodcastFilterOption.stream(let stream) = $0 {
                 return stream
-            }
-            else {
+            } else {
                 return nil
             }
         }
         let showDownloadedPodcasts = enabledFilterOptions.contains(where: {
             if case PodcastFilterOption.downloaded = $0 {
                 return true
-            }
-            else {
+            } else {
                 return false
             }
         })
@@ -161,7 +159,7 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
         print("download podcast at url: \(url)")
         guard let url = URL(string: url) else { return }
         self.currentlyDownloadingTitles.insert(title)
-        let _ = MBClient().getPodcast(url: url).then { data -> Void in
+        _ = MBClient().getPodcast(url: url).then { data -> Void in
             self.podcastStore.savePodcastData(data: data, path: title)
             self.savedPodcastTitles.insert(title)
             self.currentlyDownloadingTitles.remove(title)
@@ -170,7 +168,7 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
     }
     
     func removePodcast(title: String) {
-        let _ = uninstaller?.uninstall(id: title).then { uninstalled -> Void in
+        _ = uninstaller?.uninstall(podcastId: title).then { uninstalled -> Void in
             if uninstalled {
                 self.savedPodcastTitles.remove(title)
                 self.tableView.reloadData()

@@ -10,7 +10,7 @@ import Foundation
 import PromiseKit
 
 struct Article {
-    var id: Int
+    var articleId: Int
     var date: String
     var link: String
     var title: String

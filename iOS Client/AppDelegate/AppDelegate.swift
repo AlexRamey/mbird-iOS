@@ -79,15 +79,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      they will be saved in the persistent Application Domain. Values is the Application Domain
      will always trump their counterparts in the Registration Domain.
      */
-    func registerDefaults(){
-        let defaults = [ MBConstants.SELECTED_CATEGORY_NAME_KEY : MBConstants.MOST_RECENT_CATEGORY_NAME ]
+    func registerDefaults() {
+        let defaults = [ MBConstants.SELECTED_CATEGORY_NAME_KEY: MBConstants.MOST_RECENT_CATEGORY_NAME ]
         UserDefaults.standard.register(defaults: defaults)
     }
     
     func styleNavBar() {
-        let attrs = [
+        let attrs: [NSAttributedStringKey: Any] = [
             NSAttributedStringKey.foregroundColor: UIColor.MBOrange,
-            NSAttributedStringKey.font: UIFont(name: "AvenirNext-Bold", size: 18.0)
+            NSAttributedStringKey.font: UIFont(name: "AvenirNext-Bold", size: 18.0) ?? UIFont.boldSystemFont(ofSize: 18.0)
         ]
         
         UINavigationBar.appearance().titleTextAttributes = attrs

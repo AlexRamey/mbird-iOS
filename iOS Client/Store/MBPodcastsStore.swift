@@ -117,7 +117,7 @@ class MBPodcastsStore: PodcastsRepository {
         do {
             let (_, _, url) = try fileHelper.urlPackage(forPath: "podcasts/\(path).mp3")
             try fileHelper.save(data, url: url, options: [.atomic])
-        } catch let error {
+        } catch {
             print("error saving podcast data")
         }
     }

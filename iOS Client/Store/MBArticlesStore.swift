@@ -22,9 +22,9 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     }
     
     /***** Author DAO *****/
-    func getAuthorById(_ id: Int) -> Author? {
+    func getAuthorById(_ authorId: Int) -> Author? {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBAuthor.entityName)
-        fetchRequest.predicate = NSPredicate(format: "authorID == %d", id)
+        fetchRequest.predicate = NSPredicate(format: "authorID == %d", authorId)
         if let results = performFetch(fetchRequest: fetchRequest) as? [MBAuthor] {
             return results.first?.toDomain()
         }
@@ -69,7 +69,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     
     func getDescendentsOfCategory(cat: Category) -> [Category] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: MBCategory.entityName)
-        fetchRequest.predicate = NSPredicate(format: "categoryID == %d", cat.id)
+        fetchRequest.predicate = NSPredicate(format: "categoryID == %d", cat.categoryId)
         if let results = performFetch(fetchRequest: fetchRequest) as? [MBCategory] {
             return results.first?.getAllDescendants().map { return $0.toDomain() } ?? []
         }
@@ -124,7 +124,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     }
     
     func bookmarkArticle(_ article: Article) -> Error? {
-        guard let _ = Bookmark.newBookmark(fromArticle: article, inContext: self.managedObjectContext) else {
+        guard Bookmark.newBookmark(fromArticle: article, inContext: self.managedObjectContext) != nil else {
             return NSError(domain: "CD Adapter", code: 0, userInfo: nil)
         }
         
@@ -141,7 +141,7 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     
     func nukeAndPave() -> Promise<[Article]> {
         return Promise { fulfill, reject in
-            firstly{
+            firstly {
                 when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles(inCategories: [], offset: 0, pageSize: 100, before: nil, after: nil, asc: false))
             }.then { authors, categories, articles -> Void in
                 // build map of image id to image link

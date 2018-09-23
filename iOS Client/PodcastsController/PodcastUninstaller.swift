@@ -10,7 +10,7 @@ import Foundation
 import PromiseKit
 
 protocol Uninstaller {
-    func uninstall(id: String) -> Promise<Bool>
+    func uninstall(podcastId: String) -> Promise<Bool>
     var delegate: UninstallerDelegate? { get set }
 }
 
@@ -29,17 +29,17 @@ class PodcastUninstaller: Uninstaller {
         self.podcastPlayer = player
     }
     
-    func uninstall(id: String) -> Promise<Bool> {
-        if podcastPlayer.currentlyPlayingPodcast?.title == id {
-            return Promise { fulfill, reject in
+    func uninstall(podcastId: String) -> Promise<Bool> {
+        if podcastPlayer.currentlyPlayingPodcast?.title == podcastId {
+            return Promise { fulfill, _ in
                 delegate?.alertForUninstallItem {
-                    let _ = self.handleUninstallApprovalResponse(status: $0, title: id).then { uninstalled in
+                    _ = self.handleUninstallApprovalResponse(status: $0, title: podcastId).then { uninstalled in
                         fulfill(uninstalled)
                     }
                 }
             }
         } else {
-            return executeUninstall(title: id)
+            return executeUninstall(title: podcastId)
         }
     }
     
@@ -56,7 +56,7 @@ class PodcastUninstaller: Uninstaller {
     private func executeUninstall(title: String) -> Promise<Bool> {
         return podcastStore.removePodcast(title: title).then {
             return Promise(value: true)
-        }.recover { error -> Promise<Bool> in
+        }.recover { _ -> Promise<Bool> in
             return Promise(value: false)
         }
     }

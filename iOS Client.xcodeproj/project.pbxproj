@@ -423,28 +423,28 @@
 		D08F55851F786DCD0071ED86 /* iOS Client */ = {
 			isa = PBXGroup;
 			children = (
-				2392518D2117719F00C597A7 /* MoreController */,
-				D026D8D820F1A81F00CDBF89 /* Store */,
-				2362417020DEE359002711D7 /* Search */,
-				23F2CB451FDC91D100B80856 /* PodcastsController */,
-				23864DE41FA6A0930061F212 /* Utilities */,
+				D08F55901F786DCD0071ED86 /* Assets.xcassets */,
 				23D8F1F31FAE129D004964AE /* iOS_Client.xcdatamodeld */,
-				23D8F1EE1FAAB310004964AE /* Data */,
-				237815501FA7FEF7000555B6 /* DevotionsController */,
+				D08F55951F786DCD0071ED86 /* Info.plist */,
+				D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */,
 				D0DDEC371F7C7F52007822CB /* AppDelegate */,
 				D0DDEC391F7C7F8B007822CB /* ArticlesController */,
 				D0DDEC3C1F7C812F007822CB /* BookmarksController */,
 				D00F8F591F93F122006CCD80 /* Constants */,
 				D02D363E1F7FE58600D4E674 /* Coordinator */,
 				D02C22951FDE14E40024D0F6 /* CoreDataStack */,
+				23D8F1EE1FAAB310004964AE /* Data */,
+				237815501FA7FEF7000555B6 /* DevotionsController */,
 				D00F8F5A1F93F132006CCD80 /* HTTPClient */,
 				D09F67111F93FAA3001D910E /* Main Storyboard */,
 				D032F1991F87289D00E78333 /* Models */,
+				2392518D2117719F00C597A7 /* MoreController */,
+				23F2CB451FDC91D100B80856 /* PodcastsController */,
+				2362417020DEE359002711D7 /* Search */,
+				D026D8D820F1A81F00CDBF89 /* Store */,
 				D0ED48E21F9D752600FEDCC9 /* Style */,
 				D02D36391F7C9FBF00D4E674 /* TabController */,
-				D08F55901F786DCD0071ED86 /* Assets.xcassets */,
-				D08F55921F786DCD0071ED86 /* LaunchScreen.storyboard */,
-				D08F55951F786DCD0071ED86 /* Info.plist */,
+				23864DE41FA6A0930061F212 /* Utilities */,
 			);
 			path = "iOS Client";
 			sourceTree = "<group>";

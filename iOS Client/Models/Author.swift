@@ -9,11 +9,11 @@
 import Foundation
 
 protocol AuthorDAO {
-    func getAuthorById(_ id: Int) -> Author?
+    func getAuthorById(_ authorId: Int) -> Author?
 }
 
 struct Author {
-    var id: Int
+    var authorId: Int
     var name: String
     var info: String
 }

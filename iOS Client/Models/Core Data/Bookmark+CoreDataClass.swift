@@ -15,12 +15,12 @@ public class Bookmark: NSManagedObject {
     static let entityName: String = "Bookmark"
     
     class func newBookmark(fromArticle from: Article, inContext managedContext: NSManagedObjectContext) -> Bookmark? {
-        let (bookmark, _) = self.resolveOrCreateBookmarkById(from.id, inContext: managedContext)
+        let (bookmark, _) = self.resolveOrCreateBookmarkById(from.articleId, inContext: managedContext)
         guard let resolvedBookmark = bookmark else {
             return nil
         }
         
-        resolvedBookmark.articleId = Int32(from.id)
+        resolvedBookmark.articleId = Int32(from.articleId)
         resolvedBookmark.link = from.link
         resolvedBookmark.title = from.title
         resolvedBookmark.content = from.content
@@ -65,13 +65,13 @@ public class Bookmark: NSManagedObject {
             strDate = dateFormatter.string(from: date)
         }
         
-        let cats: [Category] = [Category(id: -1, name: self.category ?? "unclassified", parentId: 0)]
+        let cats: [Category] = [Category(categoryId: -1, name: self.category ?? "unclassified", parentId: 0)]
         
         var image: Image?
         if self.imageId != 0, let imageLink = self.thumbnailLink {
-            image = Image(id: Int(self.imageId), thumbnailUrl: URL(string: imageLink))
+            image = Image(imageId: Int(self.imageId), thumbnailUrl: URL(string: imageLink))
         }
         
-        return Article(id: Int(self.articleId), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: -1, author: Author(id: -1, name: self.author ?? "", info: ""), imageId: Int(self.imageId), image: image, content: self.content ?? "", categoryIds: [], categories: cats, isBookmarked: true)
+        return Article(articleId: Int(self.articleId), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: -1, author: Author(authorId: -1, name: self.author ?? "", info: ""), imageId: Int(self.imageId), image: image, content: self.content ?? "", categoryIds: [], categories: cats, isBookmarked: true)
     }
 }

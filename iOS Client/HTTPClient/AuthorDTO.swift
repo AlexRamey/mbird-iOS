@@ -20,6 +20,6 @@ struct AuthorDTO: Codable {
     }
     
     func toDomain() -> Author {
-        return Author(id: authorId, name: name, info: info)
+        return Author(authorId: authorId, name: name, info: info)
     }
 }

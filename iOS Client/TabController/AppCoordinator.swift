@@ -28,8 +28,8 @@ class AppCoordinator: NSObject, Coordinator {
     
     private var parentController: ParentViewController {
         let initial = LaunchScreenViewController.instantiateFromStoryboard()
-        let vc = ParentViewController.build(initial, tabBarController)
-        return vc
+        let viewController = ParentViewController.build(initial, tabBarController)
+        return viewController
     }
     
     private lazy var tabBarController: MBTabBarController = {

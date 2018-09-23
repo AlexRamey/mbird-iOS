@@ -12,8 +12,8 @@ import UIKit
 class LaunchScreenViewController: UIViewController {
     static func instantiateFromStoryboard() -> LaunchScreenViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LaunchScreenViewController") as! LaunchScreenViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LaunchScreenViewController") as! LaunchScreenViewController
         // swiftlint:enable force_cast
-        return vc
+        return viewController
     }
 }
