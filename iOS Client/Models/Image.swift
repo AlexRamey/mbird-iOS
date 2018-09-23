@@ -9,11 +9,11 @@
 import Foundation
 
 struct Image {
-    var id: Int
+    var imageId: Int
     var thumbnailUrl: URL?
 }
 
 protocol ImageDAO {
-    func getImageById(_ id: Int, completion: @escaping (Image?) -> Void)
+    func getImageById(_ imageId: Int, completion: @escaping (Image?) -> Void)
     func getImagesById(_ ids: [Int], completion: @escaping ([Image]) -> Void)
 }

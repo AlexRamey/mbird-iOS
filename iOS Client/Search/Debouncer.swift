@@ -10,11 +10,11 @@
 import UIKit
 
 class Debouncer: NSObject {
-    var callback: ((UISearchController) -> ())
+    var callback: ((UISearchController) -> Void)
     var delay: Double
     weak var timer: Timer?
     
-    init(delay: Double, callback: @escaping ((UISearchController) -> ())) {
+    init(delay: Double, callback: @escaping ((UISearchController) -> Void)) {
         self.delay = delay
         self.callback = callback
     }

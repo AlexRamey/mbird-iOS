@@ -36,16 +36,16 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     
     static func instantiateFromStoryboard(authorDAO: AuthorDAO, categoryDAO: CategoryDAO) -> SearchResultsTableViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleSearchResultsVC") as! SearchResultsTableViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticleSearchResultsVC") as! SearchResultsTableViewController
         // swiftlint:enable force_cast
-        vc.debouncedSearch = Debouncer(delay: 1.0, callback: { (searchController) in
+        viewController.debouncedSearch = Debouncer(delay: 1.0, callback: { (searchController) in
             DispatchQueue.main.async {
-                vc.doSearch(for: searchController)
+                viewController.doSearch(for: searchController)
             }
         })
-        vc.authorDAO = authorDAO
-        vc.categoryDAO = categoryDAO
-        return vc
+        viewController.authorDAO = authorDAO
+        viewController.categoryDAO = categoryDAO
+        return viewController
     }
     
     override func viewDidLoad() {
@@ -165,7 +165,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
                 // note n^2 performance improvement opportunity if we need it
                 for index in 0..<results.count {
                     results[index].image = images.first(where: { (image) -> Bool in
-                        results[index].imageId == image.id
+                        results[index].imageId == image.imageId
                     })
                 }
                 
@@ -185,7 +185,6 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         self.results = results
         self.tableView.reloadData()
         if self.results.count == 0 {
-            let screenWidth = UIScreen.main.bounds.width
             let noResultsLabel = UILabel()
             noResultsLabel.textAlignment = .center
             noResultsLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 24.0)

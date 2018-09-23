@@ -15,10 +15,10 @@ class ParentViewController: UIViewController {
     var content: UIViewController!
     
     static func build(_ initial: UIViewController, _ content: UIViewController) -> ParentViewController {
-        let vc = ParentViewController()
-        vc.initial = initial
-        vc.content = content
-        return vc
+        let viewController = ParentViewController()
+        viewController.initial = initial
+        viewController.content = content
+        return viewController
     }
     
     override func viewDidLoad() {

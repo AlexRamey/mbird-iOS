@@ -14,12 +14,12 @@ public class MBArticle: NSManagedObject {
     static let entityName: String = "Article"
     
     class func newArticle(fromArticle from: Article, inContext managedContext: NSManagedObjectContext) -> MBArticle? {
-        let (article, _) = self.resolveOrCreateArticleById(from.id, inContext: managedContext)
+        let (article, _) = self.resolveOrCreateArticleById(from.articleId, inContext: managedContext)
         guard let resolvedArticle = article else {
             return nil
         }
         
-        resolvedArticle.articleID = Int32(from.id)
+        resolvedArticle.articleID = Int32(from.articleId)
         resolvedArticle.isBookmarked = from.isBookmarked
         resolvedArticle.link = from.link
         resolvedArticle.title = from.title
@@ -108,10 +108,10 @@ public class MBArticle: NSManagedObject {
         
         var image: Image?
         if self.imageID != 0, let imageLink = self.thumbnailLink {
-            image = Image(id: Int(self.imageID), thumbnailUrl: URL(string: imageLink))
+            image = Image(imageId: Int(self.imageID), thumbnailUrl: URL(string: imageLink))
         }
         
-        return Article(id: Int(self.articleID), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: Int(self.authorID), author: self.author?.toDomain(), imageId: Int(self.imageID), image: image, content: self.content ?? "", categoryIds: catIds, categories: cats, isBookmarked: self.isBookmarked)
+        return Article(articleId: Int(self.articleID), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: Int(self.authorID), author: self.author?.toDomain(), imageId: Int(self.imageID), image: image, content: self.content ?? "", categoryIds: catIds, categories: cats, isBookmarked: self.isBookmarked)
     }
     
     private func getTopLevelCategories() -> [MBCategory] {

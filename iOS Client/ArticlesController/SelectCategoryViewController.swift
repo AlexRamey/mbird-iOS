@@ -19,17 +19,17 @@ class SelectCategoryViewController: UIViewController, UITableViewDelegate, UITab
     
     static func instantiateFromStoryboard(categoryDAO: CategoryDAO) -> SelectCategoryViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SelectCategoryVC") as! SelectCategoryViewController
         // swiftlint:enable force_cast
-        vc.categoryDAO = categoryDAO
-        return vc
+        viewController.categoryDAO = categoryDAO
+        return viewController
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navItem.title = "SELECT CATEGORY"
         self.currentSelection = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
-        let mostRecent = Category(id: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
+        let mostRecent = Category(categoryId: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
         self.categories = [mostRecent] + self.categoryDAO.getAllTopLevelCategories()
         self.tableView.reloadData()
     }

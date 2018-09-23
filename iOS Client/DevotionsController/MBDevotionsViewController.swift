@@ -64,13 +64,13 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     @objc func scheduleNotifications(sender: UIBarButtonItem) {
-        let vc = ScheduleDailyDevotionViewController.instantiateFromStoryboard()
-        vc.modalPresentationStyle = .popover
+        let viewController = ScheduleDailyDevotionViewController.instantiateFromStoryboard()
+        viewController.modalPresentationStyle = .popover
         let dim = self.view.bounds.width * 0.75
-        vc.preferredContentSize = CGSize(width: dim, height: dim)
-        vc.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
-        vc.popoverPresentationController?.delegate = self
-        self.present(vc, animated: true) {}
+        viewController.preferredContentSize = CGSize(width: dim, height: dim)
+        viewController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+        viewController.popoverPresentationController?.delegate = self
+        self.present(viewController, animated: true) {}
     }
     
     override func viewDidLayoutSubviews() {
@@ -91,10 +91,10 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
     
     static func instantiateFromStoryboard() -> MBDevotionsViewController {
         // swiftlint:disable force_cast
-        let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DevotionsViewController") as! MBDevotionsViewController
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DevotionsViewController") as! MBDevotionsViewController
         // swiftlint:enable force_cast
-        vc.tabBarItem = UITabBarItem(title: "Devotions", image: UIImage(named: "bible-gray"), selectedImage: UIImage(named: "bible-selected"))
-        return vc
+        viewController.tabBarItem = UITabBarItem(title: "Devotions", image: UIImage(named: "bible-gray"), selectedImage: UIImage(named: "bible-selected"))
+        return viewController
     }
     
     func scrollToSelectedDevotion(animated: Bool) {

@@ -51,7 +51,7 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
             MPMediaItemPropertyArtist: podcast.author ?? "Mockingbird"
             ] as [String: Any]
         if let image = UIImage(named: podcast.image) {
-            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size , requestHandler: { (newSize) -> UIImage in
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: image.size, requestHandler: { (newSize) -> UIImage in
                 UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
                 image.draw(in: CGRect(origin: CGPoint.zero, size: CGSize(width: newSize.width, height: newSize.height)))
                 let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
@@ -161,4 +161,3 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
         player.seek(to: time)
     }
 }
-

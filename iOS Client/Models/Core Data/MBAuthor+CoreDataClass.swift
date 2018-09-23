@@ -15,7 +15,7 @@ public class MBAuthor: NSManagedObject {
     static let entityName: String = "Author"
     
     class func newAuthor(fromAuthor from: Author, inContext managedContext: NSManagedObjectContext) -> MBAuthor? {
-        let predicate = NSPredicate(format: "authorID == %d", from.id)
+        let predicate = NSPredicate(format: "authorID == %d", from.authorId)
         let fetchRequest = NSFetchRequest<MBAuthor>(entityName: self.entityName)
         fetchRequest.predicate = predicate
         
@@ -24,7 +24,7 @@ public class MBAuthor: NSManagedObject {
             let fetchedEntities = try managedContext.fetch(fetchRequest)
             resolvedAuthor = fetchedEntities.first
         } catch {
-            print("Error fetching author \(from.id) from core data: \(error)")
+            print("Error fetching author \(from.authorId) from core data: \(error)")
             return nil
         }
         
@@ -37,13 +37,13 @@ public class MBAuthor: NSManagedObject {
             return nil
         }
         
-        author.authorID = Int32(from.id)
+        author.authorID = Int32(from.authorId)
         author.info = from.info
         author.name = from.name
         return author
     }
     
     func toDomain() -> Author {
-        return Author(id: Int(self.authorID), name: self.name ?? "mockingbird", info: self.info ?? "")
+        return Author(authorId: Int(self.authorID), name: self.name ?? "mockingbird", info: self.info ?? "")
     }
 }

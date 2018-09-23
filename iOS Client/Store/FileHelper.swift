@@ -81,7 +81,7 @@ class FileHelper {
     
     func createDirectory(at path: String) throws {
         do {
-            let (manager, path, url) = try urlPackage(forPath: path)
+            let (manager, _, url) = try urlPackage(forPath: path)
             try manager.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
         } catch {
             throw FileHelperError.readError(msg: "Could not check if a file exists at path \(path)")

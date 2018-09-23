@@ -14,7 +14,7 @@ public class MBCategory: NSManagedObject {
     static let entityName: String = "Category"
     
     class func newCategory(fromCategory from: Category, inContext managedContext: NSManagedObjectContext) -> MBCategory? {
-        let predicate = NSPredicate(format: "categoryID == %d", from.id)
+        let predicate = NSPredicate(format: "categoryID == %d", from.categoryId)
         let fetchRequest = NSFetchRequest<MBCategory>(entityName: self.entityName)
         fetchRequest.predicate = predicate
         
@@ -23,7 +23,7 @@ public class MBCategory: NSManagedObject {
             let fetchedEntities = try managedContext.fetch(fetchRequest)
             resolvedCategory = fetchedEntities.first
         } catch {
-            print("Error fetching category \(from.id) from core data: \(error)")
+            print("Error fetching category \(from.categoryId) from core data: \(error)")
             return nil
         }
         
@@ -36,7 +36,7 @@ public class MBCategory: NSManagedObject {
             return nil
         }
         
-        category.categoryID = Int32(from.id)
+        category.categoryID = Int32(from.categoryId)
         category.parentID = Int32(from.parentId)
         category.name = from.name
         return category
@@ -59,7 +59,7 @@ public class MBCategory: NSManagedObject {
         if self.parentID == 0 {
             return self
         } else {
-            return self.parent?.getTopLevelCategoryInternal(loopGuard:loopGuard+1) ?? nil
+            return self.parent?.getTopLevelCategoryInternal(loopGuard: loopGuard+1) ?? nil
         }
     }
     
@@ -84,6 +84,6 @@ public class MBCategory: NSManagedObject {
     }
     
     func toDomain() -> Category {
-        return Category(id: Int(self.categoryID), name: self.name ?? "", parentId: Int(self.parentID))
+        return Category(categoryId: Int(self.categoryID), name: self.name ?? "", parentId: Int(self.parentID))
     }
 }

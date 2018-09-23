@@ -20,6 +20,6 @@ struct CategoryDTO: Codable {
     }
     
     func toDomain() -> Category {
-        return Category(id: categoryId, name: name, parentId: parentId)
+        return Category(categoryId: categoryId, name: name, parentId: parentId)
     }
 }

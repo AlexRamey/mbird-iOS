@@ -48,7 +48,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         detailVC.player = player
         detailVC.handler = handler
         
-        var timeFormatter = DateComponentsFormatter()
+        let timeFormatter = DateComponentsFormatter()
         timeFormatter.unitsStyle = .positional
         timeFormatter.allowedUnits = [ .hour, .minute, .second ]
         timeFormatter.zeroFormattingBehavior = [ .pad ]
@@ -180,7 +180,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     
     @objc private func removePodcast() {
         guard let title = self.selectedPodcast.title else { return }
-        let _ = uninstaller?.uninstall(id: title).then { uninstalled in
+        _ = uninstaller?.uninstall(podcastId: title).then { uninstalled in
             self.saved = !uninstalled
         }
     }
@@ -191,7 +191,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
             let url = URL(string: path) else {
                 return
         }
-        let _ = MBClient().getPodcast(url: url).then { podcast in
+        _ = MBClient().getPodcast(url: url).then { podcast in
             return self.podcastStore.savePodcastData(data: podcast,
                                                      path: title)
         }.then { _ -> Void in
