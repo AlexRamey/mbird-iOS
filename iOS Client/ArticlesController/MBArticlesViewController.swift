@@ -96,8 +96,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.searchController?.searchResultsUpdater = searchResultsController
         self.searchController?.delegate = self
         self.definesPresentationContext = true
-        
-        self.loadArticleDataFromDisk()
     }
     
     func preheat(added: [IndexPath], removed: [IndexPath]) {
@@ -149,19 +147,14 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         // we have a default value set in the registration domain, so force-unwrap is safe
         let selectedCategoryName = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
         
+        var didCategoryChange = false
         if self.category?.name ?? "" != selectedCategoryName {
+            didCategoryChange = true
             if selectedCategoryName != MBConstants.MOST_RECENT_CATEGORY_NAME,
                 let selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName) {
                 self.category = selectedCategory
             } else {
                 self.category = Category(categoryId: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
-            }
-            if isFirstAppearance {
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-                    self.loadArticleDataFromDisk()
-                }
-            } else {
-                self.loadArticleDataFromDisk()
             }
         }
         
@@ -182,11 +175,15 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         if isFirstAppearance {
             isFirstAppearance = false
-            // the following line ensures that the refresh control has the correct tint/text on first use
-            self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
-            
-            self.refreshControl.beginRefreshing()
-            self.nukeAndPave()
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                self.loadArticleDataFromDisk()
+                // the following line ensures that the refresh control has the correct tint/text on first use
+                self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
+                self.refreshControl.beginRefreshing()
+                self.nukeAndPave()
+            }
+        } else if didCategoryChange {
+            self.loadArticleDataFromDisk()
         }
     }
     
