@@ -29,8 +29,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     let recentReuseIdentifier = "recentReuseIdentifier"
     let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
     
-    var selectedIndexPath: IndexPath?
-    
     var isLoadingMore = false
     var isFirstAppearance = true
     var footerView: UIActivityIndicatorView?
@@ -195,10 +193,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         controller?.enabled = true
-        if let indexPath = self.selectedIndexPath {
-            self.tableView.deselectRow(at: indexPath, animated: true)
-            self.selectedIndexPath = nil
-        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -488,7 +482,6 @@ extension MBArticlesViewController {
 
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.selectedIndexPath = indexPath
         if let article = articleForPath(indexPath) {
             if let delegate = self.delegate {
                 var context = self.category?.name
@@ -496,6 +489,7 @@ extension MBArticlesViewController {
                     context = nil // no special context for most recent category
                 }
                 delegate.selectedArticle(article, categoryContext: context)
+                self.tableView.deselectRow(at: indexPath, animated: false)
             }
         }
     }

@@ -59,7 +59,6 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         if let searchBar = self.searchBar {
             self.automaticallyAdjustsScrollViewInsets = false
             self.tableView.contentInset = UIEdgeInsets(top: searchBar.frame.size.height, left: 0.0, bottom: 0.0, right: 0.0)
-            print("CURIOUS GEORGE: \(searchBar.frame.size.height)")
         }
         
         controller = Preheat.Controller(view: self.tableView)
@@ -232,6 +231,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let delegate = self.delegate {
             delegate.selectedArticle(self.results[indexPath.row], categoryContext: nil)
+            self.tableView.deselectRow(at: indexPath, animated: false)
         }
     }
 }

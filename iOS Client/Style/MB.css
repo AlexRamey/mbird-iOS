@@ -60,6 +60,13 @@ iframe{
     height: auto;
 }
 
+img {
+    display: block;
+    margin: auto;
+    width: 95%;
+    height: auto;
+}
+
 img.alignleft {
     float: left;
     margin: 12px;
@@ -75,13 +82,6 @@ img.alignright {
 }
 
 img.aligncenter {
-    display: block;
-    margin: auto;
-    width: 95%;
-    height: auto;
-}
-
-img.alignnone {
     display: block;
     margin: auto;
     width: 95%;
