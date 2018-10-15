@@ -87,3 +87,7 @@ img.aligncenter {
     width: 95%;
     height: auto;
 }
+
+.wp-playlist {
+    display: none;
+}
