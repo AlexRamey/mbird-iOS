@@ -218,70 +218,89 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="A8V-Wd-npB">
-                                <rect key="frame" x="15" y="45" width="345" height="607"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="bird_orange" translatesAutoresizingMaskIntoConstraints="NO" id="wkZ-Zn-9L0">
+                                <rect key="frame" x="174.5" y="48" width="25" height="25"/>
+                                <color key="tintColor" red="1" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="1ul-SX-Tjj"/>
+                                    <constraint firstAttribute="width" constant="25" id="i5s-CO-WFW"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Mockingbird seeks to connect the Christian faith with the realities of everyday life in fresh and down-to-earth ways." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="FqS-GH-JZT">
+                                <rect key="frame" x="18" y="85" width="339" height="100.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="752" text="&quot;Nothing else in the world matters but the kindness of Grace, God’s gift to suffering mortals.&quot; – Jack Kerouac" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="h9h-Vv-YoY">
+                                <rect key="frame" x="18" y="545" width="339" height="61"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="752" text="100 West Jefferson St, Charlottesville VA 22902" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Utx-f4-j3t">
+                                <rect key="frame" x="18" y="618" width="339" height="41"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="A8V-Wd-npB">
+                                <rect key="frame" x="18" y="203.5" width="339" height="323.5"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="bird_orange" translatesAutoresizingMaskIntoConstraints="NO" id="wkZ-Zn-9L0">
-                                        <rect key="frame" x="157.5" y="0.0" width="30" height="30"/>
-                                        <color key="tintColor" red="1" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="1ul-SX-Tjj"/>
-                                            <constraint firstAttribute="width" constant="30" id="i5s-CO-WFW"/>
-                                        </constraints>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Mockingbird seeks to connect the Christian faith with the realities of everyday life in fresh and down-to-earth ways." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="FqS-GH-JZT">
-                                        <rect key="frame" x="0.0" y="46" width="345" height="61"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ghE-cT-vpu" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
-                                        <rect key="frame" x="58.5" y="123" width="228" height="30"/>
+                                        <rect key="frame" x="51" y="0.0" width="237" height="70.5"/>
                                         <state key="normal" title="Button"/>
+                                        <connections>
+                                            <action selector="pressedLinkWithSender:" destination="7ae-Hi-e9d" eventType="touchUpInside" id="Xrc-MB-nkv"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xpc-KO-G0h" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
-                                        <rect key="frame" x="58.5" y="169" width="228" height="30"/>
+                                        <rect key="frame" x="51" y="84.5" width="237" height="70.5"/>
                                         <state key="normal" title="Button"/>
+                                        <connections>
+                                            <action selector="pressedLinkWithSender:" destination="7ae-Hi-e9d" eventType="touchUpInside" id="u69-Rb-Kpy"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fv-ve-USG" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
-                                        <rect key="frame" x="58.5" y="215" width="228" height="30"/>
+                                        <rect key="frame" x="51" y="169" width="237" height="70"/>
                                         <state key="normal" title="Button"/>
+                                        <connections>
+                                            <action selector="pressedLinkWithSender:" destination="7ae-Hi-e9d" eventType="touchUpInside" id="ugl-3Q-g6J"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d43-Pj-JPl" customClass="LinkButton" customModule="iOS_Client" customModuleProvider="target">
-                                        <rect key="frame" x="58.5" y="261" width="228" height="30"/>
+                                        <rect key="frame" x="51" y="253" width="237" height="70.5"/>
                                         <state key="normal" title="Button"/>
+                                        <connections>
+                                            <action selector="pressedLinkWithSender:" destination="7ae-Hi-e9d" eventType="touchUpInside" id="Ehg-1X-vK4"/>
+                                        </connections>
                                     </button>
-                                    <view contentMode="scaleToFill" verticalCompressionResistancePriority="200" translatesAutoresizingMaskIntoConstraints="NO" id="vYQ-DQ-hFF">
-                                        <rect key="frame" x="27.5" y="307" width="290" height="166"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="752" text="&quot;Nothing else in the world matters but the kindness of Grace, God’s gift to suffering mortals.&quot; – Jack Kerouac" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="h9h-Vv-YoY">
-                                        <rect key="frame" x="11" y="489" width="323.5" height="61"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="752" text="100 West Jefferson St, Charlottesville VA 22902" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Utx-f4-j3t">
-                                        <rect key="frame" x="27" y="566" width="291" height="41"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="ghE-cT-vpu" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.66" id="3QE-Gd-Sos"/>
-                                    <constraint firstItem="xpc-KO-G0h" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.66" id="Ec8-4m-SdI"/>
-                                    <constraint firstItem="d43-Pj-JPl" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.66" id="Jgs-s1-2om"/>
-                                    <constraint firstItem="5fv-ve-USG" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.66" id="seS-iQ-Iaf"/>
+                                    <constraint firstItem="ghE-cT-vpu" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.7" id="3QE-Gd-Sos"/>
+                                    <constraint firstItem="xpc-KO-G0h" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.7" id="Ec8-4m-SdI"/>
+                                    <constraint firstItem="d43-Pj-JPl" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.7" id="Jgs-s1-2om"/>
+                                    <constraint firstItem="5fv-ve-USG" firstAttribute="width" secondItem="A8V-Wd-npB" secondAttribute="width" multiplier="0.7" id="seS-iQ-Iaf"/>
                                 </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="A8V-Wd-npB" firstAttribute="leading" secondItem="Ebe-WX-YCg" secondAttribute="leading" constant="15" id="33m-bk-Vk3"/>
-                            <constraint firstAttribute="trailing" secondItem="A8V-Wd-npB" secondAttribute="trailing" constant="15" id="DJJ-Kc-Ya4"/>
-                            <constraint firstItem="A8V-Wd-npB" firstAttribute="top" secondItem="bek-2R-xb1" secondAttribute="bottom" constant="25" id="Hcc-Kb-ckv"/>
-                            <constraint firstItem="MMI-Ve-y6Y" firstAttribute="top" secondItem="A8V-Wd-npB" secondAttribute="bottom" constant="15" id="ntw-aT-AiW"/>
+                            <constraint firstItem="A8V-Wd-npB" firstAttribute="leading" secondItem="Ebe-WX-YCg" secondAttribute="leading" constant="18" id="33m-bk-Vk3"/>
+                            <constraint firstAttribute="trailing" secondItem="FqS-GH-JZT" secondAttribute="trailing" constant="18" id="3x2-h7-FJd"/>
+                            <constraint firstAttribute="trailing" secondItem="A8V-Wd-npB" secondAttribute="trailing" constant="18" id="DJJ-Kc-Ya4"/>
+                            <constraint firstItem="MMI-Ve-y6Y" firstAttribute="top" secondItem="Utx-f4-j3t" secondAttribute="bottom" constant="8" id="LT2-cP-jVd"/>
+                            <constraint firstItem="FqS-GH-JZT" firstAttribute="leading" secondItem="Ebe-WX-YCg" secondAttribute="leading" constant="18" id="Pz7-QZ-pPE"/>
+                            <constraint firstItem="h9h-Vv-YoY" firstAttribute="leading" secondItem="Ebe-WX-YCg" secondAttribute="leading" constant="18" id="Q42-4V-TgT"/>
+                            <constraint firstItem="wkZ-Zn-9L0" firstAttribute="top" secondItem="bek-2R-xb1" secondAttribute="bottom" constant="28" id="Xb1-Oy-LxL"/>
+                            <constraint firstItem="Utx-f4-j3t" firstAttribute="top" secondItem="h9h-Vv-YoY" secondAttribute="bottom" constant="12" id="bVJ-XL-Qbf"/>
+                            <constraint firstItem="Utx-f4-j3t" firstAttribute="leading" secondItem="Ebe-WX-YCg" secondAttribute="leading" constant="18" id="cuQ-8P-f4j"/>
+                            <constraint firstItem="h9h-Vv-YoY" firstAttribute="top" secondItem="A8V-Wd-npB" secondAttribute="bottom" constant="18" id="d3P-sW-ErG"/>
+                            <constraint firstItem="FqS-GH-JZT" firstAttribute="top" secondItem="wkZ-Zn-9L0" secondAttribute="bottom" constant="12" id="fOI-pQ-jgr"/>
+                            <constraint firstItem="wkZ-Zn-9L0" firstAttribute="centerX" secondItem="Ebe-WX-YCg" secondAttribute="centerX" id="i0N-7O-le1"/>
+                            <constraint firstAttribute="trailing" secondItem="h9h-Vv-YoY" secondAttribute="trailing" constant="18" id="m2i-aV-iID"/>
+                            <constraint firstAttribute="trailing" secondItem="Utx-f4-j3t" secondAttribute="trailing" constant="18" id="wKz-yT-mVr"/>
+                            <constraint firstItem="A8V-Wd-npB" firstAttribute="top" secondItem="FqS-GH-JZT" secondAttribute="bottom" constant="18" id="zsc-bo-NJQ"/>
                         </constraints>
                     </view>
                     <connections>

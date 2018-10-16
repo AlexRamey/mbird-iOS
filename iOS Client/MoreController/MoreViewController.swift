@@ -33,20 +33,15 @@ class MoreViewController: UIViewController {
         addressLabel.font =  UIFont(name: "IowanOldStyle-Roman",
                                     size: 12)
         supportButton.configure(title: "SUPPORT",
-                                link: URL(string: "http://www.mbird.com/support/donate/")!,
-                                onButtonPress: pressedLink)
+                                link: URL(string: "http://www.mbird.com/support/donate/")!)
         magazineButton.configure(title: "MAGAZINE",
-                                 link: URL(string: "http://magazine.mbird.com/")!,
-                                 onButtonPress: pressedLink)
+                                 link: URL(string: "http://magazine.mbird.com/")!)
         conferencesButton.configure(title: "CONFERENCES",
-                                    link: URL(string: "http://conference.mbird.com/")!,
-                                    onButtonPress: pressedLink)
+                                    link: URL(string: "http://conference.mbird.com/")!)
         aboutButton.configure(title: "ABOUT",
-                              link: URL(string: "http://www.mbird.com/about/history-and-mission/")!,
-                              onButtonPress: pressedLink)
+                              link: URL(string: "http://www.mbird.com/about/history-and-mission/")!)
         self.title = "\u{00B7}\u{00B7}\u{00B7}   MORE   \u{00B7}\u{00B7}\u{00B7}"
         self.tabBarItem.title = "More"
-        
     }
     
     static func instantiateFromStoryboard(handler: MoreHandler) -> MoreViewController {
@@ -57,9 +52,10 @@ class MoreViewController: UIViewController {
         viewController.handler = handler
         return viewController
     }
-    
-    func pressedLink(_ button: LinkButton) {
-        guard let url = button.link else {
+
+    @IBAction func pressedLink(sender: UIButton) {
+        guard let button = sender as? LinkButton,
+            let url = button.link else {
             return
         }
         handler?.openLink(url)
