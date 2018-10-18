@@ -84,7 +84,6 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.currentProgress = self.player.getCurrentProgress()
         self.totalDuration = self.player.getTotalDuration()
         self.updateCurrentDuration()
-        self.player.subscribe(self)
         self.saved = podcastStore.containsSavedPodcast(self.selectedPodcast)
         configureBarButtonItems(downloaded: self.saved)
         self.view.layoutIfNeeded()
@@ -92,7 +91,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
- 
+        self.player.subscribe(self)
         self.imageView.layer.shadowPath = UIBezierPath(rect: self.imageView.bounds).cgPath
         self.imageView.layer.shadowRadius = 20
         self.imageView.layer.shadowOpacity = 0.4

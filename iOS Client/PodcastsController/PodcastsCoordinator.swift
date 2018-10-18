@@ -40,6 +40,7 @@ class PodcastsCoordinator: NSObject, Coordinator, PodcastTableViewDelegate, Unin
     }
     
     // MARK: - PodcastTableViewDelegate
+    // this is also called from the app coordinator when a user taps the now playing bar
     func didSelectPodcast(_ podcast: Podcast) {
         let detailViewController = PodcastDetailViewController.instantiateFromStoryboard(podcast: podcast, player: player, uninstaller: uninstaller, handler: self)
         self.navigationController.pushViewController(detailViewController, animated: true)
