@@ -14,4 +14,5 @@ class PlayPauseView: UIView, LoadableNibByClassName {
     @IBOutlet weak var toggleButton: UIButton!
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var cancelButton: UIButton!
+    @IBOutlet weak var tapRecognizer: UITapGestureRecognizer!
 }

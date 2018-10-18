@@ -8,15 +8,21 @@
 
 import UIKit
 
+protocol NowPlayingBarHandler: class {
+    func selectedPodcast(podcast: Podcast)
+}
+
 class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
     var playPauseView: PlayPauseView!
     var player: PodcastPlayer!
+    var handler: NowPlayingBarHandler!
     
-    static func instantiateFromStoryboard(player: PodcastPlayer) -> MBTabBarController {
+    static func instantiateFromStoryboard(player: PodcastPlayer, nowPlayingHandler: NowPlayingBarHandler) -> MBTabBarController {
         // swiftlint:disable force_cast
         let tabVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "BaseTabController") as! MBTabBarController
         // swiftlint:enable force_cast
         tabVC.player = player
+        tabVC.handler = nowPlayingHandler
         return tabVC
     }
     
@@ -40,6 +46,9 @@ class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
         playPauseView.toggleButton.setImage(UIImage(named: "play-arrow"), for: .normal)
         playPauseView.toggleButton.addTarget(self, action: #selector(togglePlayPause(_:)), for: .touchUpInside)
         playPauseView.cancelButton.addTarget(self, action: #selector(cancelPodcast(_:)), for: .touchUpInside)
+        playPauseView.tapRecognizer.numberOfTapsRequired = 1
+        playPauseView.tapRecognizer.numberOfTouchesRequired = 1
+        playPauseView.tapRecognizer.addTarget(self, action: #selector(selectPodcast(_:)))
     }
     
     @objc func togglePlayPause(_ sender: UIButton) {
@@ -48,6 +57,15 @@ class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
     
     @objc func cancelPodcast(_ sender: UIButton) {
         self.player.stop()
+    }
+    
+    @objc func selectPodcast(_ sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            guard let podcast = self.player.currentlyPlayingPodcast else {
+                return
+            }
+            self.handler.selectedPodcast(podcast: podcast)
+        }
     }
     
     override func viewDidLoad() {

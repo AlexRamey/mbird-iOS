@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import UIKit
 
-class AppCoordinator: NSObject, Coordinator {
+class AppCoordinator: NSObject, Coordinator, NowPlayingBarHandler {
     var childCoordinators: [Coordinator] = []
     var rootViewController: UIViewController {
         return self.parentController
@@ -33,7 +33,7 @@ class AppCoordinator: NSObject, Coordinator {
     }
     
     private lazy var tabBarController: MBTabBarController = {
-        let tabBarController = MBTabBarController.instantiateFromStoryboard(player: self.player)
+        let tabBarController = MBTabBarController.instantiateFromStoryboard(player: self.player, nowPlayingHandler: self)
         return tabBarController
     }()
     
@@ -66,5 +66,21 @@ class AppCoordinator: NSObject, Coordinator {
                 self.addChildCoordinator(childCoordinator: coord)
                 return coord.rootViewController
             })
+    }
+    
+    // MARK: NowPlayingBarHandler
+    func selectedPodcast(podcast: Podcast) {
+        for (idx, coord) in self.childCoordinators.enumerated() {
+            if let podcastsCoordinator = coord as? PodcastsCoordinator {
+                self.tabBarController.selectedIndex = idx
+                if let navController = podcastsCoordinator.rootViewController as? UINavigationController,
+                let _ = navController.topViewController as? PodcastDetailViewController {
+                    // do nothing
+                } else {
+                    podcastsCoordinator.didSelectPodcast(podcast)
+                }
+                
+            }
+        }
     }
 }
