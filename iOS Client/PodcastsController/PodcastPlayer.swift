@@ -37,10 +37,37 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     private func configureRemoteCommandHandling() {
+        
         let commandCenter = MPRemoteCommandCenter.shared()
         commandCenter.togglePlayPauseCommand.addTarget { (_) -> MPRemoteCommandHandlerStatus in
             self.togglePlayPause()
+            if let podcast = self.currentlyPlayingPodcast {
+               self.configureNowPlayingInfo(podcast: podcast)
+            }
             return .success
+        }
+        commandCenter.skipForwardCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
+            self.seek(relative: 15)
+            if let podcast = self.currentlyPlayingPodcast {
+                self.configureNowPlayingInfo(podcast: podcast)
+            }
+            return .success
+        }
+        commandCenter.skipBackwardCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
+            self.seek(relative: -15)
+            if let podcast = self.currentlyPlayingPodcast {
+                self.configureNowPlayingInfo(podcast: podcast)
+            }
+            return .success
+        }
+        commandCenter.changePlaybackPositionCommand.isEnabled = true
+        commandCenter.changePlaybackPositionCommand.addTarget { event -> MPRemoteCommandHandlerStatus in
+            if let position = (event as? MPChangePlaybackPositionCommandEvent)?.positionTime {
+                self.seek(to: position)
+                return .success
+            } else {
+                return .commandFailed
+            }
         }
     }
     
@@ -58,6 +85,11 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
                 UIGraphicsEndImageContext()
                 return newImage
             })
+        }
+        if let currentItem = player.currentItem {
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentItem.currentTime().seconds
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = currentItem.asset.duration.seconds
+            nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player.rate
         }
         center.nowPlayingInfo = nowPlayingInfo
     }
@@ -115,11 +147,9 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
                     player.replaceCurrentItem(with: item)
                 }
             }
-            
-            self.configureNowPlayingInfo(podcast: podcast)
             currentlyPlayingPodcast = podcast
-            
             self.play()
+            self.configureNowPlayingInfo(podcast: podcast)
         }
     }
     
@@ -157,7 +187,13 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     func seek(to second: Double) {
-        let time = CMTime(seconds: second, preferredTimescale: 1)
+        let time = CMTime(seconds: second, preferredTimescale: 600)
         player.seek(to: time)
+    }
+    
+    func seek(relative seconds: Double) {
+        let currentTime = player.currentTime().seconds
+        let newTime = currentTime + seconds
+        seek(to: newTime)
     }
 }
