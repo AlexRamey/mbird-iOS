@@ -372,20 +372,20 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pif-2v-Ltj">
-                                        <rect key="frame" x="9" y="274" width="285" height="246"/>
+                                        <rect key="frame" x="36.5" y="274" width="230" height="246"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="ior-Vt-5KB">
-                                                <rect key="frame" x="0.0" y="85.5" width="285" height="75"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="ior-Vt-5KB">
+                                                <rect key="frame" x="0.0" y="85.5" width="230" height="75"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ7-S1-SRd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="42.5" height="75"/>
                                                         <state key="normal" image="rewind"/>
                                                         <connections>
                                                             <action selector="pressRewind:" destination="pqk-7Q-AGL" eventType="touchUpInside" id="nUj-tr-EyH"/>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RtI-tl-hW1">
-                                                        <rect key="frame" x="105" y="0.0" width="75" height="75"/>
+                                                        <rect key="frame" x="72.5" y="0.0" width="75" height="75"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="75" id="248-eB-Rhn"/>
                                                             <constraint firstAttribute="height" constant="75" id="2ZO-sM-2VY"/>
@@ -396,7 +396,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h2E-mI-7tx">
-                                                        <rect key="frame" x="210" y="0.0" width="75" height="75"/>
+                                                        <rect key="frame" x="177.5" y="0.0" width="52.5" height="75"/>
                                                         <state key="normal" image="fastforward"/>
                                                         <connections>
                                                             <action selector="pressFastForward:" destination="pqk-7Q-AGL" eventType="touchUpInside" id="oA8-Ry-TzQ"/>

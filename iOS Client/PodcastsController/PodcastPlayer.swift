@@ -32,7 +32,7 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
         do {
             try AVAudioSession.sharedInstance().setActive(active)
         } catch {
-            print("Activating Audio Session failed.")
+            print("(de)activating Audio Session failed.")
         }
     }
     
@@ -48,16 +48,10 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
         }
         commandCenter.skipForwardCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
             self.seek(relative: 15)
-            if let podcast = self.currentlyPlayingPodcast {
-                self.configureNowPlayingInfo(podcast: podcast)
-            }
             return .success
         }
         commandCenter.skipBackwardCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
             self.seek(relative: -15)
-            if let podcast = self.currentlyPlayingPodcast {
-                self.configureNowPlayingInfo(podcast: podcast)
-            }
             return .success
         }
         commandCenter.changePlaybackPositionCommand.isEnabled = true
@@ -188,7 +182,11 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     
     func seek(to second: Double) {
         let time = CMTime(seconds: second, preferredTimescale: 600)
-        player.seek(to: time)
+        player.seek(to: time) { (_) in
+            if let podcast = self.currentlyPlayingPodcast {
+                self.configureNowPlayingInfo(podcast: podcast)
+            }
+        }
     }
     
     func seek(relative seconds: Double) {
