@@ -24,6 +24,8 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     @IBOutlet weak var imageWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var backgroundImageView: UIImageView!
+    @IBOutlet weak var rewindButton: UIButton!
+    @IBOutlet weak var fastforwardButton: UIButton!
     
     var currentProgress: Double = 0.0
     var totalDuration: Double = 0.0
@@ -106,6 +108,14 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
 
     @IBAction func pressPlayPause(_ sender: Any) {
         self.player.togglePlayPause()
+    }
+    
+    @IBAction func pressFastForward(_ sender: Any) {
+        player?.seek(relative: 15)
+    }
+    
+    @IBAction func pressRewind(_ sender: Any) {
+        player?.seek(relative: -15)
     }
     
     @objc func onSeek(slider: UISlider, event: UIEvent) {
