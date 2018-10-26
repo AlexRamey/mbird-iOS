@@ -25,7 +25,6 @@ class MoreCoordinator: Coordinator, MoreHandler {
     }
     
     func openLink(_ url: URL) {
-        let safariVc = SFSafariViewController(url: url)
-        navigationController.present(safariVc, animated: true, completion: nil)
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
