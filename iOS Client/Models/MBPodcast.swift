@@ -77,4 +77,13 @@ public enum PodcastStream: String, Codable {
             return "Your destination for talks given at Mbird events, both present and past. Subjects run the gamut from religion and theology to psychology and literature to pop culture and relationships and everything in between."
         }
     }
+    
+    var dateFormat: String {
+        switch self {
+        case .mockingPulpit:
+            return "E, d MMM yyyy HH:mm:ss zzz"
+        default:
+            return "E, d MMM yyyy HH:mm:ss Z"
+        }
+    }
 }
