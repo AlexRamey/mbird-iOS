@@ -22,12 +22,6 @@ class MBPodcastsStore: PodcastsRepository {
     
     let client: MBClient
     let fileHelper: FileHelper
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
-        return formatter
-    }()
-    
     let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast, .talkingbird]
     var podcastsPath: String = "podcasts.json"
     var podcastsDirectory: String = "podcasts"
@@ -56,8 +50,10 @@ class MBPodcastsStore: PodcastsRepository {
             for (indx, response) in responses.enumerated() {
                 if case .fulfilled(let newCasts) = response {
                     successfulResponses += 1
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = self.streams[indx].dateFormat
                     let displayCasts = newCasts.compactMap { podcast -> Podcast? in
-                        guard let dateString = podcast.pubDate?.replacingOccurrences(of: "EDT", with: "-0500"), let date = self.dateFormatter.date(from: dateString) else {
+                        guard let date = dateFormatter.date(from: podcast.pubDate ?? "") else {
                             return nil
                         }
                         return Podcast(author: podcast.author,
