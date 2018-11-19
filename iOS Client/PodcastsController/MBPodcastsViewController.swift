@@ -28,6 +28,10 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
     weak var delegate: PodcastTableViewDelegate?
     var uninstaller: Uninstaller?
     
+    // refresh control
+    private let refreshControl = UIRefreshControl()
+    var isFirstAppearance = true
+    
     static func instantiateFromStoryboard(uninstaller: Uninstaller) -> MBPodcastsViewController {
         // swiftlint:disable force_cast
         let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MBPodcastsViewController") as! MBPodcastsViewController
@@ -49,6 +53,11 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 110
         
+        tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
+        refreshControl.tintColor = UIColor(red: 235.0/255.0, green: 96.0/255.0, blue: 93.0/255.0, alpha: 1.0)
+        refreshControl.attributedTitle = NSAttributedString(string: "Updating ...", attributes: nil)
+        
         self.navigationController?.navigationBar.isTranslucent = true
         let filterBarButton = UIBarButtonItem(image: UIImage(named: "filter"), style: .done, target: self, action: #selector(MBPodcastsViewController.filter))
         let infoButton = UIButton(type: .infoLight)
@@ -56,7 +65,12 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         let infoBarButton = UIBarButtonItem(customView: infoButton)
         self.navigationItem.rightBarButtonItem = filterBarButton
         self.navigationItem.leftBarButtonItem = infoBarButton
-        self.loadData()
+    }
+    
+    @objc private func refreshTableView(_ sender: UIRefreshControl) {
+        if sender.isRefreshing {
+            self.loadData()
+        }
     }
     
     private func loadData() {
@@ -69,6 +83,8 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         }.then { podcasts -> Void in
             self.podcasts = podcasts
             self.showPodcasts()
+        }.always {
+            self.refreshControl.endRefreshing()
         }.catch { error in
             print("error fetching podcasts: \(error)")
         }
@@ -107,7 +123,17 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         self.savedPodcastTitles = Set(self.podcastStore.getSavedPodcastsTitles())
-        self.showPodcasts()
+        
+        if self.isFirstAppearance {
+            self.isFirstAppearance = false
+            
+            // the following line ensures that the refresh control has the correct tint/text on first use
+            self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
+            self.refreshControl.beginRefreshing()
+            self.loadData()
+        } else {
+            self.showPodcasts()
+        }
     }
     
     @objc func filter() {
