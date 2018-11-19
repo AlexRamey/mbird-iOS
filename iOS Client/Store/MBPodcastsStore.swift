@@ -53,7 +53,8 @@ class MBPodcastsStore: PodcastsRepository {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = self.streams[indx].dateFormat
                     let displayCasts = newCasts.compactMap { podcast -> Podcast? in
-                        guard let date = dateFormatter.date(from: podcast.pubDate ?? "") else {
+                        guard let pubDate = podcast.pubDate,
+                            let date = dateFormatter.date(from: pubDate) else {
                             return nil
                         }
                         return Podcast(author: podcast.author,
