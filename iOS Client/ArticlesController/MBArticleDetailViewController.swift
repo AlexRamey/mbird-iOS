@@ -16,6 +16,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     var articleDAO: ArticleDAO?
     var categoryContext: String?
     weak var delegate: ArticleDetailDelegate?
+    var baseURL = URL(string: "about:blank")
     
     static func instantiateFromStoryboard(article: Article?, categoryContext: String?, dao: ArticleDAO?) -> MBArticleDetailViewController {
         // swiftlint:disable force_cast
@@ -53,7 +54,17 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             // <head>
             let contentTypeHead = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
             let viewPortHead = "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
-            let cssHead = "<link rel=\"stylesheet\" type=\"text/css\" href=\"MB.css\" />"
+            
+            var cssString: String = ""
+            do {
+                if let cssPath = Bundle.main.path(forResource: "MB", ofType: "css") {
+                    cssString = try String(contentsOfFile: cssPath).trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+            } catch {
+                print("error: unable to load css string")
+            }
+            
+            let cssHead = "<style>\(cssString)</style>"
             let head = "<head>\n\(contentTypeHead)\n\(viewPortHead)\n\(cssHead)\n</head>"
             
             // <style>
@@ -95,12 +106,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
 
             // full page
             let fullContent = head + style + body
-            
-            // baseURL is used by the wkWebView to resolve relative links
-            // Here, we point it straight to our css file referred to in the css header
-            let baseURL = NSURL.fileURL(withPath: Bundle.main.path(forResource: "MB", ofType: "css")!)
-            
-            webView.loadHTMLString(fullContent, baseURL: baseURL)
+            webView.loadHTMLString(fullContent, baseURL: self.baseURL)
             
         }
     }
@@ -187,7 +193,8 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
     // MARK: WKNavigationDelegate
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let dstURL = navigationAction.request.url,
-            navigationAction.navigationType == .linkActivated {
+            navigationAction.navigationType == .linkActivated,
+            !dstURL.isLocalFragment(prefix: self.baseURL?.absoluteString) {
             decisionHandler(.cancel) // we're handling it manually
             if let delegate = self.delegate {
                 delegate.selectedURL(url: dstURL)

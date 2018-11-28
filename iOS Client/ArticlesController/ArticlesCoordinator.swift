@@ -40,9 +40,13 @@ class ArticlesCoordinator: NSObject, Coordinator, UINavigationControllerDelegate
 
     // MARK: - Article Detail Delegate
     func selectedURL(url: URL) {
-        let safariVC = SFSafariViewController(url: url)
-        safariVC.delegate = self
-        self.navigationController.present(safariVC, animated: true, completion: nil)
+        if let upperScheme = url.scheme?.uppercased() {
+            if upperScheme == "HTTP" || upperScheme == "HTTPS" {
+                let safariVC = SFSafariViewController(url: url)
+                safariVC.delegate = self
+                self.navigationController.present(safariVC, animated: true, completion: nil)
+            }
+        }
     }
     
     // MARK: = SF Safari View Controller Delegate
