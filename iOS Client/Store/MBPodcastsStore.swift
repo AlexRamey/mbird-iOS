@@ -22,7 +22,7 @@ class MBPodcastsStore: PodcastsRepository {
     
     let client: MBClient
     let fileHelper: FileHelper
-    let streams: [PodcastStream] = [.pz, .mockingPulpit, .mockingCast, .talkingbird]
+    let streams: [PodcastStream] = [.mockingPulpit, .mockingCast, .pz, .sameOldSong, .talkingbird]
     var podcastsPath: String = "podcasts.json"
     var podcastsDirectory: String = "podcasts"
     let streamVisibilityDefaultsKey = "STREAM_VISIBILITY_DEFAULTS_KEY"
@@ -135,18 +135,16 @@ class MBPodcastsStore: PodcastsRepository {
             return []
         }
         
-        return visibilitySettings
-            .keys
-            .filter { visibilitySettings[$0] ?? false }
-            .compactMap {
-                if let stream = PodcastStream(rawValue: $0) {
-                    return PodcastFilterOption.stream(stream)
-                } else if $0 == PodcastFilterOption.downloaded.key {
-                    return PodcastFilterOption.downloaded
-                } else {
-                    return nil
-                }
-            }
+        var enabledStreams = self.streams
+            .filter { visibilitySettings[$0.rawValue] ?? true } // default to enabling the stream toggles
+            .map { PodcastFilterOption.stream($0) }
+        
+        // default to disabling the 'downloaded-only' toggle
+        if visibilitySettings[PodcastFilterOption.downloaded.key] ?? false {
+            enabledStreams += [PodcastFilterOption.downloaded]
+        }
+        
+        return enabledStreams
     }
     
     func setFilter(option: PodcastFilterOption, isVisible: Bool) {

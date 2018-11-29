@@ -108,10 +108,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
         })
         self.visiblePodcasts = self.podcasts.filter({ (podcast) -> Bool in
             if showDownloadedPodcasts {
-                guard savedPodcastTitles.contains(podcast.title ?? "") else {
-                    return false
-                }
-                return true
+                return savedPodcastTitles.contains(podcast.title ?? "")
             } else {
                 return visibleStreams.contains(podcast.feed)
             }

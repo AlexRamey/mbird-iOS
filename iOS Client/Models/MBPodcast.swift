@@ -37,6 +37,7 @@ public enum PodcastStream: String, Codable {
     case mockingCast = "https://themockingcast.fireside.fm/rss"
     case mockingPulpit = "http://www.mbird.com/feed/podcast/"
     case talkingbird = "https://talkingbird.fireside.fm/rss"
+    case sameOldSong = "https://thesameoldsong.fireside.fm/rss"
     
     var imageName: String {
         switch self {
@@ -44,6 +45,7 @@ public enum PodcastStream: String, Codable {
         case .mockingPulpit: return "mockingpulpit"
         case .mockingCast: return "mockingcast"
         case .talkingbird: return "talkingbird"
+        case .sameOldSong: return "sameoldsong"
         }
     }
     
@@ -53,6 +55,7 @@ public enum PodcastStream: String, Codable {
         case .mockingCast: return "The Mockingcast"
         case .mockingPulpit: return "The Mockingpulpit"
         case .talkingbird: return "Talkingbird"
+        case .sameOldSong: return "Same Old Song"
         }
     }
     
@@ -62,6 +65,7 @@ public enum PodcastStream: String, Codable {
         case .mockingCast: return "Mockingcast"
         case .mockingPulpit: return "Mockingpulpit"
         case .talkingbird: return "Talkingbird"
+        case .sameOldSong: return "Same Old Song"
         }
     }
     
@@ -75,6 +79,8 @@ public enum PodcastStream: String, Codable {
             return "Sermons from Mockingbird contributors, singing that “same song” of God’s grace in different keys, week after week."
         case .talkingbird:
             return "Your destination for talks given at Mbird events, both present and past. Subjects run the gamut from religion and theology to psychology and literature to pop culture and relationships and everything in between."
+        case .sameOldSong:
+            return "A weekly discussion of the texts assigned for Sunday in the lectionary, hosted by Jacob Smith and Aaron Zimmerman. As always, grace abounds. Not just for preachers!"
         }
     }
     
