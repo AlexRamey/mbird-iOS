@@ -26,6 +26,36 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
         self.repository = repository
         super.init()
         self.configureRemoteCommandHandling()
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(audioInterruption(_:)),
+                                               name: NSNotification.Name.AVAudioSessionInterruption,
+                                               object: nil)
+    }
+    
+    @objc private func audioInterruption(_ notification: Notification) {
+        // an interruption due to incoming phone call or alarm clock
+        guard let userInfo = notification.userInfo,
+            let interruptionTypeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let interruptionType = AVAudioSessionInterruptionType(rawValue: interruptionTypeValue) else {
+            return
+        }
+        
+        switch interruptionType {
+        case .began:
+            // audio has already been interrupted (reflect in the UI)
+            self.pause()
+        case .ended:
+            // interruption is over
+            guard let interruptionOptionValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else {
+                return
+            }
+            
+            let interruptionOption = AVAudioSessionInterruptionOptions(rawValue: interruptionOptionValue)
+            if interruptionOption.contains(.shouldResume) {
+                self.play()
+            }
+        }
     }
     
     private func setAudioSessionIsActive(_ active: Bool) {

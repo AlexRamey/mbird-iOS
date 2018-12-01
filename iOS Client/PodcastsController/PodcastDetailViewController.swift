@@ -169,7 +169,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         }
     }
     
-    private func configureBarButtonItems(downloaded: Bool) {
+    private func configureBarButtonItems(downloaded: Bool) {        
         self.navigationItem.rightBarButtonItems = [getDownloadBarButton(downloaded: downloaded), getShareBarButton()]
     }
     
