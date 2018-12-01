@@ -87,7 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func styleNavBar() {
         let attrs: [NSAttributedStringKey: Any] = [
             NSAttributedStringKey.foregroundColor: UIColor.MBOrange,
-            NSAttributedStringKey.font: UIFont(name: "AvenirNext-Bold", size: 18.0) ?? UIFont.boldSystemFont(ofSize: 18.0)
+            NSAttributedStringKey.font: UIFont(name: "AvenirNext-Bold", size: 17.9) ?? UIFont.boldSystemFont(ofSize: 17.9)
         ]
         
         UINavigationBar.appearance().titleTextAttributes = attrs
