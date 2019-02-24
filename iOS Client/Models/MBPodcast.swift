@@ -35,7 +35,7 @@ struct Podcast: Codable {
 public enum PodcastStream: String, Codable {
     case pz = "https://pzspodcast.fireside.fm/rss"
     case mockingCast = "https://themockingcast.fireside.fm/rss"
-    case mockingPulpit = "http://www.mbird.com/feed/podcast/"
+    case mockingPulpit = "https://www.mbird.com/feed/podcast/"
     case talkingbird = "https://talkingbird.fireside.fm/rss"
     case sameOldSong = "https://thesameoldsong.fireside.fm/rss"
     
