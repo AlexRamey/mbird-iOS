@@ -33,13 +33,13 @@ class MoreViewController: UIViewController {
         addressLabel.font =  UIFont(name: "IowanOldStyle-Roman",
                                     size: 12)
         supportButton.configure(title: "SUPPORT",
-                                link: URL(string: "http://www.mbird.com/support/donate/")!)
+                                link: URL(string: "https://www.mbird.com/support/donate/")!)
         magazineButton.configure(title: "MAGAZINE",
-                                 link: URL(string: "http://magazine.mbird.com/")!)
+                                 link: URL(string: "https://magazine.mbird.com/")!)
         conferencesButton.configure(title: "CONFERENCES",
-                                    link: URL(string: "http://conference.mbird.com/")!)
+                                    link: URL(string: "https://conference.mbird.com/")!)
         aboutButton.configure(title: "ABOUT",
-                              link: URL(string: "http://www.mbird.com/about/history-and-mission/")!)
+                              link: URL(string: "https://www.mbird.com/about/history-and-mission/")!)
         self.title = "\u{00B7}\u{00B7}\u{00B7}   MORE   \u{00B7}\u{00B7}\u{00B7}"
         self.tabBarItem.title = "More"
     }

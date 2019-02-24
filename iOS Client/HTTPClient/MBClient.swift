@@ -15,7 +15,7 @@ class MBClient: NSObject {
     private let decoder = JSONDecoder()
     
     // Endpoints
-    private let baseURL = "http://www.mbird.com/wp-json/wp/v2"
+    private let baseURL = "https://www.mbird.com/wp-json/wp/v2"
     private let articlesEndpoint = "/posts"
     private let categoriesEndpoint = "/categories"
     private let authorsEndpoint = "/users"
@@ -106,7 +106,7 @@ class MBClient: NSObject {
     }
     
     func searchArticlesWithCompletion(query: String, completion: @escaping ([Article], Error?) -> Void ) {
-        let scheme = "http"
+        let scheme = "https"
         let host = "www.mbird.com"
         let path = "/wp-json/wp/v2/posts"
         let queryItemPerPage = URLQueryItem(name: "per_page", value: "10")
