@@ -155,11 +155,11 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     
     func playPodcast(_ podcast: Podcast) {
         if let guid = podcast.guid {
-            
             // replace current player item if necessary
             if (currentlyPlayingPodcast?.guid ?? "no guid") != guid {
-                var podcastURL: URL?
+                currentlyPlayingPodcast = podcast
                 
+                var podcastURL: URL?
                 if self.repository.containsSavedPodcast(podcast) {
                     podcastURL = self.repository.getUrlFor(podcast: podcast)
                 } else {
@@ -167,13 +167,25 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
                 }
                 
                 if let url = podcastURL {
-                    let item = AVPlayerItem(url: url)
-                    player.replaceCurrentItem(with: item)
+                    let asset = AVAsset(url: url)
+                    let keys: [String] = ["playable"]
+                    asset.loadValuesAsynchronously(forKeys: keys) {
+                        DispatchQueue.main.async {
+                            guard let currentGuid = self.currentlyPlayingPodcast?.guid, currentGuid == guid else {
+                                return
+                            }
+                            let item = AVPlayerItem(asset: asset)
+                            self.player.replaceCurrentItem(with: item)
+                            self.currentlyPlayingPodcast = podcast
+                            self.play()
+                            self.configureNowPlayingInfo(podcast: podcast)
+                        }
+                    }
                 }
+            } else {
+                self.play()
+                self.configureNowPlayingInfo(podcast: podcast)
             }
-            currentlyPlayingPodcast = podcast
-            self.play()
-            self.configureNowPlayingInfo(podcast: podcast)
         }
     }
     
