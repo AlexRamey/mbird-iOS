@@ -42,7 +42,7 @@
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="bookmarkCellReuseIdentifier" id="buW-LU-0E1" customClass="BookmarkCell" customModule="iOS_Client" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="buW-LU-0E1" id="rJ6-ne-d8Z">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="buW-LU-0E1" id="rJ6-ne-d8Z">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
@@ -53,7 +53,7 @@
                                                         <constraint firstAttribute="width" constant="122" id="kHK-wB-4be"/>
                                                     </constraints>
                                                 </imageView>
-                                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="26b-BQ-KMw">
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="26b-BQ-KMw">
                                                     <rect key="frame" x="15" y="323" width="360" height="1"/>
                                                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                     <constraints>
@@ -73,6 +73,7 @@
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="XXW-Hs-NUQ" secondAttribute="bottom" constant="8" id="KXo-cW-iqA"/>
                                                 <constraint firstItem="XXW-Hs-NUQ" firstAttribute="top" secondItem="rJ6-ne-d8Z" secondAttribute="top" constant="16" id="Kcw-b7-mKq"/>
                                                 <constraint firstAttribute="trailing" secondItem="yXp-8A-Fav" secondAttribute="trailing" constant="16" id="PPL-nn-SHh"/>
+                                                <constraint firstAttribute="bottom" secondItem="yXp-8A-Fav" secondAttribute="bottom" priority="750" constant="16" id="Vgi-4I-zre"/>
                                                 <constraint firstItem="XXW-Hs-NUQ" firstAttribute="leading" secondItem="rJ6-ne-d8Z" secondAttribute="leading" constant="16" id="Yzx-aE-Cux"/>
                                                 <constraint firstItem="yXp-8A-Fav" firstAttribute="top" secondItem="rJ6-ne-d8Z" secondAttribute="top" constant="16" id="auf-FN-wyN"/>
                                                 <constraint firstItem="26b-BQ-KMw" firstAttribute="leading" secondItem="rJ6-ne-d8Z" secondAttribute="leading" constant="15" id="ghU-WC-wI2"/>
@@ -150,7 +151,7 @@
                             <constraint firstAttribute="trailing" secondItem="ylZ-M0-p3n" secondAttribute="trailing" id="5bP-eZ-Sa9"/>
                             <constraint firstItem="ylZ-M0-p3n" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leading" id="ABo-eE-OLI"/>
                             <constraint firstItem="z76-D2-CzV" firstAttribute="top" secondItem="ylZ-M0-p3n" secondAttribute="bottom" id="GIf-Ig-rQW"/>
-                            <constraint firstItem="ylZ-M0-p3n" firstAttribute="height" secondItem="4QY-mg-7u0" secondAttribute="height" multiplier="0.4" id="GcI-YN-5b5"/>
+                            <constraint firstItem="ylZ-M0-p3n" firstAttribute="height" secondItem="4QY-mg-7u0" secondAttribute="height" multiplier="0.4" priority="750" id="GcI-YN-5b5"/>
                             <constraint firstItem="kSL-0n-CDU" firstAttribute="centerX" secondItem="4QY-mg-7u0" secondAttribute="centerX" id="IV3-99-mxo"/>
                             <constraint firstItem="z76-D2-CzV" firstAttribute="trailing" secondItem="4QY-mg-7u0" secondAttribute="trailingMargin" constant="16" id="OGM-eO-TuW"/>
                             <constraint firstItem="lWV-09-TcD" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leading" id="OVF-Fo-dte"/>
