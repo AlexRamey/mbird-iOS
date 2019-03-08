@@ -154,38 +154,39 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     func playPodcast(_ podcast: Podcast) {
-        if let guid = podcast.guid {
-            // replace current player item if necessary
-            if (currentlyPlayingPodcast?.guid ?? "no guid") != guid {
-                currentlyPlayingPodcast = podcast
-                
-                var podcastURL: URL?
-                if self.repository.containsSavedPodcast(podcast) {
-                    podcastURL = self.repository.getUrlFor(podcast: podcast)
-                } else {
-                    podcastURL = URL(string: guid)
-                }
-                
-                if let url = podcastURL {
-                    let asset = AVAsset(url: url)
-                    let keys: [String] = ["playable"]
-                    asset.loadValuesAsynchronously(forKeys: keys) {
-                        DispatchQueue.main.async {
-                            guard let currentGuid = self.currentlyPlayingPodcast?.guid, currentGuid == guid else {
-                                return
-                            }
-                            let item = AVPlayerItem(asset: asset)
-                            self.player.replaceCurrentItem(with: item)
-                            self.currentlyPlayingPodcast = podcast
-                            self.play()
-                            self.configureNowPlayingInfo(podcast: podcast)
+        guard let guid = podcast.guid else {
+            return
+        }
+        
+        if (currentlyPlayingPodcast?.guid ?? "no guid") != guid {
+            // new podcast; switch over to it
+            var podcastURL: URL?
+            if self.repository.containsSavedPodcast(podcast) {
+                podcastURL = self.repository.getUrlFor(podcast: podcast)
+            } else {
+                podcastURL = URL(string: guid)
+            }
+            
+            if let url = podcastURL {
+                self.currentlyPlayingPodcast = podcast
+                let asset = AVAsset(url: url)
+                let keys: [String] = ["playable"]
+                asset.loadValuesAsynchronously(forKeys: keys) {
+                    DispatchQueue.main.async {
+                        guard let currentGuid = self.currentlyPlayingPodcast?.guid, currentGuid == guid else {
+                            return
                         }
+                        let item = AVPlayerItem(asset: asset)
+                        self.player.replaceCurrentItem(with: item)
+                        self.play()
+                        self.configureNowPlayingInfo(podcast: podcast)
                     }
                 }
-            } else {
-                self.play()
-                self.configureNowPlayingInfo(podcast: podcast)
             }
+        } else {
+            // same podcast; just resume it
+            self.play()
+            self.configureNowPlayingInfo(podcast: podcast)
         }
     }
     
