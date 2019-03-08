@@ -153,27 +153,46 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
         }
     }
     
-    func playPodcast(_ podcast: Podcast) {
-        if let guid = podcast.guid {
+    func playPodcast(_ podcast: Podcast, completion: @escaping () -> Void ) {
+        guard let guid = podcast.guid else {
+            completion()
+            return
+        }
+        
+        if (currentlyPlayingPodcast?.guid ?? "no guid") != guid {
+            // new podcast; switch over to it
+            var podcastURL: URL?
+            if self.repository.containsSavedPodcast(podcast) {
+                podcastURL = self.repository.getUrlFor(podcast: podcast)
+            } else {
+                podcastURL = URL(string: guid)
+            }
             
-            // replace current player item if necessary
-            if (currentlyPlayingPodcast?.guid ?? "no guid") != guid {
-                var podcastURL: URL?
-                
-                if self.repository.containsSavedPodcast(podcast) {
-                    podcastURL = self.repository.getUrlFor(podcast: podcast)
-                } else {
-                    podcastURL = URL(string: guid)
-                }
-                
-                if let url = podcastURL {
-                    let item = AVPlayerItem(url: url)
-                    player.replaceCurrentItem(with: item)
+            guard let url = podcastURL else {
+                completion()
+                return
+            }
+            
+            self.currentlyPlayingPodcast = podcast
+            let asset = AVAsset(url: url)
+            let keys: [String] = ["playable"]
+            asset.loadValuesAsynchronously(forKeys: keys) {
+                DispatchQueue.main.async {
+                    guard let currentGuid = self.currentlyPlayingPodcast?.guid, currentGuid == guid else {
+                        return
+                    }
+                    let item = AVPlayerItem(asset: asset)
+                    self.player.replaceCurrentItem(with: item)
+                    self.play()
+                    self.configureNowPlayingInfo(podcast: podcast)
+                    completion()
                 }
             }
-            currentlyPlayingPodcast = podcast
+        } else {
+            // same podcast; just resume it
             self.play()
             self.configureNowPlayingInfo(podcast: podcast)
+            completion()
         }
     }
     

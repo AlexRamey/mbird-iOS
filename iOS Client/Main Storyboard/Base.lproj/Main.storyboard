@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="XWm-Ql-rSZ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="XWm-Ql-rSZ">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -372,20 +372,20 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pif-2v-Ltj">
-                                        <rect key="frame" x="36.5" y="274" width="230" height="246"/>
+                                        <rect key="frame" x="0.0" y="274" width="303" height="246"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="ior-Vt-5KB">
-                                                <rect key="frame" x="0.0" y="85.5" width="230" height="75"/>
+                                                <rect key="frame" x="0.0" y="85.5" width="303" height="75"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ7-S1-SRd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="42.5" height="75"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="85.5" height="75"/>
                                                         <state key="normal" image="rewind"/>
                                                         <connections>
                                                             <action selector="pressRewind:" destination="pqk-7Q-AGL" eventType="touchUpInside" id="nUj-tr-EyH"/>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RtI-tl-hW1">
-                                                        <rect key="frame" x="72.5" y="0.0" width="75" height="75"/>
+                                                        <rect key="frame" x="115.5" y="0.0" width="75" height="75"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="75" id="248-eB-Rhn"/>
                                                             <constraint firstAttribute="height" constant="75" id="2ZO-sM-2VY"/>
@@ -396,7 +396,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h2E-mI-7tx">
-                                                        <rect key="frame" x="177.5" y="0.0" width="52.5" height="75"/>
+                                                        <rect key="frame" x="220.5" y="0.0" width="82.5" height="75"/>
                                                         <state key="normal" image="fastforward"/>
                                                         <connections>
                                                             <action selector="pressFastForward:" destination="pqk-7Q-AGL" eventType="touchUpInside" id="oA8-Ry-TzQ"/>
@@ -404,14 +404,19 @@
                                                     </button>
                                                 </subviews>
                                             </stackView>
+                                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="9PO-lx-LtC">
+                                                <rect key="frame" x="141.5" y="113" width="20" height="20"/>
+                                            </activityIndicatorView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="ior-Vt-5KB" firstAttribute="centerY" secondItem="pif-2v-Ltj" secondAttribute="centerY" id="Gnj-22-OY2"/>
                                             <constraint firstItem="ior-Vt-5KB" firstAttribute="leading" secondItem="pif-2v-Ltj" secondAttribute="leading" id="HGg-l0-Wb2"/>
+                                            <constraint firstItem="9PO-lx-LtC" firstAttribute="centerX" secondItem="ior-Vt-5KB" secondAttribute="centerX" id="Q0K-Io-MLR"/>
                                             <constraint firstAttribute="trailing" secondItem="ior-Vt-5KB" secondAttribute="trailing" id="bbD-uS-NFM"/>
                                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="ior-Vt-5KB" secondAttribute="bottom" id="evb-Z7-TOy"/>
                                             <constraint firstItem="ior-Vt-5KB" firstAttribute="top" relation="greaterThanOrEqual" secondItem="pif-2v-Ltj" secondAttribute="top" id="imH-Ro-cjU"/>
+                                            <constraint firstItem="9PO-lx-LtC" firstAttribute="centerY" secondItem="ior-Vt-5KB" secondAttribute="centerY" id="oqU-yz-hrC"/>
                                         </constraints>
                                     </view>
                                     <slider opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="5bj-ey-VsV">
@@ -464,6 +469,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="9PO-lx-LtC" id="ik0-Nz-LQe"/>
                         <outlet property="backgroundImageView" destination="H0E-Ru-6vY" id="Gj6-Fz-rcO"/>
                         <outlet property="durationLabel" destination="SAQ-Mc-XU4" id="Rqn-SV-V6D"/>
                         <outlet property="durationSlider" destination="5bj-ey-VsV" id="Ngu-e5-ufF"/>
@@ -951,12 +957,12 @@
         </scene>
     </scenes>
     <resources>
-        <image name="bird_orange" width="50" height="50"/>
-        <image name="devotion-footer" width="417" height="417"/>
-        <image name="fastforward" width="36" height="36"/>
-        <image name="launch" width="1765" height="1987"/>
+        <image name="bird_orange" width="24" height="24"/>
+        <image name="devotion-footer" width="100.08000183105469" height="100.08000183105469"/>
+        <image name="fastforward" width="72" height="72"/>
+        <image name="launch" width="847.44000244140625" height="953.760009765625"/>
         <image name="mockingcast" width="1584" height="1584"/>
-        <image name="play-arrow" width="64" height="64"/>
-        <image name="rewind" width="36" height="36"/>
+        <image name="play-arrow" width="51.200000762939453" height="51.200000762939453"/>
+        <image name="rewind" width="72" height="72"/>
     </resources>
 </document>

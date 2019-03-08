@@ -26,6 +26,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var rewindButton: UIButton!
     @IBOutlet weak var fastforwardButton: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var currentProgress: Double = 0.0
     var totalDuration: Double = 0.0
@@ -82,7 +83,18 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.imageWidthConstraint.constant = fullImageSize
         self.imageHeightConstraint.constant = fullImageSize
         
-        self.player.playPodcast(self.selectedPodcast)
+        self.activityIndicator.startAnimating()
+        self.playPauseButton.isHidden = true
+        self.rewindButton.isHidden = true
+        self.fastforwardButton.isHidden = true
+        
+        self.player.playPodcast(self.selectedPodcast, completion: {
+            self.activityIndicator.stopAnimating()
+            self.playPauseButton.isHidden = false
+            self.rewindButton.isHidden = false
+            self.fastforwardButton.isHidden = false
+        })
+        
         self.currentProgress = self.player.getCurrentProgress()
         self.totalDuration = self.player.getTotalDuration()
         self.updateCurrentDuration()
