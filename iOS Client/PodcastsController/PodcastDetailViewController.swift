@@ -83,7 +83,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.imageWidthConstraint.constant = fullImageSize
         self.imageHeightConstraint.constant = fullImageSize
         
-        // if our podcast is already playing, then immediately grab the progress values
+        // if our podcast is already selected, then immediately grab the progress values
         if self.player.currentlyPlayingPodcast?.guid == self.selectedPodcast.guid {
             self.currentProgress = self.player.getCurrentProgress()
             self.totalDuration = self.player.getTotalDuration()
