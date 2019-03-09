@@ -83,21 +83,34 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
         self.imageWidthConstraint.constant = fullImageSize
         self.imageHeightConstraint.constant = fullImageSize
         
-        self.activityIndicator.startAnimating()
-        self.playPauseButton.isHidden = true
-        self.rewindButton.isHidden = true
-        self.fastforwardButton.isHidden = true
+        // if our podcast is already selected, then immediately grab the progress values
+        if self.player.currentlyPlayingPodcast?.guid == self.selectedPodcast.guid {
+            self.currentProgress = self.player.getCurrentProgress()
+            self.totalDuration = self.player.getTotalDuration()
+            self.updateCurrentDuration()
+            
+            // if the podcast is already playing, then update the UI to reflect that
+            if self.player.player.rate != 0.0 {
+                self.isPlaying = true
+                self.playPauseButton.setImage(#imageLiteral(resourceName: "pause-bars"), for: .normal)
+                self.imageWidthConstraint.constant = fullImageSize * 0.75
+                self.imageHeightConstraint.constant = fullImageSize * 0.75
+            }
+        } else {
+            // new selection!
+            self.activityIndicator.startAnimating()
+            self.playPauseButton.isHidden = true
+            self.rewindButton.isHidden = true
+            self.fastforwardButton.isHidden = true
+            
+            self.player.playPodcast(self.selectedPodcast, completion: {
+                self.activityIndicator.stopAnimating()
+                self.playPauseButton.isHidden = false
+                self.rewindButton.isHidden = false
+                self.fastforwardButton.isHidden = false
+            })
+        }
         
-        self.player.playPodcast(self.selectedPodcast, completion: {
-            self.activityIndicator.stopAnimating()
-            self.playPauseButton.isHidden = false
-            self.rewindButton.isHidden = false
-            self.fastforwardButton.isHidden = false
-        })
-        
-        self.currentProgress = self.player.getCurrentProgress()
-        self.totalDuration = self.player.getTotalDuration()
-        self.updateCurrentDuration()
         self.saved = podcastStore.containsSavedPodcast(self.selectedPodcast)
         configureBarButtonItems(downloaded: self.saved)
         self.view.layoutIfNeeded()
@@ -222,8 +235,13 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     }
     
     // MARK: - Podcast Player Subscriber
-    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool) {
+    func notify(currentPodcastGuid: String?, currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool) {
         DispatchQueue.main.async {
+            // disregard this notify unless it's for our podcast
+            guard self.selectedPodcast.guid == currentPodcastGuid else {
+                return
+            }
+            
             guard !isCanceled else {
                 self.handler?.dismissDetail()
                 return
