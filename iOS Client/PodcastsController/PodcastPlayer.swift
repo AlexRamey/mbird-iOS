@@ -11,7 +11,7 @@ import Foundation
 import MediaPlayer
 
 protocol PodcastPlayerSubscriber: class {
-    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool)
+    func notify(currentPodcastGuid: String?, currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool)
 }
 
 class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
@@ -133,7 +133,7 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     @objc func notifySubscribers() {
         self.subscribers.forEach { (subscriberRef) in
             if let subscriber = subscriberRef.value as? PodcastPlayerSubscriber {
-                subscriber.notify(currentProgress: self.getCurrentProgress(), totalDuration: self.getTotalDuration(), isPlaying: self.player.rate != 0.0, isCanceled: self.isCanceled)
+                subscriber.notify(currentPodcastGuid: self.currentlyPlayingPodcast?.guid, currentProgress: self.getCurrentProgress(), totalDuration: self.getTotalDuration(), isPlaying: self.player.rate != 0.0, isCanceled: self.isCanceled)
             }
         }
     }
@@ -161,6 +161,8 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
         
         if (currentlyPlayingPodcast?.guid ?? "no guid") != guid {
             // new podcast; switch over to it
+            self.stop()
+            
             var podcastURL: URL?
             if self.repository.containsSavedPodcast(podcast) {
                 podcastURL = self.repository.getUrlFor(podcast: podcast)
@@ -179,6 +181,7 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
             asset.loadValuesAsynchronously(forKeys: keys) {
                 DispatchQueue.main.async {
                     guard let currentGuid = self.currentlyPlayingPodcast?.guid, currentGuid == guid else {
+                        completion()
                         return
                     }
                     let item = AVPlayerItem(asset: asset)
@@ -206,7 +209,6 @@ class PodcastPlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     func pause() {
-        timer?.invalidate()
         player.pause()
         self.notifySubscribers()
         self.setAudioSessionIsActive(false)

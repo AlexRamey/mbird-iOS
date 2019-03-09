@@ -81,7 +81,7 @@ class MBTabBarController: UITabBarController, PodcastPlayerSubscriber {
     }
     
     // MARK: - Podcast Player Subscriber
-    func notify(currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool) {
+    func notify(currentPodcastGuid: String?, currentProgress: Double, totalDuration: Double, isPlaying: Bool, isCanceled: Bool) {
         var shouldShowPlayPause = true
         
         if isCanceled {
