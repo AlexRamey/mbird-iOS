@@ -16,34 +16,44 @@ enum RowType {
     case recent
     case category
 }
-
-class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchControllerDelegate {
-    // properties
-    @IBOutlet weak var tableView: UITableView!
+// swiftlint:disable type_body_length
+class MBArticlesViewController: UIViewController,
+                                UISearchControllerDelegate,
+                                UICollectionViewDataSource,
+                                UICollectionViewDelegate,
+                                UICollectionViewDelegateFlowLayout {
+    
+    // MARK: - Properties
+    @IBOutlet weak var collectionView: UICollectionView!
     private let refreshControl = UIRefreshControl()
-    
-    var category: Category?
-    var articles: [Article] = []
-    
-    let featuredReuseIdentifier = "featuredReuseIdentifier"
-    let recentReuseIdentifier = "recentReuseIdentifier"
-    let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
-    
     var isLoadingMore = false
     var isFirstAppearance = true
     var footerView: UIActivityIndicatorView?
-    
     let preheater = Nuke.Preheater()
-    var controller: Preheat.Controller<UITableView>?
+    var controller: Preheat.Controller<UICollectionView>?
     weak var delegate: ArticlesTableViewDelegate?
+    var category: Category?
+    var articles: [Article] = []
     
-    // dependencies
+    // swiftlint:disable force_cast
+    static let recentArticleSizingCell = UINib(nibName: "RecentArticleCollectionViewCell", bundle: nil).instantiate(withOwner: nil, options: nil).first! as! RecentArticleCollectionViewCell
+    static let featuredArticleSizingCell = UINib(nibName: "FeaturedArticleCollectionViewCell", bundle: nil).instantiate(withOwner: nil, options: nil).first! as! FeaturedArticleCollectionViewCell
+    
+    // MARK: - Constants
+    let featuredReuseIdentifier = "featuredReuseIdentifier"
+    let recentReuseIdentifier = "recentReuseIdentifier"
+    let categoryArticleReuseIdentifier = "categoryArticleReuseIdentifier"
+    let articleCollectionViewReuseIdentifier = "RecentArticleCollectionViewCell"
+    let featuredCollectionViewReuseIdentifier = "FeaturedArticleCollectionViewCell"
+    
+    // MARK: - Dependencies
     let client: MBClient = MBClient()
     var articlesStore: ArticleDAO!
     var authorDAO: AuthorDAO!
     var categoryDAO: CategoryDAO!
     var searchController: UISearchController?
 
+    // MARK: - Initialization
     static func instantiateFromStoryboard(articleDAO: ArticleDAO, authorDAO: AuthorDAO, categoryDAO: CategoryDAO) -> MBArticlesViewController {
         // swiftlint:disable force_cast
         let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ArticlesController") as! MBArticlesViewController
@@ -56,30 +66,79 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         return viewController
     }
     
+    // MARK: - UIViewController lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Home"
-        
         configureNavBar()
-        tableView.delegate = self
-        tableView.dataSource = self
+        configureSearchResultsController()
+        configureCollectionView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        tableView.rowHeight = UITableViewAutomaticDimension
+        // we have a default value set in the registration domain, so force-unwrap is safe
+        let selectedCategoryName = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
         
-        tableView.register(UINib(nibName: "FeaturedArticleTableViewCell", bundle: nil), forCellReuseIdentifier: featuredReuseIdentifier)
-        tableView.register(UINib(nibName: "RecentArticleTableViewCell", bundle: nil), forCellReuseIdentifier: recentReuseIdentifier)
-        tableView.register(UINib(nibName: "CategoryArticleTableViewCell", bundle: nil), forCellReuseIdentifier: categoryArticleReuseIdentifier)
-        
-        tableView.refreshControl = refreshControl
-        refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
-        refreshControl.tintColor = UIColor(red: 235.0/255.0, green: 96.0/255.0, blue: 93.0/255.0, alpha: 1.0)
-        refreshControl.attributedTitle = NSAttributedString(string: "Updating ...", attributes: nil)
-        
-        controller = Preheat.Controller(view: tableView)
-        controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
-            self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
+        var didCategoryChange = false
+        if self.category?.name ?? "" != selectedCategoryName {
+            didCategoryChange = true
+            if selectedCategoryName != MBConstants.MOST_RECENT_CATEGORY_NAME,
+                let selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName) {
+                self.category = selectedCategory
+            } else {
+                self.category = Category(categoryId: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
+            }
         }
         
+        var navTitle = "Mockingbird"
+        if let catName = self.category?.name,
+            catName != MBConstants.MOST_RECENT_CATEGORY_NAME {
+            navTitle = catName
+        }
+        navTitle = "\u{00B7}\u{00B7}\u{00B7}   \(navTitle.uppercased())   \u{00B7}\u{00B7}\u{00B7}"
+        
+        let navLabel = UILabel()
+        navLabel.text = navTitle
+        navLabel.font = UIFont(name: "AvenirNext-Bold", size: 18.0)
+        navLabel.textColor = UIColor.MBOrange
+        navLabel.adjustsFontSizeToFitWidth = true
+        navLabel.minimumScaleFactor = 0.5
+        self.navigationItem.titleView = navLabel
+        
+        if isFirstAppearance {
+            isFirstAppearance = false
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+                self.loadArticleDataFromDisk()
+                // the following line ensures that the refresh control has the correct tint/text on first use
+                self.refreshControl.beginRefreshing()
+                self.nukeAndPave()
+            }
+        } else if didCategoryChange {
+            self.loadArticleDataFromDisk()
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        controller?.enabled = true
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // When you disable preheat controller it removes all preheating
+        // index paths and calls its handler
+        controller?.enabled = false
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        collectionView.reloadData()
+    }
+    
+    // MARK: - View Configuration
+    func configureSearchResultsController() {
         let searchResultsController = SearchResultsTableViewController.instantiateFromStoryboard(authorDAO: self.authorDAO, categoryDAO: self.categoryDAO)
         searchResultsController.delegate = self.delegate
         self.searchController = UISearchController(searchResultsController: searchResultsController)
@@ -129,6 +188,22 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.navigationItem.rightBarButtonItem = search
     }
     
+    private func configureCollectionView() {
+        collectionView.register(UINib(nibName: "RecentArticleCollectionViewCell", bundle: nil),
+                                forCellWithReuseIdentifier: articleCollectionViewReuseIdentifier)
+        collectionView.register(UINib(nibName: "FeaturedArticleCollectionViewCell", bundle: nil),
+                                forCellWithReuseIdentifier: featuredCollectionViewReuseIdentifier)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        refreshControl.attributedTitle = NSAttributedString(string: "Updating ...", attributes: nil)
+        collectionView.isHidden = false
+        controller = Preheat.Controller(view: collectionView)
+        controller?.handler = { [weak self] addedIndexPaths, removedIndexPaths in
+            self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
+        }
+    }
+    
+    // MARK: - IBActions
     @objc func filterTapped(sender: UIBarButtonItem) {
         let filterVC = SelectCategoryViewController.instantiateFromStoryboard(categoryDAO: self.categoryDAO)
         self.present(filterVC, animated: true, completion: nil)
@@ -138,82 +213,6 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         if let searchBar = self.searchController?.searchBar {
             self.view.addSubview(searchBar)
             searchBar.becomeFirstResponder()
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // we have a default value set in the registration domain, so force-unwrap is safe
-        let selectedCategoryName = UserDefaults.standard.string(forKey: MBConstants.SELECTED_CATEGORY_NAME_KEY)!
-        
-        var didCategoryChange = false
-        if self.category?.name ?? "" != selectedCategoryName {
-            didCategoryChange = true
-            if selectedCategoryName != MBConstants.MOST_RECENT_CATEGORY_NAME,
-                let selectedCategory = categoryDAO.getCategoryByName(selectedCategoryName) {
-                self.category = selectedCategory
-            } else {
-                self.category = Category(categoryId: -1, name: MBConstants.MOST_RECENT_CATEGORY_NAME, parentId: 0)
-            }
-        }
-        
-        var navTitle = "Mockingbird"
-        if let catName = self.category?.name,
-            catName != MBConstants.MOST_RECENT_CATEGORY_NAME {
-            navTitle = catName
-        }
-        navTitle = "\u{00B7}\u{00B7}\u{00B7}   \(navTitle.uppercased())   \u{00B7}\u{00B7}\u{00B7}"
-        
-        let navLabel = UILabel()
-        navLabel.text = navTitle
-        navLabel.font = UIFont(name: "AvenirNext-Bold", size: 18.0)
-        navLabel.textColor = UIColor.MBOrange
-        navLabel.adjustsFontSizeToFitWidth = true
-        navLabel.minimumScaleFactor = 0.5
-        self.navigationItem.titleView = navLabel
-        
-        if isFirstAppearance {
-            isFirstAppearance = false
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-                self.loadArticleDataFromDisk()
-                // the following line ensures that the refresh control has the correct tint/text on first use
-                self.tableView.contentOffset = CGPoint(x: 0, y: -self.refreshControl.frame.size.height)
-                self.refreshControl.beginRefreshing()
-                self.nukeAndPave()
-            }
-        } else if didCategoryChange {
-            self.loadArticleDataFromDisk()
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        controller?.enabled = true
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        // When you disable preheat controller it removes all preheating
-        // index paths and calls its handler
-        controller?.enabled = false
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
-    
-    // called only once from viewDidLoad
-    private func nukeAndPave() {
-        self.articlesStore.nukeAndPave().then { _ -> Void in
-                self.loadArticleDataFromDisk()
-            }
-            .always {
-                self.refreshControl.endRefreshing()
-            }
-            .catch { _ in
-                print("nuke and pave articles failed . . .")
         }
     }
     
@@ -245,6 +244,20 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 .catch { _ in
                     print("refresh articles failed . . .")
             }
+        }
+    }
+    
+    // MARK: - Data Management
+    // called only once from viewDidLoad
+    private func nukeAndPave() {
+        self.articlesStore.nukeAndPave().then { _ -> Void in
+            self.loadArticleDataFromDisk()
+            }
+            .always {
+                self.refreshControl.endRefreshing()
+            }
+            .catch { _ in
+                print("nuke and pave articles failed . . .")
         }
     }
     
@@ -327,7 +340,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                             return false // favor existant jDate or consider these to be equal
                         }
                     }
-                    self.tableView.reloadData()
+                    self.collectionView.reloadData()
                 }
             }
         })
@@ -343,13 +356,10 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             let lineage = [currentCategory.categoryId] + self.categoryDAO.getDescendentsOfCategory(cat: currentCategory).map { return $0.categoryId}
             self.articles = self.articlesStore.getLatestCategoryArticles(categoryIDs: lineage, skip: 0)
         }
-            
-        self.tableView.reloadData()
-        if !self.articles.isEmpty {
-            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-        }
+        self.collectionView.reloadData()
     }
     
+    // MARK: - TableView Cell Configuration
     private func configureFeaturedCell(_ cell: FeaturedArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
         cell.setTitle(article.title.convertHtml())
         if self.category?.name ?? "" == MBConstants.MOST_RECENT_CATEGORY_NAME {
@@ -381,6 +391,30 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    private func configureCollectionViewCell(_ cell: RecentArticleCollectionViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
+        cell.configure(title: article.title.convertHtml(),
+                       category: article.categories.first?.name ?? "",
+                       date: article.getDate())
+        cell.thumbnailImage.image = nil
+        if let url = article.image?.thumbnailUrl {
+            Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
+        } else if article.imageId != 0 {
+            self.downloadImageForArticle(article: article, atIndexPath: indexPath)
+        }
+    }
+    
+    private func configureFeaturedArticleCollectionViewCell(_ cell: FeaturedArticleCollectionViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
+        cell.configure(title: article.title.convertHtml(),
+                       category: article.categories.first?.name ?? "",
+                       date: article.getDate())
+        cell.thumbnailImage.image = nil
+        if let url = article.image?.thumbnailUrl {
+            Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
+        } else if article.imageId != 0 {
+            self.downloadImageForArticle(article: article, atIndexPath: indexPath)
+        }
+    }
+    
     private func configureCategoryArticleCell(_ cell: CategoryArticleTableViewCell, withArticle article: Article, atIndexPath indexPath: IndexPath) {
         cell.setTitle(article.title.convertHtml())
         
@@ -400,7 +434,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                         self.articles[idx].image = Image(imageId: article.imageId, thumbnailUrl: url)
                     }
                     
-                    if let cell = self.tableView.cellForRow(at: indexPath) as? ThumbnailImageCell {
+                    if let cell = self.collectionView.cellForItem(at: indexPath) as? ThumbnailImageCell {
                         Manager.shared.loadImage(with: url, into: cell.thumbnailImage)
                     }
                 }
@@ -408,13 +442,8 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         })
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     private func rowTypeForPath(_ indexPath: IndexPath) -> RowType {
-        if indexPath.section == 0 && indexPath.row == 0 {
+        if indexPath.section == 0 && indexPath.row % 13 == 0 {
             return .featured
         } else if let catName = self.category?.name, catName == MBConstants.MOST_RECENT_CATEGORY_NAME {
             return .recent
@@ -429,12 +458,11 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         return self.articles[indexPath.row]
     }
-}
-
-extension MBArticlesViewController {
+    
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.articles.count
+//        return self.articles.count
+        return 0
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -476,7 +504,7 @@ extension MBArticlesViewController {
             searchController.searchBar.superview?.frame.origin = CGPoint(x: 0.0, y: 0.0)
         }
     }
-
+    
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let article = articleForPath(indexPath) {
@@ -486,7 +514,7 @@ extension MBArticlesViewController {
                     context = nil // no special context for most recent category
                 }
                 delegate.selectedArticle(article, categoryContext: context)
-                self.tableView.deselectRow(at: indexPath, animated: false)
+//                self.tableView.deselectRow(at: indexPath, animated: false)
             }
         }
     }
@@ -513,6 +541,75 @@ extension MBArticlesViewController {
             self.footerView = spinner
         }
         return self.footerView
+    }
+    
+    // MARK: - UICollectionViewDataSource
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.articles.count
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        switch rowTypeForPath(indexPath) {
+        case .featured:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: featuredCollectionViewReuseIdentifier, for: indexPath) as? FeaturedArticleCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let article = articles[indexPath.row]
+            configureFeaturedArticleCollectionViewCell(cell,
+                                                       withArticle: article,
+                                                       atIndexPath: indexPath)
+            return cell
+        case .recent, .category:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: articleCollectionViewReuseIdentifier, for: indexPath) as? RecentArticleCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let article = articles[indexPath.row]
+            configureCollectionViewCell(cell,
+                                        withArticle: article,
+                                        atIndexPath: indexPath)
+            return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        guard let article = articleForPath(indexPath) else {
+            return CGSize.zero
+        }
+        
+        if indexPath.row % 13 == 0 {
+            let sizingCell = MBArticlesViewController.featuredArticleSizingCell
+            sizingCell.prepareForReuse()
+            configureFeaturedArticleCollectionViewCell(sizingCell,
+                                                       withArticle: article,
+                                                       atIndexPath: indexPath)
+            sizingCell.layoutIfNeeded()
+            var fittingSize = UILayoutFittingCompressedSize
+            let width = view.bounds.width
+            fittingSize.width = width
+            let size = sizingCell.contentView.systemLayoutSizeFitting(fittingSize,
+                                                                      withHorizontalFittingPriority: .required,
+                                                                      verticalFittingPriority: .defaultLow)
+            return CGSize(width: width, height: size.height)
+        } else {
+            let sizingCell = MBArticlesViewController.recentArticleSizingCell
+            sizingCell.prepareForReuse()
+            configureCollectionViewCell(sizingCell,
+                                        withArticle: article,
+                                        atIndexPath: indexPath)
+            sizingCell.layoutIfNeeded()
+            var fittingSize = UILayoutFittingCompressedSize
+            let width = traitCollection.horizontalSizeClass == .regular ? (view.bounds.width/2) - 5 : view.bounds.width
+            fittingSize.width = width
+            let size = sizingCell.contentView.systemLayoutSizeFitting(fittingSize,
+                                                                      withHorizontalFittingPriority: .required,
+                                                                      verticalFittingPriority: .defaultLow)
+            return CGSize(width: width, height: size.height)
+        }
     }
 }
 
