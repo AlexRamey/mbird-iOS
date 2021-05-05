@@ -22,7 +22,7 @@ class MBPodcastsStore: PodcastsRepository {
     
     let client: MBClient
     let fileHelper: FileHelper
-    let streams: [PodcastStream] = [.mockingPulpit, .mockingCast, .pz, .sameOldSong, .talkingbird]
+    let streams: [PodcastStream] = [.mockingPulpit, .mockingCast, .pz, .sameOldSong, .talkingbird, .brothersZahl]
     var podcastsPath: String = "podcasts.json"
     var podcastsDirectory: String = "podcasts"
     let streamVisibilityDefaultsKey = "STREAM_VISIBILITY_DEFAULTS_KEY"
