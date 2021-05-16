@@ -33,7 +33,7 @@ class MoreViewController: UIViewController {
         addressLabel.font =  UIFont(name: "IowanOldStyle-Roman",
                                     size: 12)
         supportButton.configure(title: "SUPPORT",
-                                link: URL(string: "https://www.mbird.com/support/donate/")!)
+                                link: URL(string: "https://mbird.com/support/")!)
         magazineButton.configure(title: "MAGAZINE",
                                  link: URL(string: "https://magazine.mbird.com/")!)
         conferencesButton.configure(title: "CONFERENCES",
