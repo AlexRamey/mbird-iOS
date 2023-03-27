@@ -28,6 +28,7 @@ extension MBArticle {
     @NSManaged public var thumbnailLink: String?
     @NSManaged public var author: MBAuthor?
     @NSManaged public var categories: NSSet?
+    @NSManaged public var authorOverride: String?
 }
 
 // MARK: Generated accessors for categories

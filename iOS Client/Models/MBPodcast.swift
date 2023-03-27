@@ -39,6 +39,7 @@ public enum PodcastStream: String, Codable {
     case talkingbird = "https://talkingbird.fireside.fm/rss"
     case sameOldSong = "https://thesameoldsong.fireside.fm/rss"
     case brothersZahl = "https://thebrotherszahl.fireside.fm/rss"
+    case terribleParables = "https://terribleparables.fireside.fm/rss"
     
     var imageName: String {
         switch self {
@@ -48,6 +49,7 @@ public enum PodcastStream: String, Codable {
         case .talkingbird: return "talkingbird"
         case .sameOldSong: return "sameoldsong"
         case .brothersZahl: return "brotherszahl"
+        case .terribleParables: return "terribleParables"
         }
     }
     
@@ -59,6 +61,7 @@ public enum PodcastStream: String, Codable {
         case .talkingbird: return "Talkingbird"
         case .sameOldSong: return "Same Old Song"
         case .brothersZahl: return "The Brothers Zahl"
+        case .terribleParables: return "Terrible Parables"
         }
     }
     
@@ -70,6 +73,7 @@ public enum PodcastStream: String, Codable {
         case .talkingbird: return "Talkingbird"
         case .sameOldSong: return "Same Old Song"
         case .brothersZahl: return "Brothers Zahl"
+        case .terribleParables: return "Terrible Parables"
         }
     }
     
@@ -87,6 +91,8 @@ public enum PodcastStream: String, Codable {
             return "A weekly discussion of the texts assigned for Sunday in the lectionary, hosted by Jacob Smith and Aaron Zimmerman. As always, grace abounds. Not just for preachers!"
         case .brothersZahl:
             return "A long overdue collaboration between John, David and Simeon Zahl, three siblings engaged in \"the God business\"--one as a writer, one as a professor, one as a priest. They tackle some big subjects, in hopes of sketching an overarching picture of grace and everyday life (and making some decent jokes in the process)"
+        case .terribleParables:
+            return "Sometimes the Good Book doesn’t sound all that great. Fortunately, first impressions can be misleading, and the surprise of grace may be hiding in plain sight. Welcome to Terrible Parables, the podcast where a scholar, a pastor, and an anxious Christian look for good news in passages of scripture that appear strange or unnerving. Brought to you by Mockingbird Ministries and hosted by Cali Yee, along with Bryan Jarrell and Todd Brewer. Audio production by TJ Hester."
         }
     }
     

@@ -22,9 +22,10 @@ struct Article {
     var categoryIds: [Int]
     var categories: [Category]
     var isBookmarked: Bool
+    var authorOverride: String?
     
     mutating func resolveAuthor(dao: AuthorDAO) {
-        self.author  = dao.getAuthorById(authorId)
+        self.author = dao.getAuthorById(authorId)
     }
     
     mutating func resolveCategories(dao: CategoryDAO) {
