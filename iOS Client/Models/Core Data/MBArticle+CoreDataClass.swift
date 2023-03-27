@@ -26,6 +26,7 @@ public class MBArticle: NSManagedObject {
         resolvedArticle.content = from.content
         resolvedArticle.imageID = Int32(from.imageId)
         resolvedArticle.thumbnailLink = from.image?.thumbnailUrl?.absoluteString
+        resolvedArticle.authorOverride = from.authorOverride
         
         linkArticle(resolvedArticle, toAuthor: from.authorId)
         linkArticle(resolvedArticle, toCategories: from.categoryIds)
@@ -111,7 +112,7 @@ public class MBArticle: NSManagedObject {
             image = Image(imageId: Int(self.imageID), thumbnailUrl: URL(string: imageLink))
         }
         
-        return Article(articleId: Int(self.articleID), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: Int(self.authorID), author: self.author?.toDomain(), imageId: Int(self.imageID), image: image, content: self.content ?? "", categoryIds: catIds, categories: cats, isBookmarked: self.isBookmarked)
+        return Article(articleId: Int(self.articleID), date: strDate ?? "", link: self.link ?? "", title: self.title ?? "", authorId: Int(self.authorID), author: self.author?.toDomain(), imageId: Int(self.imageID), image: image, content: self.content ?? "", categoryIds: catIds, categories: cats, isBookmarked: self.isBookmarked, authorOverride: self.authorOverride)
     }
     
     private func getTopLevelCategories() -> [MBCategory] {

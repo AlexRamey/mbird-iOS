@@ -131,6 +131,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc func filterTapped(sender: UIBarButtonItem) {
         let filterVC = SelectCategoryViewController.instantiateFromStoryboard(categoryDAO: self.categoryDAO)
+        filterVC.modalPresentationStyle = .fullScreen
         self.present(filterVC, animated: true, completion: nil)
     }
     

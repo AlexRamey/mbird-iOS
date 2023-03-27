@@ -94,7 +94,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
             
             let meta: String = info.joined(separator: " | ")
             let title: String = self.selectedArticle?.title ?? "Untitled 👀"
-            let author: String = self.selectedArticle?.author?.name ?? "Mockingbird Staff"
+            let author: String = self.selectedArticle?.authorOverride ?? (self.selectedArticle?.author?.name ?? "Mockingbird Staff")
             let articleHeader = """
                 <p class=""></p>
                 <p class="meta">\(meta)</p>
