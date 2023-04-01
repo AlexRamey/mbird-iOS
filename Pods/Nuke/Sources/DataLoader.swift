@@ -1,27 +1,46 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015-2018 Alexander Grebenyuk (github.com/kean).
+// Copyright (c) 2015-2020 Alexander Grebenyuk (github.com/kean).
 
 import Foundation
 
-/// Loads data.
-public protocol DataLoading {
-    /// Loads data with the given request.
-    func loadData(with request: URLRequest, token: CancellationToken?, progress: ProgressHandler?, completion: @escaping (Result<(Data, URLResponse)>) -> Void)
+public protocol Cancellable: AnyObject {
+    func cancel()
 }
 
+public protocol DataLoading {
+    /// - parameter didReceiveData: Can be called multiple times if streaming
+    /// is supported.
+    /// - parameter completion: Must be called once after all (or none in case
+    /// of an error) `didReceiveData` closures have been called.
+    func loadData(with request: URLRequest,
+                  didReceiveData: @escaping (Data, URLResponse) -> Void,
+                  completion: @escaping (Error?) -> Void) -> Cancellable
+}
+
+extension URLSessionTask: Cancellable {}
+
 /// Provides basic networking using `URLSession`.
-public final class DataLoader: DataLoading {
+public final class DataLoader: DataLoading, _DataLoaderObserving {
     public let session: URLSession
-    private let validate: (Data, URLResponse) -> Swift.Error?
-    private let delegate = SessionDelegate()
+    private let impl = _DataLoader()
+
+    public var observer: DataLoaderObserving?
+
+    deinit {
+        session.invalidateAndCancel()
+    }
 
     /// Initializes `DataLoader` with the given configuration.
     /// - parameter configuration: `URLSessionConfiguration.default` with
     /// `URLCache` with 0 MB memory capacity and 150 MB disk capacity.
-    public init(configuration: URLSessionConfiguration = DataLoader.defaultConfiguration, validate: @escaping (Data, URLResponse) -> Swift.Error? = DataLoader.validate) {
-        self.session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegate.queue)
-        self.validate = validate
+    public init(configuration: URLSessionConfiguration = DataLoader.defaultConfiguration,
+                validate: @escaping (URLResponse) -> Swift.Error? = DataLoader.validate) {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        self.session = URLSession(configuration: configuration, delegate: impl, delegateQueue: queue)
+        self.impl.validate = validate
+        self.impl.observer = self
     }
 
     /// Returns a default configuration which has a `sharedUrlCache` set
@@ -34,12 +53,16 @@ public final class DataLoader: DataLoading {
 
     /// Validates `HTTP` responses by checking that the status code is 2xx. If
     /// it's not returns `DataLoader.Error.statusCodeUnacceptable`.
-    public static func validate(data: Data, response: URLResponse) -> Swift.Error? {
-        guard let response = response as? HTTPURLResponse else { return nil }
+    public static func validate(response: URLResponse) -> Swift.Error? {
+        guard let response = response as? HTTPURLResponse else {
+            return nil
+        }
         return (200..<300).contains(response.statusCode) ? nil : Error.statusCodeUnacceptable(response.statusCode)
     }
 
-#if os(macOS)
+    #if !os(macOS) && !targetEnvironment(macCatalyst)
+    private static let cachePath = "com.github.kean.Nuke.Cache"
+    #else
     private static let cachePath: String = {
         let cachePaths = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)
         if let cachePath = cachePaths.first, let identifier = Bundle.main.bundleIdentifier {
@@ -48,101 +71,145 @@ public final class DataLoader: DataLoading {
 
         return ""
     }()
-#else
-    private static let cachePath = "com.github.kean.Nuke.Cache"
-#endif
+    #endif
 
     /// Shared url cached used by a default `DataLoader`. The cache is
     /// initialized with 0 MB memory capacity and 150 MB disk capacity.
-    public static let sharedUrlCache = URLCache(
-        memoryCapacity: 0,
-        diskCapacity: 150 * 1024 * 1024, // 150 MB
-        diskPath: cachePath
-    )
+    public static let sharedUrlCache: URLCache = {
+        let diskCapacity = 150 * 1024 * 1024 // 150 MB
+        #if targetEnvironment(macCatalyst)
+        return URLCache(memoryCapacity: 0, diskCapacity: diskCapacity, directory: URL(fileURLWithPath: cachePath))
+        #else
+        return URLCache(memoryCapacity: 0, diskCapacity: diskCapacity, diskPath: cachePath)
+        #endif
+    }()
 
-    /// Loads data with the given request.
-    public func loadData(with request: URLRequest, token: CancellationToken?, progress: ProgressHandler?, completion: @escaping (Result<(Data, URLResponse)>) -> Void) {
-        let task = session.dataTask(with: request)
-        let validate = self.validate
-        let handler = SessionTaskHandler(progress: progress) { (data, response, error) in
-            // Check if request failed with error
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            // Check if response & data non empty
-            guard let response = response, !data.isEmpty else {
-                completion(.failure(Error.responseEmpty))
-                return
-            }
-            // Validate response
-            if let error = validate(data, response) {
-                completion(.failure(error))
-                return
-            }
-            completion(.success((data, response)))
-        }
-        delegate.register(handler, for: task)
-
-        token?.register { [weak task] in task?.cancel() }
-        task.resume()
+    public func loadData(with request: URLRequest,
+                         didReceiveData: @escaping (Data, URLResponse) -> Void,
+                         completion: @escaping (Swift.Error?) -> Void) -> Cancellable {
+        return impl.loadData(with: request, session: session, didReceiveData: didReceiveData, completion: completion)
     }
 
     /// Errors produced by `DataLoader`.
     public enum Error: Swift.Error, CustomDebugStringConvertible {
         /// Validation failed.
         case statusCodeUnacceptable(Int)
-        /// Either the response or body was empty.
-        case responseEmpty
 
         public var debugDescription: String {
             switch self {
-            case let .statusCodeUnacceptable(code): return "Response status code was unacceptable: " + code.description // compiles faster than interpolation
-            case .responseEmpty: return "Either the response or body was empty."
+            case let .statusCodeUnacceptable(code):
+                return "Response status code was unacceptable: \(code.description)"
             }
         }
     }
+
+    // MARK: _DataLoaderObserving
+
+    func dataTask(_ dataTask: URLSessionDataTask, didReceiveEvent event: DataTaskEvent) {
+        observer?.dataLoader(self, urlSession: session, dataTask: dataTask, didReceiveEvent: event)
+    }
 }
 
-private final class SessionDelegate: NSObject, URLSessionDataDelegate {
-    private let lock = NSLock()
-    let queue = OperationQueue()
-    private var handlers = [URLSessionTask: SessionTaskHandler]()
+// Actual data loader implementation. Hide NSObject inheritance, hide
+// URLSessionDataDelegate conformance, and break retain cycle between URLSession
+// and URLSessionDataDelegate.
+private final class _DataLoader: NSObject, URLSessionDataDelegate {
+    var validate: (URLResponse) -> Swift.Error? = DataLoader.validate
+    private var handlers = [URLSessionTask: _Handler]()
+    weak var observer: _DataLoaderObserving?
 
-    override init() {
-        queue.maxConcurrentOperationCount = 1
-    }
-
-    func register(_ handler: SessionTaskHandler, for task: URLSessionTask) {
-        queue.addOperation { // `URLSession` is configured to use this same queue
+    /// Loads data with the given request.
+    func loadData(with request: URLRequest,
+                  session: URLSession,
+                  didReceiveData: @escaping (Data, URLResponse) -> Void,
+                  completion: @escaping (Error?) -> Void) -> Cancellable {
+        let task = session.dataTask(with: request)
+        let handler = _Handler(didReceiveData: didReceiveData, completion: completion)
+        session.delegateQueue.addOperation { // `URLSession` is configured to use this same queue
             self.handlers[task] = handler
         }
+        task.resume()
+        send(task, .resumed)
+        return task
+    }
+
+    // MARK: URLSessionDelegate
+
+    func urlSession(_ session: URLSession,
+                    dataTask: URLSessionDataTask,
+                    didReceive response: URLResponse,
+                    completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+        send(dataTask, .receivedResponse(response: response))
+
+        guard let handler = handlers[dataTask] else {
+            completionHandler(.cancel)
+            return
+        }
+        if let error = validate(response) {
+            handler.completion(error)
+            completionHandler(.cancel)
+            return
+        }
+        completionHandler(.allow)
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        assert(task is URLSessionDataTask)
+        if let dataTask = task as? URLSessionDataTask {
+            send(dataTask, .completed(error: error))
+        }
+
+        guard let handler = handlers[task] else {
+            return
+        }
+        handlers[task] = nil
+        handler.completion(error)
     }
 
     // MARK: URLSessionDataDelegate
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        if let handler = handlers[dataTask] {
-            handler.data.append(data)
-            handler.progress?(dataTask.countOfBytesReceived, dataTask.countOfBytesExpectedToReceive)
+        send(dataTask, .receivedData(data: data))
+
+        guard let handler = handlers[dataTask], let response = dataTask.response else {
+            return
         }
+        // Don't store data anywhere, just send it to the pipeline.
+        handler.didReceiveData(data, response)
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let handler = handlers[task] {
-            handler.completion(handler.data, task.response, error)
-            handlers[task] = nil
+    // MARK: Internal
+
+    private func send(_ dataTask: URLSessionDataTask, _ event: DataTaskEvent) {
+        observer?.dataTask(dataTask, didReceiveEvent: event)
+    }
+
+    private final class _Handler {
+        let didReceiveData: (Data, URLResponse) -> Void
+        let completion: (Error?) -> Void
+
+        init(didReceiveData: @escaping (Data, URLResponse) -> Void, completion: @escaping (Error?) -> Void) {
+            self.didReceiveData = didReceiveData
+            self.completion = completion
         }
     }
 }
 
-private final class SessionTaskHandler {
-    var data = Data()
-    let progress: ProgressHandler?
-    let completion: (Data, URLResponse?, Error?) -> Void
+// MARK: - DataLoaderObserving
 
-    init(progress: ProgressHandler?, completion: @escaping (Data, URLResponse?, Error?) -> Void) {
-        self.progress = progress
-        self.completion = completion
-    }
+public enum DataTaskEvent {
+    case resumed
+    case receivedResponse(response: URLResponse)
+    case receivedData(data: Data)
+    case completed(error: Error?)
+}
+
+/// Allows you to tap into internal events of the data loader. Events are
+/// delivered on the internal serial operation queue.
+public protocol DataLoaderObserving {
+    func dataLoader(_ loader: DataLoader, urlSession: URLSession, dataTask: URLSessionDataTask, didReceiveEvent event: DataTaskEvent)
+}
+
+protocol _DataLoaderObserving: class {
+    func dataTask(_ dataTask: URLSessionDataTask, didReceiveEvent event: DataTaskEvent)
 }

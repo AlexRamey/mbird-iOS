@@ -20,7 +20,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
     var debouncedSearch: Debouncer!
     weak var delegate: ArticlesTableViewDelegate?
     
-    let preheater = Nuke.Preheater()
+    let preheater = Nuke.ImagePreheater();
     var controller: Preheat.Controller<UITableView>?
     
     enum SearchOperation {
@@ -52,7 +52,7 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         self.tableView.tableFooterView = UIView()
-        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = UITableView.automaticDimension
 
         self.tableView.register(UINib(nibName: "SearchResultTableViewCell", bundle: nil), forCellReuseIdentifier: reuseIdentifier)
         
@@ -66,8 +66,8 @@ class SearchResultsTableViewController: UIViewController, UISearchResultsUpdatin
             self?.preheat(added: addedIndexPaths, removed: removedIndexPaths)
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: Notification.Name.UIKeyboardWillHide, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: Notification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
     @objc func keyboardWillAppear(_ notification: Notification) {

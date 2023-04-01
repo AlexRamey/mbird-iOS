@@ -109,11 +109,11 @@ class ScheduleDailyDevotionViewController: UIViewController {
         let settingsButton = NSLocalizedString("Settings", comment: "")
         let cancelButton = NSLocalizedString("Cancel", comment: "")
         let message = NSLocalizedString("Please give Mockingbird permission to alert you with daily devotionals by updating your notification settings.", comment: "")
-        let goToSettingsAlert = UIAlertController(title: "", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let goToSettingsAlert = UIAlertController(title: "", message: message, preferredStyle: UIAlertController.Style.alert)
         
         goToSettingsAlert.addAction(UIAlertAction(title: settingsButton, style: .destructive, handler: { (_: UIAlertAction) in
             DispatchQueue.main.async {
-                guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
                     return
                 }
                 
@@ -129,15 +129,15 @@ class ScheduleDailyDevotionViewController: UIViewController {
     
     private func errorAlert() {
         let message = "An unexpected error occurred. Unable to schedule daily notifications."
-        let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
+        let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
 
     private func cancelAlert() {
         let message = "Disabled daily notifications."
-        let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default, handler: nil))
+        let alert = UIAlertController(title: "Done", message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
 }

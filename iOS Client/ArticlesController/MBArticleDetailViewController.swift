@@ -41,7 +41,7 @@ class MBArticleDetailViewController: UIViewController, WKNavigationDelegate {
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(contentSizeDidChange(_:)),
-                                               name: NSNotification.Name.UIContentSizeCategoryDidChange,
+                                               name: NSNotification.Name.UIContentSizeCategory.didChangeNotification,
                                                object: nil)
     }
     

@@ -33,7 +33,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     var isFirstAppearance = true
     var footerView: UIActivityIndicatorView?
     
-    let preheater = Nuke.Preheater()
+    let preheater = Nuke.ImagePreheater()
     var controller: Preheat.Controller<UITableView>?
     weak var delegate: ArticlesTableViewDelegate?
     

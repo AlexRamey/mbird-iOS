@@ -1,0 +1,24 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -workspace "/Users/alexramey/Documents/Developer/mbird/iOS Client/iOS Client.xcworkspace" -scheme "iOS Client" clean archive -archivePath "/var/folders/9k/hsm4vdf97qjc2h_kj7xj_t2w0000gn/T/__codesigndoc__087687971/iOS Client.xcarchive"
+
+User defaults from command line:
+    IDEArchivePathOverride = /var/folders/9k/hsm4vdf97qjc2h_kj7xj_t2w0000gn/T/__codesigndoc__087687971/iOS Client.xcarchive
+    IDEPackageSupportUseBuiltinSCM = YES
+
+note: Using new build system
+note: Building targets in parallel
+note: Build preparation complete
+
+** CLEAN SUCCEEDED **
+
+note: Using new build system
+note: Building targets in parallel
+note: Planning build
+note: Analyzing workspace
+note: Constructing build description
+note: Build preparation complete
+/Users/alexramey/Documents/Developer/mbird/iOS Client/Pods/Pods.xcodeproj: warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is 9.0 to 14.5.99. (in target 'CVCalendar' from project 'Pods')
+/Users/alexramey/Documents/Developer/mbird/iOS Client/Pods/Pods.xcodeproj: warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is 9.0 to 14.5.99. (in target 'PromiseKit' from project 'Pods')
+error: No profiles for 'com.mbird' were found: Xcode couldn't find any iOS App Development provisioning profiles matching 'com.mbird'. Automatic signing is disabled and unable to generate a profile. To enable automatic signing, pass -allowProvisioningUpdates to xcodebuild. (in target 'iOS Client' from project 'iOS Client')
+
+** ARCHIVE FAILED **

@@ -42,7 +42,7 @@ class MBClient: NSObject {
     }
     
     func getRecentArticles(inCategories categories: [Int], offset: Int, pageSize: Int, before: String?, after: String?, asc: Bool) -> Promise<[Article]> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             var categoriesArg = ""
             if categories.count > 0 {
                 categoriesArg = categories.reduce("&categories=") { (result, elem) -> String in
@@ -63,14 +63,14 @@ class MBClient: NSObject {
             print("URL: \(urlString)")
             
             guard let url = URL(string: urlString) else {
-                reject(NetworkRequestError.invalidURL(url: urlString))
+                seal.reject(NetworkRequestError.invalidURL(url: urlString))
                 return
             }
             
             print("firing getArticles request")
             getDataFromURL(url) { (data, err) in
                 guard let payload = data.first, err == nil else {
-                    reject(err ?? NetworkRequestError.failedPagingRequest(msg: "no first page :("))
+                    seal.reject(err ?? NetworkRequestError.failedPagingRequest(msg: "no first page :("))
                     return
                 }
                 
@@ -78,7 +78,7 @@ class MBClient: NSObject {
                 do {
                     articles = try self.decoder.decode([ArticleDTO].self, from: payload)
                 } catch {
-                    reject(error)
+                    seal.reject(error)
                     return
                 }
                 
@@ -86,20 +86,20 @@ class MBClient: NSObject {
                     return dto.toDomain()
                 })
                 
-                fulfill(domainArticles)
+                seal.fulfill(domainArticles)
             }
         }
     }
     
     func getPodcast(url: URL) -> Promise<Data> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             getDataFromURL(url) { data, error in
                 if let err = error {
-                    reject(err)
+                    seal.reject(err)
                 } else if let data = data.first {
-                    fulfill(data)
+                    seal.fulfill(data)
                 } else {
-                    reject(NetworkRequestError.networkError(msg: "Did not receive any valid data"))
+                    seal.reject(NetworkRequestError.networkError(msg: "Did not receive any valid data"))
                 }
             }
         }
@@ -174,11 +174,11 @@ class MBClient: NSObject {
     // pages of category data. It invokes the passed-in completion with an array of response data
     // and optionally an error if one occurred at any point in the process.
     func getCategories() -> Promise<[Category]> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             let urlString = "\(baseURL)\(categoriesEndpoint)\(urlArgs)"
             let urlStringWithPageOne = "\(urlString)1"
             guard let url = URL(string: urlStringWithPageOne) else {
-                reject(NetworkRequestError.invalidURL(url: urlStringWithPageOne))
+                seal.reject(NetworkRequestError.invalidURL(url: urlStringWithPageOne))
                 return
             }
             
@@ -186,7 +186,7 @@ class MBClient: NSObject {
             self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
                 self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: { (pages, err) in
                     if let err = err {
-                        reject(err)
+                        seal.reject(err)
                         return
                     }
                     
@@ -196,7 +196,7 @@ class MBClient: NSObject {
                             let pageOfCategories = try self.decoder.decode([CategoryDTO].self, from: page)
                             categories.append(contentsOf: pageOfCategories)
                         } catch {
-                            reject(error)
+                            seal.reject(error)
                             return
                         }
                     }
@@ -205,7 +205,7 @@ class MBClient: NSObject {
                         return dto.toDomain()
                     })
                     
-                    fulfill(domainCategories)
+                    seal.fulfill(domainCategories)
                 })
             }.resume()
         }
@@ -217,11 +217,11 @@ class MBClient: NSObject {
     // pages of author data. It invokes the passed-in completion with an array of response data
     // and optionally an error if one occurred at any point in the process.
     func getAuthors() -> Promise<[Author]> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             let urlString = "\(baseURL)\(authorsEndpoint)\(urlArgs)"
             let urlStringWithPageOne = "\(urlString)1"
             guard let url = URL(string: urlStringWithPageOne) else {
-                reject(NetworkRequestError.invalidURL(url: urlStringWithPageOne))
+                seal.reject(NetworkRequestError.invalidURL(url: urlStringWithPageOne))
                 return
             }
             
@@ -229,7 +229,7 @@ class MBClient: NSObject {
             self.session.dataTask(with: url) { (data: Data?, resp: URLResponse?, err: Error?) in
                 self.pagingHandler(url: urlString, data: data, resp: resp, err: err, completion: { (pages, err) in
                     if let err = err {
-                        reject(err)
+                        seal.reject(err)
                         return
                     }
                     
@@ -239,7 +239,7 @@ class MBClient: NSObject {
                             let pageOfAuthors = try self.decoder.decode([AuthorDTO].self, from: page)
                             authors.append(contentsOf: pageOfAuthors)
                         } catch {
-                            reject(error)
+                            seal.reject(error)
                             return
                         }
                     }
@@ -248,7 +248,7 @@ class MBClient: NSObject {
                         return dto.toDomain()
                     })
                     
-                    fulfill(domainAuthors)
+                    seal.fulfill(domainAuthors)
                 })
             }.resume()
         }
@@ -262,7 +262,7 @@ class MBClient: NSObject {
         print("firing get podcasts request")
         let request = URLRequest(url: url)
         
-        return self.session.dataTask(with: request).asDataAndResponse().then { (data: Data, _: URLResponse?) -> [PodcastDTO] in
+        return self.session.dataTask(.promise, with: request).compactMap { (data: Data, _: URLResponse?) -> [PodcastDTO] in
             let parser = XMLParser(data: data)
             let xmlParserDelegate = PodcastXMLParsingDelegate()
             parser.delegate = xmlParserDelegate
@@ -302,7 +302,7 @@ class MBClient: NSObject {
             return
         }
         
-        var filteredKeys = httpResponse.allHeaderFields.keys.filter { (key) -> Bool in
+        let filteredKeys = httpResponse.allHeaderFields.keys.filter { (key) -> Bool in
             guard let strKey = key as? String else {
                 return false
             }
