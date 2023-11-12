@@ -8,6 +8,6 @@ target 'iOS Client' do
   # Pods for iOS Client
   pod 'Nuke', '~> 6.1.0'
   pod 'Preheat', '~> 4.0.0'
-  pod 'SwiftLint', '~> 0.27.0'
+  pod 'SwiftLint', '~> 0.54.0'
   pod 'PromiseKit', '~> 8'
 end

@@ -10,13 +10,13 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (8.1.1):
     - PromiseKit/CorePromise
-  - SwiftLint (0.27.0)
+  - SwiftLint (0.54.0)
 
 DEPENDENCIES:
   - Nuke (~> 6.1.0)
   - Preheat (~> 4.0.0)
   - PromiseKit (~> 8)
-  - SwiftLint (~> 0.27.0)
+  - SwiftLint (~> 0.54.0)
 
 SPEC REPOS:
   trunk:
@@ -29,8 +29,8 @@ SPEC CHECKSUMS:
   Nuke: bf5d58b2d95ff15cb170c231fe6002d706be77e1
   Preheat: 4a3ab1f050f4165b6a4d58481e84a0fd8ae8d999
   PromiseKit: d1be44b474e5acfa16adf007a1f49f104e10fead
-  SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
+  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: a2cd27dd5e1dd02bf2e4c0defae402f5da03b4b9
+PODFILE CHECKSUM: 0648c9e1b1de415f71a57786d632a8e25006ac78
 
 COCOAPODS: 1.10.0
