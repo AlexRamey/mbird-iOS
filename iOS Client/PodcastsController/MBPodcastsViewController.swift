@@ -80,7 +80,7 @@ class MBPodcastsViewController: UIViewController, UITableViewDataSource, UITable
             self.podcasts = podcasts
             self.showPodcasts()
             return self.podcastStore.syncPodcasts()
-        }.then { podcasts -> Void in
+        }.done { podcasts -> Void in
             self.podcasts = podcasts
             self.showPodcasts()
         }.always {
@@ -182,7 +182,7 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
         print("download podcast at url: \(url)")
         guard let url = URL(string: url) else { return }
         self.currentlyDownloadingTitles.insert(title)
-        _ = MBClient().getPodcast(url: url).then { data -> Void in
+        _ = MBClient().getPodcast(url: url).done { data -> Void in
             self.podcastStore.savePodcastData(data: data, path: title)
             self.savedPodcastTitles.insert(title)
             self.currentlyDownloadingTitles.remove(title)
@@ -191,7 +191,7 @@ extension MBPodcastsViewController: PodcastDownloadingDelegate {
     }
     
     func removePodcast(title: String) {
-        _ = uninstaller?.uninstall(podcastId: title).then { uninstalled -> Void in
+        _ = uninstaller?.uninstall(podcastId: title).done { uninstalled -> Void in
             if uninstalled {
                 self.savedPodcastTitles.remove(title)
                 self.tableView.reloadData()

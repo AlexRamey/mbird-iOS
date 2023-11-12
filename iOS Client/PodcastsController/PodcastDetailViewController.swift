@@ -214,7 +214,7 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
     
     @objc private func removePodcast() {
         guard let title = self.selectedPodcast.title else { return }
-        _ = uninstaller?.uninstall(podcastId: title).then { uninstalled in
+        _ = uninstaller?.uninstall(podcastId: title).done { uninstalled in
             self.saved = !uninstalled
         }
     }
@@ -225,10 +225,8 @@ class PodcastDetailViewController: UIViewController, PodcastPlayerSubscriber {
             let url = URL(string: path) else {
                 return
         }
-        _ = MBClient().getPodcast(url: url).then { podcast in
-            return self.podcastStore.savePodcastData(data: podcast,
-                                                     path: title)
-        }.then { _ -> Void in
+        _ = MBClient().getPodcast(url: url).done { podcast in
+            self.podcastStore.savePodcastData(data: podcast, path: title)
             self.saved = true
             self.configureBarButtonItems(downloaded: true)
         }

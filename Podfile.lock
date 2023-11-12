@@ -1,42 +1,36 @@
 PODS:
-  - CVCalendar (1.6.1)
   - Nuke (6.1.1)
   - Preheat (4.0)
-  - PromiseKit (4.4.4):
-    - PromiseKit/Foundation (= 4.4.4)
-    - PromiseKit/QuartzCore (= 4.4.4)
-    - PromiseKit/UIKit (= 4.4.4)
-  - PromiseKit/CorePromise (4.4.4)
-  - PromiseKit/Foundation (4.4.4):
+  - PromiseKit (8.1.1):
+    - PromiseKit/CorePromise (= 8.1.1)
+    - PromiseKit/Foundation (= 8.1.1)
+    - PromiseKit/UIKit (= 8.1.1)
+  - PromiseKit/CorePromise (8.1.1)
+  - PromiseKit/Foundation (8.1.1):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.4.4):
+  - PromiseKit/UIKit (8.1.1):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.4.4):
-    - PromiseKit/CorePromise
-  - SwiftLint (0.27.0)
+  - SwiftLint (0.54.0)
 
 DEPENDENCIES:
-  - CVCalendar (~> 1.6.0)
   - Nuke (~> 6.1.0)
   - Preheat (~> 4.0.0)
-  - PromiseKit (~> 4.4.0)
-  - SwiftLint (~> 0.27.0)
+  - PromiseKit (~> 8)
+  - SwiftLint (~> 0.54.0)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - CVCalendar
+  trunk:
     - Nuke
     - Preheat
     - PromiseKit
     - SwiftLint
 
 SPEC CHECKSUMS:
-  CVCalendar: 505c11b11a088b43f159806e791eba1c2540853b
   Nuke: bf5d58b2d95ff15cb170c231fe6002d706be77e1
   Preheat: 4a3ab1f050f4165b6a4d58481e84a0fd8ae8d999
-  PromiseKit: 6178219c4c7457ae90d7d8b34b7ac5eb36916519
-  SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
+  PromiseKit: d1be44b474e5acfa16adf007a1f49f104e10fead
+  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
 
-PODFILE CHECKSUM: 90de51f40bc24dc34276b515a84984cb66db46a1
+PODFILE CHECKSUM: 0648c9e1b1de415f71a57786d632a8e25006ac78
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.10.0

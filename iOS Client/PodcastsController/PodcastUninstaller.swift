@@ -31,10 +31,10 @@ class PodcastUninstaller: Uninstaller {
     
     func uninstall(podcastId: String) -> Promise<Bool> {
         if podcastPlayer.currentlyPlayingPodcast?.title == podcastId {
-            return Promise { fulfill, _ in
+            return Promise { seal in
                 delegate?.alertForUninstallItem {
-                    _ = self.handleUninstallApprovalResponse(status: $0, title: podcastId).then { uninstalled in
-                        fulfill(uninstalled)
+                    _ = self.handleUninstallApprovalResponse(status: $0, title: podcastId).done { uninstalled in
+                        seal.fulfill(uninstalled)
                     }
                 }
             }
@@ -49,15 +49,16 @@ class PodcastUninstaller: Uninstaller {
             self.podcastPlayer.stop()
             return executeUninstall(title: title)
         case .deny:
-            return Promise(value: false)
+            return Promise { seal in
+                seal.fulfill(false)
+            }
         }
     }
     
     private func executeUninstall(title: String) -> Promise<Bool> {
-        return podcastStore.removePodcast(title: title).then {
-            return Promise(value: true)
-        }.recover { _ -> Promise<Bool> in
-            return Promise(value: false)
+        return Promise { seal in
+            podcastStore.removePodcast(title: title)
+            seal.fulfill(true)
         }
     }
 }

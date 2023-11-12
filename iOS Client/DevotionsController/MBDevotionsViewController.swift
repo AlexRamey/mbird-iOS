@@ -7,18 +7,13 @@
 //
 
 import UIKit
-import CVCalendar
 
 class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    @IBOutlet weak var menuView: CVCalendarMenuView!
-    @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var calendarView: CVCalendarView!
     
     let devotionsStore = MBDevotionsStore()
     var devotions: [LoadedDevotion] = []
     var cellReusableId: String = "DevotionTableViewCell"
-    var latestSelectedDate: CVDate?
     weak var delegate: DevotionTableViewDelegate?
     
     override func viewDidLoad() {
@@ -35,12 +30,9 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "schedule"), style: .plain, target: self, action: #selector(self.scheduleNotifications(sender:)))
         
-        monthLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 24.0)
-        menuView.delegate = self
-        calendarView.delegate = self
-        calendarView.calendarAppearanceDelegate = self
-        
         self.loadDevotions()
+        
+        self.selectToday(self)
     }
     
     private func loadDevotions() {
@@ -58,6 +50,7 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
                 } else if let newDevotions = syncedDevotions {
                     self.devotions = newDevotions
                     self.tableView.reloadData()
+                    self.selectToday(self)
                 }
             }
         }
@@ -73,20 +66,13 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
         self.present(viewController, animated: true) {}
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        menuView.commitMenuViewUpdate()
-        calendarView.commitCalendarViewUpdate()
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.scrollToSelectedDevotion(animated: false)
     }
     
     @objc private func selectToday(_ sender: Any) {
-        self.calendarView.toggleCurrentDayView()
+        self.scrollToSelectedDevotion(animated: true)
     }
     
     static func instantiateFromStoryboard() -> MBDevotionsViewController {
@@ -98,13 +84,12 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func scrollToSelectedDevotion(animated: Bool) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM-dd"
+        let today = dateFormatter.string(from: Date())
+        
         guard let selectedRow = devotions.index(where: { (devotion) -> Bool in
-            if let selectedDate = self.latestSelectedDate?.convertedDate(),
-                selectedDate.toMMddString() == devotion.dateAsMMdd {
-                return true
-            }
-            
-            return false
+            return devotion.dateAsMMdd == today
         }) else {
             return
         }
@@ -133,11 +118,7 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        if let selectedDate = devotions[indexPath.row].dateInCurrentYear {
-            calendarView.toggleViewWithDate(selectedDate)
-        }
-        
+
         if let delegate = self.delegate {
             // mark devotion as read
             devotions[indexPath.row].read = true
@@ -150,49 +131,6 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
             // show detail view controller
             delegate.selectedDevotion(devotion)
         }
-    }
-}
-
-extension MBDevotionsViewController: CVCalendarViewDelegate, CVCalendarMenuViewDelegate, CVCalendarViewAppearanceDelegate {
-    func presentationMode() -> CalendarMode {
-        return CalendarMode.monthView
-    }
-    
-    func firstWeekday() -> Weekday {
-        return Weekday.monday
-    }
-    
-    func didSelectDayView(_ dayView: DayView, animationDidFinish: Bool) {
-        self.latestSelectedDate = dayView.date
-        self.scrollToSelectedDevotion(animated: true)
-        let monthIndex = dayView.date.month - 1
-        guard monthIndex < Calendar.current.monthSymbols.count else {
-            return
-        }
-        let month = Calendar.current.monthSymbols[monthIndex]
-        self.monthLabel.text = month
-        
-    }
-    
-    // MARK: - CVCalendarViewAppearanceDelegate
-    func dayLabelPresentWeekdayHighlightedBackgroundColor() -> UIColor {
-        return UIColor.MBOrange
-    }
-    
-    func dayLabelPresentWeekdayHighlightedBackgroundAlpha() -> CGFloat {
-        return 1.0
-    }
-    
-    func dayLabelFont(by weekDay: Weekday, status: CVStatus, present: CVPresent) -> UIFont {
-        return UIFont(name: "IowanOldStyle-Roman", size: 14) ?? UIFont.systemFont(ofSize: 14)
-    }
-    
-    func dayLabelWeekdaySelectedBackgroundColor() -> UIColor {
-        return UIColor.MBOrange.withAlphaComponent(0.75)
-    }
-    
-    func dayOfWeekFont() -> UIFont {
-        return UIFont(name: "IowanOldStyle-Roman", size: 12) ?? UIFont.systemFont(ofSize: 12)
     }
 }
 
