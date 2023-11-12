@@ -140,10 +140,10 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
     }
     
     func nukeAndPave() -> Promise<[Article]> {
-        return Promise { fulfill, reject in
+        return Promise { seal in
             firstly {
                 when(fulfilled: client.getAuthors(), client.getCategories(), client.getRecentArticles(inCategories: [], offset: 0, pageSize: 100, before: nil, after: nil, asc: false))
-            }.then { authors, categories, articles -> Void in
+            }.done { authors, categories, articles -> Void in
                 // build map of image id to image link
                 let imageLinkCache = self.getLinks()
                 
@@ -178,10 +178,10 @@ class MBArticlesStore: NSObject, ArticleDAO, AuthorDAO, CategoryDAO {
                 }
 
                 self.resolveArticleImageURLs(cache: imageLinkCache)
-                fulfill(self.getLatestArticles(skip: 0))
+                seal.fulfill(self.getLatestArticles(skip: 0))
             }.catch { error in
                 print("There was an error downloading data! \(error)")
-                reject(error)
+                seal.reject(error)
             }
         }
     }

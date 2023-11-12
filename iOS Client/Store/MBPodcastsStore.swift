@@ -74,23 +74,25 @@ class MBPodcastsStore: PodcastsRepository {
                 throw PodcastStoreError.networkError
             }
             podcasts.sort(by: { $0.pubDate > $1.pubDate })
-            return Promise(value: podcasts)
+            return self.savePodcasts(podcasts: podcasts)
         }.then { podcasts -> Promise<[Podcast]> in
-            self.savePodcasts(podcasts: podcasts).then { return Promise(value: podcasts) }
+            return Promise { seal in
+                seal.fulfill(podcasts)
+            }
         }
     }
     
-    func savePodcasts(podcasts: [Podcast]) -> Promise<Void> {
+    func savePodcasts(podcasts: [Podcast]) -> Promise<[Podcast]> {
         return firstly {
            try fileHelper.saveJSON(podcasts, forPath: podcastsPath)
-            return Promise()
+            return Promise { seal in seal.fulfill(podcasts) }
         }
     }
     
     func getSavedPodcasts() -> Promise<[Podcast]> {
-        return firstly {
+        return Promise { seal in
             let podcasts = try fileHelper.read(fromPath: podcastsPath, [Podcast].self)
-            return Promise(value: podcasts)
+            seal.fulfill(podcasts)
         }
     }
     
@@ -174,10 +176,14 @@ class MBPodcastsStore: PodcastsRepository {
         return nil
     }
     
-    func removePodcast(title: String) -> Promise<Void> {
-        return firstly {
+    func removePodcast(title: String) -> Void {
+        do
+        {
             try fileHelper.delete(path: "podcasts/\(title).mp3")
-            return Promise()
+        }
+        catch
+        {
+            print("removed podcast failed")
         }
     }
 }

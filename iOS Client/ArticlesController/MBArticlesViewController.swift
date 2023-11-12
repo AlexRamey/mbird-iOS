@@ -207,7 +207,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // called only once from viewDidLoad
     private func nukeAndPave() {
-        self.articlesStore.nukeAndPave().then { _ -> Void in
+        self.articlesStore.nukeAndPave().done { _ -> Void in
                 self.loadArticleDataFromDisk()
             }
             .always {
@@ -237,7 +237,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
                 afterArg = latestArticle.date
             }
             
-            self.client.getRecentArticles(inCategories: lineage, offset: 0, pageSize: 100, before: nil, after: afterArg, asc: true).then { recentArticles -> Void in
+            self.client.getRecentArticles(inCategories: lineage, offset: 0, pageSize: 100, before: nil, after: afterArg, asc: true).done { recentArticles -> Void in
                 self.processCandidateArticles(recentArticles, forCategory: currentCategory)
                 }
                 .always {
@@ -270,7 +270,7 @@ class MBArticlesViewController: UIViewController, UITableViewDelegate, UITableVi
             offsetArg = 0 // we can use date instead
         }
         
-        self.client.getRecentArticles(inCategories: lineage, offset: offsetArg, pageSize: 20, before: beforeArg, after: nil, asc: false).then { recentArticles -> Void in
+        self.client.getRecentArticles(inCategories: lineage, offset: offsetArg, pageSize: 20, before: beforeArg, after: nil, asc: false).done { recentArticles in
             self.processCandidateArticles(recentArticles, forCategory: currentCategory)
             }
             .always {

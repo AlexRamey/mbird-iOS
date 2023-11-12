@@ -20,7 +20,7 @@ class MBDevotionsStore: NSObject {
     
     func getDevotions() -> [LoadedDevotion] {
         do {
-            return try fileHelper.read(fromPath: "devotions", [LoadedDevotion].self)
+            return try fileHelper.read(fromPath: "devotions.json", [LoadedDevotion].self)
         } catch {
             return []
         }
