@@ -119,29 +119,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="500" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kSL-0n-CDU">
-                                <rect key="frame" x="166.5" y="28" width="42" height="20"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="z76-D2-CzV">
-                                <rect key="frame" x="0.0" y="56" width="375" height="611"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="z76-D2-CzV" firstAttribute="leading" secondItem="4QY-mg-7u0" secondAttribute="leadingMargin" constant="-16" id="0hm-BK-wfp"/>
-                            <constraint firstItem="kSL-0n-CDU" firstAttribute="centerX" secondItem="4QY-mg-7u0" secondAttribute="centerX" id="IV3-99-mxo"/>
-                            <constraint firstItem="z76-D2-CzV" firstAttribute="top" secondItem="kSL-0n-CDU" secondAttribute="bottom" constant="8" symbolic="YES" id="Icj-xx-fsu"/>
                             <constraint firstItem="z76-D2-CzV" firstAttribute="trailing" secondItem="4QY-mg-7u0" secondAttribute="trailingMargin" constant="16" id="OGM-eO-TuW"/>
+                            <constraint firstItem="z76-D2-CzV" firstAttribute="top" secondItem="JkU-zA-RQa" secondAttribute="bottom" id="RXH-zw-D0z"/>
                             <constraint firstItem="C6d-Hs-PKt" firstAttribute="top" secondItem="z76-D2-CzV" secondAttribute="bottom" id="Y8T-Xg-YBb"/>
-                            <constraint firstItem="kSL-0n-CDU" firstAttribute="top" secondItem="JkU-zA-RQa" secondAttribute="bottom" constant="8" id="bOs-1j-7XS"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="monthLabel" destination="kSL-0n-CDU" id="Zq7-C4-qtt"/>
                         <outlet property="tableView" destination="z76-D2-CzV" id="WYH-ZT-gBb"/>
                     </connections>
                 </viewController>

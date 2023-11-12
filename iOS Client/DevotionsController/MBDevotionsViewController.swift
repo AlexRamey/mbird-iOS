@@ -9,7 +9,6 @@
 import UIKit
 
 class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
     let devotionsStore = MBDevotionsStore()
@@ -31,8 +30,9 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(selectToday(_:)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "schedule"), style: .plain, target: self, action: #selector(self.scheduleNotifications(sender:)))
         
-        monthLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 24.0)
         self.loadDevotions()
+        
+        self.selectToday(self)
     }
     
     private func loadDevotions() {
@@ -50,6 +50,7 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
                 } else if let newDevotions = syncedDevotions {
                     self.devotions = newDevotions
                     self.tableView.reloadData()
+                    self.selectToday(self)
                 }
             }
         }
@@ -63,10 +64,6 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
         viewController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
         viewController.popoverPresentationController?.delegate = self
         self.present(viewController, animated: true) {}
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
     }
     
     override func viewDidAppear(_ animated: Bool) {
