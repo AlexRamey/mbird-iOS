@@ -31,7 +31,15 @@ class DevotionDetailViewController: UIViewController {
         dayLabel.text = selectedDevotion.formattedMonthDay
         verseLabel.text = selectedDevotion.verse
         verseTextLabel.text = selectedDevotion.verseText
-        bodyLabel.text = selectedDevotion.text
+        do {
+            if let data = selectedDevotion.text.data(using: .utf8) {
+                bodyLabel.attributedText = try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
+            } else {
+                bodyLabel.text = selectedDevotion.text
+            }
+        } catch {
+            bodyLabel.text = selectedDevotion.text
+        }
         authorLabel.text = "- \(selectedDevotion.author)"
         monthLabel.font = UIFont(name: "IowanOldStyle-Bold", size: 30)
         dayLabel.font = UIFont(name: "IowanOldStyle-Roman", size: 25)
