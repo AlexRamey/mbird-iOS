@@ -19,6 +19,16 @@ class CoreDataStack {
     private lazy var storeContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: self.modelName)
         let description = NSPersistentStoreDescription()
+        do {
+            let storeURL = try FileManager
+                    .default
+                    .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                    .appendingPathComponent("iOS_Client_db.sqlite")
+            description.url = storeURL
+        } catch {
+            print("Unresolved error \(error)")
+        }
+
         description.shouldInferMappingModelAutomatically = true
         description.shouldMigrateStoreAutomatically = true
         container.persistentStoreDescriptions = [description]
@@ -27,6 +37,7 @@ class CoreDataStack {
                 print("Unresolved error \(error), \(error.userInfo)")
             }
         })
+
         return container
     }()
     

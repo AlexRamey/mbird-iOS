@@ -68,7 +68,6 @@ class MBDevotionsViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.scrollToSelectedDevotion(animated: false)
     }
     
     @objc private func selectToday(_ sender: Any) {
